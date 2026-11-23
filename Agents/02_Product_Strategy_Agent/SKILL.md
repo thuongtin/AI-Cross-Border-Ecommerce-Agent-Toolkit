@@ -5,7 +5,7 @@ description: >-
   biên lợi nhuận ròng / giá hòa vốn / tính ngược giá mục tiêu / bậc giá / dư địa voucher (có tính
   các khoản thuế Brazil). Dùng khi người dùng cần tính lợi nhuận gộp, định giá, giá hòa vốn, nên
   phát voucher bao nhiêu, cấu trúc SKU có hợp lý không. Các cụm «tính lãi / định giá / giá hòa vốn /
-  phát voucher» cũng kích hoạt Skill này.
+  phát voucher» (và tiếng Trung «算毛利 / 定价 / 盈亏价 / 发券») cũng kích hoạt Skill này.
   NOT for khảo sát giá đối thủ, phân tích dải giá thị trường (đó là việc của 01).
 allowed-tools:
   - Bash(python *)
