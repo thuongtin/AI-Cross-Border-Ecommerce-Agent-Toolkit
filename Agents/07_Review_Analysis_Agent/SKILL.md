@@ -1,6 +1,6 @@
 ---
 name: review-analysis
-description: Skill phân tích đánh giá cho thương mại điện tử xuyên biên giới (Shopee BR / Mercado Livre, PT-BR). Phân loại đánh giá giao cho mô hình, đếm số giao cho script: quy nguyên nhân đánh giá tiêu cực theo 8 nhóm, tỷ lệ khắc phục được, xếp hạng điểm bán hàng từ đánh giá tích cực theo tần suất × trọng số, xuất đề xuất vá trang chi tiết. Dùng khi người dùng muốn "phân tích đánh giá tiêu cực / quy nguyên nhân đánh giá / rút ra điểm bán hàng / vì sao trang chi tiết chuyển đổi thấp".
+description: 'Skill phân tích đánh giá cho thương mại điện tử xuyên biên giới (Shopee BR / Mercado Livre, PT-BR). Phân loại đánh giá giao cho mô hình, đếm số giao cho script: quy nguyên nhân đánh giá tiêu cực theo 8 nhóm, tỷ lệ khắc phục được, xếp hạng điểm bán hàng từ đánh giá tích cực theo tần suất × trọng số, xuất đề xuất vá trang chi tiết. Dùng khi người dùng muốn "phân tích đánh giá tiêu cực / quy nguyên nhân đánh giá / rút ra điểm bán hàng / vì sao trang chi tiết chuyển đổi thấp".'
 ---
 
 # Skill phân tích đánh giá (07 Review Analysis Agent)
