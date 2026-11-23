@@ -72,6 +72,12 @@ _FUZZY_EXCLUDE: dict[str, tuple[str, ...]] = {
     "monthly_sales": _CUMULATIVE_WORDS,
     "monthly_revenue": _CUMULATIVE_WORDS,
 }
+# Cột có ghi rõ phạm vi tháng thì vẫn khớp dù chứa từ lũy kế ("Monthly sales (total)", "月销售额（总计）")
+_MONTHLY_MARKERS = ("月", "30天", "tháng", "30ngày", "month", "mensa", "mês", "30dias")
+_FUZZY_KEEP: dict[str, tuple[str, ...]] = {
+    "monthly_sales": _MONTHLY_MARKERS,
+    "monthly_revenue": _MONTHLY_MARKERS,
+}
 
 
 def _norm_key(s: str) -> str:
@@ -246,6 +252,7 @@ def build_column_map(header: list[str], custom: dict | None = None) -> dict[str,
                 continue
             used = set(resolved.values())
             exclude = [_norm_key(w) for w in _FUZZY_EXCLUDE.get(field, ())]
+            keep = [_norm_key(w) for w in _FUZZY_KEEP.get(field, ())]
             for alias in aliases:
                 key = _norm_key(alias)
                 if not key:
@@ -253,7 +260,8 @@ def build_column_map(header: list[str], custom: dict | None = None) -> dict[str,
                 hit = next((orig for nk, orig in norm_header.items()
                             if orig not in used
                             and (nk.startswith(key) if strict else key in nk)
-                            and not any(w in nk for w in exclude)), None)
+                            and not (any(w in nk for w in exclude)
+                                     and not any(m in nk for m in keep))), None)
                 if hit:
                     resolved[field] = hit
                     break
