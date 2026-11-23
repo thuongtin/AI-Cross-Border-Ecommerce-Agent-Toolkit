@@ -1,81 +1,81 @@
-# Shopee 巴西站 · 商品图规则卡
+# Shopee Brazil · Thẻ quy tắc ảnh sản phẩm
 
-> 来源：Shopee 官方《虾皮商城上架规范》PDF + 2026 卖家实践。
-> **发布前到卖家中心复核**，规则会变。
-
----
-
-## 一、硬性规格
-
-| 项 | 要求 |
-|---|---|
-| 数量 | 每个 listing 最多 **9 张**（含首图） |
-| 尺寸 | 最小 500×500；**推荐 1024×1024 起步**（头部卖家普遍 1500–2000） |
-| 比例 | **1:1 正方形** —— 非正方形会被自动裁切，可能砍掉商品 |
-| 格式 | JPG（推荐）/ PNG |
-| 单图大小 | **≤ 2 MB**（部分类目 5MB）—— 三个平台里最严，出图后必须压缩 |
-| 色彩空间 | sRGB |
-| 描述图 | 额外最多 12 张，最小 900×900 |
+> Nguồn: PDF chính thức của Shopee "Quy chuẩn đăng bán Shopee Mall" + thực tiễn của người bán năm 2026.
+> **Kiểm tra lại trên Seller Center trước khi đăng**, quy tắc sẽ thay đổi.
 
 ---
 
-## 二、首图（封面）规则
+## I. Quy cách bắt buộc
 
-| 项 | 要求 |
+| Mục | Yêu cầu |
 |---|---|
-| 背景 | **纯色，白色优先**；浅色虚化实景可接受 |
-| 商品占比 | ≥ **60%**（Shopee Mall 硬性）；实战甜区 **70–85%** |
-| 边框 | ❌ 禁止（不可有白边/黑边/装饰边框） |
-| 拼图 | ❌ 禁止（一张图一个商品，多变体用 variation 功能） |
-| 人物 | ❌ 首图禁模特/人物（**服饰、饰品、穿戴类例外**） |
-| 水印 | 只能放四角，不可大面积覆盖商品 |
-
-### 关于文字 —— 与 Amazon 完全相反 ⚠️
-
-| 规则 | 内容 |
-|---|---|
-| 普通卖家 | **允许且推荐**文字叠加：插图/文字/配件**不得大于商品主体**且**小于画面 20%** |
-| Shopee Mall | 封面**禁**文字、水印、图形 |
-
-**巴西站审美**（与东南亚站差异大，不能共用一套图）：
-
-| 项 | 巴西偏好 |
-|---|---|
-| 文字语言 | **葡萄牙语** |
-| 风格 | 热情、大胆、**高饱和、暖色调** |
-| 典型元素 | 折扣百分比大字、卖点短句、赠品角标 |
+| Số lượng | Mỗi listing tối đa **9 ảnh** (gồm ảnh đầu) |
+| Kích thước | Tối thiểu 500×500; **khuyến nghị từ 1024×1024 trở lên** (người bán top thường dùng 1500–2000) |
+| Tỷ lệ | **Vuông 1:1** —— ảnh không vuông sẽ bị tự động cắt, có thể cắt mất sản phẩm |
+| Định dạng | JPG (khuyến nghị) / PNG |
+| Dung lượng mỗi ảnh | **≤ 2 MB** (một số ngành hàng 5MB) —— khắt khe nhất trong ba sàn, ra ảnh xong bắt buộc nén |
+| Không gian màu | sRGB |
+| Ảnh mô tả | Thêm tối đa 12 ảnh, tối thiểu 900×900 |
 
 ---
 
-## 三、9 图推荐序列（转化导向）
+## II. Quy tắc ảnh đầu (ảnh bìa)
 
-| 图位 | 内容 | 文字 |
+| Mục | Yêu cầu |
+|---|---|
+| Nền | **Màu trơn, ưu tiên trắng**; bối cảnh thật làm mờ tông sáng có thể chấp nhận |
+| Tỷ lệ chiếm khung của sản phẩm | ≥ **60%** (bắt buộc với Shopee Mall); vùng tối ưu thực chiến **70–85%** |
+| Khung viền | ❌ Cấm (không được có viền trắng/viền đen/khung trang trí) |
+| Ảnh ghép | ❌ Cấm (một ảnh một sản phẩm, nhiều biến thể dùng tính năng variation) |
+| Người | ❌ Ảnh đầu cấm người mẫu/người (**ngoại lệ: thời trang, trang sức, đồ đeo**) |
+| Watermark | Chỉ được đặt ở bốn góc, không được che phủ diện rộng lên sản phẩm |
+
+### Về chữ —— hoàn toàn ngược với Amazon ⚠️
+
+| Quy tắc | Nội dung |
+|---|---|
+| Người bán thông thường | **Cho phép và khuyến nghị** chèn chữ: hình minh họa/chữ/phụ kiện **không được lớn hơn chủ thể sản phẩm** và **dưới 20% khung hình** |
+| Shopee Mall | Ảnh bìa **cấm** chữ, watermark, đồ họa |
+
+**Gu thẩm mỹ của Shopee Brazil** (khác nhiều so với các site Đông Nam Á, không dùng chung một bộ ảnh được):
+
+| Mục | Sở thích của thị trường Brazil |
+|---|---|
+| Ngôn ngữ chữ | **Tiếng Bồ Đào Nha** |
+| Phong cách | Nhiệt tình, táo bạo, **độ bão hòa cao, tông màu ấm** |
+| Yếu tố điển hình | Chữ to phần trăm giảm giá, câu ngắn điểm bán hàng, nhãn góc quà tặng |
+
+---
+
+## III. Chuỗi 9 ảnh khuyến nghị (hướng tới chuyển đổi)
+
+| Vị trí ảnh | Nội dung | Chữ |
 |---|---|---|
-| 1 首图 | 白底正面图，商品占 70% | ✅ PT-BR 大字（≤画面 20%） |
-| 2 | 侧/背/45° 角度 | 可少量 |
-| 3 | 材质/细节特写 | 可标注卖点 |
-| 4 | 场景/生活图 | 可 |
-| 5 | **尺寸对照**（手/硬币/标注尺寸） | ✅ 标数字 |
-| 6 | 卖点信息图（2–3 个卖点） | ✅ |
-| 7 | 变体/颜色选项 | ✅ |
-| 8 | 包装清单（含/不含配件） | ✅ 标 `Não incluso` |
-| 9 | 信任状（认证/质保/开箱） | 可 |
+| 1 Ảnh đầu | Ảnh chính diện nền trắng, sản phẩm chiếm 70% | ✅ Chữ to PT-BR (≤20% khung hình) |
+| 2 | Góc nghiêng/mặt sau/45° | Được, ít |
+| 3 | Cận cảnh chất liệu/chi tiết | Được chú thích điểm bán hàng |
+| 4 | Ảnh bối cảnh/đời sống | Được |
+| 5 | **So sánh kích thước** (bàn tay/đồng xu/ghi kích thước) | ✅ Ghi số |
+| 6 | Infographic điểm bán hàng (2–3 điểm bán hàng) | ✅ |
+| 7 | Biến thể/tùy chọn màu | ✅ |
+| 8 | Danh sách đóng gói (có/không có phụ kiện) | ✅ Ghi `Não incluso` |
+| 9 | Yếu tố tạo niềm tin (chứng nhận/bảo hành/đập hộp) | Được |
 
-> 图 5 与图 8 是**差评预防位**：尺寸误解和配件误解是差评两大来源（见 07 模块案例）。
+> Ảnh 5 và ảnh 8 là **vị trí phòng ngừa đánh giá tiêu cực**: hiểu lầm kích thước và hiểu lầm phụ kiện là hai nguồn đánh giá tiêu cực lớn nhất (xem case study ở module 07).
 
 ---
 
-## 四、像素校验参数（对应 scripts/check_main_image.py）
+## IV. Thông số kiểm tra pixel (tương ứng scripts/check_main_image.py)
 
 ```bash
-python scripts/check_main_image.py 图.png --platform shopee
+python scripts/check_main_image.py anh.png --platform shopee
 ```
 
-| 检查 | 阈值 | 依据 |
+| Kiểm tra | Ngưỡng | Căn cứ |
 |---|---|---|
-| 最小尺寸 | ≥ 500px，**<1024 警告** | 官方最低 / 推荐值 |
-| 正方形 | 宽高比 1:1（±1%） | 非正方形被自动裁切 |
-| 主体占比 | ≥ 60%（Mall）/ **推荐 70–85%** | 官方 + 实战 |
-| 背景纯净 | 边缘带近白占比 ≥ 98%（白底时） | 首图纯色白优先 |
-| 文件大小 | ≤ 2 MB | 官方上限 |
-| 图内文字占比 | ≤ 20% 画面 | **人工确认**（脚本不测 OCR） |
+| Kích thước tối thiểu | ≥ 500px, **<1024 cảnh báo** | Mức tối thiểu / khuyến nghị chính thức |
+| Hình vuông | Tỷ lệ rộng/cao 1:1 (±1%) | Ảnh không vuông bị tự động cắt |
+| Tỷ lệ chiếm khung của chủ thể | ≥ 60% (Mall) / **khuyến nghị 70–85%** | Chính thức + thực chiến |
+| Độ sạch của nền | Tỷ lệ pixel gần trắng ở dải viền ≥ 98% (khi dùng nền trắng) | Ảnh đầu ưu tiên màu trơn trắng |
+| Dung lượng file | ≤ 2 MB | Giới hạn chính thức |
+| Tỷ lệ chữ trong ảnh | ≤ 20% khung hình | **Người xác nhận** (script không chạy OCR) |

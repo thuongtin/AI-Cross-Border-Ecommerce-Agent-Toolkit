@@ -1,45 +1,45 @@
-# Amazon · 商品图规则卡（对照用）
+# Amazon · Thẻ quy tắc ảnh sản phẩm (dùng để đối chiếu)
 
-> Amazon 不是本 Skill 的主战场，但它是**校验标准最严**的平台 ——
-> 按 Amazon 标准过的白底图，Shopee 和 ML 的白底类目都能直接用。
+> Amazon không phải chiến trường chính của Skill này, nhưng đây là sàn có **tiêu chuẩn kiểm tra khắt khe nhất** ——
+> ảnh nền trắng đạt chuẩn Amazon thì dùng thẳng được cho các ngành hàng nền trắng của Shopee và ML.
 
 ---
 
-## 硬性规格
+## Quy cách bắt buộc
 
-| 项 | 要求 |
+| Mục | Yêu cầu |
 |---|---|
-| 最小尺寸 | 最短边 **1000px**（低于则禁用缩放功能） |
-| 推荐尺寸 | 2000×2000 |
-| 比例 | 1:1 |
-| 格式 | JPG（优先）/ PNG / GIF |
-| **背景** | **纯白 RGB(255,255,255) —— 必须项** |
-| **主体占比** | **≥ 85% 画面**（留白过多会被拒） |
-| 文字 | ❌ 主图禁一切文字、Logo、水印 |
-| 张数 | 主图 1 + 辅图最多 8 |
+| Kích thước tối thiểu | Cạnh ngắn nhất **1000px** (thấp hơn thì tắt tính năng zoom) |
+| Kích thước khuyến nghị | 2000×2000 |
+| Tỷ lệ | 1:1 |
+| Định dạng | JPG (ưu tiên) / PNG / GIF |
+| **Nền** | **Trắng tinh RGB(255,255,255) —— bắt buộc** |
+| **Tỷ lệ chiếm khung của chủ thể** | **≥ 85% khung hình** (khoảng trắng quá nhiều sẽ bị từ chối) |
+| Chữ | ❌ Ảnh chính cấm mọi loại chữ, Logo, watermark |
+| Số ảnh | 1 ảnh chính + tối đa 8 ảnh phụ |
 
 ---
 
-## 与另两平台的根本差异
+## Khác biệt căn bản với hai sàn còn lại
 
 | | Amazon | Shopee BR | Mercado Livre |
 |---|---|---|---|
-| 首图背景 | 纯白**必须** | 纯色白优先 | **按类目**（白/纯色/实景） |
-| 首图叠字 | ❌ 禁 | ✅ **推荐** | ❌ 禁 |
-| 主体占比 | ≥85% | ≥60%（Mall） | ~95% |
-| 单图上限 | 10 MB | **2 MB** | 10 MB |
+| Nền ảnh đầu | Trắng tinh **bắt buộc** | Ưu tiên màu trơn trắng | **Theo ngành hàng** (trắng/màu trơn/bối cảnh thật) |
+| Chèn chữ ảnh đầu | ❌ Cấm | ✅ **Khuyến nghị** | ❌ Cấm |
+| Tỷ lệ chiếm khung của chủ thể | ≥85% | ≥60% (Mall) | ~95% |
+| Dung lượng tối đa mỗi ảnh | 10 MB | **2 MB** | 10 MB |
 
 ---
 
-## 校验参数
+## Thông số kiểm tra
 
 ```bash
-python scripts/check_main_image.py 图.png --platform amazon
+python scripts/check_main_image.py anh.png --platform amazon
 ```
 
-| 检查 | 阈值 |
+| Kiểm tra | Ngưỡng |
 |---|---|
-| 白底纯度 | 边缘带近白占比 ≥ 98%（容差 3） |
-| 主体占比 | ≥ 85% |
-| 最小尺寸 | ≥ 1000px |
-| `--fix` | 近白像素拉到纯白 + 裁剪补边到 ~87% |
+| Độ tinh của nền trắng | Tỷ lệ pixel gần trắng ở dải viền ≥ 98% (dung sai 3) |
+| Tỷ lệ chiếm khung của chủ thể | ≥ 85% |
+| Kích thước tối thiểu | ≥ 1000px |
+| `--fix` | Kéo pixel gần trắng về trắng tinh + cắt/bù viền về ~87% |

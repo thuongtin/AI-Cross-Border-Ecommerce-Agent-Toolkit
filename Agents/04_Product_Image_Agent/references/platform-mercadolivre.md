@@ -1,98 +1,98 @@
-# Mercado Livre · 商品图规则卡（2026 新规版）
+# Mercado Livre · Thẻ quy tắc ảnh sản phẩm (bản quy định mới 2026)
 
-> 来源：ML 官方卖家中心（cbt.mercadolibre.com/pictures 与 global-selling 学习中心）。
-> **⚠️ 规则已变**：不再要求所有类目纯白底。发布前按类目到卖家中心复核。
+> Nguồn: Seller Center chính thức của ML (cbt.mercadolibre.com/pictures và trung tâm học tập global-selling).
+> **⚠️ Quy tắc đã thay đổi**: không còn yêu cầu nền trắng tinh cho mọi ngành hàng. Trước khi đăng hãy vào Seller Center kiểm tra lại theo ngành hàng.
 
 ---
 
-## 一、🔴 最重要的变化：背景按类目区分
+## I. 🔴 Thay đổi quan trọng nhất: nền phân biệt theo ngành hàng
 
-官方原话：**"You can now choose between white, solid or real-life backgrounds for your
+Nguyên văn chính thức: **"You can now choose between white, solid or real-life backgrounds for your
 listings — depending on the category."**
 
-| 类目 | 背景要求 |
+| Ngành hàng | Yêu cầu về nền |
 |---|---|
-| **Technology / Beauty / Health / Supermarket** | **仍要求白底**（纯白最安全） |
-| **Fashion / Home / Sports / Toys / Auto / Tools / Entertainment** | **允许实景/情境背景**（商品在真实使用环境中） |
+| **Technology / Beauty / Health / Supermarket** | **Vẫn yêu cầu nền trắng** (trắng tinh là an toàn nhất) |
+| **Fashion / Home / Sports / Toys / Auto / Tools / Entertainment** | **Cho phép nền bối cảnh thật/tình huống** (sản phẩm trong môi trường sử dụng thực tế) |
 
-**通用底线（所有类目都适用）**：
+**Mức sàn chung (áp dụng cho mọi ngành hàng)**:
 
-> **背景必须干净** —— 不管白底还是实景，"Avoid messy or busy backgrounds"，
-> 商品必须是照片的绝对主角。
+> **Nền phải sạch** —— dù là nền trắng hay bối cảnh thật, "Avoid messy or busy backgrounds",
+> sản phẩm phải là nhân vật chính tuyệt đối của bức ảnh.
 
 ---
 
-## 二、硬性规格
+## II. Quy cách bắt buộc
 
-| 项 | 要求 |
+| Mục | Yêu cầu |
 |---|---|
-| 最小尺寸 | 500×500（细长商品如笔，短边 ≥250） |
-| **推荐尺寸** | **1200×1200**（支持缩放） |
-| 最大尺寸 | 1920×1920 |
-| 比例 | **1:1 正方形**（"width and height must be the same"） |
-| 格式 | JPG / PNG，**RGB 色彩空间**（不要 CMYK） |
-| 文件大小 | ≤ 10 MB |
-| 张数 | 无硬上限，建议 6–8 张 |
+| Kích thước tối thiểu | 500×500 (sản phẩm dài mảnh như bút, cạnh ngắn ≥250) |
+| **Kích thước khuyến nghị** | **1200×1200** (hỗ trợ zoom) |
+| Kích thước tối đa | 1920×1920 |
+| Tỷ lệ | **Vuông 1:1** ("width and height must be the same") |
+| Định dạng | JPG / PNG, **không gian màu RGB** (không dùng CMYK) |
+| Dung lượng file | ≤ 10 MB |
+| Số ảnh | Không giới hạn cứng, khuyến nghị 6–8 ảnh |
 
 ---
 
-## 三、占比 —— 三个平台里要求最高 ⚠️
+## III. Tỷ lệ chiếm khung —— yêu cầu cao nhất trong ba sàn ⚠️
 
-官方原话：**"the product takes up 95% of the entire image"**（商品占画面 95%，避免留白）。
+Nguyên văn chính thức: **"the product takes up 95% of the entire image"** (sản phẩm chiếm 95% khung hình, tránh để trống).
 
-| 项 | 数值 |
+| Mục | Giá trị |
 |---|---|
-| 官方口径 | ~95% |
-| 实战甜区 | **80–92%**（95% 几乎贴边，留 8% 余量更安全） |
+| Mức chính thức | ~95% |
+| Vùng tối ưu thực chiến | **80–92%** (95% gần như sát viền, chừa 8% dư an toàn hơn) |
 
-> 对比：Amazon ≥85%、Shopee ≥60%。**ML 的占比要求最严。**
+> So sánh: Amazon ≥85%, Shopee ≥60%. **Yêu cầu tỷ lệ chiếm khung của ML là khắt khe nhất.**
 
 ---
 
-## 四、首图（封面）禁项 —— 比背景更容易踩坑
+## IV. Các mục cấm ở ảnh đầu (ảnh bìa) —— dễ dính lỗi hơn cả nền
 
-以下内容**任何情况下都不得出现**（官方逐条列出）：
+Những nội dung sau **không được xuất hiện trong bất kỳ trường hợp nào** (chính thức liệt kê từng mục):
 
-| 禁项 | 说明 |
+| Mục cấm | Mô tả |
 |---|---|
-| ❌ 平台属性词 | `Mais vendido`(Bestseller)、`Full`、`MercadoLíder`、`Oferta relâmpago` |
-| ❌ 水印 | 半透明 logo/文字/签名 |
-| ❌ 边框 | 任何装饰边框 |
-| ❌ 非产品自身的 Logo | 卖家店铺 logo、供应商 logo |
-| ❌ 促销横幅 | 大促角标、倒计时 |
-| ❌ 多品拼图 | "different colors and models" 这类说明 |
-| ❌ 二维码 / 联系方式 / 社媒链接 | — |
-| ❌ 非产品文字 | 与产品无关的任何文字 |
+| ❌ Từ thuộc tính của sàn | `Mais vendido`(Bestseller), `Full`, `MercadoLíder`, `Oferta relâmpago` |
+| ❌ Watermark | Logo/chữ/chữ ký bán trong suốt |
+| ❌ Khung viền | Bất kỳ khung viền trang trí nào |
+| ❌ Logo không phải của chính sản phẩm | Logo shop của người bán, logo nhà cung cấp |
+| ❌ Banner khuyến mãi | Nhãn góc sale lớn, đồng hồ đếm ngược |
+| ❌ Ảnh ghép nhiều sản phẩm | Các chú thích kiểu "different colors and models" |
+| ❌ Mã QR / thông tin liên hệ / link mạng xã hội | — |
+| ❌ Chữ không thuộc sản phẩm | Bất kỳ chữ nào không liên quan đến sản phẩm |
 
-**只有从第二张图起**，才可以：多角度、使用场景、包装展示。
+**Chỉ từ ảnh thứ hai trở đi** mới được: nhiều góc chụp, bối cảnh sử dụng, trưng bày bao bì.
 
 ---
 
-## 五、文字规则小结（对照 Shopee）
+## V. Tóm tắt quy tắc chữ (đối chiếu Shopee)
 
-| 位置 | Shopee BR | Mercado Livre |
+| Vị trí | Shopee BR | Mercado Livre |
 |---|---|---|
-| 首图 | ✅ 推荐叠字（≤画面 20%） | ❌ 禁无关文字 |
-| 辅图 | ✅ 推荐 | ✅ 卖点标注可用（非平台属性词） |
+| Ảnh đầu | ✅ Khuyến nghị chèn chữ (≤20% khung hình) | ❌ Cấm chữ không liên quan |
+| Ảnh phụ | ✅ Khuyến nghị | ✅ Được chú thích điểm bán hàng (không phải từ thuộc tính của sàn) |
 
-**结论：Shopee 和 ML 的一套图不可复用，首图必须分开做。**
+**Kết luận: một bộ ảnh không thể dùng chung cho Shopee và ML, ảnh đầu bắt buộc làm riêng.**
 
 ---
 
-## 六、像素校验参数（对应 scripts/check_main_image.py）
+## VI. Thông số kiểm tra pixel (tương ứng scripts/check_main_image.py)
 
 ```bash
-python scripts/check_main_image.py 图.png --platform mercadolivre
+python scripts/check_main_image.py anh.png --platform mercadolivre
 ```
 
-| 检查 | 阈值 | 依据 |
+| Kiểm tra | Ngưỡng | Căn cứ |
 |---|---|---|
-| 最小尺寸 | ≥ 500px，**<1200 警告** | 官方最低 / 推荐值 |
-| 正方形 | 宽高比 1:1（±1%） | "width and height must be the same" |
-| 主体占比 | ≥ 80%，**推荐 85–95%** | 官方 ~95% 口径 |
-| 背景均匀度 | 边缘带主色占比 ≥ 90%（**信息项**） | 实景背景允许非均匀，仅提示"可能杂乱" |
-| 文件大小 | ≤ 10 MB | 官方上限 |
+| Kích thước tối thiểu | ≥ 500px, **<1200 cảnh báo** | Mức tối thiểu / khuyến nghị chính thức |
+| Hình vuông | Tỷ lệ rộng/cao 1:1 (±1%) | "width and height must be the same" |
+| Tỷ lệ chiếm khung của chủ thể | ≥ 80%, **khuyến nghị 85–95%** | Mức ~95% chính thức |
+| Độ đồng đều của nền | Tỷ lệ màu chủ đạo ở dải viền ≥ 90% (**mục thông tin**) | Nền bối cảnh thật được phép không đồng đều, chỉ nhắc "có thể lộn xộn" |
+| Dung lượng file | ≤ 10 MB | Giới hạn chính thức |
 
-> 与 Amazon 的差异：ML **不强制**背景近白 —— 校验脚本对 ML 只测「背景是否均匀干净」，
-> 不测「是否纯白」。若你的类目属于 Technology/Beauty/Health/Supermarket，请按
-> `--platform amazon` 的白底标准再过一遍。
+> Khác biệt với Amazon: ML **không bắt buộc** nền gần trắng —— script kiểm tra với ML chỉ đo "nền có đồng đều, sạch hay không",
+> không đo "có trắng tinh hay không". Nếu ngành hàng của bạn thuộc Technology/Beauty/Health/Supermarket, hãy chạy lại thêm một lượt
+> theo chuẩn nền trắng của `--platform amazon`.
