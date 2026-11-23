@@ -1,60 +1,60 @@
-# 输入模板 · 广告数据与成本结构
+# Template đầu vào · Dữ liệu quảng cáo và cấu trúc chi phí
 
-> **数据质量决定诊断质量。** 曝光不足 1,000 或周期不足 3 天的数据，Agent 会直接拒绝分析——这不是刁难，是样本不足时指标波动会大于信号。
+> **Chất lượng dữ liệu quyết định chất lượng chẩn đoán.** Dữ liệu có lượt hiển thị dưới 1,000 hoặc chu kỳ dưới 3 ngày sẽ bị Agent từ chối phân tích thẳng — không phải làm khó, mà vì khi thiếu mẫu, dao động của chỉ số sẽ lớn hơn tín hiệu.
 
 ---
 
-## 0. 任务配置
+## 0. Cấu hình nhiệm vụ
 
 ```yaml
 platform*: shopee              # shopee | mercadolivre
-ad_type*: keyword              # keyword | product | shop（Shopee）/ Mercado Ads
-test_window_days*: 7           # 数据覆盖天数
-target_market: 巴西
+ad_type*: keyword              # keyword | product | shop (Shopee) / Mercado Ads
+test_window_days*: 7           # số ngày dữ liệu bao phủ
+target_market: Brazil
 target_market_timezone: "UTC-3"
 
-# 可选但建议填
+# Tùy chọn nhưng nên điền
 current_title: ""
 current_main_image_desc: ""
 ```
 
 ---
 
-## 1. 定价与成本结构 ★ 阻塞项
+## 1. Định giá và cấu trúc chi phí ★ Hạng mục chặn
 
-> **缺这一块，Agent 拒绝输出任何 ROI 结论**——因为算不出盈亏线，所有"ROI 好不好"的判断都是空谈。
+> **Thiếu phần này, Agent từ chối xuất mọi kết luận ROI** — vì không tính được ngưỡng hòa vốn thì mọi phán đoán "ROI tốt hay không" đều là nói suông.
 
 ```yaml
-price*: 0.00                   # 售价
+price*: 0.00                   # giá bán
 
 cost_structure*:
-  unit_cost: 0.00              # 产品成本（含头程分摊）
-  shipping: 0.00               # 尾程物流（实测值）
-  warehouse: 0.00              # 仓储 / 操作费
-  commission_rate: 0.14        # 平台佣金率（⚠️ 按实际类目查）
-  return_rate: 0.02            # 退货损耗率（SOP 规定 2%）
-  # 巴西站提醒：税费未含在此处，若有独立税率请另加字段
+  unit_cost: 0.00              # giá vốn (gồm phần phân bổ vận chuyển chặng đầu)
+  shipping: 0.00               # vận chuyển chặng cuối (giá trị đo thực tế)
+  warehouse: 0.00              # phí kho / phí xử lý
+  commission_rate: 0.14        # tỷ lệ hoa hồng sàn (⚠️ tra theo ngành hàng thực tế)
+  return_rate: 0.02            # tỷ lệ hao hụt hoàn hàng (SOP quy định 2%)
+  # Lưu ý cho Shopee Brazil: thuế phí chưa gồm ở đây, nếu có thuế suất riêng hãy thêm trường khác
 
-target_margin_rate: 0.28       # 目标毛利率（大件 30–35% / 小件 25–30%）
-ad_cost_rate_assumed: 0.075    # 定价时预留的广告成本率（小件 5–10%）
+target_margin_rate: 0.28       # biên lợi nhuận gộp mục tiêu (hàng lớn 30–35% / hàng nhỏ 25–30%)
+ad_cost_rate_assumed: 0.075    # tỷ lệ chi phí quảng cáo dự trù khi định giá (hàng nhỏ 5–10%)
 ```
 
 ---
 
-## 2. 广告组数据
+## 2. Dữ liệu nhóm quảng cáo
 
-> **每个广告组一行。** 指标口径必须与平台后台一致——特别是"加购"的统计口径。
+> **Mỗi nhóm quảng cáo một dòng.** Cách tính chỉ số phải khớp với trang quản trị của sàn — đặc biệt là cách tính "thêm vào giỏ".
 
 ```yaml
 ad_groups:
-  - keyword_or_target*: ""     # 关键词 / 商品 / 店铺名
-    match_type*: ""            # amplo(广泛) | exato(精准) | concorrente(竞品词) | cenario(场景词) | produto(商品)
+  - keyword_or_target*: ""     # từ khóa / sản phẩm / tên shop
+    match_type*: ""            # amplo(khớp rộng) | exato(khớp chính xác) | concorrente(từ khóa đối thủ) | cenario(từ khóa ngữ cảnh) | produto(sản phẩm)
     impressions*: 0
     clicks*: 0
     add_to_cart*: 0
     orders*: 0
     spend*: 0.00
-    # 以下由 Agent 计算，不需要填（填了也会被重算）
+    # Các trường sau do Agent tính, không cần điền (điền rồi cũng sẽ bị tính lại)
     # ctr / atc_rate / cvr / cpc / cpa / roas
 
   - keyword_or_target*: ""
@@ -66,65 +66,65 @@ ad_groups:
     spend*: 0.00
 ```
 
-### 数据填写注意
+### Lưu ý khi điền dữ liệu
 
-| 项 | 注意 |
+| Hạng mục | Lưu ý |
 |---|---|
-| `impressions` | 用**平台后台的曝光数**，不要用"估算曝光" |
-| `add_to_cart` | ⚠️ **确认平台的加购口径**——是"加购商品数"还是"加购人数"？各平台不同 |
-| `orders` | 用**广告归因订单**，不是总订单 |
-| `spend` | 用**实际扣费**，不是预算 |
-| 异常广告组 | 若某组曝光极低（花不出钱），也**照常填**——Agent 会识别并走解 bug 流程 |
+| `impressions` | Dùng **lượt hiển thị trên trang quản trị của sàn**, đừng dùng "lượt hiển thị ước tính" |
+| `add_to_cart` | ⚠️ **Xác nhận cách tính thêm vào giỏ của sàn** — là "số sản phẩm được thêm vào giỏ" hay "số người thêm vào giỏ"? Mỗi sàn mỗi khác |
+| `orders` | Dùng **đơn được quy cho quảng cáo**, không phải tổng đơn |
+| `spend` | Dùng **số tiền bị trừ thực tế**, không phải ngân sách |
+| Nhóm quảng cáo bất thường | Nếu một nhóm có lượt hiển thị cực thấp (không tiêu được tiền), vẫn **điền bình thường** — Agent sẽ nhận diện và đi quy trình gỡ bug |
 
 ---
 
-## 3. 预算现状
+## 3. Hiện trạng ngân sách
 
 ```yaml
-daily_budget_current: 0.00     # 当前日预算
-budget_mode: "manual"          # manual | auto（ML 前 7 天建议 manual）
-roi_setting_current: 0.00      # 当前 ROI 设置（若有）
-bid_strategy: ""               # 出价策略描述
+daily_budget_current: 0.00     # ngân sách ngày hiện tại
+budget_mode: "manual"          # manual | auto (ML 7 ngày đầu nên dùng manual)
+roi_setting_current: 0.00      # cài đặt ROI hiện tại (nếu có)
+bid_strategy: ""               # mô tả chiến lược giá thầu
 ```
 
 ---
 
-## 4. 竞品推广数据（可选，用于反推阶段目标）
+## 4. Dữ liệu quảng bá của đối thủ (tùy chọn, dùng để suy ngược mục tiêu theo giai đoạn)
 
-> 来源：SOP 1.10。填了它，Agent 会反推"新链接多久起量、起量前要多少评价"。
+> Nguồn: SOP 1.10. Điền phần này, Agent sẽ suy ngược "link mới bao lâu thì lên đơn, trước khi lên đơn cần bao nhiêu đánh giá".
 
 ```yaml
 competitor_benchmark:
-  - name: ""                   # 竞品标识（不要填真实店铺名，用 A/B/C）
-    listing_age_days: 0        # 上架天数
+  - name: ""                   # ký hiệu đối thủ (đừng điền tên shop thật, dùng A/B/C)
+    listing_age_days: 0        # số ngày đã đăng bán
     monthly_sales: 0
     last_30d_sales: 0
     review_count: 0
     review_with_image_count: 0
-    has_ad_slot: false         # 是否出现在广告位
+    has_ad_slot: false         # có xuất hiện ở vị trí quảng cáo không
 ```
 
 ---
 
-## 5. 外部干扰声明（可选但建议）
+## 5. Khai báo nhiễu bên ngoài (tùy chọn nhưng nên điền)
 
-> 用途：复测时判断指标变化是**动作带来的**还是**外部因素带来的**。
+> Mục đích: khi kiểm tra lại, phân biệt thay đổi chỉ số là **do hành động mang lại** hay **do yếu tố bên ngoài**.
 
 ```yaml
 external_events:
   - date: ""
-    event: ""                  # 例："参加了平台大促" / "竞品降价 15%" / "库存断货 2 天"
+    event: ""                  # vd: "tham gia đợt sale lớn của sàn" / "đối thủ giảm giá 15%" / "hết hàng 2 ngày"
 ```
 
 ---
 
-## 填写自检
+## Tự kiểm tra khi điền
 
-- [ ] 成本结构完整（缺则无法算盈亏线）
-- [ ] `commission_rate` 是按**实际类目**查的，不是套用 14%
-- [ ] 每个广告组的曝光/点击/加购/订单/花费都填了
-- [ ] 已确认平台"加购"的统计口径
-- [ ] 测试周期 ≥ 3 天，总曝光 ≥ 1,000
-- [ ] 曝光异常低的广告组也填了（不要删掉不填）
-- [ ] 竞品标识已脱敏（用 A/B/C，不用真实店铺名）
-- [ ] 已声明外部干扰事件
+- [ ] Cấu trúc chi phí đầy đủ (thiếu thì không tính được ngưỡng hòa vốn)
+- [ ] `commission_rate` được tra theo **ngành hàng thực tế**, không áp cứng 14%
+- [ ] Mỗi nhóm quảng cáo đã điền đủ hiển thị/click/thêm giỏ/đơn/chi phí
+- [ ] Đã xác nhận cách tính "thêm vào giỏ" của sàn
+- [ ] Chu kỳ test ≥ 3 ngày, tổng lượt hiển thị ≥ 1,000
+- [ ] Các nhóm quảng cáo có lượt hiển thị thấp bất thường cũng đã điền (đừng xóa bỏ)
+- [ ] Ký hiệu đối thủ đã ẩn danh (dùng A/B/C, không dùng tên shop thật)
+- [ ] Đã khai báo các sự kiện nhiễu bên ngoài

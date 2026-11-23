@@ -1,190 +1,190 @@
-# 输出模板 · 广告动作清单
+# Template đầu ra · Danh sách hành động quảng cáo
 
-> 06 Advertising Optimization Agent 的标准输出结构。
-> **下游消费者**：03 Listing Creative（改标题/详情页）、04 Product Image（换主图）、07 Review Analysis（分析评价）。
+> Cấu trúc đầu ra chuẩn của 06 Advertising Optimization Agent.
+> **Đơn vị tiêu thụ ở hạ nguồn**: 03 Listing Creative (sửa tiêu đề/trang chi tiết), 04 Product Image (đổi ảnh chính), 07 Review Analysis (phân tích đánh giá).
 
 ---
 
 ```markdown
 # Ad Action Plan · <product_name> · <platform> / <market>
 
-生成时间：<YYYY-MM-DD>
-Prompt 版本：06-Advertising-Optimization v0.2
-测试周期：<n> 天
-数据来源：<平台后台导出 / 手工整理>
+Thời gian tạo: <YYYY-MM-DD>
+Phiên bản Prompt: 06-Advertising-Optimization v0.2
+Chu kỳ test: <n> ngày
+Nguồn dữ liệu: <xuất từ trang quản trị của sàn / tổng hợp thủ công>
 
 ---
 
-## 1. 整体概览
+## 1. Tổng quan
 
-| 指标 | 数值 | 基准 | 判定 |
+| Chỉ số | Giá trị | Chuẩn | Đánh giá |
 |---|---|---|---|
-| 总曝光 | | — | — |
-| 总点击 | | — | — |
-| **整体 CTR** | | 3–5% | |
-| 总加购 | | — | — |
-| **整体加购率** | | > 8% | |
-| 总订单 | | — | — |
-| **整体转化率** | | > 1% | |
-| 总花费 | | — | — |
-| 总 GMV | | — | — |
-| **整体 ROAS** | | ≥ 盈亏线 | |
-| **净贡献毛利** | | > 0 | |
+| Tổng lượt hiển thị | | — | — |
+| Tổng click | | — | — |
+| **CTR tổng** | | 3–5% | |
+| Tổng thêm vào giỏ | | — | — |
+| **Tỷ lệ thêm vào giỏ tổng** | | > 8% | |
+| Tổng đơn | | — | — |
+| **Tỷ lệ chuyển đổi tổng** | | > 1% | |
+| Tổng chi phí | | — | — |
+| Tổng GMV | | — | — |
+| **ROAS tổng** | | ≥ ngưỡng hòa vốn | |
+| **Lợi nhuận gộp đóng góp ròng** | | > 0 | |
 
-**盈亏线 ROAS**：<值>
+**ROAS hòa vốn**: <giá trị>
 
-**一句话总判定**：
+**Đánh giá tổng một câu**:
 
-**数据可信度**：<样本 / 周期是否充足>
+**Độ tin cậy dữ liệu**: <mẫu / chu kỳ có đủ không>
 
-**计算公式**
+**Công thức tính**
 ```
-CTR = 点击 ÷ 曝光
-加购率 = 加购 ÷ 点击
-转化率 = 订单 ÷ 点击
-ROAS = (订单 × 售价) ÷ 花费
-净贡献 = 广告前可支配毛利 × 订单 − 花费
+CTR = Click ÷ Lượt hiển thị
+Tỷ lệ thêm giỏ = Thêm vào giỏ ÷ Click
+Tỷ lệ chuyển đổi = Đơn ÷ Click
+ROAS = (Đơn × Giá bán) ÷ Chi phí
+Đóng góp ròng = Lợi nhuận gộp khả dụng trước quảng cáo × Đơn − Chi phí
 ```
 
 ---
 
-## 2. 逐广告组诊断
+## 2. Chẩn đoán theo từng nhóm quảng cáo
 
-### 广告组 <A> · <关键词>（<匹配方式>）
+### Nhóm quảng cáo <A> · <từ khóa> (<kiểu khớp>)
 
-**原始数据**
+**Dữ liệu gốc**
 
-| 曝光 | 点击 | CTR | 加购 | 加购率 | 订单 | 转化率 | 花费 | CPC | CPA | ROAS |
+| Hiển thị | Click | CTR | Thêm giỏ | Tỷ lệ thêm giỏ | Đơn | Tỷ lệ chuyển đổi | Chi phí | CPC | CPA | ROAS |
 |---|---|---|---|---|---|---|---|---|---|---|
 | | | | | | | | | | | |
 
-**漏斗判定**
+**Xét phễu**
 
-| 步骤 | 检查项 | 基准 | 实际 | 通过 |
+| Bước | Hạng mục kiểm tra | Chuẩn | Thực tế | Đạt |
 |---|---|---|---|---|
 | 1 | CTR | 3–5% | | |
-| 2 | 加购率 | > 8% | | |
-| 3 | 转化率 | > 1% | | |
-| 4 | ROAS | ≥ <盈亏线> | | |
+| 2 | Tỷ lệ thêm giỏ | > 8% | | |
+| 3 | Tỷ lệ chuyển đổi | > 1% | | |
+| 4 | ROAS | ≥ <ngưỡng hòa vốn> | | |
 
-**判定结论**：<有曝光没点击 / 有点击没加购 / 有加购没转化 / 高花费低ROI / 健康单元 / 数据不足>
+**Kết luận**: <Có hiển thị không có click / Có click không thêm vào giỏ / Có thêm vào giỏ không chuyển đổi / Chi phí cao ROI thấp / Đơn vị khỏe / Thiếu dữ liệu>
 
-**病因分析**：
+**Phân tích nguyên nhân**:
 
-**动作清单**
+**Danh sách hành động**
 
-| # | 动作 | 对象 | 判定依据 | 预期效果 | 优先级 |
+| # | Hành động | Đối tượng | Căn cứ | Hiệu quả kỳ vọng | Ưu tiên |
 |---|---|---|---|---|---|
 | 1 | | | | | |
 
-**本轮明确不动的部分**
+**Vòng này dứt khoát không động vào**
 
-| 环节 | 不动的原因 |
+| Khâu | Lý do không động vào |
 |---|---|
 | | |
 
 ---
 
-（对其他广告组重复本节）
+(lặp lại mục này cho các nhóm quảng cáo khác)
 
 ---
 
-## 3. 动作汇总
+## 3. Tổng hợp hành động
 
-| 优先级 | 动作 | 涉及广告组 | 影响预算占比 | 预期效果 | 复测周期 |
+| Ưu tiên | Hành động | Nhóm quảng cáo liên quan | Tỷ trọng ngân sách bị ảnh hưởng | Hiệu quả kỳ vọng | Chu kỳ kiểm tra lại |
 |---|---|---|---|---|---|
-| 🔴 P0 | | | | | 7 天 |
-| 🟡 P1 | | | | | 7 天 |
-| ⚪ P2 | | | | | 7 天 |
+| 🔴 P0 | | | | | 7 ngày |
+| 🟡 P1 | | | | | 7 ngày |
+| ⚪ P2 | | | | | 7 ngày |
 
-**改动数量**：<n> 项
-**是否指向同一病因**：是 / 否
-**同批执行 / 拆轮次**：<结论与理由>
-
----
-
-## 4. 广告跑不动的处理        （条件输出）
-
-| 组 | 曝光 | 判断 |
-|---|---|---|
-| | | 曝光不足，无法进入漏斗诊断 |
-
-| 步骤 | 动作 | 观察周期 |
-|---|---|---|
-| 1 | 更换主图 | 1–2 天 |
-| 2 | 微调标题 | 1–2 天 |
-| 3 | 找客服提工单 | 按平台响应 |
+**Số thay đổi**: <n> hạng mục
+**Có chỉ tới cùng một nguyên nhân gốc không**: Có / Không
+**Thực hiện cùng đợt / tách vòng**: <kết luận và lý do>
 
 ---
 
-## 5. 盈亏线核算
+## 4. Xử lý quảng cáo không chạy        (xuất có điều kiện)
 
-### 5.1 广告前可支配毛利
-
-| 项 | 金额 | 占售价 |
+| Nhóm | Hiển thị | Đánh giá |
 |---|---|---|
-| 售价 | | 100% |
-| − 产品成本 | | |
-| − 尾程物流 | | |
-| − 仓储/操作费 | | |
-| − 平台佣金 | | |
-| − 退货损耗 | | |
-| **= 广告前可支配毛利** | | |
+| | | Thiếu hiển thị, chưa thể vào chẩn đoán phễu |
 
-### 5.2 ROAS 敏感性
+| Bước | Hành động | Chu kỳ theo dõi |
+|---|---|---|
+| 1 | Đổi ảnh chính | 1–2 ngày |
+| 2 | Tinh chỉnh tiêu đề | 1–2 ngày |
+| 3 | Tìm CSKH mở ticket | Theo thời gian phản hồi của sàn |
 
-| ROAS | 广告费/单 | 剩余毛利/单 | 占售价 | 判定 |
+---
+
+## 5. Tính ngưỡng hòa vốn
+
+### 5.1 Lợi nhuận gộp khả dụng trước quảng cáo
+
+| Hạng mục | Số tiền | % giá bán |
+|---|---|---|
+| Giá bán | | 100% |
+| − Giá vốn | | |
+| − Vận chuyển chặng cuối | | |
+| − Phí kho/phí xử lý | | |
+| − Hoa hồng sàn | | |
+| − Hao hụt hoàn hàng | | |
+| **= Lợi nhuận gộp khả dụng trước quảng cáo** | | |
+
+### 5.2 Độ nhạy ROAS
+
+| ROAS | Phí QC/đơn | Lợi nhuận gộp còn lại/đơn | % giá bán | Đánh giá |
 |---|---|---|---|---|
 | | | | | |
 
-### 5.3 应对路径建议
+### 5.3 Đề xuất hướng xử lý
 
 ---
 
-## 6. 预算模型
+## 6. Mô hình ngân sách
 
-| 项 | 值 | 依据 |
+| Hạng mục | Giá trị | Căn cứ |
 |---|---|---|
-| 建议最大日预算 | | |
-| 建议目标 ROI 区间 | | |
-| 测试区间 | 7 天 | SOP |
-| 当前阶段目标 | | |
+| Ngân sách ngày tối đa đề xuất | | |
+| Khoảng ROI mục tiêu đề xuất | | |
+| Khoảng test | 7 ngày | SOP |
+| Mục tiêu giai đoạn hiện tại | | |
 
-### 分时段预算节律
+### Nhịp ngân sách theo khung giờ
 
-| 时段（目标市场） | 北京对应 | 预算 | 理由 |
+| Khung giờ (thị trường mục tiêu) | Giờ Bắc Kinh tương ứng | Ngân sách | Lý do |
 |---|---|---|---|
 | | | | |
 
 ---
 
-## 7. 复测方案
+## 7. Phương án kiểm tra lại
 
-| 项 | 内容 |
+| Hạng mục | Nội dung |
 |---|---|
-| 复测时点 | 改动后第 7 天 |
-| 需回收数据 | 曝光/点击/加购/订单/花费 |
-| 通过标准 | 被改动环节回到基准线以上 且 ROAS ≥ 盈亏线 |
-| 未通过处理 | 回到漏斗诊断，**不继续加码同一动作** |
-| 外部干扰确认 | |
+| Thời điểm kiểm tra lại | Ngày thứ 7 sau khi thay đổi |
+| Dữ liệu cần thu | Hiển thị/click/thêm giỏ/đơn/chi phí |
+| Tiêu chí đạt | Khâu được sửa quay về trên đường chuẩn và ROAS ≥ ngưỡng hòa vốn |
+| Xử lý khi không đạt | Quay lại chẩn đoán phễu, **không tiếp tục tăng liều cùng một hành động** |
+| Xác nhận nhiễu bên ngoài | |
 
 ---
 
-## 8. 建议合规扫描
+## 8. Quét tuân thủ đề xuất
 
-| 规则 | 命中 | 处理 |
+| Quy tắc | Vi phạm | Xử lý |
 |---|---|---|
-| G1 虚假数据 | | |
-| G2 恶意竞争 | | |
-| G3 规避算法 | | |
-| G4 不可执行建议 | | |
-| G5 无依据承诺 | | |
+| G1 Dữ liệu giả | | |
+| G2 Cạnh tranh không lành mạnh | | |
+| G3 Lách thuật toán | | |
+| G4 Đề xuất không thực thi được | | |
+| G5 Cam kết thiếu căn cứ | | |
 
-（无命中时：`建议合规扫描：无命中`）
+(Khi không vi phạm: `Quét tuân thủ đề xuất: không vi phạm`)
 
 ---
 
-## 9. 交付给其他模块的字段
+## 9. Các trường bàn giao cho module khác
 
 ```yaml
 breakeven_roas: 0.00
@@ -193,36 +193,36 @@ max_daily_budget: 0.00
 test_window_days: 7
 budget_schedule: {}
 symptom_by_group:
-  A: ""                        # 症状 → 传给 03/04
+  A: ""                        # triệu chứng → chuyển cho 03/04
   B: ""
-ctr_fail_groups: []            # → 03 改标题 / 04 换主图
-atc_fail_groups: []            # → 03 改详情页
-cvr_fail_groups: []            # → 03 改价格展示 / 07 分析评价
-review_needed: false           # → 是否需 07 介入
+ctr_fail_groups: []            # → 03 sửa tiêu đề / 04 đổi ảnh chính
+atc_fail_groups: []            # → 03 sửa trang chi tiết
+cvr_fail_groups: []            # → 03 sửa cách hiển thị giá / 07 phân tích đánh giá
+review_needed: false           # → có cần 07 vào cuộc không
 ```
 
 ---
 
-## 10. 执行前提醒
+## 10. Nhắc nhở trước khi thực thi
 
-- [ ] 已确认平台后台指标口径与本表一致
-- [ ] 改动前已记录基线数据（否则无法归因）
-- [ ] 已确认改动数量与"一次只改一件事"原则的关系
-- [ ] 预算节律的时区换算已核实
-- [ ] 复测时点已加入日程（第 7 天）
+- [ ] Đã xác nhận cách tính chỉ số trên trang quản trị của sàn khớp với bảng này
+- [ ] Trước khi thay đổi đã ghi lại dữ liệu baseline (nếu không sẽ không quy nguyên nhân được)
+- [ ] Đã xác nhận quan hệ giữa số thay đổi và nguyên tắc "mỗi lần chỉ sửa một việc"
+- [ ] Đã kiểm tra quy đổi múi giờ của nhịp ngân sách
+- [ ] Đã đưa thời điểm kiểm tra lại vào lịch (ngày thứ 7)
 ```
 
 ---
 
-## 下游模块如何消费
+## Các module hạ nguồn sử dụng thế nào
 
-| 字段 | 消费者 | 用途 |
+| Trường | Đơn vị sử dụng | Mục đích |
 |---|---|---|
-| `ctr_fail_groups` | **03**（`mode = iterate`） | 改标题关键词 |
-| `ctr_fail_groups` | **04**（`mode = iterate`） | 换主图 |
-| `atc_fail_groups` | **03**（`mode = iterate`） | 优化详情页 / 调整 SKU |
-| `cvr_fail_groups` | **03 + 07** | 改价格展示 / 分析评价质量 |
-| `breakeven_roas` | 复测对标 | 判断下一轮是否盈利 |
-| `review_needed` | **07** | 是否启动评论分析 |
+| `ctr_fail_groups` | **03** (`mode = iterate`) | Sửa từ khóa trong tiêu đề |
+| `ctr_fail_groups` | **04** (`mode = iterate`) | Đổi ảnh chính |
+| `atc_fail_groups` | **03** (`mode = iterate`) | Tối ưu trang chi tiết / chỉnh SKU |
+| `cvr_fail_groups` | **03 + 07** | Sửa cách hiển thị giá / phân tích chất lượng đánh giá |
+| `breakeven_roas` | Đối chiếu khi kiểm tra lại | Xác định vòng sau có lãi không |
+| `review_needed` | **07** | Có khởi động phân tích đánh giá không |
 
-> **闭环规则**：`mode = iterate` 的 03/04 必须接收 `symptom_by_group`，并且**只改症状指向的环节**，不得顺手改其他部分。
+> **Quy tắc vòng khép kín**: 03/04 ở `mode = iterate` bắt buộc nhận `symptom_by_group`, và **chỉ sửa khâu mà triệu chứng chỉ tới**, không được tiện tay sửa phần khác.

@@ -1,11 +1,14 @@
 ---
 name: sop-ecom-ads
 description: >-
-  跨境电商广告决策层 Skill，Shopee 巴西与 Mercado Livre 专精。读广告导出报表 →
-  像素级算术（盈亏线 ROAS / 可承受 CPC / 净贡献，含巴西税费）→ P0/P1/P2 分级动作清单。
-  只建议，不执行 —— 不改后台、不自动调价。当用户要诊断广告、看 ROAS/ACOS、
-  降预算降出价、广告亏钱分析、大促复盘时使用。中文「广告诊断 / 广告亏钱 / 预算怎么调」同样触发。
-  NOT for 自动调价机器人、直接写平台后台、视频广告创意制作。
+  Skill tầng ra quyết định quảng cáo cho thương mại điện tử xuyên biên giới, chuyên Shopee Brazil và Mercado Livre.
+  Đọc báo cáo xuất từ quảng cáo → tính toán chính xác đến từng con số (ROAS hòa vốn / CPC chịu được / đóng góp ròng,
+  có tính thuế phí Brazil) → danh sách hành động phân cấp P0/P1/P2.
+  Chỉ đề xuất, không thực thi — không sửa trên trang quản trị, không tự động chỉnh giá thầu. Dùng khi người dùng muốn
+  chẩn đoán quảng cáo, xem ROAS/ACOS, hạ ngân sách hạ giá thầu, phân tích quảng cáo lỗ, tổng kết sau đợt sale lớn.
+  Các cụm tiếng Việt「chẩn đoán quảng cáo / quảng cáo lỗ / chỉnh ngân sách thế nào」và tiếng Trung
+  「广告诊断 / 广告亏钱 / 预算怎么调」cũng kích hoạt Skill này.
+  NOT for bot tự động chỉnh giá thầu, ghi thẳng vào trang quản trị của sàn, sản xuất creative video quảng cáo.
 allowed-tools:
   - Bash(python *)
   - Read
@@ -16,86 +19,86 @@ metadata:
   license: MIT
 ---
 
-# 06 · Advertising Optimization Skill（决策层）
+# 06 · Advertising Optimization Skill (tầng ra quyết định)
 
-> **定位**：广告的**决策层**，不是机器人。坐在你的数据源（平台广告报表导出）之上，
-> 产出「改什么、改成多少、依据是什么」的动作清单。**执行由人决定。**
-
----
-
-## 三条底线
-
-1. **不执行** —— 本 Skill 永远不直接改后台预算/出价，动作清单给人审批
-2. **不猜数字** —— 所有指标由 `scripts/ad_metrics.py` 计算，Agent 只解读；怀疑数字 → `[METRIC_SUSPECT]`
-3. **不暂停广告** —— 止血手段是降预算降出价；暂停破坏连续性降权重（见 [actions.md](references/actions.md) 铁律）
+> **Định vị**: **tầng ra quyết định** của quảng cáo, không phải bot. Nằm trên nguồn dữ liệu của bạn (báo cáo quảng cáo xuất từ sàn),
+> tạo ra danh sách hành động「sửa gì, sửa thành bao nhiêu, căn cứ vào đâu」. **Việc thực thi do con người quyết định.**
 
 ---
 
-## 快速开始（两条命令）
+## Ba nguyên tắc nền
+
+1. **Không thực thi** — Skill này không bao giờ trực tiếp sửa ngân sách/giá thầu trên trang quản trị, danh sách hành động phải được người duyệt
+2. **Không đoán số** — mọi chỉ số do `scripts/ad_metrics.py` tính, Agent chỉ diễn giải; nghi ngờ con số → `[METRIC_SUSPECT]`
+3. **Không tạm dừng quảng cáo** — cách cắt lỗ là hạ ngân sách, hạ giá thầu; tạm dừng làm đứt tính liên tục và giảm điểm quảng cáo (xem nguyên tắc sắt trong [actions.md](references/actions.md))
+
+---
+
+## Bắt đầu nhanh (hai lệnh)
 
 ```bash
-# 1) 算盈亏线与可承受 CPC —— 平台预设（与 02 共用 platform_fees.json，含价格分档固定费）
+# 1) Tính ngưỡng hòa vốn và CPC chịu được — dùng preset sàn (dùng chung platform_fees.json với 02, có phí cố định theo bậc giá)
 python scripts/ad_metrics.py calc --platform shopee_br --price 113.40 --product-cost 55 \
     --target-acos 25 --cvr 0.44
 
-#    或手工口径（显式参数优先）
+#    hoặc nhập tay (tham số tường minh được ưu tiên)
 python scripts/ad_metrics.py calc --price 113.40 --product-cost 55 \
     --commission 14 --return 2 --tax 0 --target-acos 25 --cvr 0.44
 
-# 2) 读广告导出报表 → 全量诊断 + P0/P1/P2 分级动作
+# 2) Đọc báo cáo xuất từ quảng cáo → chẩn đoán toàn bộ + hành động phân cấp P0/P1/P2
 python scripts/ad_metrics.py diagnose --file examples/sample-ad-report.csv \
     --price 113.40 --product-cost 55 --commission 14 --return 2 --tax 0 --target-acos 25
 ```
 
-`--tax` 是**综合有效税率**（巴西 ICMS/PIS/COFINS/Simples Nacional 折算成占售价百分比）。
-税率 8% 时盈亏线 ROAS 从 2.82 抬到 3.64 —— **不含税的盈亏线是骗人的**。
+`--tax` là **thuế suất hiệu dụng tổng hợp** (ICMS/PIS/COFINS/Simples Nacional của Brazil quy đổi thành % trên giá bán).
+Với thuế suất 8%, ROAS hòa vốn tăng từ 2.82 lên 3.64 — **ngưỡng hòa vốn không tính thuế là ngưỡng ảo**.
 
 ---
 
-## 工作流
+## Quy trình
 
 ```text
-① calc   成本结构 → 盈亏线 ACoS/ROAS、可承受 CPC
-② diagnose  广告导出 CSV → 逐组漏斗指标 + 分级
-③ 读分级 → 翻对应手册（references/playbooks.md）
-④ 产出动作清单（含「本轮明确不动」清单）
-⑤ 人审批 → 执行 → 3–7 天后复测
+① calc      cấu trúc chi phí → ACoS/ROAS hòa vốn, CPC chịu được
+② diagnose  CSV xuất từ quảng cáo → chỉ số phễu theo từng nhóm + phân cấp
+③ đọc phân cấp → mở playbook tương ứng (references/playbooks.md)
+④ tạo danh sách hành động (kèm danh sách「vòng này không động vào」)
+⑤ người duyệt → thực thi → kiểm tra lại (retest) sau 3–7 ngày
 ```
 
 ---
 
-## 诊断顺序（固定，不可跳步）
+## Thứ tự chẩn đoán (cố định, không được bỏ bước)
 
 ```text
-第0层 数据充分性（曝光<1,000 → 不动） → 第1层 无花费 → 第2层 CTR<2%（回流04）
-→ 第3层 点击≥30零订单（回流03，广告端止血） → 第4层 ROAS 分级：
-   < 0.5×盈亏线 = P0 止血 ｜ < 盈亏线 = P1 改善 ｜ < 目标 = P1 维持 ｜ ≥ 目标 = P2 放量
+Tầng 0 Độ đủ dữ liệu (hiển thị <1,000 → không động vào) → Tầng 1 Không có chi phí → Tầng 2 CTR<2% (quay vòng về 04)
+→ Tầng 3 Click≥30 mà 0 đơn (quay vòng về 03, phía quảng cáo cắt lỗ) → Tầng 4 Phân cấp ROAS:
+   < 0.5×hòa vốn = P0 cắt lỗ ｜ < hòa vốn = P1 cải thiện ｜ < mục tiêu = P1 giữ nguyên ｜ ≥ mục tiêu = P2 scale
 ```
 
-完整规则表见 [references/diagnosis.md](references/diagnosis.md)；
-公式与列名映射见 [references/metrics.md](references/metrics.md)；
-8 个场景手册见 [references/playbooks.md](references/playbooks.md)；
-动作库（条件/幅度/频率/回滚 + Shopee 预算节律与"不要暂停"铁律）见
-[references/actions.md](references/actions.md)。
+Bảng quy tắc đầy đủ xem [references/diagnosis.md](references/diagnosis.md);
+công thức và ánh xạ tên cột xem [references/metrics.md](references/metrics.md);
+8 playbook theo tình huống xem [references/playbooks.md](references/playbooks.md);
+thư viện hành động (điều kiện/mức độ/tần suất/rollback + nhịp ngân sách Shopee và nguyên tắc sắt "không tạm dừng") xem
+[references/actions.md](references/actions.md).
 
 ---
 
-## Shopee BR 特别约束（自动化必知）
+## Ràng buộc riêng của Shopee BR (bắt buộc biết khi tự động hóa)
 
-| 规则 | 内容 |
+| Quy tắc | Nội dung |
 |---|---|
-| 预算节律 | 北京 11:00 → 休眠 R$10；北京 23:30 → 恢复激活值 |
-| 已花费只可上调 | 当天已有花费，预算**不能下调**（等次日归零） |
-| 二次确认弹窗 | 点确认后还有「修改前请确认 → 继续修改」 |
+| Nhịp ngân sách | 11:00 giờ Bắc Kinh → ngủ đông ở R$10; 23:30 giờ Bắc Kinh → khôi phục mức kích hoạt |
+| Đã tiêu thì chỉ được tăng | Trong ngày đã phát sinh chi phí thì ngân sách **không được giảm** (đợi hôm sau reset) |
+| Popup xác nhận lần hai | Bấm xác nhận xong còn bước「Vui lòng xác nhận trước khi sửa → Tiếp tục sửa」 |
 
 ---
 
-## 已知限制
+## Giới hạn đã biết
 
-| 限制 | 说明 |
+| Giới hạn | Giải thích |
 |---|---|
-| **不执行** | 动作清单给人审批；写后台属路线 B，未实现 |
-| 搜索词报告未接 | 搜索词/否定词分析需平台导出（sqp 框架待补，见 ROADMAP） |
-| 阈值为巴西站经验值 | CTR 3–5% 等基准来自 SOP 与实战，不同类目需校准 |
-| 税率为简化口径 | 综合有效税率一个参数，不代表真实税制明细 |
-| 无公开 API 平台 | Shopee 卖家侧无广告 API → 数据靠手动导出或浏览器自动化 |
+| **Không thực thi** | Danh sách hành động để người duyệt; ghi vào trang quản trị thuộc hướng B, chưa triển khai |
+| Chưa nối báo cáo từ khóa tìm kiếm | Phân tích từ khóa tìm kiếm/từ khóa phủ định cần file xuất từ sàn (khung sqp còn thiếu, xem ROADMAP) |
+| Ngưỡng là giá trị kinh nghiệm của Shopee Brazil | Các chuẩn như CTR 3–5% lấy từ SOP và thực chiến, mỗi ngành hàng cần hiệu chỉnh lại |
+| Thuế suất là cách tính đơn giản hóa | Gộp thành một tham số thuế suất hiệu dụng, không phản ánh chi tiết thuế thực tế |
+| Sàn không có API công khai | Shopee không có API quảng cáo cho người bán → dữ liệu dựa vào xuất tay hoặc tự động hóa trình duyệt |
