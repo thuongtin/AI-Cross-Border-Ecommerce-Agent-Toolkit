@@ -1,212 +1,212 @@
-# TASK · 产品定位、配置、卖点与风险
+# TASK · Định vị sản phẩm, cấu hình, điểm bán hàng và rủi ro
 
-> 配套使用：`00_system.md` + 01 Market Research 的输出
-> 对应 SOP **1.7 主推产品确认** + **3.1 单品上架前准备**
+> Dùng kèm: `00_system.md` + đầu ra của 01 Market Research
+> Tương ứng SOP **1.7 Chốt sản phẩm chủ lực** + **3.1 Chuẩn bị trước khi đăng bán từng sản phẩm**
 
 ---
 
 # INPUT
 
-| 字段 | 说明 |
+| Trường | Giải thích |
 |---|---|
-| `decision_approved` | **阻塞项**，必须为 `true` |
-| `platform` / `target_market` / `category` | 基础信息 |
-| `market_analysis` | 01 的完整输出（含 `target_price_range` / `recommended_config` / `opportunity_config` / `brand_barrier` / `seller_barrier` / `competitor_weakness`） |
-| `company_capabilities` | 公司能不能做这个配置 |
-| `after_sales_capacity` | 能处理什么售后（可否维修 / 只换货 / 能处理配件） |
-| `cost_structure` | 用于验证配置是否有利润空间 |
-| `planned_specs[]`（可选） | 已确定的配置，与市场推荐冲突时用于对比 |
+| `decision_approved` | **Mục chặn**, bắt buộc là `true` |
+| `platform` / `target_market` / `category` | Thông tin cơ bản |
+| `market_analysis` | Toàn bộ đầu ra của 01 (gồm `target_price_range` / `recommended_config` / `opportunity_config` / `brand_barrier` / `seller_barrier` / `competitor_weakness`) |
+| `company_capabilities` | Công ty có làm được cấu hình này không |
+| `after_sales_capacity` | Xử lý được hậu mãi gì (có sửa chữa được không / chỉ đổi hàng / có cung cấp phụ kiện được không) |
+| `cost_structure` | Dùng để kiểm chứng cấu hình có dư địa lợi nhuận không |
+| `planned_specs[]` (tùy chọn) | Cấu hình đã chốt, dùng để so sánh khi mâu thuẫn với đề xuất của thị trường |
 
 ---
 
-# STEP 1 · 产品类型定位
+# STEP 1 · Định vị loại sản phẩm
 
 ```markdown
-## 1. 产品类型
+## 1. Loại sản phẩm
 
-| 维度 | 定位 | 依据 |
+| Khía cạnh | Định vị | Căn cứ |
 |---|---|---|
-| 店铺角色 | 引流款 / 利润款 / 测试款 / 长尾款 | |
-| 差异程度 | 普通款 / 差异化款 | |
-| 推广角色 | 主推款 / 测试款 | |
+| Vai trò trong shop | SKU kéo traffic / SKU lợi nhuận / SKU test / SKU long-tail | |
+| Mức độ khác biệt | SKU phổ thông / SKU khác biệt hóa | |
+| Vai trò quảng bá | SKU chủ lực / SKU test | |
 
-**定位理由**：
-【依据】<来自市场分析：品牌壁垒 / 卖家壁垒 / 机会配置>
-【建议】<为什么选这个角色>
+**Lý do định vị**:
+【Căn cứ】<từ phân tích thị trường: rào cản thương hiệu / rào cản người bán / cấu hình cơ hội>
+【Đề xuất】<vì sao chọn vai trò này>
 ```
 
-### 角色选择参考
+### Tham khảo chọn vai trò
 
-| 市场特征 | 建议定位 |
+| Đặc điểm thị trường | Định vị đề xuất |
 |---|---|
-| 品牌壁垒高（CR3 高且头部是品牌） | **差异化款**——避开正面价格战 |
-| 品牌壁垒低（头部是白牌） | 普通款可行，靠成本与效率竞争 |
-| 卖家壁垒高（CR10 > 70%） | 优先找 `opportunity_config` 做差异化 |
-| 有明确 `opportunity_config` 且未被头部占据 | **主推款 + 差异化款** |
-| 现金流紧张 / 需快速验证 | **测试款**，小批量先跑 |
+| Rào cản thương hiệu cao (CR3 cao và top đầu là thương hiệu) | **SKU khác biệt hóa**——tránh đối đầu chiến giá trực diện |
+| Rào cản thương hiệu thấp (top đầu là hàng no-brand) | SKU phổ thông vẫn khả thi, cạnh tranh bằng giá vốn và hiệu suất |
+| Rào cản người bán cao (CR10 > 70%) | Ưu tiên tìm `opportunity_config` để khác biệt hóa |
+| Có `opportunity_config` rõ ràng và chưa bị top đầu chiếm | **SKU chủ lực + SKU khác biệt hóa** |
+| Dòng tiền eo hẹp / cần kiểm chứng nhanh | **SKU test**, chạy lô nhỏ trước |
 
 ---
 
-# STEP 2 · 核心配置确认
+# STEP 2 · Chốt cấu hình cốt lõi
 
 ```markdown
-## 2. 核心配置
+## 2. Cấu hình cốt lõi
 
-| 配置维度 | 市场推荐值 | 我方确定值 | 是否一致 | 说明 |
+| Khía cạnh cấu hình | Giá trị thị trường đề xuất | Giá trị bên ta chốt | Có khớp không | Giải thích |
 |---|---|---|---|---|
 | | | | ✅ / ⚠️ | |
 
-**配置与公司能力的匹配检查**
+**Kiểm tra mức khớp giữa cấu hình và năng lực công ty**
 
-| 配置 | 公司能否做 | 说明 |
+| Cấu hình | Công ty làm được không | Giải thích |
 |---|---|---|
 | | ✅ / ⚠️ / ❌ | |
 
-⚠️ **若某项配置公司做不到**：不要硬写，明确标注并把该维度退回给市场分析重新选配。
+⚠️ **Nếu có cấu hình công ty không làm được**: đừng cố ghi vào, hãy ghi chú rõ và trả khía cạnh đó về cho phân tích thị trường chọn lại cấu hình.
 ```
 
-### 配置确认的三个原则
+### Ba nguyên tắc chốt cấu hình
 
-| 原则 | 说明 |
+| Nguyên tắc | Giải thích |
 |---|---|
-| **主流量保需求** | 核心配置要走市场主流（如功率），保证需求规模 |
-| **机会配置做差异** | 差异化维度选 `opportunity_config`，低竞争高需求的位置 |
-| **不做参数堆砌** | 堆到最高配不等于最好卖——市场数据可能显示高配段均销最低 |
+| **Traffic chính giữ nhu cầu** | Cấu hình cốt lõi đi theo dòng chính của thị trường (vd. công suất), đảm bảo quy mô nhu cầu |
+| **Cấu hình cơ hội tạo khác biệt** | Khía cạnh khác biệt hóa chọn theo `opportunity_config`, vị trí cạnh tranh thấp mà nhu cầu cao |
+| **Không chồng thông số** | Đẩy lên cấu hình cao nhất không có nghĩa là bán chạy nhất——dữ liệu thị trường có thể cho thấy phân khúc cấu hình cao có doanh số trung bình thấp nhất |
 
-> **关键提醒**：若市场分析显示某高配段（如 800W）"商品数最多但均销最低"，那它**不适合做主推**，只适合做高配 SKU。
-> **判断依据是数据，不是"配置越高越好"的直觉。**
+> **Lưu ý then chốt**: nếu phân tích thị trường cho thấy một phân khúc cấu hình cao (vd. 800W) "nhiều sản phẩm nhất nhưng doanh số trung bình thấp nhất", thì nó **không hợp làm chủ lực**, chỉ hợp làm SKU cấu hình cao.
+> **Căn cứ phán đoán là dữ liệu, không phải trực giác "cấu hình càng cao càng tốt".**
 
 ---
 
-# STEP 3 · 主推卖点收敛（SOP 1.7 的核心）
+# STEP 3 · Hội tụ điểm bán hàng chủ lực (cốt lõi của SOP 1.7)
 
 ```markdown
-## 3. 主推卖点
+## 3. Điểm bán hàng chủ lực
 
-### 3.1 卖点来源
+### 3.1 Nguồn điểm bán hàng
 
-| 来源 | 内容 | 可用性 |
+| Nguồn | Nội dung | Mức dùng được |
 |---|---|---|
-| 机会配置 | | ✅ 核心差异化 |
-| 竞品短板 | | ✅ 差异化依据 |
-| 主流配置 | | ⭕ 保底（必须有，但不是卖点） |
-| 买家高频关注 | | ✅ |
+| Cấu hình cơ hội | | ✅ Khác biệt hóa cốt lõi |
+| Điểm yếu của đối thủ | | ✅ Căn cứ khác biệt hóa |
+| Cấu hình phổ biến | | ⭕ Mức tối thiểu (bắt buộc có, nhưng không phải điểm bán hàng) |
+| Điều người mua quan tâm nhiều | | ✅ |
 
-### 3.2 卖点分层
+### 3.2 Phân tầng điểm bán hàng
 
-| 层级 | 卖点 | 支撑依据 | 用于 |
+| Tầng | Điểm bán hàng | Căn cứ hỗ trợ | Dùng cho |
 |---|---|---|---|
-| **主卖点（1 个）** | | | 主图核心文案 / 视频钩子 / 标题关键词 |
-| 副卖点（3–5 个） | | | 详情页 / 五点描述 / 视频卖点段 |
-| 保底卖点 | | | 详情页（保证信息完整） |
-| **禁用表述** | | | ⛔ 列入 `forbidden_words` |
+| **Điểm bán hàng chính (1 điểm)** | | | Copy chính trên ảnh chính / hook video / từ khóa tiêu đề |
+| Điểm bán hàng phụ (3–5 điểm) | | | Trang chi tiết / 5 bullet point mô tả / đoạn điểm bán hàng trong video |
+| Điểm bán hàng tối thiểu | | | Trang chi tiết (đảm bảo đủ thông tin) |
+| **Cách diễn đạt bị cấm** | | | ⛔ Đưa vào `forbidden_words` |
 
-### 3.3 一句话结论
+### 3.3 Kết luận một câu
 
-> **我们这个产品，卖给 <谁>，主打 <什么卖点>，用 <什么配置>，在 <什么价格>，避开 <什么风险>。**
+> **Sản phẩm này của chúng ta bán cho <ai>, đánh vào <điểm bán hàng nào>, dùng <cấu hình nào>, ở mức <giá nào>, tránh <rủi ro nào>.**
 ```
 
-### 主卖点的选择标准（按优先级）
+### Tiêu chí chọn điểm bán hàng chính (theo thứ tự ưu tiên)
 
-1. 竞品普遍**没有**或**做得差**的
-2. 买家评论里**反复提到**的
-3. 能用**一个数字或一个画面**说清的
-4. 与价格关联最直接的
+1. Đối thủ phần lớn **không có** hoặc **làm kém**
+2. Được **nhắc đi nhắc lại** trong đánh giá (review) của người mua
+3. Nói rõ được bằng **một con số hoặc một hình ảnh**
+4. Liên quan trực tiếp nhất đến giá
 
-> **主卖点必须只有一个。** 两个并列等于零个——买家记不住。
-> 副卖点可以多，但主卖点决定主图打什么字、视频开头放什么镜头。
+> **Điểm bán hàng chính chỉ được có một.** Hai điểm ngang hàng bằng không điểm——người mua không nhớ nổi.
+> Điểm bán hàng phụ có thể nhiều, nhưng điểm bán hàng chính quyết định ảnh chính in chữ gì, video mở đầu bằng cảnh nào.
 
 ---
 
-# STEP 4 · 风险规避清单（SOP 1.7）
+# STEP 4 · Danh sách phòng tránh rủi ro (SOP 1.7)
 
 ```markdown
-## 4. 风险规避
+## 4. Phòng tránh rủi ro
 
-| # | 风险类型 | 具体风险 | 规避方式 | 落在哪 |
+| # | Loại rủi ro | Rủi ro cụ thể | Cách phòng tránh | Nằm ở đâu |
 |---|---|---|---|---|
-| 1 | 参数不能虚标 | | 按实际值写 + 标注测试条件 | 03 参数段 |
-| 2 | 品牌词不能写 | | 列入 forbidden_words | 03/04/05 |
-| 3 | 售后问题要提前说明 | | 写进详情页注意事项段 | 03 段 6 |
-| 4 | 功能边界要写清 | | 明确能力范围，不用"做不到"表述 | 03 段 6 |
-| 5 | 承诺不能乱写 | | 与售后能力对齐 | 03 段 5 |
+| 1 | Không được khai khống thông số | | Ghi theo giá trị thực + ghi chú điều kiện test | 03 đoạn thông số |
+| 2 | Không được ghi từ khóa thương hiệu | | Đưa vào forbidden_words | 03/04/05 |
+| 3 | Vấn đề hậu mãi phải nói trước | | Ghi vào đoạn lưu ý trên trang chi tiết | 03 đoạn 6 |
+| 4 | Giới hạn chức năng phải ghi rõ | | Nêu rõ phạm vi khả năng, không dùng cách nói "không làm được" | 03 đoạn 6 |
+| 5 | Không được cam kết bừa | | Khớp với năng lực hậu mãi | 03 đoạn 5 |
 
-**基于售后能力的具体约束**
+**Ràng buộc cụ thể dựa trên năng lực hậu mãi**
 
-| 售后能力 | 对应不能写的承诺 |
+| Năng lực hậu mãi | Cam kết tương ứng không được ghi |
 |---|---|
-| 只能换货、不能维修 | ❌ 不写"提供维修服务" |
-| 无本地保修点 | ❌ 不写"本地保修" |
-| 不提供上门 | ❌ 不写"上门服务" |
+| Chỉ đổi hàng, không sửa chữa được | ❌ Không ghi "có dịch vụ sửa chữa" |
+| Không có điểm bảo hành tại địa phương | ❌ Không ghi "bảo hành tại địa phương" |
+| Không hỗ trợ tận nơi | ❌ Không ghi "dịch vụ tận nhà" |
 ```
 
-> **这一节是 03 Listing 的输入。** 售后承诺段（段 5）与注意事项段（段 6）的具体内容，直接从这里取。
+> **Phần này là đầu vào của 03 Listing.** Nội dung cụ thể của đoạn cam kết hậu mãi (đoạn 5) và đoạn lưu ý (đoạn 6) lấy thẳng từ đây.
 
 ---
 
-# STEP 5 · 上架前 8 问自检（SOP 3.1）
+# STEP 5 · Tự kiểm tra 8 câu trước khi đăng bán (SOP 3.1)
 
 ```markdown
-## 5. 上架前 8 问
+## 5. 8 câu hỏi trước khi đăng bán
 
-| # | 问题 | 答案 | 状态 |
+| # | Câu hỏi | Câu trả lời | Trạng thái |
 |---|---|---|---|
-| 1 | 这个产品卖给谁 | | ✅ / ⚠️ |
-| 2 | 核心卖点是什么 | | |
-| 3 | 主要竞品是谁 | | |
-| 4 | 价格打哪个区间 | | |
-| 5 | 主推 SKU 是哪个 | | |
-| 6 | 利润底线是多少 | | |
-| 7 | 是否适合广告测试 | | |
-| 8 | 可能的售后风险是什么 | | |
+| 1 | Sản phẩm này bán cho ai | | ✅ / ⚠️ |
+| 2 | Điểm bán hàng cốt lõi là gì | | |
+| 3 | Đối thủ chính là ai | | |
+| 4 | Giá đánh vào khoảng nào | | |
+| 5 | SKU chủ lực là SKU nào | | |
+| 6 | Lợi nhuận tối thiểu là bao nhiêu | | |
+| 7 | Có phù hợp để test quảng cáo không | | |
+| 8 | Rủi ro hậu mãi có thể gặp là gì | | |
 
-**未答项处理**：⚠️ 的项列出对应的待确认动作，不要在未答情况下进入上架。
+**Xử lý câu chưa trả lời**: với các mục ⚠️, liệt kê hành động cần xác nhận tương ứng, không đăng bán khi còn câu chưa trả lời.
 ```
 
-**第 7 问的判断依据**：
+**Căn cứ phán đoán câu 7**:
 
-| 情况 | 是否适合广告测试 |
+| Tình huống | Có phù hợp test quảng cáo không |
 |---|---|
-| 有明确 `opportunity_config` 且未被垄断 | ✅ 适合——差异化能撑起 ROI |
-| 纯跟卖主流款、无差异 | ⚠️ 需先确认成本优势 |
-| 库存不足 | ❌ 不适合——广告推起来会缺货 |
-| 售后风险高且能力不足 | ❌ 不适合——放大退货 |
+| Có `opportunity_config` rõ ràng và chưa bị độc chiếm | ✅ Phù hợp——khác biệt hóa đủ để gánh ROI |
+| Chỉ bán theo mẫu phổ biến, không có khác biệt | ⚠️ Cần xác nhận lợi thế giá vốn trước |
+| Tồn kho không đủ | ❌ Không phù hợp——quảng cáo lên sẽ đứt hàng |
+| Rủi ro hậu mãi cao mà năng lực không đủ | ❌ Không phù hợp——khuếch đại hoàn hàng |
 
 ---
 
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 产品类型
-## 2. 核心配置
-## 3. 主推卖点
-## 4. 风险规避
-## 5. 上架前 8 问
-## 6. 建议合规扫描
-   （按 00_system.md 的 S1–S5；无命中必须写"无命中"）
-## 7. 交付给下游的字段
+## 1. Loại sản phẩm
+## 2. Cấu hình cốt lõi
+## 3. Điểm bán hàng chủ lực
+## 4. Phòng tránh rủi ro
+## 5. 8 câu hỏi trước khi đăng bán
+## 6. Quét tuân thủ đề xuất
+   (theo S1–S5 trong 00_system.md; không có vi phạm phải ghi "không có vi phạm")
+## 7. Các trường giao cho downstream
    - product_type: {role, differentiation, promo_role}
    - final_config: {}
    - core_selling_point: ""              # → 03/04/05
    - secondary_points: []                # → 03/04/05
    - forbidden_words_seed: []            # → 03/04/05
-   - risk_mitigation: []                 # → 03 段 5/6
-   - after_sales_commitment: ""          # → 03 段 5（受售后能力约束）
-   - prelaunch_checklist: {}             # 上架前 8 问
+   - risk_mitigation: []                 # → 03 đoạn 5/6
+   - after_sales_commitment: ""          # → 03 đoạn 5 (bị ràng buộc bởi năng lực hậu mãi)
+   - prelaunch_checklist: {}             # 8 câu hỏi trước khi đăng bán
 ```
 
 ---
 
 # SELF-CHECK
 
-- [ ] `decision_approved` 为 true
-- [ ] 产品类型从三个维度都给了定位
-- [ ] 核心配置与市场推荐逐项对照过
-- [ ] 公司做不到的配置已标注，未硬写
-- [ ] 未把高配段当主推（若数据显示高配均销低）
-- [ ] 主卖点**只有一个**，且符合四条选择标准
-- [ ] 一句话结论包含全部五要素（卖给谁/主打什么/什么配置/什么价格/避开什么）
-- [ ] 风险规避 5 类逐项给出，且与售后能力对齐
-- [ ] 上架前 8 问全部有答案，⚠️ 项有对应动作
-- [ ] 未虚标参数
-- [ ] 末尾已附建议合规扫描 + 下游字段
+- [ ] `decision_approved` là true
+- [ ] Loại sản phẩm đã được định vị đủ cả ba khía cạnh
+- [ ] Cấu hình cốt lõi đã được đối chiếu từng mục với đề xuất của thị trường
+- [ ] Cấu hình công ty không làm được đã ghi chú, không cố ghi vào
+- [ ] Không lấy phân khúc cấu hình cao làm chủ lực (nếu dữ liệu cho thấy cấu hình cao có doanh số trung bình thấp)
+- [ ] Điểm bán hàng chính **chỉ có một**, và đạt bốn tiêu chí chọn
+- [ ] Kết luận một câu có đủ năm yếu tố (bán cho ai/đánh vào gì/cấu hình nào/giá nào/tránh gì)
+- [ ] Phòng tránh rủi ro đủ 5 loại, và khớp với năng lực hậu mãi
+- [ ] 8 câu hỏi trước khi đăng bán đều có câu trả lời, mục ⚠️ có hành động tương ứng
+- [ ] Không khai khống thông số
+- [ ] Cuối đầu ra đã kèm quét tuân thủ đề xuất + các trường giao cho downstream
