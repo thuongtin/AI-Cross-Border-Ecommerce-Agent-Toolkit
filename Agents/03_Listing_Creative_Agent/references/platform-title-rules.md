@@ -1,41 +1,41 @@
-# platform-title-rules.md · 标题规则卡（阈值出处）
+# platform-title-rules.md · Bảng quy tắc tiêu đề (nguồn gốc ngưỡng)
 
-> 阈值来自各平台官方规则与 SOP，**发布前到卖家中心复核**。
-
----
-
-## Shopee（上限 120 字符）
-
-| 规则 | 内容 | 级别 |
-|---|---|---|
-| 字符上限 | 120 字符（前 30 字符权重最高，主关键词必须前置） | 硬 |
-| 表情符号 | 标题禁用 | 硬 |
-| 全大写 | 禁堆砌大写（品牌缩写可接受） | 软 |
-| 关键词堆砌 | 同词重复 ≥3 次属堆砌 | 硬 |
-| 促销词 | 谨慎（frete grátis 等属促销信息，应放图/描述） | 软 |
-| 语言 | PT-BR（出现中文 = 直接错） | 硬 |
-| 利用率 | 建议 ≥80%（写不满浪费免费流量） | 软 |
-
-## Mercado Livre（上限 60 字符）
-
-| 规则 | 内容 | 级别 |
-|---|---|---|
-| 字符上限 | **60 字符** —— 最紧，砍词顺序：场景词 → 人群词 → **主关键词与核心参数永不砍** | 硬 |
-| 促销词 | 明确不建议（envío/frete grátis 等） | 软 |
-| 语言 | PT-BR | 硬 |
-
-## Amazon（上限 200 字符）
-
-| 规则 | 内容 | 级别 |
-|---|---|---|
-| 字符上限 | 200（移动端建议 80 内关键信息） | 硬 |
-| 品牌前置 | 标题以品牌开头 | 软 |
+> Ngưỡng lấy từ quy tắc chính thức của từng sàn và SOP, **trước khi đăng phải vào Seller Center kiểm tra lại**.
 
 ---
 
-## 校验实现说明（title_lint.py）
+## Shopee (giới hạn 120 ký tự)
 
-- **字符数 = `len()`**，不是字节数。PT-BR 的 `á`/`ç` 在 UTF-8 里是 2 字节 ——
-  按字节算会把好标题误判超限。这正是「实测 vs 估算」的差异来源。
-- 禁用词匹配**大小写不敏感**，按整词结果输出（不会把 iPhone 拆成单字母）。
-- 促销词表内置 15 个常见词（PT/EN/CN），可用 `--forbidden` 追加自备清单。
+| Quy tắc | Nội dung | Mức |
+|---|---|---|
+| Giới hạn ký tự | 120 ký tự (30 ký tự đầu có trọng số cao nhất, từ khóa chính bắt buộc đặt lên đầu) | Cứng |
+| Emoji | Cấm dùng trong tiêu đề | Cứng |
+| Viết hoa toàn bộ | Cấm viết hoa tràn lan (chấp nhận tên viết tắt thương hiệu) | Mềm |
+| Nhồi từ khóa | Cùng một từ lặp ≥3 lần là nhồi từ khóa | Cứng |
+| Từ khuyến mãi | Cẩn trọng (frete grátis... là thông tin khuyến mãi, nên đưa vào ảnh / mô tả) | Mềm |
+| Ngôn ngữ | PT-BR (xuất hiện tiếng Trung = sai ngay) | Cứng |
+| Tỷ lệ sử dụng | Khuyến nghị ≥80% (viết không đủ là lãng phí traffic miễn phí) | Mềm |
+
+## Mercado Livre (giới hạn 60 ký tự)
+
+| Quy tắc | Nội dung | Mức |
+|---|---|---|
+| Giới hạn ký tự | **60 ký tự** — chặt nhất, thứ tự cắt từ: từ ngữ cảnh → từ nhóm khách hàng → **không bao giờ cắt từ khóa chính và thông số cốt lõi** | Cứng |
+| Từ khuyến mãi | Khuyến cáo rõ là không dùng (envío/frete grátis...) | Mềm |
+| Ngôn ngữ | PT-BR | Cứng |
+
+## Amazon (giới hạn 200 ký tự)
+
+| Quy tắc | Nội dung | Mức |
+|---|---|---|
+| Giới hạn ký tự | 200 (trên mobile nên đặt thông tin chính trong 80 ký tự) | Cứng |
+| Thương hiệu đứng đầu | Tiêu đề bắt đầu bằng tên thương hiệu | Mềm |
+
+---
+
+## Ghi chú về cách kiểm tra (title_lint.py)
+
+- **Số ký tự = `len()`**, không phải số byte. `á`/`ç` của PT-BR chiếm 2 byte trong UTF-8 —
+  tính theo byte sẽ báo nhầm tiêu đề chuẩn là vượt giới hạn. Đây chính là nguồn gốc chênh lệch giữa "đo thực tế và ước lượng".
+- So khớp từ cấm **không phân biệt hoa thường**, xuất kết quả theo nguyên từ (không tách iPhone thành từng chữ cái).
+- Danh sách từ khuyến mãi có sẵn 17 từ thường gặp (PT/EN/CN/VI), có thể dùng `--forbidden` để thêm danh sách riêng.

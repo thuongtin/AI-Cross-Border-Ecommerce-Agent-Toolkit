@@ -1,144 +1,144 @@
-# 案例 · Patinete Elétrico 产品策略（Shopee 巴西站）
+# Case study · Chiến lược sản phẩm Patinete Elétrico (Shopee Brazil)
 
-> **案例类型**：可复现案例 · 接 01 市场分析的输出
-> **使用模块**：02 Product Strategy Agent
-> **对应 SOP**：1.7 主推产品确认 · 1.9 定价 · 3.1 上架前准备 · 3.2 SKU 策略
-> **重点演示**：**毛利余量刚好够发一张券** —— 定价与 SKU 结构自洽
+> **Loại case study**: case study tái hiện được · nối tiếp đầu ra phân tích thị trường của 01
+> **Module sử dụng**: 02 Product Strategy Agent
+> **SOP tương ứng**: 1.7 Xác nhận sản phẩm chủ lực · 1.9 Định giá · 3.1 Chuẩn bị trước khi đăng bán · 3.2 Chiến lược SKU
+> **Trọng tâm minh họa**: **dư địa lợi nhuận vừa đủ để phát một voucher** —— định giá và cấu trúc SKU nhất quán với nhau
 
 ---
 
-## 一、上游输入（01 Market Research）
+## 1. Đầu vào upstream (01 Market Research)
 
-见 [`01/.../examples/patinete_eletrico_market.md`](../../01_Market_Research_Agent/examples/patinete_eletrico_market.md)。关键字段：
+Xem [`01/.../examples/patinete_eletrico_market.md`](../../01_Market_Research_Agent/examples/patinete_eletrico_market.md). Các trường then chốt:
 
 ```yaml
 target_price_range: [1989.13, 2966.21]
 main_price_zone: [2100, 2300]
-cost_floor_price: 1989.36        # 01 反算：毛利32%+广告5% 的最低可行价
+cost_floor_price: 1989.36        # 01 tính ngược: giá khả thi thấp nhất với biên LN 32% + quảng cáo 5%
 
-brand_barrier: low               # CR3 74.1% 但前三名全是白牌 → 买家不认品牌
-seller_barrier: medium           # CR10 71.5%，但尾部活跃
+brand_barrier: low               # CR3 74.1% nhưng top 3 đều là hàng no-brand → người mua không quan tâm thương hiệu
+seller_barrier: medium           # CR10 71.5%, nhưng nhóm đuôi vẫn hoạt động sôi nổi
 
 recommended_config: {power: "500W", load: "200kg", capacity: "12Ah"}
 mainstream_config: {power: "500W", load: "150kg", capacity: "12Ah"}
 
 opportunity_config:
   value: "200kg"
-  evidence: "仅 4 件竞品，均销 212.0（1.80 倍整体均值），Top3 卖家仅占 2/4，最高销量来自中小卖家"
+  evidence: "Chỉ có 4 sản phẩm đối thủ, doanh số trung bình 212.0 (gấp 1.80 lần trung bình chung), top 3 người bán chỉ chiếm 2/4, doanh số cao nhất đến từ người bán vừa và nhỏ"
 
 competitor_weakness:
-  - "800W 段商品数最多但均销最低（0.49 倍）→ 高价配置卖不动"
-  - "竞品普遍不写续航/承重测试条件 → 我方写明条件可建立信任"
+  - "Phân khúc 800W có nhiều sản phẩm nhất nhưng doanh số trung bình thấp nhất (0.49 lần) → cấu hình giá cao bán không chạy"
+  - "Đối thủ thường không ghi điều kiện test quãng đường/tải trọng → bên ta ghi rõ điều kiện để tạo niềm tin"
 ```
 
-**决策确认**：`decision_approved = true`（运营负责人，2026-10-13）
+**Xác nhận quyết định**: `decision_approved = true` (trưởng bộ phận vận hành, 2026-10-13)
 
 ---
 
-## 二、Step 1 · 产品类型定位
+## 2. Step 1 · Định vị loại sản phẩm
 
-| 维度 | 定位 | 依据 |
+| Khía cạnh | Định vị | Căn cứ |
 |---|---|---|
-| 店铺角色 | **利润款** | 高风险类目（4 项）需要高利润承载；风险后毛利率 32,4% 成立 |
-| 差异程度 | **差异化款** | 有明确 `opportunity_config`（200kg）且未被头部垄断 |
-| 推广角色 | **主推款** | 差异化能撑起 ROI，适合广告测试 |
+| Vai trò trong shop | **SKU lợi nhuận** | Ngành hàng rủi ro cao (4 mục) cần biên lợi nhuận cao để gánh; biên LN sau rủi ro 32,4% vẫn đứng vững |
+| Mức độ khác biệt | **SKU khác biệt hóa** | Có `opportunity_config` rõ ràng (200kg) và chưa bị nhóm dẫn đầu độc chiếm |
+| Vai trò quảng bá | **SKU chủ lực** | Khác biệt hóa đủ gánh ROI, phù hợp test quảng cáo |
 
-**定位理由**
+**Lý do định vị**
 
-【依据】品牌壁垒低（CR3 前三名全是白牌）→ 不需要为品牌溢价付费，可以打产品差异化
-【依据】卖家壁垒中（CR10 71,5%）→ 纯跟卖不好做，必须有差异
-【建议】选**差异化款 + 利润款**：以 200kg 承重作为差异化支点，避开 150kg 主流段的价格战
+【Căn cứ】Rào cản thương hiệu thấp (top 3 theo CR3 đều là hàng no-brand) → không cần trả tiền cho premium thương hiệu, có thể đánh vào khác biệt sản phẩm
+【Căn cứ】Rào cản người bán trung bình (CR10 71,5%) → chỉ bán theo (copy) thì khó, bắt buộc phải có khác biệt
+【Đề xuất】Chọn **SKU khác biệt hóa + SKU lợi nhuận**: lấy tải trọng 200kg làm điểm tựa khác biệt, né cuộc chiến giá ở phân khúc phổ thông 150kg
 
 ---
 
-## 三、Step 2 · 核心配置确认
+## 3. Step 2 · Xác nhận cấu hình cốt lõi
 
-| 配置维度 | 市场推荐值 | 我方确定值 | 一致 | 说明 |
+| Khía cạnh cấu hình | Giá trị thị trường đề xuất | Giá trị bên ta chốt | Khớp | Giải thích |
 |---|---|---|---|---|
-| 功率 | 500W | **500W** | ✅ | 销量占比 61,4%，均销 1,62 倍均值 |
-| **承重** | **200kg** | **200kg** | ✅ | ★机会配置，均销 1,80 倍均值 |
-| 电池容量 | 12Ah | **12Ah** | ✅ | 销量占比 78% |
-| 折叠 | — | 可折叠 | — | 主流标配，不含则无竞争力 |
+| Công suất | 500W | **500W** | ✅ | Chiếm 61,4% doanh số, doanh số trung bình gấp 1,62 lần trung bình chung |
+| **Tải trọng** | **200kg** | **200kg** | ✅ | ★Cấu hình cơ hội, doanh số trung bình gấp 1,80 lần trung bình chung |
+| Dung lượng pin | 12Ah | **12Ah** | ✅ | Chiếm 78% doanh số |
+| Gấp gọn | — | Gấp gọn được | — | Trang bị tiêu chuẩn phổ biến, không có thì mất sức cạnh tranh |
 
-**配置与公司能力匹配**
+**Đối chiếu cấu hình với năng lực công ty**
 
-| 配置 | 公司能否做 | 说明 |
+| Cấu hình | Công ty làm được không | Giải thích |
 |---|---|---|
-| 500W 动力 | ✅ | 现有供应商支持 |
-| **200kg 承重** | ⚠️ | **待确认**：需车架结构加强，供应商能否支持 |
-| 12Ah 电池 | ✅ | 现有供应商支持 |
+| Động cơ 500W | ✅ | Nhà cung cấp hiện tại hỗ trợ |
+| **Tải trọng 200kg** | ⚠️ | **Cần xác nhận**: cần gia cố kết cấu khung, nhà cung cấp có hỗ trợ được không |
+| Pin 12Ah | ✅ | Nhà cung cấp hiện tại hỗ trợ |
 
-> ⚠️ **200kg 承重是本方案的核心支点，但也是唯一的能力待确认项。**
-> 如果供应商做不到 200kg，整个差异化逻辑崩掉 —— 那时应退回 01 重新选配（比如改用「可折叠 + 双减震」做差异），**而不是硬写 200kg**。
+> ⚠️ **Tải trọng 200kg là điểm tựa cốt lõi của phương án này, nhưng cũng là mục năng lực duy nhất còn chờ xác nhận.**
+> Nếu nhà cung cấp không làm được 200kg, toàn bộ logic khác biệt hóa sụp đổ —— khi đó phải quay lại 01 chọn lại cấu hình (ví dụ đổi sang khác biệt bằng 「gấp gọn + giảm xóc kép」), **chứ không cố ghi 200kg**.
 
-### 一个关键的配置取舍
+### Một lựa chọn đánh đổi cấu hình then chốt
 
-市场数据显示：
+Dữ liệu thị trường cho thấy:
 
-| 功率 | 商品数占比 | 销量占比 | 平均销量 | 解读 |
+| Công suất | Tỷ trọng số sản phẩm | Tỷ trọng doanh số | Doanh số trung bình | Diễn giải |
 |---|---|---|---|---|
-| 500W | 38,0% | **61,4%** | **190,1** | 主流 + 高效 → **主推** |
-| **800W** | **34,0%**（最多） | 16,6% | **57,4** | 商品最多但**效率最低** |
+| 500W | 38,0% | **61,4%** | **190,1** | Phổ thông + hiệu quả → **SKU chủ lực** |
+| **800W** | **34,0%** (nhiều nhất) | 16,6% | **57,4** | Nhiều sản phẩm nhất nhưng **hiệu quả thấp nhất** |
 
-> **800W 是最容易踩的坑**：直觉上"配置越高越好"，但数据说 800W 段商品数最多（17 件）而平均销量只有 57,4，是整体均值的 **0.49 倍**。
-> **结论：不做 800W 主推。** 它只能作为「高配 SKU」用来提高客单价，用来做主推等于用最卷的配置去打最惨的仗。
+> **800W là cái bẫy dễ dính nhất**: theo trực giác "cấu hình càng cao càng tốt", nhưng dữ liệu cho thấy phân khúc 800W có nhiều sản phẩm nhất (17 sản phẩm) mà doanh số trung bình chỉ 57,4, bằng **0.49 lần** trung bình chung.
+> **Kết luận: không lấy 800W làm SKU chủ lực.** Nó chỉ nên làm 「SKU cấu hình cao」 để tăng AOV; lấy nó làm chủ lực chẳng khác nào dùng cấu hình cạnh tranh khốc liệt nhất để đánh trận thảm nhất.
 
 ---
 
-## 四、Step 3 · 主推卖点收敛
+## 4. Step 3 · Thu gọn điểm bán hàng chủ lực
 
-### 4.1 卖点来源
+### 4.1 Nguồn điểm bán hàng
 
-| 来源 | 内容 | 可用性 |
+| Nguồn | Nội dung | Mức khả dụng |
 |---|---|---|
-| **机会配置** | 200kg 承重（仅 4 件竞品） | ✅ **核心差异化** |
-| 主流配置 | 500W 动力 + 12Ah | ⭕ 保底（必须有，但不是卖点） |
-| 竞品短板 | 不写测试条件 | ✅ 可信度差异化 |
-| 买家高频关注 | 爬坡能力（见 07 评论案例：好评第 1，38 次提及） | ✅ 但需加边界 |
+| **Cấu hình cơ hội** | Tải trọng 200kg (chỉ 4 sản phẩm đối thủ) | ✅ **Khác biệt hóa cốt lõi** |
+| Cấu hình phổ thông | Động cơ 500W + 12Ah | ⭕ Nền tảng (bắt buộc có, nhưng không phải điểm bán hàng) |
+| Điểm yếu của đối thủ | Không ghi điều kiện test | ✅ Khác biệt hóa về độ tin cậy |
+| Mối quan tâm thường gặp của người mua | Khả năng leo dốc (xem case study đánh giá của 07: đứng thứ 1 trong đánh giá tích cực, 38 lượt nhắc đến) | ✅ nhưng cần thêm giới hạn |
 
-### 4.2 卖点分层
+### 4.2 Phân tầng điểm bán hàng
 
-| 层级 | 卖点 | 支撑依据 | 用于 |
+| Tầng | Điểm bán hàng | Căn cứ hỗ trợ | Dùng cho |
 |---|---|---|---|
-| **主卖点（唯一）** | **`Motor 500W com capacidade de 200 kg`**（500W 动力 + 200kg 承重） | 500W 销量占比 61,4%；200kg 仅 4 件竞品且均销 1,80 倍 | 主图核心文案 / 视频钩子 / 标题参数词 |
-| 副卖点 1 | 双减震（前后悬挂） | 好评第 3（27 次提及） | 详情页 / 图 6 / 视频镜头 |
-| 副卖点 2 | 3 秒折叠 | 好评第 2（31 次提及） | 图 5 / 视频镜头 |
-| 副卖点 3 | 碟刹 + 电刹双重制动 | 配置实有 | 图 6 / 详情页 |
-| 副卖点 4 | 续航测试条件透明 | 竞品普遍不写 | 详情页段 4 注 |
-| 保底卖点 | 12Ah 电池 / LED 灯 / 座椅可调 | 主流标配 | 详情页段 4 参数表 |
-| **禁用表述** | `200kg 随便坐两人` / `任意坡道` / `续航 60km` / `夜间照明` / 一年保修 | 参数不符或超边界 | ⛔ `forbidden_words` |
+| **Điểm bán hàng chính (duy nhất)** | **`Motor 500W com capacidade de 200 kg`** (động cơ 500W + tải trọng 200kg) | 500W chiếm 61,4% doanh số; 200kg chỉ có 4 sản phẩm đối thủ và doanh số trung bình gấp 1,80 lần | Copy chính trên ảnh chính / hook video / từ thông số trong tiêu đề |
+| Điểm bán hàng phụ 1 | Giảm xóc kép (trước sau) | Đứng thứ 3 trong đánh giá tích cực (27 lượt nhắc đến) | Trang chi tiết / ảnh 6 / cảnh quay video |
+| Điểm bán hàng phụ 2 | Gấp gọn trong 3 giây | Đứng thứ 2 trong đánh giá tích cực (31 lượt nhắc đến) | Ảnh 5 / cảnh quay video |
+| Điểm bán hàng phụ 3 | Phanh kép phanh đĩa + phanh điện | Cấu hình có thật | Ảnh 6 / trang chi tiết |
+| Điểm bán hàng phụ 4 | Minh bạch điều kiện test quãng đường | Đối thủ thường không ghi | Chú thích đoạn 4 trang chi tiết |
+| Điểm bán hàng nền | Pin 12Ah / đèn LED / yên chỉnh được | Trang bị tiêu chuẩn phổ biến | Bảng thông số đoạn 4 trang chi tiết |
+| **Cách diễn đạt bị cấm** | `200kg ngồi hai người thoải mái` / `mọi con dốc` / `quãng đường 60km` / `chiếu sáng ban đêm` / bảo hành một năm | Không đúng thông số hoặc vượt giới hạn | ⛔ `forbidden_words` |
 
-### 4.3 一句话结论
+### 4.3 Kết luận một câu
 
-> **我们这个产品，卖给**需要在城市通勤中承载较大重量（含载物）的成年用户**，
-> 主打**500W 动力 + 200kg 承重**（市场上只有 4 个竞品，且最高的单品销量来自中小卖家），
-> 用**可折叠 + 双减震 + 碟刹**的配置，
-> 在**R$ 2.199**（价格带 #2 的双峰区间 2.100–2.300 内），
-> 避开**续航虚标、承重超范围使用、组装困难**三类售后风险。
+> **Sản phẩm này của chúng ta bán cho** người dùng trưởng thành cần chở tải trọng lớn (kể cả đồ đạc) khi đi lại trong thành phố**,
+> đánh vào **động cơ 500W + tải trọng 200kg** (trên thị trường chỉ có 4 đối thủ, và sản phẩm có doanh số cao nhất đến từ người bán vừa và nhỏ),
+> dùng cấu hình **gấp gọn + giảm xóc kép + phanh đĩa**,
+> ở mức **R$ 2.199** (nằm trong vùng hai đỉnh 2.100–2.300 của dải giá #2),
+> né ba loại rủi ro hậu mãi: **khai khống quãng đường, dùng vượt tải trọng, khó lắp ráp**.
 
 ---
 
-## 五、Step 4 · 风险规避清单
+## 5. Step 4 · Danh sách phòng tránh rủi ro
 
-| # | 风险类型 | 具体风险 | 规避方式 | 落在哪 |
+| # | Loại rủi ro | Rủi ro cụ thể | Cách phòng tránh | Đặt ở đâu |
 |---|---|---|---|---|
-| 1 | **参数不能虚标** | 续航（载重增加后续航下降）、速度（30km/h 是最高非平均） | 全部标注测试条件（骑手体重/路况/速度） | 03 段 4 参数注 |
-| 2 | **品牌词不能写** | 竞品词表含 `Xiaomi` 等未授权品牌 | 列入 `forbidden_words`，全链路硬拦截 | 03/04/05 |
-| 3 | 售后问题提前说明 | 以为含头盔 / 打气筒（07 案例实测 2 条此类差评） | 包装清单图明确 `Não incluso` | 03 段 6 + 04 图 8 |
-| 4 | **功能边界写清** | 以为能上陡坡 / 能载两人 | 写明"缓坡、单人乘坐、承重含行李" | 03 段 6 |
-| 5 | 承诺不能乱写 | 无本地维修点 | 只承诺换货，不写维修服务 | 03 段 5 |
+| 1 | **Không khai khống thông số** | Quãng đường (tăng tải thì quãng đường giảm), tốc độ (30km/h là tối đa chứ không phải trung bình) | Ghi đầy đủ điều kiện test (cân nặng người lái/mặt đường/tốc độ) | Chú thích thông số đoạn 4 của 03 |
+| 2 | **Không ghi từ thương hiệu** | Danh sách từ của đối thủ có thương hiệu chưa được ủy quyền như `Xiaomi` | Đưa vào `forbidden_words`, chặn cứng toàn chuỗi | 03/04/05 |
+| 3 | Nói trước vấn đề hậu mãi | Tưởng có kèm mũ bảo hiểm / bơm (case study 07 thực tế có 2 đánh giá tiêu cực loại này) | Ảnh danh sách đóng gói ghi rõ `Não incluso` | 03 đoạn 6 + 04 ảnh 8 |
+| 4 | **Ghi rõ giới hạn chức năng** | Tưởng leo được dốc đứng / chở được hai người | Ghi rõ "dốc thoải, một người lái, tải trọng gồm cả hành lý" | 03 đoạn 6 |
+| 5 | Không cam kết bừa | Không có điểm sửa chữa tại địa phương | Chỉ cam kết đổi hàng, không ghi dịch vụ sửa chữa | 03 đoạn 5 |
 
-### 售后承诺边界（受实际能力约束）
+### Giới hạn cam kết hậu mãi (bị ràng buộc bởi năng lực thực tế)
 
-| 售后能力 | 不能写的承诺 |
+| Năng lực hậu mãi | Cam kết không được ghi |
 |---|---|
-| ✅ 可换货 | — |
-| ❌ 不可维修 | **不写"提供维修服务"** |
-| ❌ 无本地保修点 | **不写"本地保修"** |
-| ✅ 可提供配件 | 可写"配件可单独购买" |
-| 保修 6 个月（电机+电池） | 不写"整机保修" |
+| ✅ Đổi hàng được | — |
+| ❌ Không sửa chữa được | **Không ghi "có dịch vụ sửa chữa"** |
+| ❌ Không có điểm bảo hành tại địa phương | **Không ghi "bảo hành tại địa phương"** |
+| ✅ Cung cấp được phụ kiện | Có thể ghi "phụ kiện có thể mua riêng" |
+| Bảo hành 6 tháng (động cơ + pin) | Không ghi "bảo hành toàn bộ xe" |
 
-**据此确定的段 5 售后承诺文案**（交 03）：
+**Copy cam kết hậu mãi đoạn 5 chốt theo đó** (giao cho 03):
 
 ```text
 Garantia de 6 meses para motor e bateria.
@@ -146,274 +146,274 @@ Atendimento pelo chat com resposta em até 24 horas.
 Peças de reposição disponíveis para compra separada.
 ```
 
-> ⚠️ **注意第三句**：因为**不能维修**，所以售后能力只能承诺"提供配件"。
-> 如果照抄竞品的"assistência técnica completa"（完整技术支持），就是把做不到的事写进 Listing —— 直接制造差评。
+> ⚠️ **Chú ý câu thứ ba**: vì **không sửa chữa được**, năng lực hậu mãi chỉ cho phép cam kết "cung cấp phụ kiện".
+> Nếu chép nguyên "assistência técnica completa" (hỗ trợ kỹ thuật toàn diện) của đối thủ, tức là ghi điều mình không làm được vào Listing —— tự tạo ra đánh giá tiêu cực.
 
 ---
 
-## 六、Step 5 · 上架前 8 问
+## 6. Step 5 · 8 câu hỏi trước khi đăng bán
 
-| # | 问题 | 答案 | 状态 |
+| # | Câu hỏi | Trả lời | Trạng thái |
 |---|---|---|---|
-| 1 | 卖给谁 | 城市通勤的成年用户，含需要载物的人群 | ✅ |
-| 2 | 核心卖点 | 500W 动力 + 200kg 承重 | ✅ |
-| 3 | 主要竞品 | 4 个 200kg 竞品（其中最高销量来自中小卖家） | ✅ |
-| 4 | 价格区间 | R$ 2.100–2.300（主推 R$ 2.199） | ✅ |
-| 5 | 主推 SKU | 500W / 200kg / 12Ah | ✅ |
-| 6 | 利润底线 | 盈亏线临界价 **R$ 1.113,10**（低于此价每单亏） | ✅ |
-| 7 | 是否适合广告测试 | **✅ 适合**——有差异化且未被垄断，能撑起 ROI | ✅ |
-| 8 | 售后风险 | 续航/承重期望落差、组装困难、配件误解 | ✅ |
+| 1 | Bán cho ai | Người dùng trưởng thành đi lại trong thành phố, gồm cả nhóm cần chở đồ | ✅ |
+| 2 | Điểm bán hàng cốt lõi | Động cơ 500W + tải trọng 200kg | ✅ |
+| 3 | Đối thủ chính | 4 sản phẩm đối thủ 200kg (sản phẩm có doanh số cao nhất đến từ người bán vừa và nhỏ) | ✅ |
+| 4 | Khoảng giá | R$ 2.100–2.300 (giá chủ lực R$ 2.199) | ✅ |
+| 5 | SKU chủ lực | 500W / 200kg / 12Ah | ✅ |
+| 6 | Mức lợi nhuận sàn | Giá hòa vốn **R$ 1.113,10** (thấp hơn mức này là lỗ mỗi đơn) | ✅ |
+| 7 | Có phù hợp test quảng cáo không | **✅ Phù hợp**——có khác biệt hóa và chưa bị độc chiếm, đủ gánh ROI | ✅ |
+| 8 | Rủi ro hậu mãi | Chênh lệch kỳ vọng về quãng đường/tải trọng, khó lắp ráp, hiểu lầm về phụ kiện | ✅ |
 
-> **第 6 问的答案值得注意**：盈亏线临界价只有 **R$ 1.113,10**，而主推价是 R$ 2.199 —— 中间有近 **1.086 元**的安全垫。
-> 这意味着**前期降价养权重的空间非常大**（详见第九节），但也说明**定价本身有充足余量**，不需要靠低价启动。
+> **Câu trả lời của câu 6 đáng chú ý**: giá hòa vốn chỉ **R$ 1.113,10**, trong khi giá chủ lực là R$ 2.199 —— ở giữa có khoảng đệm an toàn gần **1.086 real**.
+> Điều này có nghĩa là **dư địa hạ giá nuôi trọng số giai đoạn đầu rất lớn** (chi tiết xem mục 9), nhưng cũng cho thấy **bản thân mức giá đã có dư địa dồi dào**, không cần dựa vào giá thấp để khởi động.
 
 ---
 
-## 七、Step 6–7 · 定价与 SKU 结构
+## 7. Step 6–7 · Định giá và cấu trúc SKU
 
-### 7.1 逐 SKU 成本结构
+### 7.1 Cấu trúc chi phí từng SKU
 
-| SKU | 配置 | 产品成本 | 尾程物流 | 仓储费 | 合计成本 |
+| SKU | Cấu hình | Giá vốn sản phẩm | Vận chuyển chặng cuối | Phí lưu kho | Tổng giá vốn |
 |---|---|---|---|---|---|
-| 引流款 | 350W / 100kg / 10Ah | R$ 700 | R$ 125 | R$ 25 | **R$ 850** |
-| **主推款** | **500W / 200kg / 12Ah** | R$ 780 | R$ 130 | R$ 25 | **R$ 935** |
-| 高配款 | 800W / 150kg / 12Ah | R$ 1.080 | R$ 150 | R$ 30 | **R$ 1.260** |
-| 套装款 | 主推 + 配件包 | R$ 900 | R$ 150 | R$ 30 | **R$ 1.080** |
+| SKU kéo traffic | 350W / 100kg / 10Ah | R$ 700 | R$ 125 | R$ 25 | **R$ 850** |
+| **SKU chủ lực** | **500W / 200kg / 12Ah** | R$ 780 | R$ 130 | R$ 25 | **R$ 935** |
+| SKU cấu hình cao | 800W / 150kg / 12Ah | R$ 1.080 | R$ 150 | R$ 30 | **R$ 1.260** |
+| SKU combo | Chủ lực + bộ phụ kiện | R$ 900 | R$ 150 | R$ 30 | **R$ 1.080** |
 
-**费率**：佣金 14% ｜ 广告 5%（大件）｜ 退货 2% ｜ 目标毛利 32%
+**Mức phí**: hoa hồng 14% ｜ quảng cáo 5% (hàng cồng kềnh) ｜ hoàn hàng 2% ｜ biên LN mục tiêu 32%
 
-⚠️ **税费未计入**（巴西税费结构复杂，需按实际方案补充）。**未扣税前的毛利率会高于实际。**
+⚠️ **Chưa tính thuế** (cấu trúc thuế Brazil phức tạp, cần bổ sung theo phương án thực tế). **Biên lợi nhuận trước thuế sẽ cao hơn thực tế.**
 
-### 7.2 定价公式与反算
-
-```
-目标售价 = 合计成本 ÷ (1 − 佣金率 − 广告率 − 退货率 − 目标毛利率)
-```
-
-以主推款为例（完整代入）：
+### 7.2 Công thức định giá và tính ngược
 
 ```
-分子 = 780 + 130 + 25 = 935
-分母 = 1 − 0,14 − 0,05 − 0,02 − 0,32 = 0,47
-
-目标售价 = 935 ÷ 0,47 = R$ 1.989,36
+Giá bán mục tiêu = tổng giá vốn ÷ (1 − % hoa hồng − % quảng cáo − % hoàn hàng − % biên lợi nhuận mục tiêu)
 ```
 
-| SKU | 合计成本 | 分母 | 反算目标售价 | 实际定价 | 差异 |
+Lấy SKU chủ lực làm ví dụ (thay số đầy đủ):
+
+```
+Tử số = 780 + 130 + 25 = 935
+Mẫu số = 1 − 0,14 − 0,05 − 0,02 − 0,32 = 0,47
+
+Giá bán mục tiêu = 935 ÷ 0,47 = R$ 1.989,36
+```
+
+| SKU | Tổng giá vốn | Mẫu số | Giá bán mục tiêu tính ngược | Giá bán thực tế | Chênh lệch |
 |---|---|---|---|---|---|
-| 引流款 | R$ 850 | 0,47 | R$ 1.808,51 | **R$ 1.649,00** | **−R$ 159,51** |
-| 主推款 | R$ 935 | 0,47 | R$ 1.989,36 | **R$ 2.199,00** | **+R$ 209,64** |
-| 高配款 | R$ 1.260 | 0,47 | R$ 2.680,85 | **R$ 2.699,00** | +R$ 18,15 |
-| 套装款 | R$ 1.080 | 0,47 | R$ 2.297,87 | **R$ 2.599,00** | **+R$ 301,13** |
+| SKU kéo traffic | R$ 850 | 0,47 | R$ 1.808,51 | **R$ 1.649,00** | **−R$ 159,51** |
+| SKU chủ lực | R$ 935 | 0,47 | R$ 1.989,36 | **R$ 2.199,00** | **+R$ 209,64** |
+| SKU cấu hình cao | R$ 1.260 | 0,47 | R$ 2.680,85 | **R$ 2.699,00** | +R$ 18,15 |
+| SKU combo | R$ 1.080 | 0,47 | R$ 2.297,87 | **R$ 2.599,00** | **+R$ 301,13** |
 
-### 7.3 ⭐ 与 01 的交叉验证
+### 7.3 ⭐ Kiểm chứng chéo với 01
 
-| 项 | 值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 01 反算的成本可行价 | **R$ 1.989,36** |
-| 本步反算的主推款目标售价 | **R$ 1.989,36** |
-| 差异 | **R$ 0,00** |
+| Giá khả thi theo giá vốn do 01 tính ngược | **R$ 1.989,36** |
+| Giá bán mục tiêu của SKU chủ lực tính ngược ở bước này | **R$ 1.989,36** |
+| Chênh lệch | **R$ 0,00** |
 
-**结论**：✅ **完全一致。**
+**Kết luận**: ✅ **Hoàn toàn khớp.**
 
-> 两个数字来自**同一套成本与费率**，所以必然一致 —— 但这恰好验证了 01 的 `cost_floor_price` 与 02 的定价模型用的是**同一套假设**，没有出现"市场分析用一套费率、定价用另一套"的常见错误。
+> Hai con số đến từ **cùng một bộ giá vốn và mức phí**, nên tất nhiên phải khớp —— nhưng chính điều đó xác nhận `cost_floor_price` của 01 và mô hình định giá của 02 dùng **cùng một bộ giả định**, không mắc lỗi phổ biến "phân tích thị trường dùng một bộ mức phí, định giá dùng bộ khác".
 >
-> 更值得注意的是：这个 R$ 1.989,36 与 01 用**波谷检测**独立推导出的价格带下界 **R$ 1.989,13** 相差仅 **R$ 0,23**。
-> **一条是纯数学（销量曲线），一条是纯财务（成本结构），指向同一价位。**
+> Đáng chú ý hơn: mức R$ 1.989,36 này chỉ lệch **R$ 0,23** so với cận dưới dải giá **R$ 1.989,13** mà 01 suy ra độc lập bằng **phát hiện vùng trũng (valley)**.
+> **Một con đường thuần toán học (đường cong doanh số), một con đường thuần tài chính (cấu trúc chi phí), cùng chỉ về một mức giá.**
 
 ---
 
-## 八、定价方案与毛利验算
+## 8. Phương án giá và kiểm tra biên lợi nhuận
 
-| SKU | 定价 | 广告前可支配毛利 | 占比 | 扣广告后毛利 | 净利率 | 达标(≥32%) | 盈亏线 ROAS |
+| SKU | Giá bán | LN gộp khả dụng trước QC | Tỷ trọng | LN sau QC | Biên LN ròng | Đạt (≥32%) | ROAS hòa vốn |
 |---|---|---|---|---|---|---|---|
-| 引流款 | R$ 1.649,00 | R$ 535,16 | 32,5% | R$ 452,71 | **27,5%** | ❌ | **3,08** |
-| **主推款** | **R$ 2.199,00** | **R$ 912,16** | **41,5%** | **R$ 802,21** | **36,5%** | ✅ | **2,41** |
-| 高配款 | R$ 2.699,00 | R$ 1.007,16 | 37,3% | R$ 872,21 | **32,3%** | ✅ | **2,68** |
-| 套装款 | R$ 2.599,00 | R$ 1.103,16 | 42,4% | R$ 973,21 | **37,4%** | ✅ | **2,36** |
+| SKU kéo traffic | R$ 1.649,00 | R$ 535,16 | 32,5% | R$ 452,71 | **27,5%** | ❌ | **3,08** |
+| **SKU chủ lực** | **R$ 2.199,00** | **R$ 912,16** | **41,5%** | **R$ 802,21** | **36,5%** | ✅ | **2,41** |
+| SKU cấu hình cao | R$ 2.699,00 | R$ 1.007,16 | 37,3% | R$ 872,21 | **32,3%** | ✅ | **2,68** |
+| SKU combo | R$ 2.599,00 | R$ 1.103,16 | 42,4% | R$ 973,21 | **37,4%** | ✅ | **2,36** |
 
-**验算公式（逐行可复核）**
+**Công thức kiểm tra (từng dòng kiểm lại được)**
 
 ```
-广告前可支配毛利 = 定价 − 合计成本 − 定价×0,14 − 定价×0,02
-扣广告后毛利     = 广告前可支配毛利 − 定价×0,05
-净利率           = 扣广告后毛利 ÷ 定价
-盈亏线 ROAS      = 定价 ÷ 广告前可支配毛利
+LN gộp khả dụng trước QC = giá bán − tổng giá vốn − giá bán×0,14 − giá bán×0,02
+LN sau QC                = LN gộp khả dụng trước QC − giá bán×0,05
+Biên LN ròng             = LN sau QC ÷ giá bán
+ROAS hòa vốn             = giá bán ÷ LN gộp khả dụng trước QC
 ```
 
-**以主推款为例**：
+**Lấy SKU chủ lực làm ví dụ**:
 ```
-广告前 = 2199 − 935 − 307,86 − 43,98 = 912,16   (41,5%)
-扣广告 = 912,16 − 109,95 = 802,21              (36,5%)
-盈亏线 ROAS = 2199 ÷ 912,16 = 2,41
+Trước QC = 2199 − 935 − 307,86 − 43,98 = 912,16   (41,5%)
+Sau QC   = 912,16 − 109,95 = 802,21              (36,5%)
+ROAS hòa vốn = 2199 ÷ 912,16 = 2,41
 ```
 
-### 8.1 四档毛利结构是否符合 SOP 的角色设计
+### 8.1 Cấu trúc biên lợi nhuận bốn bậc có đúng thiết kế vai trò của SOP không
 
-| 角色 | SOP 的毛利定位 | 本案例实际净利率 | 是否符合 |
+| Vai trò | Định vị biên lợi nhuận theo SOP | Biên LN ròng thực tế của case study | Có đúng không |
 |---|---|---|---|
-| 低价引流 SKU | 最薄 | **27,5%** | ✅ 最低 |
-| 主推 SKU | 目标毛利 | 36,5% | ✅ 高于目标 |
-| 高配 SKU | 更高 | 32,3% | ⚠️ **低于主推** |
-| 套装 SKU | **最高** | **37,4%** | ✅ 最高 |
+| SKU kéo traffic giá thấp | Mỏng nhất | **27,5%** | ✅ Thấp nhất |
+| SKU chủ lực | Biên LN mục tiêu | 36,5% | ✅ Cao hơn mục tiêu |
+| SKU cấu hình cao | Cao hơn | 32,3% | ⚠️ **Thấp hơn SKU chủ lực** |
+| SKU combo | **Cao nhất** | **37,4%** | ✅ Cao nhất |
 
-> ⚠️ **发现一处与 SOP 期望不一致：高配款的净利率（32,3%）低于主推款（36,5%）。**
+> ⚠️ **Phát hiện một điểm không khớp với kỳ vọng của SOP: biên LN ròng của SKU cấu hình cao (32,3%) thấp hơn SKU chủ lực (36,5%).**
 >
-> **原因**：800W 的物料成本涨得多（成本从 935 → 1.260，涨 34,8%），但售价只涨了 22,7%（2.199 → 2.699），成本涨幅超过售价涨幅。
+> **Nguyên nhân**: giá vốn vật tư của 800W tăng mạnh (giá vốn từ 935 → 1.260, tăng 34,8%), nhưng giá bán chỉ tăng 22,7% (2.199 → 2.699), mức tăng giá vốn vượt mức tăng giá bán.
 >
-> **这是一个真实的结构性问题**。市场数据早就提示过：800W 段商品数最多但均销只有 0.49 倍均值 —— 说明 800W 这条产品线的**成本结构普遍不佳，不是我家的问题**。
+> **Đây là một vấn đề cấu trúc có thật**. Dữ liệu thị trường đã báo trước: phân khúc 800W có nhiều sản phẩm nhất nhưng doanh số trung bình chỉ bằng 0.49 lần trung bình chung —— cho thấy dòng sản phẩm 800W này **nhìn chung có cấu trúc chi phí kém, không phải vấn đề riêng của bên ta**.
 >
-> **处理方式**：高配款不承担利润任务，只承担"提高客单价 + 给主推款当价格锚"的任务。**这是有意识的角色调整，不是疏漏。** 已在 SKU 表中标注职责。
+> **Cách xử lý**: SKU cấu hình cao không gánh nhiệm vụ lợi nhuận, chỉ gánh nhiệm vụ "tăng AOV + làm điểm neo giá cho SKU chủ lực". **Đây là điều chỉnh vai trò có chủ đích, không phải sơ suất.** Đã ghi rõ nhiệm vụ trong bảng SKU.
 
-### 8.2 毛利余量分析
+### 8.2 Phân tích dư địa lợi nhuận
 
-| SKU | 实际净利率 | 目标 | **余量** | 余量可支撑的券力度 |
+| SKU | Biên LN ròng thực tế | Mục tiêu | **Dư địa** | Mức voucher dư địa gánh được |
 |---|---|---|---|---|
-| 引流款 | 27,5% | 32% | **−4,5%** | ❌ 无余量，不可发券 |
-| **主推款** | **36,5%** | 32% | **+4,5%** | ✅ **R$ 98,95/单** |
-| 高配款 | 32,3% | 32% | +0,3% | 几乎无余量 |
-| 套装款 | 37,4% | 32% | **+5,4%** | ✅ R$ 140,35/单 |
+| SKU kéo traffic | 27,5% | 32% | **−4,5%** | ❌ Không có dư địa, không được phát voucher |
+| **SKU chủ lực** | **36,5%** | 32% | **+4,5%** | ✅ **R$ 98,95/đơn** |
+| SKU cấu hình cao | 32,3% | 32% | +0,3% | Gần như không có dư địa |
+| SKU combo | 37,4% | 32% | **+5,4%** | ✅ R$ 140,35/đơn |
 
-### 8.3 ⭐ 毛利余量与券面额的巧合
+### 8.3 ⭐ Sự trùng khớp giữa dư địa lợi nhuận và mệnh giá voucher
 
 ```
-主推款毛利余量 = R$ 2.199 × 4,5% = R$ 98,95
-拟发券面额     = R$ 100,00
-差额           = R$ 1,05
+Dư địa lợi nhuận SKU chủ lực = R$ 2.199 × 4,5% = R$ 98,95
+Mệnh giá voucher dự kiến     = R$ 100,00
+Chênh lệch                   = R$ 1,05
 ```
 
-> **主推款超出目标毛利的 4,5 个点，换算成金额是 R$ 98,95 —— 刚好够发一张 R$ 100 的优惠券。**
+> **4,5 điểm vượt biên LN mục tiêu của SKU chủ lực, quy ra tiền là R$ 98,95 —— vừa đủ để phát một voucher R$ 100.**
 >
-> 这不是我凑的数字，而是"定价区间（市场给的 2.100–2.300）+ 成本结构（935）"两件事**共同决定**的结果：
-> 市场愿意给到 2.199，而成本只需要 1.989 就能达到 32% 毛利 → 中间自然多出约 R$ 99 的空间。
+> Đây không phải con số tôi gò cho đẹp, mà là kết quả **cùng quyết định** bởi hai yếu tố "khoảng giá (thị trường cho 2.100–2.300) + cấu trúc chi phí (935)":
+> thị trường sẵn sàng trả 2.199, còn giá vốn chỉ cần 1.989 là đạt biên LN 32% → ở giữa tự nhiên dư ra khoảng R$ 99.
 >
-> **这 R$ 99 该怎么用？** SOP 给了答案：优惠券的作用是"**缩小价格差距**"。所以它应该用来把主推款拉近引流款，而不是留在账上。
+> **R$ 99 này nên dùng thế nào?** SOP đã có câu trả lời: tác dụng của voucher là "**thu hẹp chênh lệch giá**". Vì vậy nên dùng nó để kéo SKU chủ lực lại gần SKU kéo traffic, chứ không để nằm trên sổ sách.
 
-### 8.4 引流款的处理
+### 8.4 Xử lý SKU kéo traffic
 
-| 项 | 值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 定价 | R$ 1.649,00 |
-| 目标毛利率 | 32% |
-| 实际净利率 | **27,5%** |
-| 盈亏线 ROAS | 3,08 |
-| **是否在盈亏线之上** | ✅ **在**（盈亏线临界价仅 R$ 1.113,10） |
-| **战略角色** | 常规引流款，**不构成战略亏损** |
+| Giá bán | R$ 1.649,00 |
+| Biên LN mục tiêu | 32% |
+| Biên LN ròng thực tế | **27,5%** |
+| ROAS hòa vốn | 3,08 |
+| **Có nằm trên ngưỡng hòa vốn không** | ✅ **Có** (giá hòa vốn chỉ R$ 1.113,10) |
+| **Vai trò chiến lược** | SKU kéo traffic thông thường, **không phải lỗ chiến lược** |
 
-> ✅ **这是一个健康的引流款**：毛利比目标低 4,5 个点，但**仍然赚钱**。
-> 不需要标注战略亏损，也不需设退出条件 —— 它只是"少赚一点"，不是"赔钱换量"。
+> ✅ **Đây là một SKU kéo traffic lành mạnh**: biên lợi nhuận thấp hơn mục tiêu 4,5 điểm, nhưng **vẫn có lãi**.
+> Không cần ghi chú lỗ chiến lược, cũng không cần đặt điều kiện thoát —— nó chỉ "lãi ít hơn một chút", không phải "chịu lỗ để đổi lấy lượng".
 >
-> **判断标准**：低于目标毛利但高于盈亏线 = 正常的角色定价；低于盈亏线 = 战略亏损，必须单独标注与退出条件。
+> **Tiêu chí phán đoán**: thấp hơn biên LN mục tiêu nhưng cao hơn ngưỡng hòa vốn = định giá theo vai trò bình thường; thấp hơn ngưỡng hòa vốn = lỗ chiến lược, bắt buộc ghi chú riêng cùng điều kiện thoát.
 
 ---
 
-## 九、SKU 结构
+## 9. Cấu trúc SKU
 
-| 角色 | 内容 | 配置差异 | 定价 | 净利率 | 职责 |
+| Vai trò | Nội dung | Khác biệt cấu hình | Giá bán | Biên LN ròng | Nhiệm vụ |
 |---|---|---|---|---|---|
-| **低价引流** | 350W / 100kg / 10Ah | 低功率 + 低承重 | **R$ 1.649,00** | 27,5% | 拉点击、加快广告效率 |
-| **主推** ⭐ | **500W / 200kg / 12Ah** | **差异化配置** | **R$ 2.199,00** | **36,5%** | **负责成交** |
-| **高配** | 800W / 150kg / 12Ah | 高功率 | **R$ 2.699,00** | 32,3% | 提客单价 + 当价格锚（**不承担利润**） |
-| **套装** | 主推 + 配件包（头盔/车锁/打气筒） | 主机 + 配件 | **R$ 2.599,00** | **37,4%** | **提利润** |
+| **Kéo traffic giá thấp** | 350W / 100kg / 10Ah | Công suất thấp + tải trọng thấp | **R$ 1.649,00** | 27,5% | Kéo click, tăng hiệu quả quảng cáo |
+| **Chủ lực** ⭐ | **500W / 200kg / 12Ah** | **Cấu hình khác biệt hóa** | **R$ 2.199,00** | **36,5%** | **Chịu trách nhiệm chốt đơn** |
+| **Cấu hình cao** | 800W / 150kg / 12Ah | Công suất cao | **R$ 2.699,00** | 32,3% | Tăng AOV + làm điểm neo giá (**không gánh lợi nhuận**) |
+| **Combo** | Chủ lực + bộ phụ kiện (mũ bảo hiểm/khóa xe/bơm) | Máy chính + phụ kiện | **R$ 2.599,00** | **37,4%** | **Tăng lợi nhuận** |
 
-### 9.1 价格阶梯检查
+### 9.1 Kiểm tra bậc giá
 
-| 相邻档位 | 价差 | 幅度 | 检查 |
+| Hai bậc liền kề | Chênh giá | Biên độ | Kiểm tra |
 |---|---|---|---|
-| 引流 → 主推 | R$ 550 | **33,4%** | ⚠️ 偏高（接近 40% 警戒线）→ **需要用券缩小** |
-| 主推 → 高配 | R$ 500 | 22,7% | ✅ 合理 |
-| 主推 → 套装 | R$ 400 | 18,2% | ✅ 合理（套装比高配便宜，靠"多给东西"而不是"降价"取胜） |
+| Kéo traffic → chủ lực | R$ 550 | **33,4%** | ⚠️ Hơi cao (gần ngưỡng cảnh báo 40%) → **cần dùng voucher để thu hẹp** |
+| Chủ lực → cấu hình cao | R$ 500 | 22,7% | ✅ Hợp lý |
+| Chủ lực → combo | R$ 400 | 18,2% | ✅ Hợp lý (combo rẻ hơn bản cấu hình cao, thắng nhờ "tặng thêm đồ" chứ không phải "giảm giá") |
 
-> **引流 → 主推 33,4% 的差距是这套 SKU 结构里唯一的弱点。**
-> 差 550 元，买家可能就停在 R$ 1.649 的引流款上不升级。**这正是优惠券要解决的问题。**
+> **Khoảng chênh 33,4% từ kéo traffic → chủ lực là điểm yếu duy nhất trong cấu trúc SKU này.**
+> Chênh 550 real, người mua có thể dừng ở SKU kéo traffic R$ 1.649 mà không nâng cấp. **Đây chính là vấn đề voucher cần giải quyết.**
 
-### 9.2 优惠券设计
+### 9.2 Thiết kế voucher
 
-| 券 | 适用 SKU | 面额 | 券后价 | 缩小的差距 | 成本来源 |
+| Voucher | SKU áp dụng | Mệnh giá | Giá sau voucher | Chênh lệch được thu hẹp | Nguồn chi phí |
 |---|---|---|---|---|---|
-| 主推专享券 | **主推款** | **R$ 100** | **R$ 2.099,00** | 引流↔主推 从 R$ 550 缩到 **R$ 450**（27,3%） | 主推款毛利余量 R$ 98,95 |
+| Voucher riêng cho SKU chủ lực | **SKU chủ lực** | **R$ 100** | **R$ 2.099,00** | Kéo traffic↔chủ lực từ R$ 550 xuống **R$ 450** (27,3%) | Dư địa lợi nhuận của SKU chủ lực R$ 98,95 |
 
-**券后盈亏线校验**
+**Kiểm tra ngưỡng hòa vốn sau voucher**
 
-| SKU | 券后价 | 广告前可支配毛利 | 券后净利率 | 是否 > 0 |
+| SKU | Giá sau voucher | LN gộp khả dụng trước QC | Biên LN ròng sau voucher | Có > 0 không |
 |---|---|---|---|---|
-| 主推款 | R$ 2.099,00 | R$ 828,16 | **34,5%** | ✅ |
+| SKU chủ lực | R$ 2.099,00 | R$ 828,16 | **34,5%** | ✅ |
 
 ```
-券后验算：2099 − 935 − 2099×0,14 − 2099×0,02 = 828,16  (39,4%)
-         828,16 − 2099×0,05 = 723,21                  (34,5%)
+Kiểm tra sau voucher: 2099 − 935 − 2099×0,14 − 2099×0,02 = 828,16  (39,4%)
+                      828,16 − 2099×0,05 = 723,21                  (34,5%)
 ```
 
-**券后仍高于目标毛利 32%** → 券是安全的。
+**Sau voucher vẫn cao hơn biên LN mục tiêu 32%** → voucher an toàn.
 
-> **为什么券发在主推款而不是引流款？**
-> - 引流款净利率只有 27,5%，**没有余量**，发券就跌破目标
-> - 主推款有余量 R$ 98,95，**券正好从余量里出**
-> - 更关键的是：SOP 说券的作用是"缩小价格差距" —— **缩小的是"引流款到主推款"的差距，目的是把买家从引流款推上主推款**。券发在引流款上，等于让本该升级的人停在更便宜的档位，方向反了。
+> **Vì sao phát voucher cho SKU chủ lực mà không phải SKU kéo traffic?**
+> - Biên LN ròng của SKU kéo traffic chỉ 27,5%, **không có dư địa**, phát voucher là thủng mục tiêu
+> - SKU chủ lực có dư địa R$ 98,95, **voucher lấy đúng từ phần dư địa này**
+> - Quan trọng hơn: SOP nói tác dụng của voucher là "thu hẹp chênh lệch giá" —— **thứ được thu hẹp là khoảng cách "SKU kéo traffic đến SKU chủ lực", mục đích là đẩy người mua từ SKU kéo traffic lên SKU chủ lực**. Phát voucher cho SKU kéo traffic chẳng khác nào giữ người đáng lẽ nâng cấp ở lại bậc rẻ hơn, đi ngược hướng.
 
 ---
 
-## 十、前期定价策略（SOP 1.9）
+## 10. Chiến lược giá giai đoạn đầu (SOP 1.9)
 
-| 阶段 | 定价 | 净利率 | 目的 | 回提触发条件 |
+| Giai đoạn | Giá bán | Biên LN ròng | Mục đích | Điều kiện kích hoạt nâng giá lại |
 |---|---|---|---|---|
-| 冷启动（第 1–4 周） | **R$ 1.999** | 32,2% | 落在价格带下界附近，抢初始点击 | 月销稳定 ≥ 30 单 |
-| 回提期（第 5–8 周） | **R$ 2.099** | 34,5% | 观察转化率是否稳住 | 转化率 ≥ 1%（SOP 基准） |
-| 稳定期 | **R$ 2.199** | 36,5% | 目标价 | — |
+| Cold start (tuần 1–4) | **R$ 1.999** | 32,2% | Nằm gần cận dưới dải giá, giành click ban đầu | Doanh số tháng ổn định ≥ 30 đơn |
+| Giai đoạn nâng giá lại (tuần 5–8) | **R$ 2.099** | 34,5% | Quan sát tỷ lệ chuyển đổi có giữ được không | Tỷ lệ chuyển đổi ≥ 1% (chuẩn SOP) |
+| Giai đoạn ổn định | **R$ 2.199** | 36,5% | Giá mục tiêu | — |
 
-**约束检查**
+**Kiểm tra ràng buộc**
 
-| 项 | 说明 |
+| Hạng mục | Giải thích |
 |---|---|
-| 前期价是否低于盈亏线 | ✅ **否**——R$ 1.999 的广告前毛利仍有 R$ 744,16 |
-| 盈亏线临界价 | **R$ 1.113,10**（远低于任一阶段定价） |
-| 现金流能否承受 | `【待确认】` 前期净利率 32,2% 仍在目标线上，**实际上不构成"降毛利养权重"** |
-| 回提判断指标 | 用 SOP 的 **7 天测试区间**观察转化率 |
+| Giá giai đoạn đầu có thấp hơn ngưỡng hòa vốn không | ✅ **Không**——LN gộp trước QC ở mức R$ 1.999 vẫn còn R$ 744,16 |
+| Giá hòa vốn | **R$ 1.113,10** (thấp hơn rất nhiều so với giá của mọi giai đoạn) |
+| Dòng tiền có chịu được không | `【Cần xác nhận】` biên LN ròng giai đoạn đầu 32,2% vẫn nằm trên đường mục tiêu, **thực tế không phải là "hạ biên lợi nhuận nuôi trọng số"** |
+| Chỉ số xác định thời điểm nâng giá lại | Dùng **khung test 7 ngày** của SOP để quan sát tỷ lệ chuyển đổi |
 
-> **一个值得注意的发现**：本案例的"前期降价"其实**没有真正降毛利** —— R$ 1.999 的净利率仍有 32,2%，正好在目标线上。
+> **Một phát hiện đáng chú ý**: "hạ giá giai đoạn đầu" trong case study này thực ra **không thật sự hạ biên lợi nhuận** —— biên LN ròng ở mức R$ 1.999 vẫn là 32,2%, vừa đúng đường mục tiêu.
 >
-> 原因是**定价本身有充足余量**（市场给到 2.199，成本只需 1.989 就能达标）。
-> 所以对这款产品来说，"前期略降毛利养权重"这个动作**可以做得更从容** —— 有近 1.086 元的安全垫，降价空间远大于用券。
+> Nguyên nhân là **bản thân mức giá đã có dư địa dồi dào** (thị trường trả tới 2.199, giá vốn chỉ cần 1.989 là đạt chuẩn).
+> Vì vậy với sản phẩm này, động tác "hạ nhẹ biên lợi nhuận giai đoạn đầu để nuôi trọng số" **có thể làm thong thả hơn** —— có khoảng đệm an toàn gần 1.086 real, dư địa hạ giá lớn hơn nhiều so với dùng voucher.
 >
-> **反过来说**：如果一款产品的 `cost_floor_price` 已经贴近市场价（余量很少），那"前期降价"就真的会伤到毛利，必须谨慎。**余量多少决定了养权重策略的自由度。**
+> **Ngược lại**: nếu `cost_floor_price` của một sản phẩm đã sát giá thị trường (dư địa rất ít), thì "hạ giá giai đoạn đầu" sẽ thật sự ăn vào biên lợi nhuận, bắt buộc phải thận trọng. **Dư địa nhiều hay ít quyết định mức độ tự do của chiến lược nuôi trọng số.**
 
 ---
 
-## 十一、交 06 Advertising 的字段
+## 11. Các trường giao cho 06 Advertising
 
-| SKU | 定价 | 广告前可支配毛利 | **盈亏线 ROAS** | 建议广告率 | 可投标 |
+| SKU | Giá bán | LN gộp khả dụng trước QC | **ROAS hòa vốn** | % quảng cáo đề xuất | Chạy quảng cáo được |
 |---|---|---|---|---|---|
-| **主推款** | R$ 2.199,00 | R$ 912,16 | **2,41** | 5% | ✅ |
-| 高配款 | R$ 2.699,00 | R$ 1.007,16 | **2,68** | 5% | ✅ |
-| 套装款 | R$ 2.599,00 | R$ 1.103,16 | **2,36** | 5% | ✅ |
-| 引流款 | R$ 1.649,00 | R$ 535,16 | **3,08** | 5% | ⚠️ 盈亏线最高，建议低预算 |
+| **SKU chủ lực** | R$ 2.199,00 | R$ 912,16 | **2,41** | 5% | ✅ |
+| SKU cấu hình cao | R$ 2.699,00 | R$ 1.007,16 | **2,68** | 5% | ✅ |
+| SKU combo | R$ 2.599,00 | R$ 1.103,16 | **2,36** | 5% | ✅ |
+| SKU kéo traffic | R$ 1.649,00 | R$ 535,16 | **3,08** | 5% | ⚠️ Ngưỡng hòa vốn cao nhất, khuyến nghị ngân sách thấp |
 
-**给 06 的关键提示**：
+**Lưu ý then chốt cho 06**:
 
-> **本品的盈亏线 ROAS 区间是 2,36–3,08，落在常见投放 ROI 区间（3–8）的偏低一侧。**
-> 这意味着**本品有健康的广告空间** —— 盈亏线低说明毛利厚，广告即使 ROI 不高也不容易亏。
+> **Khoảng ROAS hòa vốn của sản phẩm này là 2,36–3,08, nằm ở phía thấp của khoảng ROI quảng cáo thường gặp (3–8).**
+> Điều này có nghĩa là **sản phẩm có dư địa quảng cáo lành mạnh** —— ngưỡng hòa vốn thấp cho thấy biên lợi nhuận dày, quảng cáo dù ROI không cao cũng khó lỗ.
 >
-> **对比**：小件产品（如充电宝 20000mAh）的盈亏线是 **2,82**，看起来接近；但小件的 ROAS 实际很难超过 3，而大件的客单价与毛利空间更大、ROAS 更容易做到 3 以上。
-> **所以"盈亏线 ROAS"这个数字必须和"该品类能跑出多少 ROAS"一起看** —— 单看盈亏线高低会误判。
+> **So sánh**: sản phẩm nhỏ (như sạc dự phòng 20000mAh) có ngưỡng hòa vốn **2,82**, nhìn có vẻ gần; nhưng ROAS của hàng nhỏ thực tế rất khó vượt 3, còn hàng cồng kềnh có AOV và dư địa lợi nhuận lớn hơn, ROAS dễ đạt trên 3 hơn.
+> **Vì vậy con số "ROAS hòa vốn" phải xem cùng với "ngành hàng đó chạy được ROAS bao nhiêu"** —— chỉ nhìn ngưỡng hòa vốn cao hay thấp sẽ đánh giá sai.
 
 ---
 
-## 十二、建议合规扫描
+## 12. Quét tuân thủ đề xuất
 
-`建议合规扫描：无命中`
+`Quét tuân thủ đề xuất: không có vi phạm`
 
-（未虚标参数、未建议规避认证、未建议低于成本价长期冲量、未承诺效果、未替代采购决策。）
+(Không khai khống thông số, không đề xuất lách chứng nhận, không đề xuất bán dưới giá vốn lâu dài để đẩy lượng, không cam kết hiệu quả, không ra quyết định thu mua thay con người.)
 
 ---
 
-## 十三、交付字段
+## 13. Các trường bàn giao
 
 ```yaml
-product_type: {role: "利润款", differentiation: "差异化款", promo_role: "主推款"}
+product_type: {role: "SKU lợi nhuận", differentiation: "SKU khác biệt hóa", promo_role: "SKU chủ lực"}
 
 final_config:
   power: "500W"
-  load: "200kg"          # ★ 差异化支点
+  load: "200kg"          # ★ điểm tựa khác biệt hóa
   capacity: "12Ah"
   foldable: true
 
@@ -432,7 +432,7 @@ forbidden_words_seed:
   - "iluminação noturna"
   - "garantia de 1 ano"
   - "Xiaomi"
-  - "assistência técnica completa"     # 无维修能力
+  - "assistência técnica completa"     # không có năng lực sửa chữa
 
 after_sales_commitment: |
   Garantia de 6 meses para motor e bateria.
@@ -440,34 +440,34 @@ after_sales_commitment: |
   Peças de reposição disponíveis para compra separada.
 
 risk_mitigation:
-  - {type: "参数虚标", action: "续航/速度标注测试条件", target: "03 段4"}
-  - {type: "品牌词", action: "列入 forbidden_words", target: "03/04/05"}
-  - {type: "配件误解", action: "包装清单图标注 Não incluso", target: "04 图8"}
-  - {type: "功能边界", action: "写明缓坡/单人/承重含行李", target: "03 段6"}
-  - {type: "虚假承诺", action: "只承诺换货与配件，不写维修", target: "03 段5"}
+  - {type: "Khai khống thông số", action: "Ghi điều kiện test cho quãng đường/tốc độ", target: "03 đoạn 4"}
+  - {type: "Từ thương hiệu", action: "Đưa vào forbidden_words", target: "03/04/05"}
+  - {type: "Hiểu lầm về phụ kiện", action: "Ảnh danh sách đóng gói ghi Não incluso", target: "04 ảnh 8"}
+  - {type: "Giới hạn chức năng", action: "Ghi rõ dốc thoải/một người lái/tải trọng gồm hành lý", target: "03 đoạn 6"}
+  - {type: "Cam kết sai sự thật", action: "Chỉ cam kết đổi hàng và phụ kiện, không ghi sửa chữa", target: "03 đoạn 5"}
 
 sku_structure:
-  - {role: "引流款", config: "350W/100kg/10Ah", price: 1649.00, net_rate: 0.275, duty: "拉点击"}
-  - {role: "主推款", config: "500W/200kg/12Ah", price: 2199.00, net_rate: 0.365, duty: "成交"}
-  - {role: "高配款", config: "800W/150kg/12Ah", price: 2699.00, net_rate: 0.323, duty: "提客单+价格锚"}
-  - {role: "套装款", config: "主推+配件包", price: 2599.00, net_rate: 0.374, duty: "提利润"}
+  - {role: "SKU kéo traffic", config: "350W/100kg/10Ah", price: 1649.00, net_rate: 0.275, duty: "Kéo click"}
+  - {role: "SKU chủ lực", config: "500W/200kg/12Ah", price: 2199.00, net_rate: 0.365, duty: "Chốt đơn"}
+  - {role: "SKU cấu hình cao", config: "800W/150kg/12Ah", price: 2699.00, net_rate: 0.323, duty: "Tăng AOV + điểm neo giá"}
+  - {role: "SKU combo", config: "Chủ lực + bộ phụ kiện", price: 2599.00, net_rate: 0.374, duty: "Tăng lợi nhuận"}
 
-main_sku: "主推款 500W / 200kg / 12Ah"
+main_sku: "SKU chủ lực 500W / 200kg / 12Ah"
 
 pricing_table:
-  引流款: {price: 1649.00, pre_ad_margin: 535.16, net_rate: 0.275}
-  主推款: {price: 2199.00, pre_ad_margin: 912.16, net_rate: 0.365}
-  高配款: {price: 2699.00, pre_ad_margin: 1007.16, net_rate: 0.323}
-  套装款: {price: 2599.00, pre_ad_margin: 1103.16, net_rate: 0.374}
+  SKU kéo traffic: {price: 1649.00, pre_ad_margin: 535.16, net_rate: 0.275}
+  SKU chủ lực: {price: 2199.00, pre_ad_margin: 912.16, net_rate: 0.365}
+  SKU cấu hình cao: {price: 2699.00, pre_ad_margin: 1007.16, net_rate: 0.323}
+  SKU combo: {price: 2599.00, pre_ad_margin: 1103.16, net_rate: 0.374}
 
 breakeven_roas_by_sku:
-  引流款: 3.08
-  主推款: 2.41
-  高配款: 2.68
-  套装款: 2.36
+  SKU kéo traffic: 3.08
+  SKU chủ lực: 2.41
+  SKU cấu hình cao: 2.68
+  SKU combo: 2.36
 
 coupon_plan:
-  - {sku: "主推款", amount: 100.00, after_price: 2099.00, closes_gap: "550 -> 450", funded_by: "毛利余量 R$98.95"}
+  - {sku: "SKU chủ lực", amount: 100.00, after_price: 2099.00, closes_gap: "550 -> 450", funded_by: "Dư địa lợi nhuận R$98.95"}
 
 ramp_up_plan:
   week_1_4:  {price: 1999.00, net_rate: 0.322}
@@ -475,40 +475,40 @@ ramp_up_plan:
   stable:    {price: 2199.00, net_rate: 0.365}
   breakeven_floor_price: 1113.10
 
-strategic_loss_sku: null      # 引流款毛利 27.5% 仍为正，不构成战略亏损
+strategic_loss_sku: null      # biên LN của SKU kéo traffic 27.5% vẫn dương, không phải lỗ chiến lược
 
 prelaunch_checklist:
-  target_buyer: "城市通勤成年用户（含载物需求）"
-  core_point: "500W 动力 + 200kg 承重"
-  main_competitor: "4 个 200kg 竞品"
+  target_buyer: "Người dùng trưởng thành đi lại trong thành phố (có nhu cầu chở đồ)"
+  core_point: "Động cơ 500W + tải trọng 200kg"
+  main_competitor: "4 sản phẩm đối thủ 200kg"
   price_zone: "2100-2300"
-  main_sku: "主推款"
+  main_sku: "SKU chủ lực"
   profit_floor: 1113.10
   ad_suitable: true
-  after_sales_risk: "续航/承重期望落差、组装困难、配件误解"
+  after_sales_risk: "Chênh lệch kỳ vọng về quãng đường/tải trọng, khó lắp ráp, hiểu lầm về phụ kiện"
 
 pending_confirmations:
-  - "供应商能否支持 200kg 承重车架（差异化支点，最关键）"
-  - "巴西税费是否已计入定价"
-  - "配件包实际成本"
+  - "Nhà cung cấp có hỗ trợ khung chịu tải 200kg không (điểm tựa khác biệt hóa, quan trọng nhất)"
+  - "Thuế Brazil đã được tính vào giá bán chưa"
+  - "Giá vốn thực tế của bộ phụ kiện"
 ```
 
 ---
 
-## 十四、这个案例证明了什么
+## 14. Case study này chứng minh điều gì
 
-| 结论 | 证据 |
+| Kết luận | Bằng chứng |
 |---|---|
-| **毛利余量与券面额的巧合背后是结构自洽** | 主推款余量 R$ 98,95，拟发券 R$ 100，差 R$ 1,05 |
-| **券要发在有余量的 SKU 上，且方向是"缩小到下一档的差距"** | 主推款有余量发券；引流款 27,5% 无余量不发券 |
-| **"高配"未必高毛利** | 800W 成本涨 34,8% 但售价只涨 22,7% → 高配净利率 32,3% **低于主推 36,5%** |
-| **低成本结构的配置不该做主推** | 800W 商品数最多但均销仅 0.49 倍均值 → 只当价格锚 |
-| **"前期降毛利养权重"取决于余量** | R$ 1.999 净利率仍 32,2%（未真降）；盈亏线临界价 R$ 1.113 远低于所有定价 |
-| **引流款低于目标毛利 ≠ 战略亏损** | 27,5% 低于 32% 目标但仍在盈亏线上 → 无需标注亏损与退出条件 |
-| **售后承诺必须由能力反推** | 无维修能力 → 不写 `assistência técnica`，只承诺换货与配件 |
-| **盈亏线 ROAS 要与品类可达 ROAS 一起看** | 本品 2,36–3,08 看似偏高，但大件客单价高、ROAS 更易做上去，属健康区间 |
-| **差异化支点要落到能力上** | 200kg 是全部差异化逻辑的支点，也是唯一的能力待确认项 → 做不到就必须退回 01 重选配置 |
+| **Sự trùng khớp giữa dư địa lợi nhuận và mệnh giá voucher phản ánh cấu trúc nhất quán** | Dư địa SKU chủ lực R$ 98,95, voucher dự kiến R$ 100, chênh R$ 1,05 |
+| **Voucher phải phát cho SKU có dư địa, và hướng là "thu hẹp khoảng cách tới bậc kế tiếp"** | SKU chủ lực có dư địa nên phát voucher; SKU kéo traffic 27,5% không có dư địa nên không phát |
+| **"Cấu hình cao" chưa chắc biên lợi nhuận cao** | Giá vốn 800W tăng 34,8% nhưng giá bán chỉ tăng 22,7% → biên LN ròng bản cấu hình cao 32,3% **thấp hơn SKU chủ lực 36,5%** |
+| **Cấu hình có cấu trúc chi phí kém không nên làm SKU chủ lực** | 800W nhiều sản phẩm nhất nhưng doanh số trung bình chỉ 0.49 lần trung bình chung → chỉ làm điểm neo giá |
+| **"Hạ biên lợi nhuận giai đoạn đầu để nuôi trọng số" phụ thuộc vào dư địa** | Biên LN ròng ở R$ 1.999 vẫn 32,2% (chưa thật sự hạ); giá hòa vốn R$ 1.113 thấp hơn rất xa mọi mức giá |
+| **SKU kéo traffic thấp hơn biên LN mục tiêu ≠ lỗ chiến lược** | 27,5% thấp hơn mục tiêu 32% nhưng vẫn trên ngưỡng hòa vốn → không cần ghi chú lỗ và điều kiện thoát |
+| **Cam kết hậu mãi phải suy ngược từ năng lực** | Không có năng lực sửa chữa → không ghi `assistência técnica`, chỉ cam kết đổi hàng và phụ kiện |
+| **ROAS hòa vốn phải xem cùng ROAS mà ngành hàng đạt được** | Sản phẩm này 2,36–3,08 nhìn có vẻ hơi cao, nhưng hàng cồng kềnh AOV cao, ROAS dễ đẩy lên hơn, thuộc khoảng lành mạnh |
+| **Điểm tựa khác biệt hóa phải dựa trên năng lực** | 200kg là điểm tựa của toàn bộ logic khác biệt hóa, cũng là mục năng lực duy nhất chờ xác nhận → không làm được thì phải quay lại 01 chọn lại cấu hình |
 
 ---
 
-**关联文件**：[模块说明](../README.md) · [产品定位 Prompt](../prompts/01_product_decision.md) · [定价与 SKU Prompt](../prompts/02_pricing_and_sku.md) · [产品需求表模板](../templates/output_product_requirement.md) · **上游**：[01 市场分析案例](../../01_Market_Research_Agent/examples/patinete_eletrico_market.md) · **下游**：[03 Listing](../../03_Listing_Creative_Agent/) · [06 Advertising](../../06_Advertising_Optimization_Agent/)
+**Tệp liên quan**: [Giới thiệu module](../README.md) · [Prompt định vị sản phẩm](../prompts/01_product_decision.md) · [Prompt định giá và SKU](../prompts/02_pricing_and_sku.md) · [Template bảng yêu cầu sản phẩm](../templates/output_product_requirement.md) · **Upstream**: [Case study phân tích thị trường 01](../../01_Market_Research_Agent/examples/patinete_eletrico_market.md) · **Downstream**: [03 Listing](../../03_Listing_Creative_Agent/) · [06 Advertising](../../06_Advertising_Optimization_Agent/)

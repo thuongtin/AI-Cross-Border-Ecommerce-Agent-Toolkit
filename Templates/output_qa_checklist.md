@@ -1,95 +1,95 @@
-# 交付自检清单 · 可打印版
+# Checklist tự kiểm tra trước khi bàn giao · Bản in
 
-> [`docs/04_Result_Checklist.md`](../docs/04_Result_Checklist.md) 的压缩版，方便打印或贴在工作台上。
-> 完整版含逐项说明，本版只保留勾选项。
+> Bản rút gọn của [`docs/04_Result_Checklist.md`](../docs/04_Result_Checklist.md), tiện in ra hoặc dán ở bàn làm việc.
+> Bản đầy đủ có giải thích từng mục, bản này chỉ giữ lại các ô đánh dấu.
 
-**产品**：______________  **平台**：__________  **日期**：__________  **Prompt 版本**：__________
+**Sản phẩm**: ______________  **Sàn**: __________  **Ngày**: __________  **Phiên bản Prompt**: __________
 
 ---
 
-## A. 通用（三模块共用）
+## A. Chung (dùng cho cả ba module)
 
-- [ ] 买家可见文本用**目标市场母语**，不是翻译腔
-- [ ] 全部**公制单位**，小数用逗号
-- [ ] 输出中每个数值都能在 `spec_table` 找到对应项
-- [ ] 无未授权品牌名 / 型号名
-- [ ] 无绝对化用语（o melhor / 100% / mais rápido）
-- [ ] 无促销信息（免运费 / 分期 / 折扣数字）
-- [ ] 中文备注与母语内容未混
-- [ ] 无缺失章节、无 TODO 占位符
+- [ ] Nội dung người mua nhìn thấy dùng **tiếng bản địa của thị trường mục tiêu**, không có giọng văn dịch máy
+- [ ] Toàn bộ dùng **đơn vị hệ mét**, dấu phẩy thập phân
+- [ ] Mỗi con số trong đầu ra đều tìm được mục tương ứng trong `spec_table`
+- [ ] Không có tên thương hiệu / tên model chưa được ủy quyền
+- [ ] Không có từ ngữ tuyệt đối (o melhor / 100% / mais rápido)
+- [ ] Không có thông tin khuyến mãi (freeship / trả góp / con số giảm giá)
+- [ ] Ghi chú nội bộ (tiếng Việt) không bị lẫn vào nội dung tiếng bản địa
+- [ ] Không thiếu mục nào, không còn placeholder TODO
 
 ---
 
 ## B. 03 Listing Creative
 
-**标题**
-- [ ] Shopee ≤ **120** 字符，核心关键词在**前 30 字符**内
-- [ ] Mercado Livre ≤ **60** 字符
-- [ ] 五段结构齐备：核心词 + 人群/场景 + 参数 + 功能 + 补充
-- [ ] 首字母大写规范，无表情/特殊字符/堆砌重复词
-- [ ] 提供 **2–3 个备选**，方向不同
-- [ ] 多平台版本已差异化
+**Tiêu đề**
+- [ ] Shopee ≤ **120** ký tự, từ khóa cốt lõi nằm trong **30 ký tự đầu**
+- [ ] Mercado Livre ≤ **60** ký tự
+- [ ] Đủ cấu trúc 5 phần: từ cốt lõi + đối tượng/ngữ cảnh + thông số + tính năng + bổ sung
+- [ ] Viết hoa chữ cái đầu đúng quy cách, không emoji / ký tự đặc biệt / nhồi từ khóa lặp lại
+- [ ] Có **2–3 phương án dự phòng** với hướng khác nhau
+- [ ] Phiên bản cho từng sàn đã được làm khác nhau
 
-**详情页**
-- [ ] 7 段结构完整
-- [ ] 场景全在 `usage_scope` 内
-- [ ] 参数与 `spec_table` 逐项一致
-- [ ] 售后承诺与实际能力匹配
-- [ ] 无特殊说明时**未生成**"注意事项"段
+**Trang chi tiết**
+- [ ] Đủ cấu trúc 7 đoạn
+- [ ] Mọi ngữ cảnh sử dụng đều nằm trong `usage_scope`
+- [ ] Thông số khớp từng mục với `spec_table`
+- [ ] Cam kết hậu mãi đúng với năng lực thực tế
+- [ ] Khi không có lưu ý đặc biệt thì **không tạo** đoạn "Lưu ý"
 
-**关键词**
-- [ ] 七类分词完成
-- [ ] 风险词已单独列出并标记禁用
-- [ ] 三榜高频重合词已标注
+**Từ khóa**
+- [ ] Đã phân loại từ khóa 7 nhóm
+- [ ] Từ rủi ro đã được liệt kê riêng và đánh dấu cấm dùng
+- [ ] Đã đánh dấu các từ tần suất cao trùng ở cả 3 bảng xếp hạng
 
-**交付**
-- [ ] 末尾附「合规扫描结果」（无命中写"无命中"）
-- [ ] 输出了 `core_selling_point`
+**Bàn giao**
+- [ ] Cuối bản có đính kèm "Kết quả quét tuân thủ" (không dính thì ghi "Không dính")
+- [ ] Đã xuất `core_selling_point`
 
 ---
 
 ## C. 04 Product Image
 
-- [ ] 9 张图内容分工明确，无功能重复
-- [ ] 主图符合平台规范：
-  - [ ] ML：纯白底、无文字/水印/色块、单一角度、≥800×800
-  - [ ] Shopee：白底（+ 可选卖点文字）
-- [ ] 每张图有**可直接使用的出图 Prompt**
-- [ ] 图内文案标注字数上限且未超长
-- [ ] 图内参数 = `spec_table`，逐字符一致
-- [ ] 每张图附**负面 Prompt**
-- [ ] 未生成伪造认证 / 评价截图 / 销量角标
-- [ ] 平台冲突已处理（ML 无文字 / Shopee 带卖点，两套方案）
-- [ ] 人物出镜不与真实可识别个人相似
+- [ ] 9 ảnh có phân vai nội dung rõ ràng, không trùng chức năng
+- [ ] Ảnh chính đúng quy chuẩn của sàn:
+  - [ ] ML: nền trắng tinh, không chữ / watermark / mảng màu, một góc chụp duy nhất, ≥800×800
+  - [ ] Shopee: nền trắng (+ chữ điểm bán hàng tùy chọn)
+- [ ] Mỗi ảnh có **Prompt tạo ảnh dùng được ngay**
+- [ ] Chữ trên ảnh có ghi giới hạn số ký tự và không vượt quá
+- [ ] Thông số trên ảnh = `spec_table`, khớp từng ký tự
+- [ ] Mỗi ảnh có kèm **Negative Prompt**
+- [ ] Không tạo chứng nhận giả / ảnh chụp đánh giá giả / huy hiệu số lượng bán
+- [ ] Đã xử lý xung đột giữa các sàn (ML không chữ / Shopee có điểm bán hàng — hai bộ phương án)
+- [ ] Người xuất hiện trong ảnh không giống một cá nhân có thật, nhận diện được
 
 ---
 
 ## D. 05 Product Video
 
-- [ ] 提供 15s 与 30s 双版本（或说明为何只做一版）
-- [ ] **前 3 秒是钩子**，非自我介绍
-- [ ] 分镜表含：镜号 / 时长 / 画面 / 运镜 / 字幕 / 音效
-- [ ] 每个镜头都有 AI 视频 Prompt
-- [ ] 配音稿是**可直接朗读**的口语稿，标注预估时长
-- [ ] 字幕与配音对应，单行未超字数
-- [ ] 结尾 CTA 与标题一致，无额外承诺
-- [ ] BGM / 音效标注可商用要求
-- [ ] 未生成伪造销量 / 认证 / 评价画面
-- [ ] 静音状态下核心信息可理解
+- [ ] Có cả hai bản 15s và 30s (hoặc giải thích vì sao chỉ làm một bản)
+- [ ] **3 giây đầu là hook**, không phải tự giới thiệu
+- [ ] Bảng storyboard gồm: số cảnh / thời lượng / hình ảnh / chuyển động máy quay / phụ đề / hiệu ứng âm thanh
+- [ ] Mỗi cảnh đều có Prompt video AI
+- [ ] Kịch bản lồng tiếng là văn nói **đọc được ngay**, có ghi thời lượng dự kiến
+- [ ] Phụ đề khớp với lồng tiếng, mỗi dòng không vượt số ký tự
+- [ ] CTA kết video khớp với tiêu đề, không có cam kết thêm
+- [ ] BGM / hiệu ứng âm thanh có ghi yêu cầu được phép dùng thương mại
+- [ ] Không tạo cảnh số lượng bán / chứng nhận / đánh giá giả
+- [ ] Ở chế độ tắt tiếng vẫn hiểu được thông tin cốt lõi
 
 ---
 
-## E. 跨模块一致性（03 → 04 → 05）
+## E. Nhất quán giữa các module (03 → 04 → 05)
 
-- [ ] 04 的图内文案来自 03 的 `secondary_points[]`
-- [ ] 05 的脚本核心来自 03 的 `core_selling_point`
-- [ ] 三处**参数数字完全一致**（零漂移）
-- [ ] 同一份 `forbidden_words[]` 被 04 与 05 共同遵守
-- [ ] 视觉调性统一（由 03 定义，04/05 服从）
+- [ ] Chữ trên ảnh của 04 lấy từ `secondary_points[]` của 03
+- [ ] Nội dung cốt lõi trong kịch bản của 05 lấy từ `core_selling_point` của 03
+- [ ] **Con số thông số ở ba nơi khớp hoàn toàn** (không lệch)
+- [ ] 04 và 05 cùng tuân thủ một bộ `forbidden_words[]`
+- [ ] Tông hình ảnh thống nhất (do 03 định nghĩa, 04/05 tuân theo)
 
-**参数比对表**
+**Bảng đối chiếu thông số**
 
-| 参数 | 03 | 04 | 05 | 一致 |
+| Thông số | 03 | 04 | 05 | Khớp |
 |---|---|---|---|---|
 | | | | | |
 | | | | | |
@@ -97,110 +97,110 @@
 
 ---
 
-## F. 06 广告优化
+## F. 06 Tối ưu quảng cáo
 
-- [ ] 测试周期 ≥ 3 天，总曝光 ≥ 1,000
-- [ ] 成本结构完整（缺则不得输出 ROI 结论）
-- [ ] 漏斗判定按 **CTR → 加购率 → 转化率 → ROAS** 顺序，未跳步
-- [ ] 每组都有明确判定结论 + **"本轮不动的部分"**
-- [ ] 未在前段达标前建议调出价
-- [ ] 佣金与退货损耗按**售价百分比**计算
-- [ ] 盈亏线 ROAS 与达标线 ROAS 均已算出，差距已指出
-- [ ] 每条动作含**具体对象**，无"优化一下"
-- [ ] 已说明改动是否指向同一病因
-- [ ] 复测方案含"未达标不加码同一动作"
-
----
-
-## G. 07 评论分析
-
-- [ ] 评论 ≥ 20 条，差评全导入，中评未丢
-- [ ] 原文保留原始语言，评论已脱敏
-- [ ] 八类归因逐类给出（含为 0 的）
-- [ ] **误解型与产品质量问题严格区分**
-- [ ] 配件缺失已对照 `package_content` 判断
-- [ ] 可修复差评占比已计算
-- [ ] 修补文案为**母语**且可直接粘贴
-- [ ] 配件类误解已判断需补图（文字说不清）
-- [ ] `forbidden_words_candidates` 已输出
-- [ ] 已检查"被好评称赞但 Listing 未提"的卖点
-- [ ] 未含诱导删评 / 组织举报 / 虚假评价 / 臆断真伪
+- [ ] Chu kỳ test ≥ 3 ngày, tổng lượt hiển thị ≥ 1,000
+- [ ] Cơ cấu chi phí đầy đủ (thiếu thì không được đưa ra kết luận ROI)
+- [ ] Đánh giá phễu theo đúng thứ tự **CTR → tỷ lệ thêm vào giỏ → CVR → ROAS**, không nhảy bước
+- [ ] Mỗi nhóm đều có kết luận đánh giá rõ ràng + **"phần giữ nguyên ở vòng này"**
+- [ ] Không đề xuất chỉnh giá thầu khi các bước phía trước chưa đạt
+- [ ] Hoa hồng và hao hụt hoàn hàng được tính theo **% trên giá bán**
+- [ ] Đã tính cả ROAS hòa vốn và ROAS đạt chuẩn, đã chỉ ra khoảng chênh
+- [ ] Mỗi hành động đều có **đối tượng cụ thể**, không có kiểu "tối ưu một chút"
+- [ ] Đã nói rõ các thay đổi có cùng nhắm vào một nguyên nhân gốc hay không
+- [ ] Phương án kiểm tra lại có điều kiện "chưa đạt thì không tăng liều cùng một hành động"
 
 ---
 
-## H. 闭环（06 / 07 → 03 / 04）
+## G. 07 Phân tích đánh giá
 
-- [ ] 改动前已记录**基线数据**
-- [ ] `iterate` 只改症状指向的部分，其余不动
-- [ ] 一次只改一个**病因**
-- [ ] 复测周期：广告 **7 天** / 评论 **14–30 天**
-- [ ] 复测指标是**改动能控制的那个**（广告看 ROAS，文案看误解型占比）
-- [ ] 已标注"看起来会变差但属预期"的指标（如点击量）
-- [ ] 未达标**不加码同一动作**，回诊断重新定位
-
-> 三种内耗：① 把预期下降的指标误判为失败并改回去；② 一次改多个病因导致无法归因；③ 未达标就加码同一动作。
-
----
-
-## I. 01 市场分析
-
-**数据层（脚本）**
-- [ ] 指标由脚本产出，不是手工估算
-- [ ] 样本量 ≥ 30（< 30 已标注仅供参考）
-- [ ] 配置维度 `unparsed_items` 占比已查看（> 30% 已标注受限）
-- [ ] 主体数 ≤ 10 时未用 CR-n 作依据（改用 CR3 / HHI）
-
-**判断层（Agent）**
-- [ ] 前置判断未通过时**已停止**
-- [ ] 高风险类目做了**利润承载力检验**
-- [ ] 平台限制逐项检查（禁售/限售/认证/物流敏感）
-- [ ] 单期数据时写明"无法判断趋势"
-- [ ] "新品表现"数据不可靠时已标注
-- [ ] 品牌集中度同时看了 **CR 与商品数占比**
-- [ ] 目标价格带做了**四项交叉判断**（销量/均销/利润/竞品强度）
-- [ ] 机会配置已交叉核对**是否被头部占据**
-- [ ] 结论区分了 `【数据】` / `【判断】` / `【待确认】`
-- [ ] 未替代人做选品决策
+- [ ] ≥ 20 đánh giá, nhập đủ toàn bộ đánh giá tiêu cực, không bỏ sót đánh giá trung bình
+- [ ] Giữ nguyên ngôn ngữ gốc của đánh giá, đã ẩn danh hóa
+- [ ] Quy nguyên nhân đủ từng nhóm trong 8 nhóm (kể cả nhóm bằng 0)
+- [ ] **Phân biệt rạch ròi loại hiểu lầm với lỗi chất lượng sản phẩm**
+- [ ] Trường hợp thiếu phụ kiện đã đối chiếu với `package_content` để kết luận
+- [ ] Đã tính tỷ lệ đánh giá tiêu cực có thể khắc phục
+- [ ] Nội dung sửa là **tiếng bản địa** và dán vào dùng được ngay
+- [ ] Hiểu lầm về phụ kiện đã được xác định là cần bổ sung ảnh (chữ không giải thích nổi)
+- [ ] Đã xuất `forbidden_words_candidates`
+- [ ] Đã kiểm tra các điểm bán hàng "được khen trong đánh giá tốt nhưng Listing chưa nhắc tới"
+- [ ] Không có nội dung dụ dỗ xóa đánh giá / tổ chức report / đánh giá ảo / tự phán đoán thật giả
 
 ---
 
-## J. 02 产品策略
+## H. Vòng khép kín (06 / 07 → 03 / 04)
 
-- [ ] **`decision_approved` 为 true**
-- [ ] **主卖点只有一个**
-- [ ] 一句话结论含五要素（卖给谁/主打什么/什么配置/什么价/避开什么）
-- [ ] 未把高配段（商品多但均销低）当主推
-- [ ] 售后承诺未超出实际能力
-- [ ] 上架前 8 问全部有答案
-- [ ] **逐 SKU** 成本分别列出
-- [ ] 定价公式的佣金/广告/退货按**售价百分比**放在分母
-- [ ] 已与 01 的 `cost_floor_price` 交叉验证
-- [ ] 每 SKU 都算了净利率与盈亏线 ROAS
-- [ ] 优惠券发在**有余量的 SKU**，券后仍在盈亏线之上
-- [ ] 价格阶梯做了"过大/过小"双向检查
-- [ ] 引流款低于盈亏线时已标注战略角色与退出条件
+- [ ] Đã ghi lại **dữ liệu baseline** trước khi thay đổi
+- [ ] `iterate` chỉ sửa phần mà triệu chứng chỉ tới, phần còn lại giữ nguyên
+- [ ] Mỗi lần chỉ sửa một **nguyên nhân gốc**
+- [ ] Chu kỳ kiểm tra lại: quảng cáo **7 ngày** / đánh giá **14–30 ngày**
+- [ ] Chỉ số kiểm tra lại là **chỉ số mà thay đổi kiểm soát được** (quảng cáo xem ROAS, nội dung xem tỷ lệ loại hiểu lầm)
+- [ ] Đã đánh dấu những chỉ số "trông có vẻ xấu đi nhưng nằm trong dự kiến" (vd: lượt click)
+- [ ] Chưa đạt thì **không tăng liều cùng một hành động**, quay về chẩn đoán để định vị lại
+
+> Ba kiểu tự làm khó mình: ① Thấy chỉ số giảm như dự kiến lại tưởng là thất bại rồi sửa ngược lại; ② Sửa nhiều nguyên nhân gốc cùng lúc nên không quy được nguyên nhân; ③ Chưa đạt đã tăng liều cùng một hành động.
 
 ---
 
-## K. 发布前最后一道
+## I. 01 Phân tích thị trường
 
-- [ ] 已到**卖家中心复核**平台当前的字数 / 字段 / 图片规则
-- [ ] 已确认库存充足，或已按库存调整广告预算
-- [ ] 已确认商品不在禁售 / 限售清单内
-- [ ] 同款在其他店铺上架时已做**标题 / 主图 / 详情页差异化**
-- [ ] 已记录本次 Prompt 版本号
+**Tầng dữ liệu (script)**
+- [ ] Chỉ số do script tạo ra, không phải ước lượng thủ công
+- [ ] Cỡ mẫu ≥ 30 (< 30 đã ghi chú chỉ để tham khảo)
+- [ ] Đã xem tỷ trọng `unparsed_items` của chiều cấu hình (> 30% đã ghi chú bị hạn chế)
+- [ ] Khi số chủ thể ≤ 10 thì không dùng CR-n làm căn cứ (chuyển sang CR3 / HHI)
+
+**Tầng nhận định (Agent)**
+- [ ] Khi nhận định tiền đề không đạt thì **đã dừng lại**
+- [ ] Ngành hàng rủi ro cao đã làm **kiểm định khả năng gánh lợi nhuận**
+- [ ] Kiểm tra từng hạn chế của sàn (cấm bán / hạn chế bán / chứng nhận / nhạy cảm vận chuyển)
+- [ ] Khi chỉ có dữ liệu một kỳ thì ghi rõ "không đánh giá được xu hướng"
+- [ ] Khi dữ liệu "hiệu suất sản phẩm mới" không đáng tin đã ghi chú
+- [ ] Mức độ tập trung thương hiệu đã xem cả **CR lẫn tỷ trọng số lượng sản phẩm**
+- [ ] Dải giá mục tiêu đã qua **đối chiếu chéo 4 tiêu chí** (doanh số / doanh số trung bình / lợi nhuận / sức mạnh đối thủ)
+- [ ] Cấu hình cơ hội đã đối chiếu chéo xem **có bị top đầu chiếm giữ không**
+- [ ] Kết luận có phân biệt `【Dữ liệu】` / `【Nhận định】` / `【Cần xác nhận】`
+- [ ] Không thay con người ra quyết định chọn sản phẩm
 
 ---
 
-## 签署
+## J. 02 Chiến lược sản phẩm
 
-| | 姓名 | 日期 |
+- [ ] **`decision_approved` là true**
+- [ ] **Chỉ có một điểm bán hàng chủ lực**
+- [ ] Kết luận một câu có đủ 5 yếu tố (bán cho ai / nhấn mạnh gì / cấu hình nào / giá bao nhiêu / tránh điều gì)
+- [ ] Không chọn phân khúc cấu hình cao (nhiều sản phẩm nhưng doanh số trung bình thấp) làm SKU chủ lực
+- [ ] Cam kết hậu mãi không vượt quá năng lực thực tế
+- [ ] Đã trả lời đủ 8 câu hỏi trước khi đăng bán
+- [ ] Liệt kê chi phí riêng **cho từng SKU**
+- [ ] Trong công thức định giá, hoa hồng / quảng cáo / hoàn hàng nằm ở mẫu số dưới dạng **% trên giá bán**
+- [ ] Đã đối chiếu chéo với `cost_floor_price` của 01
+- [ ] Mỗi SKU đều đã tính biên lợi nhuận ròng và ROAS hòa vốn
+- [ ] Voucher được áp cho **SKU còn dư địa voucher**, sau khi trừ voucher vẫn trên ngưỡng hòa vốn
+- [ ] Bậc giá đã được kiểm tra cả hai chiều "quá lớn / quá nhỏ"
+- [ ] SKU kéo traffic thấp hơn ngưỡng hòa vốn đã ghi rõ vai trò chiến lược và điều kiện rút lui
+
+---
+
+## K. Chốt chặn cuối trước khi đăng
+
+- [ ] Đã vào **Seller Center kiểm tra lại** quy định hiện hành của sàn về số ký tự / trường / hình ảnh
+- [ ] Đã xác nhận đủ tồn kho, hoặc đã điều chỉnh ngân sách quảng cáo theo tồn kho
+- [ ] Đã xác nhận sản phẩm không nằm trong danh sách cấm bán / hạn chế bán
+- [ ] Khi cùng sản phẩm được đăng bán ở shop khác đã làm **khác biệt tiêu đề / ảnh chính / trang chi tiết**
+- [ ] Đã ghi lại số phiên bản Prompt của lần này
+
+---
+
+## Ký xác nhận
+
+| | Họ tên | Ngày |
 |---|---|---|
-| 执行 | | |
-| 复核 | | |
+| Thực hiện | | |
+| Kiểm duyệt | | |
 
-> **未打满不放行。**
+> **Chưa tích đủ thì không cho qua.**
 
 ---
 
-**相关文档**：[完整版自检清单](../docs/04_Result_Checklist.md) · [合规红线](../docs/03_Compliance_Guard.md) · [平台字段规范](../docs/02_Platform_Output_Spec.md)
+**Tài liệu liên quan**: [Checklist tự kiểm tra bản đầy đủ](../docs/04_Result_Checklist.md) · [Lằn ranh đỏ về tuân thủ](../docs/03_Compliance_Guard.md) · [Quy chuẩn trường dữ liệu theo sàn](../docs/02_Platform_Output_Spec.md)

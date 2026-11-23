@@ -1,220 +1,220 @@
-# 模板 · 定价核算模型
+# Template · Mô hình tính giá
 
-> SOP **1.9 定价** + **3.2 单品定价与 SKU 策略**。
-> 本文给出**可直接算的公式**，而不是"大概看着定"。
+> SOP **1.9 Định giá** + **3.2 Định giá từng sản phẩm và chiến lược SKU**.
+> Tài liệu này đưa ra **công thức tính được ngay**, thay vì "nhìn chừng chừng rồi định".
 
 ---
 
-## 一、SOP 的定价规则
+## 1. Quy tắc định giá trong SOP
 
-| 项 | 规则（SOP 原文） |
+| Mục | Quy tắc (nguyên văn SOP) |
 |---|---|
-| 大件毛利率 | **30–35%** |
-| 小件毛利率 | **25–30%** |
-| 广告成本占比 | 大件 **~5%** / 小件 **5–10%** |
-| 退货损耗 | **2%** |
-| 平台佣金 | 按类目实查（Mercado Livre 常见 8–16%） |
-| 尾程物流 | 按实际商品测（SOP 称为"商品尾程费用"） |
-| 仓库操作费 | 按产品尺寸档位 |
-| 调价节奏 | **前期可略降毛利养权重，权重起来后再回提** |
+| Biên lợi nhuận gộp hàng cồng kềnh | **30–35%** |
+| Biên lợi nhuận gộp hàng nhỏ | **25–30%** |
+| Tỷ trọng chi phí quảng cáo | Hàng cồng kềnh **~5%** / hàng nhỏ **5–10%** |
+| Hao hụt do hoàn hàng | **2%** |
+| Phí hoa hồng sàn | Tra theo ngành hàng thực tế (Mercado Livre thường 8–16%) |
+| Vận chuyển chặng cuối | Đo theo sản phẩm thực tế (SOP gọi là "phí chặng cuối của sản phẩm") |
+| Phí thao tác kho | Theo bậc kích thước sản phẩm |
+| Nhịp điều chỉnh giá | **Giai đoạn đầu có thể giảm nhẹ biên lợi nhuận để nuôi trọng số (ranking), khi trọng số đã lên thì nâng lại** |
 
 ---
 
-## 二、核心公式
+## 2. Công thức cốt lõi
 
-> **2026-10 起**：本模板的手工计算已由脚本 `Agents/02_Product_Strategy_Agent/scripts/sku_pricing.py`
-> 自动化，并内置 5 个平台的费率预设（Shopee BR / ML Clássico / ML Premium / Amazon BR / TikTok Shop BR，
-> 含价格分档佣金与按件固定费）：
+> **Từ 2026-10**: phần tính tay trong template này đã được tự động hóa bằng script `Agents/02_Product_Strategy_Agent/scripts/sku_pricing.py`,
+> có sẵn preset biểu phí cho 5 sàn (Shopee BR / ML Clássico / ML Premium / Amazon BR / TikTok Shop BR,
+> bao gồm hoa hồng theo bậc giá và phí cố định theo từng sản phẩm):
 >
 > ```bash
 > python Agents/02_Product_Strategy_Agent/scripts/sku_pricing.py calc --platform shopee_br --cost 935 --price 2199
 > python Agents/02_Product_Strategy_Agent/scripts/sku_pricing.py --list-platforms
 > ```
 >
-> 费率口径与来源见 `Agents/02_Product_Strategy_Agent/references/pricing-rules.md`；
-> **没有可靠费率来源的平台不做预设**（Magalu / Temu / Shein 等），手工传参。
-> 下面的手工公式保留用于理解原理与核对脚本结果。
+> Cách tính và nguồn biểu phí xem tại `Agents/02_Product_Strategy_Agent/references/pricing-rules.md`;
+> **sàn nào không có nguồn biểu phí đáng tin cậy thì không làm preset** (Magalu / Temu / Shein, v.v.), phải tự truyền tham số.
+> Các công thức tính tay bên dưới được giữ lại để hiểu nguyên lý và đối chiếu kết quả của script.
 
-### 售价公式
-
-```
-        产品成本 + 尾程物流 + 仓库操作费
-P = ─────────────────────────────────────────
-      1 − 佣金率 − 广告率 − 退货损耗率 − 目标毛利率
-```
-
-**为什么分母要减这么多？** 因为佣金、广告、退货损耗、毛利这四项都是**按售价的百分比**产生的，不是固定的绝对金额。直接加在分子上会算少。
-
-### 盈亏线（毛利 = 0 的最低售价）
+### Công thức giá bán
 
 ```
-          产品成本 + 尾程物流 + 仓库操作费
-P₀ = ─────────────────────────────────────
-            1 − 佣金率 − 广告率 − 退货率
+        Giá vốn sản phẩm + Vận chuyển chặng cuối + Phí thao tác kho
+P = ──────────────────────────────────────────────────────────────────────────────
+      1 − Tỷ lệ hoa hồng − Tỷ lệ quảng cáo − Tỷ lệ hao hụt hoàn hàng − Biên LN gộp mục tiêu
 ```
 
-> P₀ 是**绝对不能低于的价格线**。低于 P₀ 就是每卖一单亏一单（还不算固定成本）。做促销、参加活动、算优惠券力度时，这条线必须先划出来。
+**Vì sao mẫu số phải trừ nhiều như vậy?** Vì hoa hồng, quảng cáo, hao hụt hoàn hàng và lợi nhuận gộp đều phát sinh **theo tỷ lệ phần trăm trên giá bán**, chứ không phải số tiền tuyệt đối cố định. Nếu cộng thẳng vào tử số thì sẽ tính thiếu.
 
-### 毛利底线价
+### Ngưỡng hòa vốn (giá bán thấp nhất khi lợi nhuận gộp = 0)
 
 ```
-Pmin = P₀ 的公式，但分母再减去「可接受的最低毛利率」
+          Giá vốn sản phẩm + Vận chuyển chặng cuối + Phí thao tác kho
+P₀ = ─────────────────────────────────────────────────────────────────
+            1 − Tỷ lệ hoa hồng − Tỷ lệ quảng cáo − Tỷ lệ hoàn hàng
+```
+
+> P₀ là **mức giá tuyệt đối không được thấp hơn**. Thấp hơn P₀ là bán đơn nào lỗ đơn đó (chưa tính chi phí cố định). Khi làm khuyến mãi, tham gia campaign hay tính mức voucher, phải vạch ra ngưỡng này trước.
+
+### Giá sàn theo biên lợi nhuận gộp
+
+```
+Pmin = Công thức của P₀, nhưng mẫu số trừ thêm "biên LN gộp thấp nhất có thể chấp nhận"
 ```
 
 ---
 
-## 三、示例 A · 小件（充电宝）
+## 3. Ví dụ A · Hàng nhỏ (sạc dự phòng)
 
-### 输入
+### Đầu vào
 
-| 项 | 值 | 说明 |
+| Mục | Giá trị | Ghi chú |
 |---|---|---|
-| 产品成本 | `R$ 40,00` | 含采购 + 头程分摊 |
-| 尾程物流 | `R$ 12,00` | 按实际商品重量体积测 |
-| 仓库操作费 | `R$ 3,00` | 按体积档位 |
-| 平台佣金率 | `14%` | ⚠️ 按实际类目查 |
-| 广告率 | `7,5%` | 小件 5–10%，取中值 |
-| 退货损耗率 | `2%` | SOP 规定值 |
-| 目标毛利率 | `28%` | 小件 25–30%，取中值 |
+| Giá vốn sản phẩm | `R$ 40,00` | Gồm giá nhập + phân bổ vận chuyển chặng đầu |
+| Vận chuyển chặng cuối | `R$ 12,00` | Đo theo cân nặng, thể tích thực tế của sản phẩm |
+| Phí thao tác kho | `R$ 3,00` | Theo bậc thể tích |
+| Tỷ lệ hoa hồng sàn | `14%` | ⚠️ Tra theo ngành hàng thực tế |
+| Tỷ lệ quảng cáo | `7,5%` | Hàng nhỏ 5–10%, lấy giá trị giữa |
+| Tỷ lệ hao hụt hoàn hàng | `2%` | Giá trị quy định trong SOP |
+| Biên LN gộp mục tiêu | `28%` | Hàng nhỏ 25–30%, lấy giá trị giữa |
 
-### 计算
+### Tính toán
 
 ```
-分母 = 1 − 0,14 − 0,075 − 0,02 − 0,28 = 0,485
-分子 = 40 + 12 + 3 = 55
+Mẫu số = 1 − 0,14 − 0,075 − 0,02 − 0,28 = 0,485
+Tử số  = 40 + 12 + 3 = 55
 
 P = 55 ÷ 0,485 = R$ 113,40
 ```
 
-### 反算验证
+### Tính ngược để kiểm tra
 
-| 项 | 金额 | 占售价 |
+| Mục | Số tiền | % trên giá bán |
 |---|---|---|
-| 产品成本 | R$ 40,00 | 35,3% |
-| 尾程物流 | R$ 12,00 | 10,6% |
-| 仓库操作费 | R$ 3,00 | 2,6% |
-| 平台佣金（14%） | R$ 15,88 | 14,00% |
-| 广告（7,5%） | R$ 8,51 | 7,50% |
-| 退货损耗（2%） | R$ 2,27 | 2,00% |
-| **毛利（28%）** | **R$ 31,75** | **28,00%** |
-| **合计** | **R$ 113,40** | **100%** |
+| Giá vốn sản phẩm | R$ 40,00 | 35,3% |
+| Vận chuyển chặng cuối | R$ 12,00 | 10,6% |
+| Phí thao tác kho | R$ 3,00 | 2,6% |
+| Hoa hồng sàn (14%) | R$ 15,88 | 14,00% |
+| Quảng cáo (7,5%) | R$ 8,51 | 7,50% |
+| Hao hụt hoàn hàng (2%) | R$ 2,27 | 2,00% |
+| **Lợi nhuận gộp (28%)** | **R$ 31,75** | **28,00%** |
+| **Tổng** | **R$ 113,40** | **100%** |
 
-✅ 合计 = 售价，模型自洽。
+✅ Tổng = giá bán, mô hình tự khớp.
 
-### 价格底线
+### Giá sàn
 
-| 线 | 价格 | 含义 |
+| Ngưỡng | Giá | Ý nghĩa |
 |---|---|---|
-| **盈亏线 P₀** | **R$ 71,90** | 低于此价，每单亏钱 |
-| 毛利底线价（23%） | R$ 102,80 | 可接受的最低毛利 |
+| **Ngưỡng hòa vốn P₀** | **R$ 71,90** | Thấp hơn giá này là đơn nào cũng lỗ |
+| Giá sàn theo biên LN gộp (23%) | R$ 102,80 | Biên LN gộp thấp nhất có thể chấp nhận |
 
 ---
 
-## 四、示例 B · 大件（空气炸锅）
+## 4. Ví dụ B · Hàng cồng kềnh (nồi chiên không dầu)
 
-### 输入
+### Đầu vào
 
-| 项 | 值 |
+| Mục | Giá trị |
 |---|---|
-| 产品成本 | `R$ 120,00` |
-| 尾程物流 | `R$ 45,00` |
-| 仓库操作费 | `R$ 8,00` |
-| 平台佣金率 | `14%` |
-| 广告率 | `5%`（大件） |
-| 退货损耗率 | `2%` |
-| 目标毛利率 | `32%`（大件 30–35%，取中值） |
+| Giá vốn sản phẩm | `R$ 120,00` |
+| Vận chuyển chặng cuối | `R$ 45,00` |
+| Phí thao tác kho | `R$ 8,00` |
+| Tỷ lệ hoa hồng sàn | `14%` |
+| Tỷ lệ quảng cáo | `5%` (hàng cồng kềnh) |
+| Tỷ lệ hao hụt hoàn hàng | `2%` |
+| Biên LN gộp mục tiêu | `32%` (hàng cồng kềnh 30–35%, lấy giá trị giữa) |
 
-### 计算
+### Tính toán
 
 ```
-分母 = 1 − 0,14 − 0,05 − 0,02 − 0,32 = 0,47
-分子 = 120 + 45 + 8 = 173
+Mẫu số = 1 − 0,14 − 0,05 − 0,02 − 0,32 = 0,47
+Tử số  = 120 + 45 + 8 = 173
 
 P = 173 ÷ 0,47 = R$ 368,09
 ```
 
-### 反算验证
+### Tính ngược để kiểm tra
 
-| 项 | 金额 | 占售价 |
+| Mục | Số tiền | % trên giá bán |
 |---|---|---|
-| 产品成本 | R$ 120,00 | 32,6% |
-| 尾程物流 | R$ 45,00 | 12,2% |
-| 仓库操作费 | R$ 8,00 | 2,2% |
-| 平台佣金（14%） | R$ 51,53 | 14,00% |
-| 广告（5%） | R$ 18,40 | 5,00% |
-| 退货损耗（2%） | R$ 7,36 | 2,00% |
-| **毛利（32%）** | **R$ 117,79** | **32,00%** |
-| **合计** | **R$ 368,09** | **100%** |
+| Giá vốn sản phẩm | R$ 120,00 | 32,6% |
+| Vận chuyển chặng cuối | R$ 45,00 | 12,2% |
+| Phí thao tác kho | R$ 8,00 | 2,2% |
+| Hoa hồng sàn (14%) | R$ 51,53 | 14,00% |
+| Quảng cáo (5%) | R$ 18,40 | 5,00% |
+| Hao hụt hoàn hàng (2%) | R$ 7,36 | 2,00% |
+| **Lợi nhuận gộp (32%)** | **R$ 117,79** | **32,00%** |
+| **Tổng** | **R$ 368,09** | **100%** |
 
-### 价格底线
+### Giá sàn
 
-| 线 | 价格 |
+| Ngưỡng | Giá |
 |---|---|
-| **盈亏线 P₀** | **R$ 218,99** |
-| 毛利底线价（27%） | R$ 332,69 |
+| **Ngưỡng hòa vốn P₀** | **R$ 218,99** |
+| Giá sàn theo biên LN gộp (27%) | R$ 332,69 |
 
 ---
 
-## 五、SKU 结构化定价（SOP 3.2）
+## 5. Định giá theo cấu trúc SKU (SOP 3.2)
 
-SOP 的核心判断：
+Nhận định cốt lõi của SOP:
 
-> SKU 不是随便加的，而是为了让买家形成对比。
+> SKU không phải muốn thêm là thêm, mà là để người mua có sự so sánh.
 
-| SKU 角色 | 价格定位 | 毛利率 | 作用 |
+| Vai trò SKU | Định vị giá | Biên LN gộp | Tác dụng |
 |---|---|---|---|
-| **低配引流款** | 最低价，接近毛利底线 | **最薄**（可比目标低 5–8 个点） | 加快广告效率、提高点击率 |
-| **主推款** | 目标价 | 目标毛利 | 负责成交 |
-| **高配款** | 比主推高 20–40% | 更高 | 提高客单价 |
-| **套装款** | 通常最贵 | **最高** | 提高利润 |
+| **SKU kéo traffic (cấu hình thấp)** | Giá thấp nhất, sát giá sàn theo biên LN gộp | **Mỏng nhất** (có thể thấp hơn mục tiêu 5–8 điểm %) | Tăng hiệu quả quảng cáo, nâng CTR |
+| **SKU chủ lực** | Giá mục tiêu | Biên LN gộp mục tiêu | Chốt đơn |
+| **SKU cấu hình cao** | Cao hơn SKU chủ lực 20–40% | Cao hơn | Tăng giá trị đơn hàng trung bình (AOV) |
+| **SKU combo** | Thường đắt nhất | **Cao nhất** | Tăng lợi nhuận |
 
-**配合手段**：优惠券用来**缩小 SKU 之间的价格差距**——让买家觉得"加一点钱就能升级"，从而往主推款和高配款上走。
+**Công cụ phối hợp**: dùng voucher để **thu hẹp chênh lệch giá giữa các SKU** — cho người mua cảm giác "thêm chút tiền là được nâng cấp", từ đó kéo họ về SKU chủ lực và SKU cấu hình cao.
 
-### SKU 定价示例（充电宝）
+### Ví dụ định giá SKU (sạc dự phòng)
 
-| SKU | 内容 | 定价 | 毛利率 | 备注 |
+| SKU | Nội dung | Giá bán | Biên LN gộp | Ghi chú |
 |---|---|---|---|---|
-| 低配引流 | 10000mAh，单口 | `R$ 79,90` | ~20% | ⚠️ **高于盈亏线 R$ 71,90**，安全 |
-| **主推** | **20000mAh，3 口** | **`R$ 113,40`** | **28%** | 目标价 |
-| 高配 | 20000mAh + 无线充 | `R$ 149,90` | ~32% | — |
-| 套装 | 20000mAh × 2 | `R$ 199,90` | ~34% | — |
+| Kéo traffic (cấu hình thấp) | 10000mAh, 1 cổng | `R$ 79,90` | ~20% | ⚠️ **Cao hơn ngưỡng hòa vốn R$ 71,90**, an toàn |
+| **Chủ lực** | **20000mAh, 3 cổng** | **`R$ 113,40`** | **28%** | Giá mục tiêu |
+| Cấu hình cao | 20000mAh + sạc không dây | `R$ 149,90` | ~32% | — |
+| Combo | 20000mAh × 2 | `R$ 199,90` | ~34% | — |
 
-> **低配款定价必须过盈亏线检查。** 很多卖家引流款定得太低，毛利率看着还行，实际低于 P₀ 在亏钱。
+> **Giá của SKU cấu hình thấp bắt buộc phải qua bước kiểm tra ngưỡng hòa vốn.** Rất nhiều người bán đặt giá SKU kéo traffic quá thấp, nhìn biên LN gộp thì có vẻ ổn, nhưng thực tế đã thấp hơn P₀ và đang lỗ.
 
 ---
 
-## 六、费率参考速查
+## 6. Tra nhanh biểu phí tham khảo
 
-| 项 | 参考值 | 备注 |
+| Mục | Giá trị tham khảo | Ghi chú |
 |---|---|---|
-| 平台佣金 | 8–16% | **必须按实际类目查**，差异很大 |
-| 广告成本·大件 | ~5% | SOP |
-| 广告成本·小件 | 5–10% | SOP |
-| 退货损耗 | 2% | SOP |
-| 头程物流 | 按实际 | 分摊到单件 |
-| 尾程物流 | 按实际 | 必须实际测重测体积 |
-| 仓库操作费 | 按体积档 | 必须按实际报价 |
-| 支付手续费 | 按平台 | 部分平台单列，需确认是否已含在佣金里 |
+| Hoa hồng sàn | 8–16% | **Bắt buộc tra theo ngành hàng thực tế**, chênh lệch rất lớn |
+| Chi phí quảng cáo · hàng cồng kềnh | ~5% | SOP |
+| Chi phí quảng cáo · hàng nhỏ | 5–10% | SOP |
+| Hao hụt hoàn hàng | 2% | SOP |
+| Vận chuyển chặng đầu | Theo thực tế | Phân bổ cho từng sản phẩm |
+| Vận chuyển chặng cuối | Theo thực tế | Bắt buộc cân, đo thể tích thực tế |
+| Phí thao tác kho | Theo bậc thể tích | Bắt buộc theo báo giá thực tế |
+| Phí thanh toán | Theo sàn | Một số sàn tính riêng, cần xác nhận đã gồm trong hoa hồng hay chưa |
 
-> ⚠️ **拉美市场特别提醒**：巴西站的税费结构复杂（州税、联邦税、进口税），**本模型未包含税费**。实际定价时必须按你的实际税务方案补充税费项，否则算出的毛利率会偏高。
-> 建议在分母里再加一项 `税率`，公式变为：
+> ⚠️ **Lưu ý riêng cho thị trường Mỹ Latinh**: cơ cấu thuế khi bán sang Brazil khá phức tạp (thuế bang, thuế liên bang, thuế nhập khẩu), **mô hình này chưa tính thuế**. Khi định giá thực tế, bắt buộc bổ sung khoản thuế theo phương án thuế thực tế của bạn, nếu không biên LN gộp tính ra sẽ bị cao hơn thực tế.
+> Nên thêm một khoản `Tỷ lệ thuế` vào mẫu số, công thức trở thành:
 > ```
-> P = 分子 ÷ (1 − 佣金率 − 广告率 − 退货率 − 税率 − 目标毛利率)
+> P = Tử số ÷ (1 − Tỷ lệ hoa hồng − Tỷ lệ quảng cáo − Tỷ lệ hoàn hàng − Tỷ lệ thuế − Biên LN gộp mục tiêu)
 > ```
 
 ---
 
-## 七、填写自检
+## 7. Tự kiểm tra khi điền
 
-- [ ] 佣金率是**按实际类目查**的，不是套用参考值
-- [ ] 尾程物流是**实测**的，不是估的
-- [ ] 已按巴西（或其他市场）实际税务方案补充税费项
-- [ ] 已算出**盈亏线 P₀**，并确认所有 SKU 定价高于 P₀
-- [ ] 低配引流款特别核对过盈亏线（最容易亏在这里）
-- [ ] 已按 SKU 角色分层设置毛利率，形成"引导往高价走"的结构
-- [ ] 已记录前期养权重阶段的降价幅度与回提时点
-- [ ] 所有价格用 `R$` 且小数用逗号（`R$ 113,40`）
+- [ ] Tỷ lệ hoa hồng được **tra theo ngành hàng thực tế**, không lấy luôn giá trị tham khảo
+- [ ] Vận chuyển chặng cuối là số **đo thực tế**, không phải ước lượng
+- [ ] Đã bổ sung khoản thuế theo phương án thuế thực tế tại Brazil (hoặc thị trường khác)
+- [ ] Đã tính **ngưỡng hòa vốn P₀** và xác nhận giá của mọi SKU đều cao hơn P₀
+- [ ] Đã kiểm tra kỹ ngưỡng hòa vốn cho SKU kéo traffic (chỗ dễ lỗ nhất)
+- [ ] Đã phân tầng biên LN gộp theo vai trò SKU, tạo cấu trúc "dẫn người mua lên mức giá cao hơn"
+- [ ] Đã ghi lại mức giảm giá trong giai đoạn nuôi trọng số ban đầu và thời điểm nâng giá lại
+- [ ] Mọi mức giá đều dùng `R$` và dấu phẩy thập phân (`R$ 113,40`)
 
 ---
 
-**相关文档**：[SOP→Agent 拆解](../docs/00_Architecture_SOP_to_Agent.md) · [平台字段规范](../docs/02_Platform_Output_Spec.md) · [02 Product Strategy Agent](../Agents/02_Product_Strategy_Agent/)（Phase 2）
+**Tài liệu liên quan**: [Phân rã SOP→Agent](../docs/00_Architecture_SOP_to_Agent.md) · [Quy chuẩn trường dữ liệu theo sàn](../docs/02_Platform_Output_Spec.md) · [02 Product Strategy Agent](../Agents/02_Product_Strategy_Agent/) (Phase 2)

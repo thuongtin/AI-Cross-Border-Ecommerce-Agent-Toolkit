@@ -1,13 +1,13 @@
 ---
 name: sop-ecom-toolkit
 description: >-
-  跨境电商运营 AI 工具箱总入口（Shopee 巴西站 / Mercado Livre 专精，PT-BR）。
-  覆盖 7 条工作流：市场调研、产品策略与定价、Listing 文案、商品图（9 图框架）、
-  短视频物料、广告诊断、评论分析，以及"诊断→回改→复测"闭环。
-  当用户要"看类目 / 定价 / 写标题 / 写详情页 / 做主图 / 做详情图 / 9 张图 /
-  做视频 / 分镜 / 配音字幕 / 广告诊断 / ROAS / ACOS / 差评分析 / 卖点提炼 /
-  优化转化"时使用。中文「做图 / 做视频 / 看类目 / 算价格 / 分析评论」同样触发。
-  NOT for 账号操作、刷单测评等平台禁止行为、纯 Excel 透视。
+  Điểm vào tổng của bộ công cụ AI vận hành thương mại điện tử xuyên biên giới (chuyên sâu Shopee Brazil / Mercado Livre, PT-BR).
+  Bao quát 7 workflow: nghiên cứu thị trường, chiến lược sản phẩm và định giá, copy Listing, ảnh sản phẩm (khung 9 ảnh),
+  nội dung video ngắn, chẩn đoán quảng cáo, phân tích đánh giá, cùng vòng khép kín "chẩn đoán→sửa lại→kiểm tra lại".
+  Dùng khi người dùng muốn "xem ngành hàng / định giá / viết tiêu đề / viết trang chi tiết / làm ảnh chính / làm ảnh chi tiết / 9 ảnh /
+  làm video / storyboard / lồng tiếng phụ đề / chẩn đoán quảng cáo / ROAS / ACOS / phân tích đánh giá tiêu cực / đúc kết điểm bán hàng /
+  tối ưu chuyển đổi". Câu lệnh tiếng Việt「làm ảnh / làm video / xem ngành hàng / tính giá / phân tích đánh giá」cũng kích hoạt.
+  NOT for thao tác tài khoản, buff đơn ảo/review ảo và các hành vi sàn cấm khác, hay pivot Excel thuần túy.
 allowed-tools:
   - Bash(python *)
   - Read
@@ -18,62 +18,62 @@ metadata:
   license: MIT
 ---
 
-# AI Cross Border Ecommerce Agent Toolkit（总入口）
+# AI Cross Border Ecommerce Agent Toolkit (điểm vào tổng)
 
-本文件夹是**伞形 Skill**：先按下面的路由表判断用户要做哪件事，
-**再打开对应子模块的 SKILL.md 严格照做**——子模块里有各自的规则卡、
-算术脚本与底线约束，本文件只负责路由，不替代子模块的细节。
+Thư mục này là một **Skill dạng ô dù**: trước tiên dựa vào bảng định tuyến bên dưới để xác định người dùng muốn làm việc gì,
+**sau đó mở SKILL.md của module con tương ứng và làm theo đúng từng bước** —— mỗi module con có thẻ quy tắc,
+script tính toán và ràng buộc tối thiểu riêng; file này chỉ lo định tuyến, không thay thế chi tiết của module con.
 
-## 全局三条底线（任何子模块都继承）
+## Ba nguyên tắc nền tảng chung (mọi module con đều kế thừa)
 
-1. **不编数据** —— 输入缺字段报 `[INPUT_MISSING]` 并列出可用列，不许猜；
-   指标一律跑 `scripts/` 下的脚本，Agent 不心算
-2. **合规优先** —— 刷单/诱导评价/虚假宣传/恶意举报等平台禁止行为不做
-   （见 `docs/03_Compliance_Guard.md`、`docs/05_SOP_Gap_Register.md`）
-3. **买家可见文本 = 目标市场母语（PT-BR）**，内部备注用中文；
-   所有数字必须溯源到 `spec_table`
+1. **Không bịa dữ liệu** —— đầu vào thiếu trường thì báo `[INPUT_MISSING]` và liệt kê các cột đang có, không được đoán;
+   mọi chỉ số đều phải chạy script trong `scripts/`, Agent không tính nhẩm
+2. **Tuân thủ là ưu tiên số một** —— không làm các hành vi sàn cấm như buff đơn ảo/dụ dỗ đánh giá/quảng cáo sai sự thật/report ác ý
+   (xem `docs/03_Compliance_Guard.md`, `docs/05_SOP_Gap_Register.md`)
+3. **Văn bản người mua nhìn thấy = tiếng mẹ đẻ của thị trường mục tiêu (PT-BR)**, ghi chú nội bộ dùng tiếng Việt;
+   mọi con số phải truy được nguồn về `spec_table`
 
-## 路由表
+## Bảng định tuyến
 
-| 用户要做的事 | 打开哪个子模块 |
+| Việc người dùng muốn làm | Mở module con nào |
 |---|---|
-| 看类目 / 市场容量 / 集中度 / 价格带 / 配置机会 | [Agents/01_Market_Research_Agent/SKILL.md](Agents/01_Market_Research_Agent/SKILL.md) |
-| 定价 / SKU 结构 / 优惠券额度 / 目标毛利反算 | [Agents/02_Product_Strategy_Agent/SKILL.md](Agents/02_Product_Strategy_Agent/SKILL.md) |
-| 标题 / 详情页 / 卖点提炼 / 关键词分类 / 合规扫描 | [Agents/03_Listing_Creative_Agent/SKILL.md](Agents/03_Listing_Creative_Agent/SKILL.md) |
-| 主图 / 白底图 / 场景图 / 9 张图 / 图合规检查 | [Agents/04_Product_Image_Agent/SKILL.md](Agents/04_Product_Image_Agent/SKILL.md) |
-| 视频 / 分镜 / AI 视频 Prompt / 配音 / 字幕 | [Agents/05_Product_Video_Agent/SKILL.md](Agents/05_Product_Video_Agent/SKILL.md) |
-| 广告诊断 / ROAS / 盈亏线 / 预算动作 | [Agents/06_Advertising_Optimization_Agent/SKILL.md](Agents/06_Advertising_Optimization_Agent/SKILL.md) |
-| 差评归因 / 评论统计 / 卖点排行 / 修补文案 | [Agents/07_Review_Analysis_Agent/SKILL.md](Agents/07_Review_Analysis_Agent/SKILL.md) |
+| Xem ngành hàng / quy mô thị trường / mức độ tập trung / dải giá / cơ hội cấu hình | [Agents/01_Market_Research_Agent/SKILL.md](Agents/01_Market_Research_Agent/SKILL.md) |
+| Định giá / cấu trúc SKU / hạn mức voucher / tính ngược từ biên lợi nhuận gộp mục tiêu | [Agents/02_Product_Strategy_Agent/SKILL.md](Agents/02_Product_Strategy_Agent/SKILL.md) |
+| Tiêu đề / trang chi tiết / đúc kết điểm bán hàng / phân loại từ khóa / quét tuân thủ | [Agents/03_Listing_Creative_Agent/SKILL.md](Agents/03_Listing_Creative_Agent/SKILL.md) |
+| Ảnh chính / ảnh nền trắng / ảnh bối cảnh / 9 ảnh / kiểm tra tuân thủ ảnh | [Agents/04_Product_Image_Agent/SKILL.md](Agents/04_Product_Image_Agent/SKILL.md) |
+| Video / storyboard / Prompt video AI / lồng tiếng / phụ đề | [Agents/05_Product_Video_Agent/SKILL.md](Agents/05_Product_Video_Agent/SKILL.md) |
+| Chẩn đoán quảng cáo / ROAS / ngưỡng hòa vốn / hành động ngân sách | [Agents/06_Advertising_Optimization_Agent/SKILL.md](Agents/06_Advertising_Optimization_Agent/SKILL.md) |
+| Quy nguyên nhân đánh giá tiêu cực / thống kê đánh giá / xếp hạng điểm bán hàng / copy vá lỗi | [Agents/07_Review_Analysis_Agent/SKILL.md](Agents/07_Review_Analysis_Agent/SKILL.md) |
 
-**跨模块闭环**（用户在做完整运营时提醒他这条链路）：
-
-```text
-01 前置调研 → 02 定策略 → 03 写 Listing → 04 图 + 05 视频 → 上架
-→ 06 广告诊断 + 07 评论分析 → 回流 03/04（iterate：只改症状指向的部分）→ 复测
-```
-
-闭环纪律：**一次只改一个病因；不属于症状的环节不动；未达标不 加码同一动作，回诊断重新定位。**
-
-## 通用执行顺序
+**Vòng khép kín liên module** (nhắc người dùng về chuỗi này khi họ làm vận hành trọn bộ):
 
 ```text
-1. 读路由表 → 打开子模块 SKILL.md
-2. 按子模块的「最小输入」向用户要数据（导出 CSV / 产品照 / 参数表）
-3. 跑子模块 scripts/ 下的脚本出确定性数字（命令都在子 SKILL.md 的速查表里）
-4. 按 prompts/ 的规则产出内容
-5. 有校验脚本的必须过校验，不过不交付
-6. 涉及上架的提醒用户：平台规则为编写时公开值，发布前到卖家中心复核；
-   定价模型未含巴西税费，使用前自行补税率
+01 Nghiên cứu sơ bộ → 02 Chốt chiến lược → 03 Viết Listing → 04 Ảnh + 05 Video → Đăng bán
+→ 06 Chẩn đoán quảng cáo + 07 Phân tích đánh giá → Quay về 03/04 (iterate: chỉ sửa phần mà triệu chứng chỉ tới) → Kiểm tra lại
 ```
 
-## 已知限制
+Kỷ luật vòng khép kín: **mỗi lần chỉ sửa một nguyên nhân gốc; khâu nào không thuộc triệu chứng thì không đụng tới; chưa đạt thì không tăng liều cùng một hành động, mà quay lại chẩn đoán để xác định lại.**
 
-- **不代执行**：不操作卖家后台、不代改价改预算（动作清单交人审批）
-- **数据采集不在内**：类目/广告/评论导出由使用者提供
-- **渲染不在内**：图与视频由生图模型/剪辑工具产出，本工具箱出规划与 Prompt
-- 不做平台禁止的任何动作；请求涉及时拒绝并给合规替代
+## Thứ tự thực hiện chung
+
+```text
+1. Đọc bảng định tuyến → mở SKILL.md của module con
+2. Theo「đầu vào tối thiểu」của module con, xin dữ liệu từ người dùng (CSV xuất ra / ảnh sản phẩm / bảng thông số)
+3. Chạy script trong scripts/ của module con để ra con số tất định (lệnh đều có trong bảng tra nhanh của SKILL.md con)
+4. Tạo nội dung theo quy tắc trong prompts/
+5. Có script kiểm tra thì bắt buộc phải qua, không qua thì không bàn giao
+6. Nếu liên quan đến đăng bán, nhắc người dùng: quy định sàn là giá trị công khai tại thời điểm biên soạn, trước khi đăng phải kiểm tra lại trong Seller Center;
+   mô hình định giá chưa bao gồm thuế Brazil, tự bổ sung thuế suất trước khi dùng
+```
+
+## Giới hạn đã biết
+
+- **Không làm thay**: không thao tác Seller Center, không đổi giá/đổi ngân sách thay người dùng (danh sách hành động giao cho người duyệt)
+- **Không bao gồm thu thập dữ liệu**: dữ liệu xuất ngành hàng/quảng cáo/đánh giá do người dùng cung cấp
+- **Không bao gồm render**: ảnh và video do model tạo ảnh/công cụ dựng video tạo ra, bộ công cụ này chỉ xuất kế hoạch và Prompt
+- Không làm bất kỳ hành vi nào sàn cấm; khi yêu cầu dính tới thì từ chối và đưa phương án thay thế tuân thủ
 
 ---
 
-**文档**：[README](README.md) · [架构拆解](docs/00_Architecture_SOP_to_Agent.md) ·
-[合规红线](docs/03_Compliance_Guard.md) · [路线图](ROADMAP.md)
+**Tài liệu**: [README](README.md) · [Tách kiến trúc](docs/00_Architecture_SOP_to_Agent.md) ·
+[Lằn ranh đỏ tuân thủ](docs/03_Compliance_Guard.md) · [Lộ trình](ROADMAP.md)

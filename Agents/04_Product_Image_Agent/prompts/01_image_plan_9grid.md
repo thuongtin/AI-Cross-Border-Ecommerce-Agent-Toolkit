@@ -1,165 +1,165 @@
-# TASK · 9 图内容规划与图内文案
+# TASK · Lên kế hoạch nội dung 9 ảnh và text trong ảnh
 
-> 配套使用：`00_system.md` + 03 Listing Creative Agent 的输出
-> 对应 SOP **3.3 「9 张电商图片生成逻辑」**
+> Dùng kèm: `00_system.md` + đầu ra của 03 Listing Creative Agent
+> Tương ứng SOP **3.3 "Logic tạo 9 ảnh thương mại điện tử"**
 
 ---
 
 # INPUT
 
-必需字段：
+Trường bắt buộc:
 
-| 字段 | 来源 | 说明 |
+| Trường | Nguồn | Mô tả |
 |---|---|---|
-| `platform` | 人工 | 决定图片规范 |
-| `target_market` | 人工 | 决定图内文案语言 |
-| `mode` | 人工 | `standard` / `variant` / `iterate` |
-| `product_name` | 03 | 产品通用名 |
-| `category` | 03 | 用于确定视觉调性 |
-| `core_selling_point` | **03（阻塞项）** | 主图核心信息 |
-| `secondary_points[]` | **03（阻塞项）** | 细节图内容 |
-| `spec_table` | **03（阻塞项）** | 参数图 / 尺寸图 |
-| `package_content[]` | **03（阻塞项）** | 包装清单图 |
-| `warranty` | **03（阻塞项）** | 保修图 |
-| `usage_scope_confirmed[]` | **03（阻塞项）** | 场景图 |
-| `forbidden_words[]` | **03（阻塞项）** | 图内文案拦截 |
-| `visual_tone_hint` | 03 | 风格统一 |
-| `certifications` | 人工 | ⚠️ 仅填**实际持有**的认证，空则不生成认证图 |
+| `platform` | Người nhập | Quyết định quy chuẩn ảnh |
+| `target_market` | Người nhập | Quyết định ngôn ngữ text trong ảnh |
+| `mode` | Người nhập | `standard` / `variant` / `iterate` |
+| `product_name` | 03 | Tên chung của sản phẩm |
+| `category` | 03 | Dùng để xác định tông hình ảnh |
+| `core_selling_point` | **03 (mục chặn)** | Thông tin cốt lõi của ảnh chính |
+| `secondary_points[]` | **03 (mục chặn)** | Nội dung ảnh chi tiết |
+| `spec_table` | **03 (mục chặn)** | Ảnh thông số / ảnh kích thước |
+| `package_content[]` | **03 (mục chặn)** | Ảnh danh sách đóng gói |
+| `warranty` | **03 (mục chặn)** | Ảnh bảo hành |
+| `usage_scope_confirmed[]` | **03 (mục chặn)** | Ảnh bối cảnh |
+| `forbidden_words[]` | **03 (mục chặn)** | Chặn từ cấm trong text ảnh |
+| `visual_tone_hint` | 03 | Thống nhất phong cách |
+| `certifications` | Người nhập | ⚠️ Chỉ điền chứng nhận **thực sự có**, để trống thì không tạo ảnh chứng nhận |
 
 ---
 
-# STEP 1 · 9 图内容规划
+# STEP 1 · Lên kế hoạch nội dung 9 ảnh
 
-按固定 9 个图位输出。每个图位必须填写以下字段：
+Xuất theo 9 vị trí ảnh cố định. Mỗi vị trí ảnh bắt buộc điền các trường sau:
 
 ```markdown
-## 1. 9 图内容规划
+## 1. Kế hoạch nội dung 9 ảnh
 
-| # | 图位 | 承载信息 | 信息类型 | 画面构成 | 图内文案 | 字数 |
+| # | Vị trí ảnh | Thông tin truyền tải | Loại thông tin | Thành phần khung hình | Text trong ảnh | Số ký tự |
 |---|---|---|---|---|---|---|
-| 1 | 主图 | <一眼说清是什么> | 识别 | <构图描述> | <文案或「无文字」> | <n 字> |
-| 2 | 核心卖点图 | <core_selling_point> | 说服 | | | |
-| 3 | 参数规格图 | <spec_table 可视化> | 信息 | | | |
-| 4 | 使用场景图 A | <usage_scope[0]> | 代入 | | | |
-| 5 | 使用场景图 B | <usage_scope[1]> | 代入 | | | |
-| 6 | 细节特写图 | <secondary_points 关键项> | 说服 | | | |
-| 7 | 尺寸/对比图 | <尺寸参数> | 消除疑虑 | | | |
-| 8 | 包装清单图 | <package_content> | 消除纠纷 | | | |
-| 9 | 售后/保修图 | <warranty> | 信任 | | | |
+| 1 | Ảnh chính | <nhìn một cái là biết đây là gì> | Nhận diện | <mô tả bố cục> | <text hoặc "Không có chữ"> | <n ký tự> |
+| 2 | Ảnh điểm bán hàng chủ lực | <core_selling_point> | Thuyết phục | | | |
+| 3 | Ảnh thông số kỹ thuật | <trực quan hóa spec_table> | Thông tin | | | |
+| 4 | Ảnh bối cảnh sử dụng A | <usage_scope[0]> | Nhập vai | | | |
+| 5 | Ảnh bối cảnh sử dụng B | <usage_scope[1]> | Nhập vai | | | |
+| 6 | Ảnh cận cảnh chi tiết | <mục then chốt trong secondary_points> | Thuyết phục | | | |
+| 7 | Ảnh kích thước/so sánh | <thông số kích thước> | Xóa nghi ngờ | | | |
+| 8 | Ảnh danh sách đóng gói | <package_content> | Ngăn tranh chấp | | | |
+| 9 | Ảnh hậu mãi/bảo hành | <warranty> | Niềm tin | | | |
 ```
 
-## 各图位的强制要求
+## Yêu cầu bắt buộc cho từng vị trí ảnh
 
-### 图 1 · 主图
+### Ảnh 1 · Ảnh chính
 
-- **ML**：图内文案必须写 `无文字`（平台明令禁止）
-- **Shopee**：可加一句卖点，但**不超过 2 行、每行不超过 20 字符**
-- 画面：纯白背景，商品单一正面角度，完整展现，无配件（除非配件是售卖主体）
-- ⚠️ **这一张图必须做平台差异判断**，见下方 `platform_variant`
+- **ML**: text trong ảnh bắt buộc ghi `Không có chữ` (sàn cấm rõ ràng)
+- **Shopee**: được thêm một câu điểm bán hàng, nhưng **không quá 2 dòng, mỗi dòng không quá 20 ký tự**
+- Khung hình: nền trắng tinh, sản phẩm một góc chính diện duy nhất, thể hiện trọn vẹn, không có phụ kiện (trừ khi phụ kiện là sản phẩm chính được bán)
+- ⚠️ **Ảnh này bắt buộc phải phán đoán khác biệt giữa các sàn**, xem `platform_variant` bên dưới
 
-### 图 2 · 核心卖点图
+### Ảnh 2 · Ảnh điểm bán hàng chủ lực
 
-- 只能表达 **1 个**卖点（就是 `core_selling_point`）
-- 画面元素必须能**直接支撑**这句卖点。卖点说 45W，画面就要出现功率标识或快充对比
+- Chỉ được thể hiện **1** điểm bán hàng (chính là `core_selling_point`)
+- Các yếu tố trong khung hình phải **trực tiếp chứng minh** cho câu điểm bán hàng đó. Điểm bán hàng nói 45W thì khung hình phải có ký hiệu công suất hoặc so sánh sạc nhanh
 
-### 图 3 · 参数规格图
+### Ảnh 3 · Ảnh thông số kỹ thuật
 
-- 数值**逐字符**等于 `spec_table`
-- 单位公制，小数用逗号（`14,2 cm`）
-- 参数项不超过 **6 个**，多了手机上看不清，拆到第 7 张
+- Con số khớp **từng ký tự** với `spec_table`
+- Đơn vị hệ mét, số thập phân dùng dấu phẩy (`14,2 cm`)
+- Không quá **6** mục thông số, nhiều hơn sẽ khó đọc trên điện thoại, tách sang ảnh thứ 7
 
-### 图 4 / 5 · 使用场景图
+### Ảnh 4 / 5 · Ảnh bối cảnh sử dụng
 
-- 场景必须来自 `usage_scope_confirmed`，**顺序即优先级**
-- ⚠️ **虚假宣传高发区**：画面里的使用方式必须是产品真实能做到的
-  （例：不防水的产品，场景图不能出现雨中、泳池边、船上）
+- Bối cảnh phải lấy từ `usage_scope_confirmed`, **thứ tự chính là mức ưu tiên**
+- ⚠️ **Vùng hay dính quảng cáo sai sự thật**: cách sử dụng trong khung hình phải là điều sản phẩm thực sự làm được
+  (ví dụ: sản phẩm không chống nước thì ảnh bối cảnh không được có cảnh trong mưa, bên hồ bơi, trên thuyền)
 
-### 图 6 · 细节特写图
+### Ảnh 6 · Ảnh cận cảnh chi tiết
 
-- 挑 `secondary_points` 里**最有视觉冲击力**的一项
-- 例：数字显示屏、接口布局、拉链工艺
+- Chọn mục **có sức hút thị giác nhất** trong `secondary_points`
+- Ví dụ: màn hình hiển thị số, bố trí cổng kết nối, đường may khóa kéo
 
-### 图 7 · 尺寸/对比图
+### Ảnh 7 · Ảnh kích thước/so sánh
 
-- 必须出现**具体数值 + 参照物**（手、常见物体、人体比例）
-- ⚠️ 对比对象必须是通用形态，不得特指竞品外观
+- Bắt buộc có **con số cụ thể + vật tham chiếu** (bàn tay, đồ vật thông dụng, tỷ lệ cơ thể người)
+- ⚠️ Đối tượng so sánh phải là hình dạng chung, không được chỉ đích danh ngoại hình của đối thủ
 
-### 图 8 · 包装清单图
+### Ảnh 8 · Ảnh danh sách đóng gói
 
-- **完整平铺**，一件不落
-- **明确标注"不含什么"** —— 这是对冲误解型差评最有效的一张图
-- 例：`Não incluso: adaptador de tomada`
+- **Bày phẳng đầy đủ**, không sót món nào
+- **Ghi rõ "không có gì"** —— đây là ảnh hiệu quả nhất để phòng ngừa đánh giá tiêu cực loại hiểu lầm
+- Ví dụ: `Não incluso: adaptador de tomada`
 
-### 图 9 · 售后/保修图
+### Ảnh 9 · Ảnh hậu mãi/bảo hành
 
-- **巴西站强建议**（消费法语境下的信任要素）
-- 内容：保修时长 + 范围 + 客服通道
-- **不得生成仿平台官方标识的图形**
+- **Shopee Brazil rất nên có** (yếu tố tạo niềm tin trong bối cảnh luật bảo vệ người tiêu dùng)
+- Nội dung: thời hạn bảo hành + phạm vi + kênh CSKH
+- **Không được tạo đồ họa nhái biểu tượng chính thức của sàn**
 
 ---
 
-# STEP 2 · 平台差异处理（platform_variant）
+# STEP 2 · Xử lý khác biệt giữa các sàn (platform_variant)
 
-**如果 `platform = mercadolivre` 或 `amazon`**，输出两套主图方案：
+**Nếu `platform = mercadolivre` hoặc `amazon`**, xuất hai phương án ảnh chính:
 
 ```markdown
-## 2. 平台差异方案
+## 2. Phương án theo khác biệt sàn
 
-| 方案 | 适用平台 | 主图特点 | 说明 |
+| Phương án | Sàn áp dụng | Đặc điểm ảnh chính | Ghi chú |
 |---|---|---|---|
-| A | Mercado Livre / Amazon | **纯白底 + 无任何文字** | 平台强制 |
-| B | Shopee / TikTok Shop | 白底 + 卖点文字（≤2 行） | 提升站内点击率 |
+| A | Mercado Livre / Amazon | **Nền trắng tinh + không có chữ nào** | Sàn bắt buộc |
+| B | Shopee / TikTok Shop | Nền trắng + chữ điểm bán hàng (≤2 dòng) | Tăng CTR trên sàn |
 
-⚠️ **同一套主图素材不能跨平台复用。**
+⚠️ **Cùng một bộ creative ảnh chính không được dùng lại giữa các sàn.**
 ```
 
-理由：Shopee 站内主图带卖点是常见且有效的做法，Mercado Livre 明令禁止。**这是硬冲突，不是偏好差异。**
+Lý do: trên Shopee, ảnh chính có điểm bán hàng là cách làm phổ biến và hiệu quả, còn Mercado Livre cấm rõ ràng. **Đây là xung đột cứng, không phải khác biệt về sở thích.**
 
 ---
 
-# STEP 3 · 图内文案撰写
+# STEP 3 · Viết text trong ảnh
 
-对每张带文字的图，输出：
+Với mỗi ảnh có chữ, xuất:
 
 ```markdown
-## 3. 图内文案明细
+## 3. Chi tiết text trong ảnh
 
-### 图 <n> · <图位>
-- 主文案：`<母语>`
-- 副文案：`<母语>`（可选）
-- 字符数：`<n>` 字符 / 上限 `<m>`
-- 移动端可读性：✅ 主文案字号 ≥ 图高 4%
-- 合规检查：✅ 无禁用词 / 数值与 spec_table 一致
+### Ảnh <n> · <vị trí ảnh>
+- Text chính: `<ngôn ngữ bản địa>`
+- Text phụ: `<ngôn ngữ bản địa>` (tùy chọn)
+- Số ký tự: `<n>` ký tự / giới hạn `<m>`
+- Dễ đọc trên mobile: ✅ cỡ chữ text chính ≥ 4% chiều cao ảnh
+- Kiểm tra tuân thủ: ✅ không có từ cấm / con số khớp spec_table
 ```
 
-**文案撰写的三条硬规则**：
+**Ba quy tắc cứng khi viết text**:
 
-1. **图内文案不是广告语。** 写信息，不写情绪。
+1. **Text trong ảnh không phải slogan quảng cáo.** Viết thông tin, không viết cảm xúc.
    - ❌ `Incrível! O melhor carregador do Brasil!`
    - ✅ `20000 mAh · 45 W · 3 saídas`
-2. **数值必须与 `spec_table` 完全一致**，包括小数点和千位分隔符。
-3. **一句话只讲一件事。** 一张图上出现两个卖点，等于没有卖点。
+2. **Con số phải khớp hoàn toàn với `spec_table`**, kể cả dấu thập phân và dấu phân cách hàng nghìn.
+3. **Mỗi câu chỉ nói một việc.** Một ảnh có hai điểm bán hàng thì coi như không có điểm bán hàng nào.
 
 ---
 
-# 三种模式
+# Ba chế độ
 
-| mode | 输出差异 |
+| mode | Khác biệt đầu ra |
 |---|---|
-| `standard` | 9 图标准方案 |
-| `variant` | 输出 **2 套** 差异化 9 图方案（主图卖点方向不同、场景不同），用于 SOP 3.4 多链接测试 / SOP 2.3 多店铺差异化 |
-| `iterate` | 对应 SOP 3.6：输入现有主图描述 + 症状（如"CTR 1.2% 低于 3% 基准"），**只改主图**，其余图片保持不动 |
+| `standard` | Phương án 9 ảnh tiêu chuẩn |
+| `variant` | Xuất **2 bộ** phương án 9 ảnh khác biệt hóa (hướng điểm bán hàng của ảnh chính khác nhau, bối cảnh khác nhau), dùng cho test nhiều link theo SOP 3.4 / khác biệt hóa nhiều shop theo SOP 2.3 |
+| `iterate` | Tương ứng SOP 3.6: nhập mô tả ảnh chính hiện tại + triệu chứng (ví dụ "CTR 1.2% thấp hơn mức chuẩn 3%"), **chỉ sửa ảnh chính**, các ảnh khác giữ nguyên |
 
-`mode = iterate` 时输出：
+Khi `mode = iterate` thì xuất:
 
 ```markdown
-## 2. 主图迭代方案
-- 现状主图描述：<...>
-- 症状：<...>
-- 诊断：<为什么点击率低，对应哪条规则>
-- 修改点：<只列改动项>
-- 迭代后主图方案：<...>
-- 预期效果：<一句话>
+## 2. Phương án cải tiến ảnh chính
+- Mô tả ảnh chính hiện tại: <...>
+- Triệu chứng: <...>
+- Chẩn đoán: <vì sao CTR thấp, ứng với quy tắc nào>
+- Điểm cần sửa: <chỉ liệt kê mục thay đổi>
+- Phương án ảnh chính sau cải tiến: <...>
+- Hiệu quả kỳ vọng: <một câu>
 ```
 
 ---
@@ -167,34 +167,34 @@
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 9 图内容规划
-（9 行表格）
+## 1. Kế hoạch nội dung 9 ảnh
+(bảng 9 dòng)
 
-## 2. 平台差异方案
-（仅 ML / Amazon 时输出；其他平台写「无平台冲突」）
+## 2. Phương án theo khác biệt sàn
+(chỉ xuất khi là ML / Amazon; sàn khác ghi "Không có xung đột giữa các sàn")
 
-## 3. 图内文案明细
-（逐图）
+## 3. Chi tiết text trong ảnh
+(từng ảnh)
 
-## 4. 图片合规扫描
-（按 00_system.md 的 I1–I8 输出；无命中也必须写"无命中"）
+## 4. Quét tuân thủ hình ảnh
+(xuất theo I1–I8 của 00_system.md; không vi phạm cũng phải ghi "không vi phạm")
 
-## 5. 交付给 05 Product Video 的字段
-- visual_tone_confirmed:     # 最终确认的视觉调性
-- hero_visual:               # 主图画面描述 → 视频首帧参考
-- key_visual_moments: []     # 最有视觉冲击力的 2–3 个画面 → 视频分镜优先项
+## 5. Các trường giao cho 05 Product Video
+- visual_tone_confirmed:     # Tông hình ảnh được xác nhận cuối cùng
+- hero_visual:               # Mô tả khung hình ảnh chính → tham chiếu khung hình đầu của video
+- key_visual_moments: []     # 2–3 khung hình có sức hút thị giác nhất → mục ưu tiên cho storyboard video
 ```
 
 ---
 
 # SELF-CHECK
 
-- [ ] 9 个图位全部填写，无「待定」
-- [ ] 每张图只承载一个明确信息
-- [ ] 主图规范符合目标平台（ML 无文字）
-- [ ] 图内文案不超过 3 行、每行不超限
-- [ ] 所有数值与 `spec_table` 逐字符一致
-- [ ] 场景全部在 `usage_scope_confirmed` 内
-- [ ] 图 8 明确标注了"不含什么"
-- [ ] `certifications` 为空时未生成任何认证图
-- [ ] 末尾已附图片合规扫描 + 下游字段
+- [ ] Điền đủ cả 9 vị trí ảnh, không có "chờ xác định"
+- [ ] Mỗi ảnh chỉ mang một thông tin rõ ràng
+- [ ] Quy chuẩn ảnh chính đúng với sàn mục tiêu (ML không có chữ)
+- [ ] Text trong ảnh không quá 3 dòng, mỗi dòng không vượt giới hạn
+- [ ] Mọi con số khớp từng ký tự với `spec_table`
+- [ ] Mọi bối cảnh đều nằm trong `usage_scope_confirmed`
+- [ ] Ảnh 8 đã ghi rõ "không có gì"
+- [ ] Khi `certifications` trống thì không tạo bất kỳ ảnh chứng nhận nào
+- [ ] Cuối đầu ra đã kèm quét tuân thủ hình ảnh + các trường cho downstream

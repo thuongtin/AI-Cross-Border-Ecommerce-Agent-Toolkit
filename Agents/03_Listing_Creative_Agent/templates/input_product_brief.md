@@ -1,86 +1,86 @@
-# 输入模板 · 产品资料与关键词三榜
+# Template đầu vào · Hồ sơ sản phẩm và 3 bảng từ khóa
 
-> **使用方法**：复制本文件 → 填写 → 与 `prompts/00_system.md` + 对应任务 Prompt 一起提交给 LLM。
-> **带 `*` 的字段为必需项**，缺失会导致对应输出无法生成（详见各 Prompt 的 INPUT CONTRACT）。
+> **Cách dùng**: sao chép file này → điền thông tin → gửi cho LLM cùng `prompts/00_system.md` + Task Prompt tương ứng.
+> **Trường có dấu `*` là bắt buộc**, thiếu sẽ khiến phần đầu ra tương ứng không tạo được (chi tiết xem INPUT CONTRACT của từng Prompt).
 
 ---
 
-## 0. 任务配置
+## 0. Cấu hình task
 
 ```yaml
 platform*: shopee              # shopee | mercadolivre | amazon | tiktokshop | shopify
-target_market*: 巴西            # 决定输出语言：巴西→PT-BR / 墨西哥→ES
+target_market*: Brazil         # quyết định ngôn ngữ đầu ra: Brazil→PT-BR / Mexico→ES
 mode*: single                  # single | variant | iterate
-variant_count: 3               # mode=variant 时必填，2–4
+variant_count: 3               # bắt buộc khi mode=variant, 2–4
 ```
 
 ---
 
-## 1. 产品基础信息
+## 1. Thông tin cơ bản của sản phẩm
 
 ```yaml
-product_name*: "Carregador Portátil"        # 产品通用名（目标语言）
-category*: "电池 / 充电类"
-sku_internal: ""                            # 内部 SKU 编码（可选）
+product_name*: "Carregador Portátil"        # tên gọi chung của sản phẩm (ngôn ngữ mục tiêu)
+category*: "Pin / sạc"
+sku_internal: ""                            # mã SKU nội bộ (tùy chọn)
 ```
 
 ---
 
-## 2. 参数表（spec_table）★ 最关键
+## 2. Bảng thông số (spec_table) ★ Quan trọng nhất
 
-> **所有输出中出现的数值，都必须能在本表找到对应项。** 本表是唯一数值来源。
-> **不确定的参数：留空，不要编。** 留空只会少一个卖点，编错会导致退货和罚分。
+> **Mọi giá trị số xuất hiện trong đầu ra đều phải tìm được mục tương ứng trong bảng này.** Bảng này là nguồn số liệu duy nhất.
+> **Thông số chưa chắc chắn: để trống, đừng bịa.** Để trống chỉ mất một điểm bán hàng, bịa sai sẽ dẫn tới trả hàng và bị phạt điểm.
 
-| 参数键 | 值（含单位） | 备注 |
+| Key thông số | Giá trị (kèm đơn vị) | Ghi chú |
 |---|---|---|
-| `marca` | | 无品牌授权则留空 |
+| `marca` | | Không có ủy quyền thương hiệu thì để trống |
 | `modelo` | | |
 | `cor` | | |
 | `material` | | |
-| `peso` | | 公制：`380 g` |
-| `dimensoes` | | 公制：`14,2 × 6,8 × 2,8 cm` |
-| `capacidade` | | 如 `20000 mAh` |
-| `potencia_saida` | | 如 `45 W` |
-| `voltagem_entrada` | | 如 `100–240 V` |
-| `portas` | | 如 `2× USB-A + 1× USB-C` |
-| `tempo_recarga` | | 注明测试条件 |
-| `garantia` | | **巴西站必需** |
-| `certificacoes` | | ⚠️ 仅填**实际持有**的认证，虚构属高危违规 |
-| `_custom_1` | | 类目特有参数，按需增删 |
+| `peso` | | Hệ mét: `380 g` |
+| `dimensoes` | | Hệ mét: `14,2 × 6,8 × 2,8 cm` |
+| `capacidade` | | Ví dụ `20000 mAh` |
+| `potencia_saida` | | Ví dụ `45 W` |
+| `voltagem_entrada` | | Ví dụ `100–240 V` |
+| `portas` | | Ví dụ `2× USB-A + 1× USB-C` |
+| `tempo_recarga` | | Ghi rõ điều kiện test |
+| `garantia` | | **Bắt buộc với Shopee Brazil** |
+| `certificacoes` | | ⚠️ Chỉ điền chứng nhận **thực sự đang có**, bịa đặt là vi phạm nguy cơ cao |
+| `_custom_1` | | Thông số riêng của ngành hàng, thêm bớt tùy nhu cầu |
 | `_custom_2` | | |
 
-**包装清单**（`package_content`）— ⚠️ **差评第一大来源，务必填全**：
+**Danh sách hàng trong hộp** (`package_content`) — ⚠️ **nguồn đánh giá tiêu cực số một, nhất định phải điền đủ**:
 
 ```yaml
 package_content*:
   - "1× Carregador Portátil 20000mAh"
   - "1× Cabo USB-C"
-  # 不含什么也要写明，例如：
-  # - "（注意：Adaptador de tomada NÃO incluso）"
+  # Những gì không kèm theo cũng phải ghi rõ, ví dụ:
+  # - "(Lưu ý: Adaptador de tomada NÃO incluso)"
 ```
 
 ---
 
-## 3. 使用场景范围（usage_scope）★ 合规必需
+## 3. Phạm vi ngữ cảnh sử dụng (usage_scope) ★ Bắt buộc để tuân thủ
 
-> 只有列在这里的场景，才允许出现在详情页的"使用场景"段。超出范围的会被删除。
+> Chỉ những ngữ cảnh được liệt kê ở đây mới được phép xuất hiện trong đoạn "Ngữ cảnh sử dụng" của trang chi tiết. Ngữ cảnh vượt phạm vi sẽ bị xóa.
 
 ```yaml
 usage_scope*:
   - "Viagem e deslocamentos diários"
   - "Trabalho remoto / home office"
   - "Camping e atividades ao ar livre"
-  # 不要写产品做不到的场景
+  # Đừng ghi ngữ cảnh mà sản phẩm không làm được
 ```
 
-**不要写在这些场景里**（示例）：不防水产品不写"水上活动"；非医用产品不写"医疗急救援"。
+**Đừng ghi những ngữ cảnh như sau** (ví dụ): sản phẩm không chống nước thì đừng ghi "hoạt động dưới nước"; sản phẩm không dùng cho y tế thì đừng ghi "sơ cứu y tế".
 
 ---
 
-## 4. 卖点输入（可含夸张表述）
+## 4. Điểm bán hàng đầu vào (có thể phóng đại)
 
-> 这里可以随便写，甚至可以写得夸张。Agent 会按「卖点真实化映射表」改写成可验证表达。
-> 但**每条卖点都必须有真实依据**，否则改不出来。
+> Phần này viết thoải mái, thậm chí viết phóng đại cũng được. Agent sẽ viết lại thành cách diễn đạt kiểm chứng được theo "bảng ánh xạ điểm bán hàng về sự thật".
+> Nhưng **mỗi điểm bán hàng đều phải có căn cứ thật**, nếu không sẽ không viết lại được.
 
 ```yaml
 selling_points_input:
@@ -93,95 +93,95 @@ selling_points_input:
 
 ---
 
-## 5. 品牌与合规声明 ★
+## 5. Thương hiệu và cam kết tuân thủ ★
 
 ```yaml
-brand_authorization: []      # 已获授权的品牌名列表。无授权写 []
-                             # 例：["Anker"]  ← 只有真的拿到授权才填
+brand_authorization: []      # danh sách thương hiệu đã được ủy quyền. Không có ủy quyền thì ghi []
+                             # ví dụ: ["Anker"]  ← chỉ điền khi thực sự đã có ủy quyền
 
-competitor_weakness: []      # 竞品短板（用于差异化表达，可选）
-  # 例：["竞品普遍 18W 输出", "竞品无数字显示"]
+competitor_weakness: []      # điểm yếu của đối thủ (dùng cho cách diễn đạt khác biệt hóa, tùy chọn)
+  # ví dụ: ["Đối thủ phần lớn chỉ có đầu ra 18W", "Đối thủ không có màn hình số"]
 
-review_insights: []          # 来自 07 Review Analysis 的差评归因（可选，强烈建议）
-  # 例：
-  # - type: 误解型
-  #   content: "买家以为含数据线"
-  #   action: "详情页注意事项段写明 cabo não incluso"
+review_insights: []          # kết quả quy nguyên nhân đánh giá tiêu cực từ 07 Review Analysis (tùy chọn, rất nên có)
+  # ví dụ:
+  # - type: loại hiểu lầm
+  #   content: "Người mua tưởng có kèm cáp sạc"
+  #   action: "Ghi rõ cabo não incluso trong đoạn Lưu ý của trang chi tiết"
 
-notes_required*: true        # 是否生成"注意事项"段
-                             # 有误解型差评时建议设为 true
+notes_required*: true        # có tạo đoạn "Lưu ý" hay không
+                             # khi có đánh giá tiêu cực loại hiểu lầm nên đặt là true
 ```
 
 ---
 
-## 6. 关键词三榜 ★ 必需
+## 6. Ba bảng từ khóa ★ Bắt buộc
 
-> 来源：虾多拉 / 平台搜索词工具 / 卖家中心关键词分析。
-> **格式**：每榜一行一个词，或用逗号分隔。
-> ⚠️ Agent **不产生关键词**，只做分类和组合。三榜缺失则无法执行关键词分类。
+> Nguồn: Shaduola / công cụ từ khóa tìm kiếm của sàn / phân tích từ khóa trong Seller Center.
+> **Định dạng**: mỗi bảng một từ một dòng, hoặc phân tách bằng dấu phẩy.
+> ⚠️ Agent **không tự sinh từ khóa**, chỉ phân loại và ghép. Thiếu ba bảng thì không thực hiện được phân loại từ khóa.
 
-### 6.1 搜索量前 30
+### 6.1 Top 30 theo lượng tìm kiếm
 
 ```text
-<词1>
-<词2>
+<từ 1>
+<từ 2>
 ...
 ```
 
-### 6.2 供需比前 30
+### 6.2 Top 30 theo tỷ lệ cung cầu
 
 ```text
-<词1>
-<词2>
+<từ 1>
+<từ 2>
 ...
 ```
 
-### 6.3 增长率前 30
+### 6.3 Top 30 theo tốc độ tăng trưởng
 
 ```text
-<词1>
-<词2>
+<từ 1>
+<từ 2>
 ...
 ```
 
 ---
 
-## 7. 竞品参考（可选但建议）
+## 7. Tham khảo đối thủ (tùy chọn nhưng nên có)
 
-| 竞品 | 价格 | 月销量 | 标题 | 主图特点 | 核心卖点 | 差评高频点 |
+| Đối thủ | Giá | Doanh số tháng | Tiêu đề | Đặc điểm ảnh chính | Điểm bán hàng cốt lõi | Điểm hay bị đánh giá tiêu cực |
 |---|---|---|---|---|---|---|
 | | | | | | | |
 
-> 填了它，Agent 的"差异化表达"部分会更具体；不填也不影响基础输出。
+> Điền phần này thì phần "diễn đạt khác biệt hóa" của Agent sẽ cụ thể hơn; không điền cũng không ảnh hưởng đầu ra cơ bản.
 
 ---
 
-## 8. mode 专属字段
+## 8. Trường riêng theo mode
 
 ### mode = variant
 
 ```yaml
-variant_directions: []       # 留空则由 Agent 按三种方向自动分配
-  # 例：["参数驱动", "场景驱动", "人群驱动"]
+variant_directions: []       # để trống thì Agent tự phân bổ theo ba hướng
+  # ví dụ: ["Thông số dẫn dắt", "Ngữ cảnh dẫn dắt", "Nhóm khách hàng dẫn dắt"]
 ```
 
-### mode = iterate（对应 SOP 3.6 广告跑不动时回改）
+### mode = iterate (tương ứng SOP 3.6 sửa lại khi quảng cáo không chạy)
 
 ```yaml
 existing_title: ""
-symptom: ""                  # 例："有曝光没点击，CTR 1.2%（低于 3% 基准）"
-constraints: ""              # 例："只改主图位置的关键词，不要动参数部分"
+symptom: ""                  # ví dụ: "Có hiển thị nhưng không có click, CTR 1.2% (thấp hơn chuẩn 3%)"
+constraints: ""              # ví dụ: "Chỉ sửa từ khóa ở vị trí đầu tiêu đề, không động vào phần thông số"
 ```
 
 ---
 
-## 填写自检
+## Tự kiểm tra khi điền
 
-- [ ] 所有 `*` 必填项已填
-- [ ] `spec_table` 中所有数值都是我**能举证的真实值**
-- [ ] `package_content` 已完整列出，包含"不含什么"
-- [ ] `usage_scope` 里的场景产品**真的能做到**
-- [ ] `brand_authorization` 没有填入未授权的品牌
-- [ ] `certificacoes` 只填**实际持有**的认证
-- [ ] 三榜关键词已填（共 90 个词）
-- [ ] 我理解：**参数真实性由我负责**，Agent 只能保证"输出与输入一致"
+- [ ] Đã điền mọi trường bắt buộc có dấu `*`
+- [ ] Mọi giá trị số trong `spec_table` đều là **giá trị thật mà tôi chứng minh được**
+- [ ] `package_content` đã liệt kê đầy đủ, gồm cả "những gì không kèm theo"
+- [ ] Các ngữ cảnh trong `usage_scope` là những gì sản phẩm **thực sự làm được**
+- [ ] `brand_authorization` không chứa thương hiệu chưa được ủy quyền
+- [ ] `certificacoes` chỉ điền chứng nhận **thực sự đang có**
+- [ ] Đã điền ba bảng từ khóa (tổng 90 từ)
+- [ ] Tôi hiểu rằng: **tôi chịu trách nhiệm về tính xác thực của thông số**, Agent chỉ đảm bảo được "đầu ra khớp với đầu vào"

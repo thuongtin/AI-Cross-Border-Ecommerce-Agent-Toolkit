@@ -1,85 +1,85 @@
-# metrics.md · 公式与口径
+# metrics.md · Công thức và cách tính
 
-> 所有数字由 `scripts/ad_metrics.py` 计算，Agent **只解读不重算**（同 01 模块纪律）。
-> 怀疑数字有问题 → 输出 `[METRIC_SUSPECT]` 并让使用者核对脚本参数。
+> Mọi con số do `scripts/ad_metrics.py` tính, Agent **chỉ diễn giải, không tính lại** (cùng kỷ luật với module 01).
+> Nghi ngờ con số có vấn đề → xuất `[METRIC_SUSPECT]` và yêu cầu người dùng kiểm tra lại tham số của script.
 
 ---
 
-## 一、成本模型（盈亏线的地基）
+## I. Mô hình chi phí (nền móng của ngưỡng hòa vốn)
 
 ```text
-广告前贡献 = 售价 − 产品成本 − 头程 − 尾程 − 售价×佣金% − 售价×退货损耗% − 售价×税率%
-盈亏线 ACoS = 广告前贡献 ÷ 售价
-盈亏线 ROAS = 1 ÷ 盈亏线 ACoS = 售价 ÷ 广告前贡献
+Đóng góp trước quảng cáo = Giá bán − Giá vốn − Vận chuyển chặng đầu − Vận chuyển chặng cuối − Giá bán×Hoa hồng% − Giá bán×Hao hụt hoàn hàng% − Giá bán×Thuế suất%
+ACoS hòa vốn = Đóng góp trước quảng cáo ÷ Giá bán
+ROAS hòa vốn = 1 ÷ ACoS hòa vốn = Giá bán ÷ Đóng góp trước quảng cáo
 ```
 
-| 参数 | CLI 旗标 | 说明 |
+| Tham số | Cờ CLI | Giải thích |
 |---|---|---|
-| 售价 | `--price` | 含税售价 R$ |
-| 产品成本+物流 | `--product-cost` | **到岸成本**（含头程/尾程就都算在这里，别再填 shipping 重复计） |
-| 平台佣金 | `--commission` | Shopee BR 约 14%（含交易费），ML 约 13–17% 按类目 |
-| 退货损耗 | `--return` | 退货率 × 货值损失的简化口径 |
-| **综合有效税率** | `--tax` | 巴西税制复杂（ICMS/PIS/COFINS/Simples Nacional），**用"占售价百分比"一个参数折算**，按自己的税制填 |
+| Giá bán | `--price` | Giá bán đã gồm thuế, R$ |
+| Giá vốn + vận chuyển | `--product-cost` | **Giá vốn về tới kho** (nếu đã gồm vận chuyển chặng đầu/chặng cuối thì tính hết ở đây, đừng điền thêm shipping để tránh tính trùng) |
+| Hoa hồng sàn | `--commission` | Shopee BR khoảng 14% (gồm phí giao dịch), ML khoảng 13–17% tùy ngành hàng |
+| Hao hụt hoàn hàng | `--return` | Cách tính đơn giản: tỷ lệ hoàn hàng × tổn thất giá trị hàng |
+| **Thuế suất hiệu dụng tổng hợp** | `--tax` | Hệ thống thuế Brazil phức tạp (ICMS/PIS/COFINS/Simples Nacional), **quy đổi thành một tham số "% trên giá bán"**, điền theo chế độ thuế của mình |
 
-### 税费对盈亏线的影响（实测，充电宝案例）
+### Ảnh hưởng của thuế đến ngưỡng hòa vốn (đo thực tế, case sạc dự phòng)
 
 ```text
-税率 0%：广告前贡献 R$ 40.26  → 盈亏线 ROAS 2.82
-税率 8%：广告前贡献 R$ 31.18  → 盈亏线 ROAS 3.64   ← 门槛抬高 29%
+Thuế suất 0%: Đóng góp trước quảng cáo R$ 40.26  → ROAS hòa vốn 2.82
+Thuế suất 8%: Đóng góp trước quảng cáo R$ 31.18  → ROAS hòa vốn 3.64   ← ngưỡng tăng 29%
 ```
 
-**税率不是可选项。** 不含税算出来的盈亏线会让你以为不亏的单子在亏。
+**Thuế suất không phải tùy chọn.** Ngưỡng hòa vốn tính mà không có thuế sẽ khiến bạn tưởng đơn không lỗ trong khi thực ra đang lỗ.
 
 ---
 
-## 二、出价公式
+## II. Công thức giá thầu
 
 ```text
-可承受 CPC = 售价 × 转化率 × 目标 ACoS
-目标 ROAS  = 1 ÷ 目标 ACoS
+CPC chịu được = Giá bán × Tỷ lệ chuyển đổi × ACoS mục tiêu
+ROAS mục tiêu = 1 ÷ ACoS mục tiêu
 ```
 
-- 目标 ACoS 由使用者定（在盈亏线之下才有钱赚；常见 20–30%）
-- 当前 CPC **高于** 可承受 CPC → 每次点击都在加速亏损
+- ACoS mục tiêu do người dùng đặt (phải thấp hơn ngưỡng hòa vốn mới có lãi; thường 20–30%)
+- CPC hiện tại **cao hơn** CPC chịu được → mỗi click đều đang làm lỗ nhanh hơn
 
 ---
 
-## 三、漏斗指标定义
+## III. Định nghĩa chỉ số phễu
 
-| 指标 | 公式 | 基准（Shopee BR 参考，来源 SOP 3.6） |
+| Chỉ số | Công thức | Chuẩn (tham khảo Shopee BR, nguồn SOP 3.6) |
 |---|---|---|
-| CTR | 点击 ÷ 曝光 | 3–5%；**<2% 明确偏低** |
-| CVR | 订单 ÷ 点击 | **≥1%** |
-| CPC | 花费 ÷ 点击 | 与可承受 CPC 比 |
-| ACoS | 花费 ÷ 广告销售额 | 与盈亏线/目标比 |
-| ROAS | 广告销售额 ÷ 花费 | = 1 ÷ ACoS |
-| 净贡献 | 广告前贡献/售价 × GMV − 花费 | **<0 = 亏** |
+| CTR | Click ÷ Lượt hiển thị | 3–5%; **<2% là thấp rõ ràng** |
+| CVR | Đơn ÷ Click | **≥1%** |
+| CPC | Chi phí ÷ Click | So với CPC chịu được |
+| ACoS | Chi phí ÷ Doanh thu quảng cáo | So với ngưỡng hòa vốn/mục tiêu |
+| ROAS | Doanh thu quảng cáo ÷ Chi phí | = 1 ÷ ACoS |
+| Đóng góp ròng | Đóng góp trước quảng cáo/Giá bán × GMV − Chi phí | **<0 = lỗ** |
 
-> **基准线与盈亏线是两回事**（本模块核心认知）：基准线判断"哪一环不健康"，
-> 盈亏线判断"赚不赚钱"。漏斗全达标也可能亏钱（CPC 买贵了）。
+> **Đường chuẩn và ngưỡng hòa vốn là hai chuyện khác nhau** (nhận thức cốt lõi của module này): đường chuẩn cho biết "khâu nào không khỏe",
+> ngưỡng hòa vốn cho biết "có lãi hay không". Phễu đạt chuẩn hết vẫn có thể lỗ (mua CPC đắt).
 
 ---
 
-## 四、CSV 列名自动映射（diagnose 用）
+## IV. Tự động ánh xạ tên cột CSV (dùng cho diagnose)
 
-| 语义 | 认识的列名（不区分大小写） |
+| Ý nghĩa | Tên cột nhận diện được (không phân biệt hoa thường) |
 |---|---|
-| 广告名称 | 广告名称 / 广告组 / 计划名称 / campaign / name / campanha |
-| 曝光 | 曝光量 / 曝光 / impressions / imps / impressoes |
-| 点击 | 点击量 / 点击 / clicks / cliques |
-| 花费 | 花费 / 消耗 / spend / cost / gasto |
-| 订单 | 订单数 / 订单 / orders / conversions / pedidos |
-| 销售额（可选） | 销售额 / 成交金额 / gmv / sales / receita |
+| Tên quảng cáo | Tên quảng cáo / Nhóm quảng cáo / Tên chiến dịch / Chiến dịch / 广告名称 / 广告组 / 计划名称 / campaign / name / campanha |
+| Lượt hiển thị | Lượt hiển thị / Hiển thị / 曝光量 / 曝光 / impressions / imps / impressoes |
+| Click | Lượt click / Lượt nhấp / 点击量 / 点击 / clicks / cliques |
+| Chi phí | Chi phí / Chi tiêu / 花费 / 消耗 / spend / cost / gasto |
+| Đơn | Số đơn / Đơn hàng / Lượt chuyển đổi / 订单数 / 订单 / orders / conversions / pedidos |
+| Doanh thu (tùy chọn) | Doanh thu / Doanh số / 销售额 / 成交金额 / gmv / sales / receita |
 
-- 认不出的列会**报错并列出**，不会瞎猜
-- 数字容忍 `R$ 1.234,56` / `1,234` / `12.3%` / `-` 等脏格式
-- 销售额缺省时用 `订单 × 售价` 补算
+- Cột không nhận ra sẽ **báo lỗi và liệt kê ra**, không đoán bừa
+- Số chấp nhận định dạng bẩn như `R$ 1.234,56` / `1,234` / `12.3%` / `-`
+- Khi thiếu doanh thu thì tính bù bằng `Đơn × Giá bán`
 
 ---
 
-## 五、数据充分性门槛
+## V. Ngưỡng đủ dữ liệu
 
-| 门槛 | 默认 | 理由 |
+| Ngưỡng | Mặc định | Lý do |
 |---|---|---|
-| 曝光 | **≥ 1,000**/组 | 低于此阈值的 CTR/CVR 全是噪声，过早上手段 = 噪声驱动 |
-| 点击（判零单） | ≥ 30 | 30 次点击零单才有统计意义 |
+| Lượt hiển thị | **≥ 1,000**/nhóm | Dưới ngưỡng này CTR/CVR toàn là nhiễu, ra tay quá sớm = chạy theo nhiễu |
+| Click (để xét 0 đơn) | ≥ 30 | 30 click mà 0 đơn mới có ý nghĩa thống kê |

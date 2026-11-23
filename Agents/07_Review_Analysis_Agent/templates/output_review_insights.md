@@ -1,245 +1,245 @@
-# 输出模板 · 评论洞察报告
+# Template đầu ra · Báo cáo insight đánh giá
 
-> 07 Review Analysis Agent 的标准输出结构。
-> **下游消费者**：03 Listing Creative（补注意事项段 / 改表述 / 选卖点）、04 Product Image（补图）、05 Product Video（字幕拦截）。
+> Cấu trúc đầu ra chuẩn của 07 Review Analysis Agent.
+> **Bên sử dụng ở hạ nguồn**: 03 Listing Creative (bổ sung đoạn Lưu ý / sửa cách diễn đạt / chọn điểm bán hàng), 04 Product Image (bổ sung ảnh), 05 Product Video (chặn phụ đề).
 
 ---
 
 ```markdown
 # Review Insights · <product_name> · <platform> / <market>
 
-生成时间：<YYYY-MM-DD>
-Prompt 版本：07-Review-Analysis v0.2
-分析范围：<own / competitor / both>
-样本量：<n> 条评论
+Thời gian tạo: <YYYY-MM-DD>
+Phiên bản Prompt: 07-Review-Analysis v0.2
+Phạm vi phân tích: <own / competitor / both>
+Cỡ mẫu: <n> đánh giá
 
 ---
 
-## 1. 数据概览
+## 1. Tổng quan dữ liệu
 
-| 项 | 数值 | 占比 |
+| Hạng mục | Giá trị | Tỷ trọng |
 |---|---|---|
-| 总评论数 | | 100% |
-| 好评（4–5 星） | | |
-| 中评（3 星） | | |
-| 差评（1–2 星） | | |
-| 带图评论数 | | |
-| 数据来源 | <我方 / 竞品 A / 竞品 B> | — |
+| Tổng số đánh giá | | 100% |
+| Tích cực (4–5 sao) | | |
+| Trung lập (3 sao) | | |
+| Tiêu cực (1–2 sao) | | |
+| Số đánh giá có ảnh | | |
+| Nguồn dữ liệu | <phía mình / đối thủ A / đối thủ B> | — |
 
-**样本量判定**：<充足 / 偏小 / 不足（仅供参考）>
+**Đánh giá cỡ mẫu**: <đủ / hơi nhỏ / chưa đủ (chỉ để tham khảo)>
 
-**数据局限**：<平台删评 / 语言理解偏差 / 样本不足>
+**Giới hạn dữ liệu**: <sàn xóa đánh giá / sai lệch hiểu ngôn ngữ / mẫu chưa đủ>
 
 ---
 
-## 2. 好评分析
+## 2. Phân tích đánh giá tích cực
 
-### 2.1 买家为什么满意
+### 2.1 Vì sao người mua hài lòng
 
-| # | 满意原因 | 提及次数 | 占比 | 典型原文 |
+| # | Lý do hài lòng | Số lần nhắc | Tỷ trọng | Nguyên văn tiêu biểu |
 |---|---|---|---|---|
 | | | | | |
 
-### 2.2 被反复提到的功能
+### 2.2 Tính năng được nhắc đi nhắc lại
 
-| 功能 | 提及次数 | 情感倾向 | 典型原文 |
+| Tính năng | Số lần nhắc | Sắc thái cảm xúc | Nguyên văn tiêu biểu |
 |---|---|---|---|
 | | | | |
 
-### 2.3 卖点有效性核对
+### 2.3 Đối chiếu hiệu quả điểm bán hàng
 
-| 卖点 | 提及次数 | 现有 Listing 是否突出 | 建议 |
+| Điểm bán hàng | Số lần nhắc | Listing hiện tại có làm nổi bật không | Đề xuất |
 |---|---|---|---|
 | | | ✅ / ❌ | |
 
-### 2.4 物流与售后满意度
+### 2.4 Mức hài lòng về vận chuyển và hậu mãi
 
-| 维度 | 正面提及 | 负面提及 | 净情感 |
+| Khía cạnh | Nhắc tích cực | Nhắc tiêu cực | Cảm xúc ròng |
 |---|---|---|---|
-| 发货速度 | | | |
-| 包装完整度 | | | |
-| 客服响应 | | | |
+| Tốc độ giao hàng | | | |
+| Độ nguyên vẹn của đóng gói | | | |
+| Phản hồi CSKH | | | |
 
-### 2.5 价格感知
+### 2.5 Cảm nhận về giá
 
-| 类型 | 提及次数 | 典型原文 |
+| Loại | Số lần nhắc | Nguyên văn tiêu biểu |
 |---|---|---|
-| 觉得划算 | | |
-| 觉得偏贵 | | |
+| Thấy đáng tiền | | |
+| Thấy hơi đắt | | |
 
 ---
 
-## 3. 差评归因
+## 3. Quy nguyên nhân đánh giá tiêu cực
 
-### 3.1 归因分布
+### 3.1 Phân bố nguyên nhân
 
-| # | 归因类型 | 数量 | 占比 | 责任方 | 可否靠文案修复 |
+| # | Nhóm nguyên nhân | Số lượng | Tỷ trọng | Bên chịu trách nhiệm | Sửa được bằng nội dung không |
 |---|---|---|---|---|---|
-| 1 | **误解型** ⭐ | | | 我方（详情页） | ✅ |
-| 2 | 产品质量问题 | | | 供应商 | ❌ |
-| 3 | 参数不符合预期 | | | 我方 | ✅ |
-| 4 | 配件缺失 | | | 我方（包装清单） | ✅ |
-| 5 | 发货慢 | | | 物流 | ⚠️ |
-| 6 | 使用困难 | | | 我方（说明书） | ✅ |
-| 7 | 售后差 | | | 我方 | ✅ |
-| 8 | 破损 / 故障 / 退货 | | | 物流 / 供应商 | ❌ |
-| | **合计** | | 100% | | |
+| 1 | **Hiểu lầm** ⭐ | | | Phía mình (trang chi tiết) | ✅ |
+| 2 | Lỗi chất lượng sản phẩm | | | Nhà cung cấp | ❌ |
+| 3 | Thông số không như kỳ vọng | | | Phía mình | ✅ |
+| 4 | Thiếu phụ kiện | | | Phía mình (danh sách đóng gói) | ✅ |
+| 5 | Giao hàng chậm | | | Đơn vị vận chuyển | ⚠️ |
+| 6 | Khó sử dụng | | | Phía mình (sách hướng dẫn) | ✅ |
+| 7 | Hậu mãi kém | | | Phía mình | ✅ |
+| 8 | Hư hỏng / lỗi / trả hàng | | | Đơn vị vận chuyển / nhà cung cấp | ❌ |
+| | **Tổng** | | 100% | | |
 
-**可修复项合计**：<n> 条，占差评总数 **<%>**
+**Tổng các mục khắc phục được**: <n> đánh giá, chiếm **<%>** tổng đánh giá tiêu cực
 
-### 3.2 逐类明细
+### 3.2 Chi tiết từng nhóm
 
-#### 类型 <n> · <类型名>（<n> 条）
+#### Nhóm <n> · <tên nhóm> (<n> đánh giá)
 
-| # | 原文 | 买家预期/以为 | 实际 | 判定 |
+| # | Nguyên văn | Người mua kỳ vọng/tưởng | Thực tế | Phán định |
 |---|---|---|---|---|
 | | | | | |
 
 ---
 
-## 4. 误解型差评判定
+## 4. Phán định đánh giá tiêu cực loại hiểu lầm
 
-| # | 差评原文 | 买家以为 | 实际（依据字段） | 现有 Listing 是否说到 | 判定 | 修补动作 |
+| # | Nguyên văn đánh giá tiêu cực | Người mua tưởng | Thực tế (trường căn cứ) | Listing hiện tại có nhắc không | Phán định | Hành động vá |
 |---|---|---|---|---|---|---|
 | | | | | | | |
 
-**判定类型汇总**
+**Tổng hợp loại phán định**
 
-| 判定 | 数量 |
+| Phán định | Số lượng |
 |---|---|
-| 缺失说明 | |
-| 说明不醒目 | |
-| 买家未阅读 | |
+| Thiếu giải thích | |
+| Giải thích không nổi bật | |
+| Người mua không đọc | |
 
 ---
 
-## 5. 详情页修补建议
+## 5. Đề xuất vá trang chi tiết
 
-### 5.1 新增/修改条目（→ 03）
+### 5.1 Mục thêm mới / chỉnh sửa (→ 03)
 
-| # | 对应差评 | 写入位置 | 文案（目标语言） | 中文说明 |
+| # | Đánh giá tiêu cực tương ứng | Vị trí viết | Nội dung (ngôn ngữ mục tiêu) | Giải thích (tiếng Việt) |
 |---|---|---|---|---|
 | | | | | |
 
-### 5.2 需要补的图（→ 04）
+### 5.2 Ảnh cần bổ sung (→ 04)
 
-| # | 对应差评 | 图位 | 图内文案 | 说明 |
+| # | Đánh giá tiêu cực tương ứng | Vị trí ảnh | Chữ trên ảnh | Mô tả |
 |---|---|---|---|---|
 | | | | | |
 
-### 5.3 需要改的表述（→ 03）
+### 5.3 Cách diễn đạt cần sửa (→ 03)
 
-| # | 原表述 | 问题 | 建议表述 |
+| # | Diễn đạt gốc | Vấn đề | Diễn đạt đề xuất |
 |---|---|---|---|
 | | | | |
 
 ---
 
-## 6. 参数红线
+## 6. Lằn ranh đỏ thông số
 
-| # | 被投诉参数 | 买家预期 | `spec_table` 实际值 | 禁用词候选 | 理由 |
+| # | Thông số bị phàn nàn | Người mua kỳ vọng | Giá trị thực tế trong `spec_table` | Ứng viên từ cấm | Lý do |
 |---|---|---|---|---|---|
 | | | | | | |
 
 ---
 
-## 7. 卖点排序
+## 7. Xếp hạng điểm bán hàng
 
-| 排名 | 卖点 | 提及次数 | 情感强度 | 综合分 | 建议动作 |
+| Hạng | Điểm bán hàng | Số lần nhắc | Mức độ cảm xúc | Điểm tổng hợp | Hành động đề xuất |
 |---|---|---|---|---|---|
 | | | | | | |
 
 ---
 
-## 8. 竞品对比            （条件输出）
+## 8. So sánh đối thủ            (xuất có điều kiện)
 
-### 8.1 竞品靠什么卖
+### 8.1 Đối thủ bán được nhờ đâu
 
-| 竞品 | 好评集中点 | 差评集中点 | 护城河 |
+| Đối thủ | Điểm tập trung đánh giá tích cực | Điểm tập trung đánh giá tiêu cực | Lợi thế cạnh tranh (moat) |
 |---|---|---|---|
 | | | | |
 
-### 8.2 我方 vs 竞品
+### 8.2 Phía mình vs đối thủ
 
-| 维度 | 我方 | 竞品 A | 竞品 B |
+| Khía cạnh | Phía mình | Đối thủ A | Đối thủ B |
 |---|---|---|---|
-| 好评高频点 | | | |
-| 差评高频点 | | | |
-| 带图评价占比 | | | |
+| Điểm hay được khen | | | |
+| Điểm hay bị chê | | | |
+| Tỷ trọng đánh giá có ảnh | | | |
 
-### 8.3 空白机会
+### 8.3 Cơ hội bỏ ngỏ
 
-| 机会 | 依据 | 具体动作 |
+| Cơ hội | Căn cứ | Hành động cụ thể |
 |---|---|---|
 | | | |
 
 ---
 
-## 9. 分析目标回答（SOP 1.6 七问）
+## 9. Trả lời mục tiêu phân tích (bảy câu hỏi của SOP 1.6)
 
-| # | 问题 | 结论 | 依据 |
+| # | Câu hỏi | Kết luận | Căn cứ |
 |---|---|---|---|
-| 1 | 竞品靠什么卖 | | |
-| 2 | 买家真正关心什么 | | |
-| 3 | **哪些卖点必须写** | | |
-| 4 | **哪些参数不能乱写** | | |
-| 5 | **哪些问题需要提前在详情页解释** | | |
-| 6 | 我方应该突出什么差异化 | | |
-| 7 | 我方需要避开什么售后风险 | | |
+| 1 | Đối thủ bán được nhờ đâu | | |
+| 2 | Người mua thực sự quan tâm điều gì | | |
+| 3 | **Điểm bán hàng nào bắt buộc phải viết** | | |
+| 4 | **Thông số nào không được viết bừa** | | |
+| 5 | **Vấn đề nào cần giải thích trước trên trang chi tiết** | | |
+| 6 | Phía mình nên làm nổi bật khác biệt gì | | |
+| 7 | Phía mình cần tránh rủi ro hậu mãi gì | | |
 
 ---
 
-## 10. 可修复性评估
+## 10. Đánh giá khả năng khắc phục
 
-| 项 | 数量 | 占比 |
+| Hạng mục | Số lượng | Tỷ trọng |
 |---|---|---|
-| 差评总数 | | 100% |
-| **可由改描述/改图修复** | | |
-| 需改产品 / 供应商 | | |
-| 需改物流 | | |
+| Tổng đánh giá tiêu cực | | 100% |
+| **Khắc phục được bằng sửa mô tả / sửa ảnh** | | |
+| Cần sửa sản phẩm / nhà cung cấp | | |
+| Cần sửa vận chuyển | | |
 
-**优先修复顺序**：<按「出现频次 ÷ 修复成本」排序>
+**Thứ tự ưu tiên khắc phục**: <xếp theo «tần suất xuất hiện ÷ chi phí khắc phục»>
 
 ---
 
-## 11. 客服话术建议        （条件输出）
+## 11. Đề xuất mẫu câu CSKH        (xuất có điều kiện)
 
-| 场景 | 话术（目标语言） | 说明 |
+| Tình huống | Mẫu câu (ngôn ngữ mục tiêu) | Mô tả |
 |---|---|---|
 | | | |
 
-**话术底线核查**
-- [ ] 未含利益诱导删评
-- [ ] 未含不实理由解释参数不符
-- [ ] 已如实说明 + 给出解决方案
+**Kiểm tra nguyên tắc mẫu câu**
+- [ ] Không dùng lợi ích dụ dỗ xóa đánh giá
+- [ ] Không dùng lý do sai sự thật để giải thích thông số không khớp
+- [ ] Đã nói đúng sự thật + đưa ra phương án giải quyết
 
 ---
 
-## 12. 分析合规扫描
+## 12. Quét tuân thủ phân tích
 
-| 规则 | 命中 | 处理 |
+| Quy tắc | Vi phạm | Xử lý |
 |---|---|---|
-| C1 诱导删评 | | |
-| C2 组织性举报 | | |
-| C3 虚假评价 | | |
-| C4 臆断评论真伪 | | |
-| C5 泄露买家隐私 | | |
+| C1 Dụ dỗ xóa đánh giá | | |
+| C2 Báo cáo có tổ chức | | |
+| C3 Đánh giá giả | | |
+| C4 Tự suy đoán thật/giả của đánh giá | | |
+| C5 Làm lộ thông tin riêng tư của người mua | | |
 
-（无命中时：`分析合规扫描：无命中`）
+(Khi không vi phạm: `Quét tuân thủ phân tích: không vi phạm`)
 
 ---
 
-## 13. 交付给其他模块的字段
+## 13. Các trường bàn giao cho module khác
 
 ```yaml
-selling_points_ranked: []          # → 03 标题/主图卖点选择
-forbidden_words_candidates: []     # → 03/04/05 硬拦截
-review_patch_suggestions: []       # → 03 详情页注意事项段
-packaging_clarity_needed: false    # → 04 包装清单图
-scene_limit_image_needed: false    # → 04 场景限定图
+selling_points_ranked: []          # → 03 chọn điểm bán hàng cho tiêu đề/ảnh chính
+forbidden_words_candidates: []     # → 03/04/05 chặn cứng
+review_patch_suggestions: []       # → 03 đoạn Lưu ý trang chi tiết
+packaging_clarity_needed: false    # → 04 ảnh danh sách đóng gói
+scene_limit_image_needed: false    # → 04 ảnh giới hạn tình huống
 fixable_ratio: 0.00
 
-# 关键统计（供复测对标）
+# Chỉ số chính (để đối chiếu khi kiểm tra lại)
 negative_review_count: 0
 misunderstanding_count: 0
 fixable_count: 0
@@ -248,26 +248,26 @@ image_review_ratio: 0.00
 
 ---
 
-## 14. 执行清单
+## 14. Checklist thực thi
 
-- [ ] 已确认所有评论已脱敏
-- [ ] 修补文案已交 03 执行（`mode = iterate`）
-- [ ] 需补的图已交 04 执行
-- [ ] 禁用词候选已加入 `forbidden_words`
-- [ ] 已记录基线（差评数 / 误解型占比 / 带图评价占比）
-- [ ] 复测时点已确定（建议 14–30 天后回看差评结构变化）
+- [ ] Đã xác nhận mọi đánh giá đã ẩn danh hóa
+- [ ] Nội dung vá đã giao 03 thực thi (`mode = iterate`)
+- [ ] Ảnh cần bổ sung đã giao 04 thực thi
+- [ ] Ứng viên từ cấm đã thêm vào `forbidden_words`
+- [ ] Đã ghi lại baseline (số đánh giá tiêu cực / tỷ trọng loại hiểu lầm / tỷ trọng đánh giá có ảnh)
+- [ ] Đã chốt mốc kiểm tra lại (đề xuất xem lại thay đổi cơ cấu đánh giá tiêu cực sau 14–30 ngày)
 ```
 
 ---
 
-## 回流说明
+## Ghi chú quay vòng
 
-本报告的产出**不是终点**。它的价值在于改 Listing：
+Đầu ra của báo cáo này **không phải điểm kết thúc**. Giá trị của nó nằm ở việc sửa Listing:
 
 ```text
-misunderstanding_count 高   → 03 补注意事项段 + 04 补包装清单图
-forbidden_words_candidates  → 03/04/05 硬拦截，防止主动制造虚标
-selling_points_ranked       → 03 决定主图核心文案与标题关键词
+misunderstanding_count cao   → 03 bổ sung đoạn Lưu ý + 04 bổ sung ảnh danh sách đóng gói
+forbidden_words_candidates   → 03/04/05 chặn cứng, tránh chủ động khai khống thông số
+selling_points_ranked        → 03 quyết định nội dung cốt lõi trên ảnh chính và từ khóa tiêu đề
 ```
 
-**验证方式**：改动生效 14–30 天后，回看**差评结构**是否变化——特别是误解题占差评总数的比例是否下降。这个比例是最直接的验证指标，因为它几乎完全由文案决定。
+**Cách kiểm chứng**: 14–30 ngày sau khi thay đổi có hiệu lực, xem lại **cơ cấu đánh giá tiêu cực** có thay đổi không — đặc biệt là tỷ trọng loại hiểu lầm trong tổng đánh giá tiêu cực có giảm không. Tỷ trọng này là chỉ số kiểm chứng trực tiếp nhất, vì nó gần như hoàn toàn do nội dung quyết định.

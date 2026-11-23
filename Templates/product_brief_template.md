@@ -1,155 +1,155 @@
-# 模板 · 标准中间产物（Product Brief）
+# Template · Sản phẩm trung gian chuẩn (Product Brief)
 
-> **这是三个模块之间的通信契约。** 03 产出它，04 和 05 消费它。
-> 它不是"某个 Agent 的输入模板"，而是**模块间的数据接口定义**。
-
----
-
-## 为什么需要它
-
-没有中间产物会发生什么：
-
-```text
-❌ 无契约
-运营跑完 03 得到一堆文案
-→ 拿给 04 出图，04 自己"理解"了一遍卖点（理解偏了）
-→ 拿给 05 做视频，05 又自己理解了一遍（理解又偏了）
-→ 三处卖点不一致，观众觉得是拼凑的
-```
-
-```text
-✅ 有契约
-03 输出结构化的 product_brief
-→ 04 直接读 core_selling_point（零解释损耗）
-→ 05 直接读同一份 core_selling_point
-→ 三处完全一致
-```
+> **Đây là hợp đồng giao tiếp giữa ba module.** 03 tạo ra nó, 04 và 05 dùng nó.
+> Nó không phải "template đầu vào của một Agent nào đó", mà là **định nghĩa giao diện dữ liệu giữa các module**.
 
 ---
 
-## 字段定义
+## Vì sao cần nó
 
-### 必填字段（阻塞项）
+Nếu không có sản phẩm trung gian thì chuyện gì xảy ra:
 
-| 字段 | 类型 | 定义 | 谁产出 | 谁消费 |
+```text
+❌ Không có hợp đồng
+Người vận hành chạy xong 03, được một đống nội dung
+→ Đưa cho 04 làm ảnh, 04 tự "hiểu" lại điểm bán hàng một lần (hiểu lệch)
+→ Đưa cho 05 làm video, 05 lại tự hiểu thêm một lần nữa (lại lệch tiếp)
+→ Điểm bán hàng ở ba nơi không khớp nhau, người xem thấy như ghép nhặt
+```
+
+```text
+✅ Có hợp đồng
+03 xuất ra product_brief có cấu trúc
+→ 04 đọc thẳng core_selling_point (không hao hụt do diễn giải)
+→ 05 đọc thẳng cùng một core_selling_point
+→ Ba nơi khớp nhau hoàn toàn
+```
+
+---
+
+## Định nghĩa trường
+
+### Trường bắt buộc (mục chặn)
+
+| Trường | Kiểu | Định nghĩa | Ai tạo ra | Ai sử dụng |
 |---|---|---|---|---|
-| `product_name` | string | 产品通用名（目标语言） | 人工 | 03/04/05 |
-| `target_market` | string | 目标市场 | 人工 | 03/04/05 |
-| `platform` | enum | 目标平台 | 人工 | 03/04/05 |
-| **`core_selling_point`** | string | **一句话主卖点**，必须可验证 | 03 | **04/05** |
-| **`secondary_points[]`** | array | 副卖点 3–5 条 | 03 | **04/05** |
-| **`spec_table`** | object | 参数表（唯一数值来源） | 人工 → 03 校验 | **04/05** |
-| **`forbidden_words[]`** | array | 禁用词清单 | 03（合规扫描） | **04/05** |
-| **`usage_scope_confirmed[]`** | array | 确认可用的场景 | 人工 → 03 确认 | **04/05** |
-| `package_content[]` | array | 包装清单（含"不含什么"） | 人工 | 04 |
-| `warranty` | string | 保修信息 | 人工 | 04/05 |
+| `product_name` | string | Tên gọi chung của sản phẩm (bằng ngôn ngữ thị trường mục tiêu) | Người làm | 03/04/05 |
+| `target_market` | string | Thị trường mục tiêu | Người làm | 03/04/05 |
+| `platform` | enum | Sàn mục tiêu | Người làm | 03/04/05 |
+| **`core_selling_point`** | string | **Điểm bán hàng chủ lực trong một câu**, bắt buộc kiểm chứng được | 03 | **04/05** |
+| **`secondary_points[]`** | array | 3–5 điểm bán hàng phụ | 03 | **04/05** |
+| **`spec_table`** | object | Bảng thông số (nguồn số liệu duy nhất) | Người làm → 03 kiểm tra | **04/05** |
+| **`forbidden_words[]`** | array | Danh sách từ cấm | 03 (quét tuân thủ) | **04/05** |
+| **`usage_scope_confirmed[]`** | array | Các ngữ cảnh sử dụng đã xác nhận | Người làm → 03 xác nhận | **04/05** |
+| `package_content[]` | array | Danh sách trong hộp (kèm "không bao gồm gì") | Người làm | 04 |
+| `warranty` | string | Thông tin bảo hành | Người làm | 04/05 |
 
-> **加粗的六个字段为空时，04/05 必须拒绝执行。** 这不是"建议"，是硬拦截。
+> **Khi một trong sáu trường in đậm để trống, 04/05 bắt buộc từ chối chạy.** Đây không phải "khuyến nghị", mà là chặn cứng.
 
-### 可选字段
+### Trường tùy chọn
 
-| 字段 | 类型 | 定义 | 用途 |
+| Trường | Kiểu | Định nghĩa | Công dụng |
 |---|---|---|---|
-| `title_final` | string | 最终标题 | 05 的结尾 CTA |
-| `keyword_classified` | object | 七类分词结果 | 04 主图卖点、05 字幕埋词 |
-| `visual_tone_hint` | string | 视觉调性 | 04/05 风格统一 |
-| `review_insights[]` | array | 差评归因 | 03 的注意事项段、05 的场景选择 |
-| `brand_authorization[]` | array | 已授权品牌 | 合规拦截基准 |
+| `title_final` | string | Tiêu đề cuối cùng | CTA kết video của 05 |
+| `keyword_classified` | object | Kết quả phân loại từ khóa 7 nhóm | Điểm bán hàng trên ảnh chính của 04, cài từ khóa vào phụ đề của 05 |
+| `visual_tone_hint` | string | Tông hình ảnh | Thống nhất phong cách giữa 04/05 |
+| `review_insights[]` | array | Quy nguyên nhân đánh giá tiêu cực | Đoạn lưu ý của 03, chọn ngữ cảnh cho 05 |
+| `brand_authorization[]` | array | Thương hiệu đã được ủy quyền | Mốc chuẩn để chặn vi phạm tuân thủ |
 
 ---
 
-## 模板
+## Template
 
 ```yaml
 # ─────────────────────────────────────────────
-# PRODUCT BRIEF · 模块间通信契约
+# PRODUCT BRIEF · Hợp đồng giao tiếp giữa các module
 # ─────────────────────────────────────────────
 meta:
-  brief_id: ""                 # 便于追踪，如 PB-20261013-001
+  brief_id: ""                 # để tiện truy vết, vd: PB-20261013-001
   created_at: ""               # YYYY-MM-DD
   source_agent: "03-Listing-Creative"
   version: "v0.1"
 
-# ── 基础信息 ──
+# ── Thông tin cơ bản ──
 identity:
   product_name*: ""
-  product_name_local: ""       # 目标市场语言版本
+  product_name_local: ""       # phiên bản theo ngôn ngữ thị trường mục tiêu
   category*: ""
   platform*: ""                # shopee | mercadolivre | amazon | tiktokshop | shopify
   target_market*: ""
 
-# ── 核心输出（下游阻塞项）──
+# ── Đầu ra cốt lõi (mục chặn cho module phía sau) ──
 core:
-  core_selling_point*: ""      # 一句话，必须可验证
-  secondary_points*: []        # 3–5 条
-  usage_scope_confirmed*: []   # 场景白名单
+  core_selling_point*: ""      # một câu, bắt buộc kiểm chứng được
+  secondary_points*: []        # 3–5 điểm
+  usage_scope_confirmed*: []   # whitelist ngữ cảnh sử dụng
 
-# ── 参数（唯一数值来源）──
+# ── Thông số (nguồn số liệu duy nhất) ──
 params:
-  spec_table*: {}              # 所有输出中的数值都必须来自这里
+  spec_table*: {}              # mọi con số trong đầu ra đều phải lấy từ đây
   package_content*: []
   warranty*: ""
 
-# ── 合规 ──
+# ── Tuân thủ ──
 compliance:
   forbidden_words*: []
   brand_authorization: []
-  certifications: []           # ⚠️ 仅填实际持有的
+  certifications: []           # ⚠️ chỉ điền chứng nhận thực sự đang có
 
-# ── 视觉与关键词 ──
+# ── Hình ảnh & từ khóa ──
 creative:
   keyword_classified: {}
   title_final: ""
   visual_tone_hint: ""
 
-# ── 评论洞察 ──
+# ── Insight từ đánh giá ──
 insights:
   review_insights: []
-  # - type: 误解型 | 质量型 | 物流型 | 参数型
+  # - type: loại hiểu lầm | loại chất lượng | loại vận chuyển | loại thông số
   #   content: ""
   #   action: ""
 ```
 
 ---
 
-## 使用方式
+## Cách sử dụng
 
-### 03 怎么产出它
+### 03 tạo ra nó như thế nào
 
-跑完 `02_description_builder.md` + `03_compliance_guard.md` 后，从输出的「交付给下游模块的字段」区块直接拷贝。
+Sau khi chạy xong `02_description_builder.md` + `03_compliance_guard.md`, copy thẳng từ khối "Trường bàn giao cho module phía sau" trong đầu ra.
 
-### 04 / 05 怎么消费它
+### 04 / 05 sử dụng nó như thế nào
 
-**执行前的依赖检查**（必须做）：
+**Kiểm tra phụ thuộc trước khi chạy** (bắt buộc):
 
 ```text
-1. 读取 product_brief
-2. 检查六个阻塞字段是否为非空
-3. 任一为空 → 输出报错并停止：
+1. Đọc product_brief
+2. Kiểm tra sáu trường chặn có khác rỗng hay không
+3. Bất kỳ trường nào rỗng → báo lỗi và dừng:
 
    [UPSTREAM_MISSING]
-   缺失字段：<字段名>
-   影响：<无法完成哪部分>
-   请先完成 03 Listing Creative Agent 并补齐上述字段。
+   Trường bị thiếu: <tên trường>
+   Ảnh hưởng: <phần nào không thể hoàn thành>
+   Vui lòng chạy xong 03 Listing Creative Agent và bổ sung đủ các trường trên trước.
 ```
 
-**绝对不允许**在阻塞字段缺失时用推测值填充。
+**Tuyệt đối không được** dùng giá trị suy đoán để điền khi thiếu trường chặn.
 
 ---
 
-## 数据一致性检查
+## Kiểm tra tính nhất quán dữ liệu
 
-三个模块跑完后，做一次横向比对：
+Sau khi ba module chạy xong, đối chiếu ngang một lượt:
 
-| 字段 | 03 输出 | 04 输出 | 05 输出 | 一致 |
+| Trường | Đầu ra 03 | Đầu ra 04 | Đầu ra 05 | Khớp |
 |---|---|---|---|---|
-| `core_selling_point` 的数值 | | | | ✅ / ❌ |
-| `spec_table` 关键参数 | | | | ✅ / ❌ |
-| `forbidden_words` 命中数 | | | | ✅ / ❌ |
-| 视觉调性描述 | | | | ✅ / ❌ |
+| Con số trong `core_selling_point` | | | | ✅ / ❌ |
+| Thông số chính trong `spec_table` | | | | ✅ / ❌ |
+| Số lần dính `forbidden_words` | | | | ✅ / ❌ |
+| Mô tả tông hình ảnh | | | | ✅ / ❌ |
 
-> **参数漂移是这套流程最常见的翻车点。** 03 写 `20000mAh`，04 的图里写成 `20.000mAh`，05 配音说"两万毫安时"——单看都没错，放一起就是拼凑感。跑完必须比对一次。
+> **Lệch thông số là lỗi hay gặp nhất của quy trình này.** 03 ghi `20000mAh`, ảnh của 04 ghi thành `20.000mAh`, lồng tiếng của 05 lại đọc "hai mươi nghìn mi-li-ampe giờ" — từng cái riêng lẻ đều không sai, nhưng đặt cạnh nhau thì thấy rõ cảm giác ghép nhặt. Chạy xong bắt buộc đối chiếu một lần.
 
 ---
 
-**相关文档**：[架构拆解](../docs/00_Architecture_SOP_to_Agent.md) · [自检清单](../docs/04_Result_Checklist.md)
+**Tài liệu liên quan**: [Phân rã kiến trúc](../docs/00_Architecture_SOP_to_Agent.md) · [Checklist tự kiểm tra](../docs/04_Result_Checklist.md)

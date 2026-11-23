@@ -1,189 +1,189 @@
-# TASK · 类目前置判断
+# TASK · Sàng lọc sơ bộ ngành hàng
 
-> 配套使用：`00_system.md` + `templates/input_category_research.md`
-> 对应 SOP **1.1 类目前置判断**
+> Dùng kèm: `00_system.md` + `templates/input_category_research.md`
+> Tương ứng SOP **1.1 Sàng lọc sơ bộ ngành hàng**
 
-**这一步的目的不是完整选品，而是在花钱做容量分析之前，先判断这个类目值不值得继续分析。**
+**Mục đích của bước này không phải là chọn sản phẩm hoàn chỉnh, mà là trước khi tốn tiền phân tích quy mô thị trường, đánh giá xem ngành hàng này có đáng phân tích tiếp hay không.**
 
 ---
 
 # INPUT
 
-必需字段：
+Trường bắt buộc:
 
-| 字段 | 说明 | 缺失影响 |
+| Trường | Mô tả | Ảnh hưởng khi thiếu |
 |---|---|---|
-| `category` | 类目名 | — |
-| `platform` / `target_market` | 平台与市场 | 无法应用平台限制规则 |
-| `company_capabilities` | 公司资源：现货/供应商/成本优势/仓储物流/售后能力 | **阻塞** |
-| `product_profile` | 产品画像：体积/重量/是否易碎/是否需认证/是否含电池 | **阻塞** |
-| `cost_structure` | 成本结构（用于判断利润空间） | 无法判断"高风险类目是否有足够利润承载" |
-| `metrics_report` | 指标报告（可选） | 缺失时本步只能做定性判断 |
+| `category` | Tên ngành hàng | — |
+| `platform` / `target_market` | Sàn và thị trường | Không áp dụng được quy tắc hạn chế của sàn |
+| `company_capabilities` | Nguồn lực công ty: hàng sẵn / nhà cung cấp / lợi thế chi phí / kho bãi vận chuyển / năng lực hậu mãi | **Chặn** |
+| `product_profile` | Hồ sơ sản phẩm: kích thước / cân nặng / dễ vỡ không / cần chứng nhận không / có pin không | **Chặn** |
+| `cost_structure` | Cấu trúc chi phí (để đánh giá biên lợi nhuận) | Không đánh giá được "ngành hàng rủi ro cao có đủ lợi nhuận để gánh không" |
+| `metrics_report` | Báo cáo chỉ số (tùy chọn) | Thiếu thì bước này chỉ đánh giá định tính |
 
 ---
 
-# STEP 1 · 是否适合公司当前货盘
+# STEP 1 · Có hợp với nguồn hàng hiện tại của công ty không
 
-逐项检查，**每项必须给出 ✅ / ❌ / ⚠️（信息不足）**：
+Kiểm tra từng mục, **mỗi mục bắt buộc ghi ✅ / ❌ / ⚠️ (thiếu thông tin)**:
 
 ```markdown
-## 1. 货盘适配性
+## 1. Mức độ phù hợp với nguồn hàng
 
-| 检查项 | 结论 | 依据 / 待确认内容 |
+| Hạng mục kiểm tra | Kết luận | Căn cứ / Nội dung cần xác nhận |
 |---|---|---|
-| 公司是否有现货或即将到货 | ✅ / ❌ / ⚠️ | |
-| 是否有稳定供应商 | | |
-| 产品成本是否有优势 | | |
-| 产品是否适合目标市场 | | |
-| 体积、重量是否适合当前仓储和物流 | | |
-| 是否有能力处理售后、维修、配件、退换货 | | |
+| Công ty có hàng sẵn hoặc hàng sắp về không | ✅ / ❌ / ⚠️ | |
+| Có nhà cung cấp ổn định không | | |
+| Giá vốn sản phẩm có lợi thế không | | |
+| Sản phẩm có hợp với thị trường mục tiêu không | | |
+| Kích thước, cân nặng có hợp với kho bãi và vận chuyển hiện tại không | | |
+| Có năng lực xử lý hậu mãi, sửa chữa, phụ kiện, đổi trả không | | |
 
-**判定**：
-- 三项以上 ❌ → **不建议进入**，输出结论并停止
-- 存在 ⚠️ → 列出待确认清单，标注"需人工确认后再判断"
-- 全部 ✅ → 进入 Step 2
+**Kết luận**:
+- Từ ba mục ❌ trở lên → **không khuyến nghị vào**, xuất kết luận và dừng lại
+- Có mục ⚠️ → liệt kê danh sách cần xác nhận, ghi chú "cần con người xác nhận rồi mới đánh giá"
+- Tất cả ✅ → sang Step 2
 ```
 
-**判定逻辑**（SOP 原文）：
+**Logic đánh giá** (nguyên văn SOP):
 
-> 如果公司有货、有成本优势、有供应链能力，可以进入下一步分析；
-> 如果公司没有供应链、没有售后能力、没有价格优势，**即使市场不错，也不一定适合做**。
+> Nếu công ty có hàng, có lợi thế chi phí, có năng lực chuỗi cung ứng thì có thể sang bước phân tích tiếp theo;
+> nếu công ty không có chuỗi cung ứng, không có năng lực hậu mãi, không có lợi thế giá thì **dù thị trường tốt cũng chưa chắc đã nên làm**.
 
 ---
 
-# STEP 2 · 是否属于高退货 / 高售后 / 高风险类目
+# STEP 2 · Có thuộc ngành hàng tỷ lệ hoàn cao / hậu mãi nhiều / rủi ro cao không
 
-SOP 列出 6 个判断维度：
+SOP liệt kê 6 chiều đánh giá:
 
 ```markdown
-## 2. 风险类目判定
+## 2. Xác định ngành hàng rủi ro
 
-| # | 判断维度 | 结论 | 具体说明 |
+| # | Chiều đánh giá | Kết luận | Giải thích cụ thể |
 |---|---|---|---|
-| 1 | 产品是否容易产生使用问题 | | |
-| 2 | 产品是否容易引发买家投诉 | | |
-| 3 | 产品是否退货成本高 | | |
-| 4 | 产品是否容易参数虚标 | | |
-| 5 | 产品是否涉及知识产权、品牌词、平台禁售风险 | | |
-| 6 | 产品是否容易因发货、破损、维修造成店铺罚分 | | |
+| 1 | Sản phẩm có dễ phát sinh lỗi khi sử dụng không | | |
+| 2 | Sản phẩm có dễ gây khiếu nại từ người mua không | | |
+| 3 | Chi phí hoàn hàng của sản phẩm có cao không | | |
+| 4 | Sản phẩm có dễ bị khai khống thông số không | | |
+| 5 | Sản phẩm có rủi ro về sở hữu trí tuệ, từ khóa thương hiệu, hàng cấm bán trên sàn không | | |
+| 6 | Sản phẩm có dễ khiến shop bị phạt điểm do giao hàng, vỡ hỏng, sửa chữa không | | |
 
-### 2.1 风险等级
+### 2.1 Mức độ rủi ro
 
-| 等级 | 命中项数 | 含义 |
+| Mức | Số mục dính | Ý nghĩa |
 |---|---|---|
-| 🟢 低风险 | 0–1 | 常规运营 |
-| 🟡 中风险 | 2–3 | 需要预留售后能力与文案防御 |
-| 🔴 高风险 | ≥ 4 | **需要高利润才能承载** |
+| 🟢 Rủi ro thấp | 0–1 | Vận hành bình thường |
+| 🟡 Rủi ro trung bình | 2–3 | Cần dự phòng năng lực hậu mãi và nội dung phòng thủ trong mô tả |
+| 🔴 Rủi ro cao | ≥ 4 | **Cần lợi nhuận cao mới gánh được** |
 ```
 
-### 2.2 高风险类目的利润承载力检验
+### 2.2 Kiểm tra khả năng gánh rủi ro bằng lợi nhuận của ngành hàng rủi ro cao
 
-**SOP 明确：高风险类目需要高利润才能承载。** 所以命中高风险时，必须做这个检验：
+**SOP nói rõ: ngành hàng rủi ro cao cần lợi nhuận cao mới gánh được.** Vì vậy khi dính rủi ro cao, bắt buộc làm bước kiểm tra này:
 
 ```markdown
-### 2.2 利润承载力检验
+### 2.2 Kiểm tra khả năng gánh rủi ro bằng lợi nhuận
 
-| 项 | 数值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 目标售价 | |
-| 广告前可支配毛利 | |
-| 毛利率 | |
-| 预估退货率 | |
-| 预估售后成本/单 | |
-| **风险后净毛利** | |
-| 是否足以覆盖风险 | ✅ / ❌ |
+| Giá bán mục tiêu | |
+| Lợi nhuận gộp khả dụng trước quảng cáo | |
+| Biên lợi nhuận gộp | |
+| Tỷ lệ hoàn dự kiến | |
+| Chi phí hậu mãi dự kiến/đơn | |
+| **Lợi nhuận gộp ròng sau rủi ro** | |
+| Có đủ bù rủi ro không | ✅ / ❌ |
 
-**判定**：
-- 风险后净毛利 > 0 且毛利率 ≥ 类目目标值 → 风险可承载
-- 风险后净毛利 ≤ 0 → **不建议进入**（低毛利做高风险类目 = 必亏）
+**Kết luận**:
+- Lợi nhuận gộp ròng sau rủi ro > 0 và biên lợi nhuận gộp ≥ mục tiêu của ngành hàng → gánh được rủi ro
+- Lợi nhuận gộp ròng sau rủi ro ≤ 0 → **không khuyến nghị vào** (biên thấp mà làm ngành hàng rủi ro cao = chắc chắn lỗ)
 ```
 
-> ⚠️ **这一检验是很多卖家忽略的一步。** 高风险类目常见的问题是：看着毛利率还行，但把退货、售后、维修、罚分风险计入后就不剩什么了。
-> 若缺 `cost_structure`，这一步**无法执行**，必须输出 `[INPUT_MISSING]` 而不是跳过。
+> ⚠️ **Đây là bước mà rất nhiều người bán bỏ qua.** Vấn đề thường gặp ở ngành hàng rủi ro cao là: nhìn biên lợi nhuận gộp thấy cũng được, nhưng tính cả rủi ro hoàn hàng, hậu mãi, sửa chữa, phạt điểm vào thì chẳng còn bao nhiêu.
+> Nếu thiếu `cost_structure`, bước này **không thực hiện được**, bắt buộc xuất `[INPUT_MISSING]` chứ không được bỏ qua.
 
 ---
 
-# STEP 3 · 平台限制与合规检查
+# STEP 3 · Kiểm tra hạn chế của sàn và tuân thủ (compliance)
 
 ```markdown
-## 3. 平台限制检查
+## 3. Kiểm tra hạn chế của sàn
 
-| 检查项 | 结论 | 说明 |
+| Hạng mục kiểm tra | Kết luận | Giải thích |
 |---|---|---|
-| 是否在平台禁售清单内 | | |
-| 是否属限售类目（需申请销售权限） | | |
-| 是否需要认证（如巴西 ANATEL / INMETRO） | | |
-| 是否涉及品牌备案或授权 | | |
-| 是否含电池 / 液体 / 磁体等物流敏感属性 | | |
-| 体积重量是否超平台物流限制 | | |
+| Có nằm trong danh sách hàng cấm bán của sàn không | | |
+| Có thuộc ngành hàng hạn chế (cần xin quyền bán) không | | |
+| Có cần chứng nhận không (ví dụ ANATEL / INMETRO của Brazil) | | |
+| Có liên quan đăng ký thương hiệu hoặc ủy quyền không | | |
+| Có thuộc tính nhạy cảm khi vận chuyển như pin / chất lỏng / nam châm không | | |
+| Kích thước, cân nặng có vượt giới hạn vận chuyển của sàn không | | |
 
-**若存在需认证/权限的项**：明确输出「需先取得 X 才能上架」，不要建议任何规避方式。
+**Nếu có mục cần chứng nhận/quyền bán**: xuất rõ "cần có X trước mới đăng bán được", không gợi ý bất kỳ cách lách nào.
 ```
 
 ---
 
-# STEP 4 · 前置判断结论
+# STEP 4 · Kết luận sàng lọc sơ bộ
 
 ```markdown
-## 4. 类目前置判断结论
+## 4. Kết luận sàng lọc sơ bộ ngành hàng
 
-| # | 结论项 | 内容 |
+| # | Hạng mục kết luận | Nội dung |
 |---|---|---|
-| 1 | 是否适合公司当前货盘 | ✅ 适合 / ❌ 不适合 / ⚠️ 待确认 |
-| 2 | 是否存在供应链优势 | |
-| 3 | 是否存在物流或仓储问题 | |
-| 4 | 是否属于高退货、高售后、高风险类目 | 🟢 / 🟡 / 🔴（命中 n 项） |
-| 5 | 高风险类目的利润是否足以承载 | ✅ 足以 / ❌ 不足 / ⚠️ 数据不足 |
-| 6 | 是否存在平台限制 | |
-| 7 | **是否进入下一步市场容量分析** | ✅ 进入 / ❌ 不进入 |
+| 1 | Có hợp với nguồn hàng hiện tại của công ty không | ✅ Phù hợp / ❌ Không phù hợp / ⚠️ Cần xác nhận |
+| 2 | Có lợi thế chuỗi cung ứng không | |
+| 3 | Có vấn đề về vận chuyển hoặc kho bãi không | |
+| 4 | Có thuộc ngành hàng tỷ lệ hoàn cao, hậu mãi nhiều, rủi ro cao không | 🟢 / 🟡 / 🔴 (dính n mục) |
+| 5 | Lợi nhuận của ngành hàng rủi ro cao có đủ gánh không | ✅ Đủ / ❌ Không đủ / ⚠️ Thiếu dữ liệu |
+| 6 | Có hạn chế của sàn không | |
+| 7 | **Có sang bước phân tích quy mô thị trường tiếp theo không** | ✅ Sang / ❌ Không sang |
 ```
 
-## 结论必须写成"一句话 + 条件"
+## Kết luận phải viết thành "một câu + điều kiện"
 
 ```markdown
-**判断**：
-在 <条件 A> 与 <条件 B> 成立的前提下，数据支持进入下一步市场容量分析。
-反之若 <条件 C> 不成立，则不建议进入。
+**Nhận định**:
+Với điều kiện <điều kiện A> và <điều kiện B> được đáp ứng, dữ liệu ủng hộ việc sang bước phân tích quy mô thị trường tiếp theo.
+Ngược lại, nếu <điều kiện C> không đáp ứng thì không khuyến nghị vào.
 
-**待确认清单**（人工补充后才能最终决策）：
+**Danh sách cần xác nhận** (con người bổ sung xong mới quyết định cuối cùng):
 - [ ] ...
 - [ ] ...
 ```
 
-**不要写"整体建议进入"这类无条件的结论。**
+**Không viết kết luận vô điều kiện kiểu "nhìn chung khuyến nghị vào".**
 
 ---
 
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 货盘适配性
-## 2. 风险类目判定
-   ### 2.1 风险等级
-   ### 2.2 利润承载力检验      （高风险时必输出）
-## 3. 平台限制检查
-## 4. 类目前置判断结论
-## 5. 分析合规扫描
-   （按 00_system.md 的 M1–M5；无命中必须写"无命中"）
-## 6. 交付给下游的字段
+## 1. Mức độ phù hợp với nguồn hàng
+## 2. Xác định ngành hàng rủi ro
+   ### 2.1 Mức độ rủi ro
+   ### 2.2 Kiểm tra khả năng gánh rủi ro bằng lợi nhuận      (bắt buộc khi rủi ro cao)
+## 3. Kiểm tra hạn chế của sàn
+## 4. Kết luận sàng lọc sơ bộ ngành hàng
+## 5. Quét tuân thủ phân tích
+   (theo M1–M5 trong 00_system.md; không vi phạm thì bắt buộc ghi "không vi phạm")
+## 6. Các trường bàn giao cho bước sau
    - precheck_pass: true/false
    - risk_level: low/medium/high
    - risk_items: []
    - platform_restrictions: []
    - pending_confirmations: []
-   - carry_to_next_step: []    # 需要下游重点关注的项
+   - carry_to_next_step: []    # các mục bước sau cần đặc biệt lưu ý
 ```
 
 ---
 
 # SELF-CHECK
 
-- [ ] 6 项货盘适配逐项给了结论，未遗漏
-- [ ] 6 项风险维度逐项给了结论，未遗漏
-- [ ] 高风险时已做利润承载力检验；缺成本结构时已报错而非跳过
-- [ ] 平台限制（禁售/限售/认证/物流敏感）已逐项检查
-- [ ] 判定为"不进入"时**已停止**，未继续做容量与价格分析
-- [ ] 结论是"条件式"的，不是无条件的
-- [ ] 已输出待确认清单
-- [ ] 未建议任何规避平台规则的方式
-- [ ] 末尾已附分析合规扫描 + 下游字段
+- [ ] 6 mục phù hợp nguồn hàng đều có kết luận từng mục, không bỏ sót
+- [ ] 6 chiều rủi ro đều có kết luận từng mục, không bỏ sót
+- [ ] Khi rủi ro cao đã kiểm tra khả năng gánh bằng lợi nhuận; thiếu cấu trúc chi phí thì đã báo lỗi chứ không bỏ qua
+- [ ] Hạn chế của sàn (cấm bán/hạn chế bán/chứng nhận/nhạy cảm vận chuyển) đã kiểm tra từng mục
+- [ ] Khi kết luận "không sang" đã **dừng lại**, không làm tiếp phân tích quy mô và giá
+- [ ] Kết luận là "có điều kiện", không phải vô điều kiện
+- [ ] Đã xuất danh sách cần xác nhận
+- [ ] Không gợi ý bất kỳ cách lách quy định của sàn nào
+- [ ] Cuối đầu ra đã kèm quét tuân thủ phân tích + các trường bàn giao

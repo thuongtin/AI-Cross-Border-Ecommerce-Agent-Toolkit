@@ -1,70 +1,70 @@
-# pricing-rules.md · 定价公式与口径
+# pricing-rules.md · Công thức định giá và cách tính
 
-> 所有数字由 `scripts/sku_pricing.py` 计算。怀疑数字 → `[METRIC_SUSPECT]`。
+> Mọi con số đều do `scripts/sku_pricing.py` tính. Nghi ngờ con số → `[METRIC_SUSPECT]`.
 
 ---
 
-## 公式
+## Công thức
 
 ```text
-广告前毛利 = 售价 − 到岸成本 − 售价×佣金% − 售价×退货损耗% − 售价×税率%
-净利率     = (广告前毛利 − 售价×广告%) ÷ 售价
-盈亏平衡价 = 到岸成本 ÷ (1 − 佣金% − 退货% − 税率%)
-目标价     = 到岸成本 ÷ (1 − 佣金% − 退货% − 广告% − 目标毛利%)
-优惠券余量 = 售价 × (实际净利率 − 目标毛利%)
+Lợi nhuận gộp trước QC = giá bán − giá vốn về kho − giá bán×% hoa hồng − giá bán×% hao hụt hoàn hàng − giá bán×% thuế
+Biên lợi nhuận ròng    = (lợi nhuận gộp trước QC − giá bán×% quảng cáo) ÷ giá bán
+Giá hòa vốn            = giá vốn về kho ÷ (1 − % hoa hồng − % hoàn hàng − % thuế)
+Giá mục tiêu           = giá vốn về kho ÷ (1 − % hoa hồng − % hoàn hàng − % quảng cáo − % biên lợi nhuận mục tiêu)
+Dư địa voucher         = giá bán × (biên lợi nhuận ròng thực tế − % biên lợi nhuận mục tiêu)
 ```
 
-**到岸成本** = 产品成本 + 头程 + 尾程 + 仓储（全塞进 `--cost` 一个参数，别拆开重复计）。
+**Giá vốn về kho (landed cost)** = giá vốn sản phẩm + vận chuyển chặng đầu + vận chuyển chặng cuối + lưu kho (dồn hết vào một tham số `--cost`, đừng tách ra rồi tính trùng).
 
 ---
 
-## 参数默认值与出处
+## Giá trị mặc định của tham số và nguồn
 
-**平台费率预设（2026-10-18 口径，来源与复核提醒见 `../scripts/platform_fees.json`）**：
+**Preset mức phí theo sàn (số liệu ngày 2026-10-18, nguồn và lưu ý kiểm tra lại xem `../scripts/platform_fees.json`)**:
 
-| key | 平台 | 佣金 | 按件固定费 | 附加 | 关键坑 |
+| key | Sàn | Hoa hồng | Phí cố định mỗi sản phẩm | Phụ phí | Bẫy chính |
 |---|---|---|---|---|---|
-| `shopee_br` | Shopee 巴西 | <R$80 → 20%；≥R$80 → 14% | ≤79.99→4 / 80–99.99→16 / 100–199.99→20 / ≥200→26 | 0 | 2026-03-01 新政：阶梯固定费 + 取消 R$100 佣金上限 |
-| `mercadolivre_br` | ML Clássico | 11%（10–14%） | <R$79→6.50（2026-03-02 起改为按重量/尺寸的变量物流成本） | 0 | <R$79 是最危险价格带，提价过线省按件费 |
-| `mercadolivre_br_premium` | ML Premium | 16%（15–19%） | 同上 | 0 | 贵 5pp 换分期免息 + 高曝光 |
-| `amazon_br` | Amazon 巴西 | 15%（Most categories，类目 8–15%） | 0（Professional；Individual 每件 R$2） | 0 | 月费 R$19；FBA 履约费另计；referral 按买家支付总额计 |
-| `tiktok_br` | TikTok Shop | <R$50 → 10%；≥R$50 → 6% | <R$50→4 / ≥R$50→6 | 6%（免运计划，自动加入） | 分档按卖家折扣后售价——券会跳档；低客单价 30% 起步 |
+| `shopee_br` | Shopee Brazil | <R$80 → 20%; ≥R$80 → 14% | ≤79.99→4 / 80–99.99→16 / 100–199.99→20 / ≥200→26 | 0 | Chính sách mới 2026-03-01: phí cố định chia bậc + bỏ trần hoa hồng R$100 |
+| `mercadolivre_br` | ML Clássico | 11% (10–14%) | <R$79→6.50 (từ 2026-03-02 chuyển thành chi phí vận chuyển biến đổi theo cân nặng/kích thước) | 0 | <R$79 là dải giá nguy hiểm nhất, nâng giá vượt ngưỡng để tiết kiệm phí mỗi sản phẩm |
+| `mercadolivre_br_premium` | ML Premium | 16% (15–19%) | Như trên | 0 | Đắt hơn 5pp để đổi lấy trả góp không lãi + hiển thị cao |
+| `amazon_br` | Amazon Brazil | 15% (Most categories, tùy ngành hàng 8–15%) | 0 (Professional; Individual R$2 mỗi sản phẩm) | 0 | Phí tháng R$19; phí xử lý đơn FBA tính riêng; referral tính trên tổng tiền người mua trả |
+| `tiktok_br` | TikTok Shop | <R$50 → 10%; ≥R$50 → 6% | <R$50→4 / ≥R$50→6 | 6% (chương trình freeship, tự động tham gia) | Chia bậc theo giá sau chiết khấu của người bán —— voucher có thể làm nhảy bậc; giá trị đơn thấp thì khởi điểm đã 30% |
 
-**显式 CLI 参数永远优先于预设。** 平台规则会变，发布前到卖家中心复核；
-没找到可靠费率来源的平台（Magalu / Temu / Shein 等）**不做预设**，手工传参。
+**Tham số CLI truyền rõ luôn được ưu tiên hơn preset.** Quy tắc của sàn sẽ thay đổi, hãy kiểm tra lại trên Seller Center trước khi đăng bán;
+sàn chưa tìm được nguồn mức phí đáng tin cậy (Magalu / Temu / Shein, v.v.) thì **không làm preset**, hãy truyền tham số thủ công.
 
-## 历史手工默认值（手工口径 / 未用 --platform 时）
+## Mặc định thủ công trước đây (khi nhập tay / không dùng --platform)
 
-| 参数 | 默认 | 出处 |
+| Tham số | Mặc định | Nguồn |
 |---|---|---|
-| 佣金 | 14% | Shopee BR 常见综合费率（含交易费），ML 按类目 13–17% —— 现已由上方平台预设取代 |
-| 退货损耗 | 2% | SOP 3.5 建议预留 |
-| 广告 | 5% | 定价模型预留（注意：实际投放常高于此，见 06 的盈亏线核对） |
-| 税 | 0% | **必须由使用者填**：Simples Nacional / ICMS / PIS+COFINS 折算成占售价 % |
-| 目标毛利 | 32% | 团队毛利目标（按公司填） |
+| Hoa hồng | 14% | Mức phí tổng hợp phổ biến của Shopee BR (gồm phí giao dịch), ML tùy ngành hàng 13–17% —— nay đã được preset theo sàn ở trên thay thế |
+| Hao hụt hoàn hàng | 2% | SOP 3.5 khuyến nghị dự phòng |
+| Quảng cáo | 5% | Dự phòng trong mô hình định giá (lưu ý: chạy quảng cáo thực tế thường cao hơn mức này, xem phần đối chiếu ngưỡng hòa vốn ở 06) |
+| Thuế | 0% | **Người dùng bắt buộc phải điền**: quy đổi Simples Nacional / ICMS / PIS+COFINS thành % trên giá bán |
+| Biên lợi nhuận mục tiêu | 32% | Mục tiêu biên lợi nhuận của team (điền theo công ty) |
 
 ---
 
-## 三个经典误判（脚本输出会提醒）
+## Ba nhận định sai kinh điển (script sẽ cảnh báo)
 
-**① 引流款净利率低于目标 = 战略亏损？**
-不一定。对照 `break_even_price`：只要售价在盈亏价之上就是赚钱的，
-低于目标毛利只是「没赚到目标那么多」。引流款 27.5% vs 目标 32% 属正常策略。
+**① SKU kéo traffic có biên lợi nhuận ròng thấp hơn mục tiêu = lỗ chiến lược?**
+Chưa chắc. Đối chiếu với `break_even_price`: chỉ cần giá bán nằm trên giá hòa vốn là vẫn có lãi,
+thấp hơn biên lợi nhuận mục tiêu chỉ là «chưa lãi được nhiều như mục tiêu». SKU kéo traffic 27.5% so với mục tiêu 32% là chiến lược bình thường.
 
-**② 高配款净利率被主推款反超 = 定错了？**
-常见现象：成本涨 34.8% 售价只涨 22.7%（配置涨价非线性）。
-高配款的存在价值往往是**价格锚**，不一定是利润款 —— 但脚本会提醒你复核。
+**② SKU cấu hình cao bị SKU chủ lực vượt mặt về biên lợi nhuận ròng = định giá sai?**
+Hiện tượng thường gặp: giá vốn tăng 34.8% nhưng giá bán chỉ tăng 22.7% (giá tăng theo cấu hình không tuyến tính).
+Giá trị tồn tại của SKU cấu hình cao thường là **neo giá**, không nhất thiết là SKU lợi nhuận —— nhưng script sẽ nhắc bạn kiểm tra lại.
 
-**③ 优惠券想发多少发多少？**
-`coupon_headroom` 就是额度：净利率超目标的部分 × 售价。
-主推款净利率 36.5%、目标 32% → 余量 R$ 98.52 → 发 R$100 券刚好贴着目标线。
+**③ Voucher muốn phát bao nhiêu thì phát?**
+`coupon_headroom` chính là hạn mức: phần biên lợi nhuận ròng vượt mục tiêu × giá bán.
+SKU chủ lực có biên lợi nhuận ròng 36.5%, mục tiêu 32% → dư địa R$ 98.52 → phát voucher R$100 là vừa sát vạch mục tiêu.
 
 ---
 
-## 价格阶梯判读
+## Đọc bậc giá
 
-| 相邻价差 | 含义 |
+| Chênh giá giữa hai bậc liền kề | Ý nghĩa |
 |---|---|
-| < 10% | 互相蚕食 —— 买家全买便宜的 |
-| 10–35% | 健康阶梯（引流 → 主推常见 30%+） |
-| > 50% | 中间留了空位给竞品 |
+| < 10% | Tự ăn thịt lẫn nhau —— người mua đều mua bản rẻ |
+| 10–35% | Bậc giá lành mạnh (kéo traffic → chủ lực thường 30%+) |
+| > 50% | Bỏ trống khoảng giữa cho đối thủ |

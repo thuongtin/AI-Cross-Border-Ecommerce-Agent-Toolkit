@@ -1,214 +1,214 @@
-# TASK · 关键词分类与标题生成
+# TASK · Phân loại từ khóa và tạo tiêu đề
 
-> 配套使用：`00_system.md`（系统 Prompt）+ `templates/input_product_brief.md`（已填写的输入）
+> Dùng kèm: `00_system.md` (System Prompt) + `templates/input_product_brief.md` (đầu vào đã điền)
 
-对应 SOP **1.8 关键词表** + **3.3 Listing 打造** + **3.4 单品多链接启动**。
+Tương ứng SOP **1.8 Bảng từ khóa** + **3.3 Xây dựng Listing** + **3.4 Khởi động một sản phẩm nhiều link**.
 
 ---
 
 # INPUT
 
-必须包含以下字段，缺失任一字段则按 `00_system.md` 的 INPUT CONTRACT 停止并报错：
+Bắt buộc có các trường sau, thiếu bất kỳ trường nào thì dừng và báo lỗi theo INPUT CONTRACT của `00_system.md`:
 
-| 字段 | 说明 | 缺失影响 |
+| Trường | Mô tả | Ảnh hưởng khi thiếu |
 |---|---|---|
-| `platform` | 目标平台 | 无法确定字符上限和结构 |
-| `target_market` | 目标市场 | 无法确定输出语言 |
-| `mode` | `single` / `variant` / `iterate` | 无法确定输出套数 |
-| `product_name` | 产品通用名（母语） | 无法生成标题 |
-| `category` | 类目 | 无法应用类目常识 |
-| `keyword_top30_by_search_volume[]` | 搜索量前 30 | 关键词分类缺一维 |
-| `keyword_top30_by_supply_demand[]` | 供需比前 30 | 关键词分类缺一维 |
-| `keyword_top30_by_growth[]` | 增长率前 30 | 关键词分类缺一维 |
-| `spec_table` | 参数表（键值对） | **无法输出任何数值，标题参数词将全部缺失** |
-| `usage_scope[]` | 允许表达的使用场景 | 场景词无法判断合法性 |
-| `brand_authorization` | 已授权品牌（可为空） | 无法执行 R2 品牌词拦截 |
+| `platform` | Sàn mục tiêu | Không xác định được giới hạn ký tự và cấu trúc |
+| `target_market` | Thị trường mục tiêu | Không xác định được ngôn ngữ đầu ra |
+| `mode` | `single` / `variant` / `iterate` | Không xác định được số bộ đầu ra |
+| `product_name` | Tên gọi chung của sản phẩm (ngôn ngữ bản địa) | Không tạo được tiêu đề |
+| `category` | Ngành hàng | Không áp dụng được kiến thức ngành hàng |
+| `keyword_top30_by_search_volume[]` | Top 30 theo lượng tìm kiếm | Phân loại từ khóa thiếu một chiều |
+| `keyword_top30_by_supply_demand[]` | Top 30 theo tỷ lệ cung cầu | Phân loại từ khóa thiếu một chiều |
+| `keyword_top30_by_growth[]` | Top 30 theo tốc độ tăng trưởng | Phân loại từ khóa thiếu một chiều |
+| `spec_table` | Bảng thông số (cặp key-value) | **Không xuất được bất kỳ giá trị số nào, tiêu đề sẽ thiếu toàn bộ từ thông số** |
+| `usage_scope[]` | Các ngữ cảnh sử dụng được phép nêu | Không đánh giá được tính hợp lệ của từ ngữ cảnh |
+| `brand_authorization` | Thương hiệu đã được ủy quyền (có thể để trống) | Không chạy được bước chặn tên thương hiệu R2 |
 
-可选字段：
-- `mode = variant` 时需要 `variant_count`（2–4，默认 3）
-- `mode = iterate` 时需要 `existing_title` + `symptom`（症状描述）
+Trường tùy chọn:
+- Khi `mode = variant` cần `variant_count` (2–4, mặc định 3)
+- Khi `mode = iterate` cần `existing_title` + `symptom` (mô tả triệu chứng)
 
 ---
 
-# STEP 1 · 关键词七类分词
+# STEP 1 · Chia từ khóa thành 7 nhóm
 
-将三榜关键词**合并去重**后，按 SOP 定义的七类逐一分类。
+**Gộp và loại trùng** từ khóa của ba bảng xếp hạng, sau đó phân loại lần lượt theo 7 nhóm SOP định nghĩa.
 
-## 分类定义
+## Định nghĩa các nhóm
 
-| 类别 | 定义 | 示例（巴西 / 电动滑板车） |
+| Nhóm | Định nghĩa | Ví dụ (Brazil / xe scooter điện) |
 |---|---|---|
-| **核心词** | 说明产品是什么，买家搜索的第一入口 | `Patinete Elétrico`、`Scooter Elétrico` |
-| **参数词** | 说明功率、承重、容量、尺寸等配置 | `500W`、`150kg`、`10Ah` |
-| **人群词** | 说明适合谁 | `Adulto`、`Infantil`、`Unissex` |
-| **功能词** | 说明具备什么功能 | `Dobrável`、`com Banco`、`com Suspensão` |
-| **场景词** | 说明用在什么场景 | `Mobilidade Urbana`、`Off Road`、`Viagem` |
-| **配件词** | 说明包含/配套什么 | `com Carregador`、`com Capacete`、`Bateria` |
-| **风险词** | **禁止使用**：品牌词、侵权词、与实际商品不符的参数词 | 未授权的品牌名、与 `spec_table` 冲突的数值 |
+| **Từ cốt lõi** | Cho biết sản phẩm là gì, là cửa vào tìm kiếm đầu tiên của người mua | `Patinete Elétrico`, `Scooter Elétrico` |
+| **Từ thông số** | Cho biết cấu hình như công suất, tải trọng, dung lượng, kích thước | `500W`, `150kg`, `10Ah` |
+| **Từ nhóm khách hàng** | Cho biết sản phẩm phù hợp với ai | `Adulto`, `Infantil`, `Unissex` |
+| **Từ tính năng** | Cho biết sản phẩm có tính năng gì | `Dobrável`, `com Banco`, `com Suspensão` |
+| **Từ ngữ cảnh** | Cho biết dùng trong ngữ cảnh nào | `Mobilidade Urbana`, `Off Road`, `Viagem` |
+| **Từ phụ kiện** | Cho biết kèm theo / đi cùng những gì | `com Carregador`, `com Capacete`, `Bateria` |
+| **Từ rủi ro** | **Cấm dùng**: tên thương hiệu, từ vi phạm bản quyền, từ thông số không khớp với hàng thật | Tên thương hiệu chưa được ủy quyền, giá trị số mâu thuẫn với `spec_table` |
 
-## 输出格式
+## Định dạng đầu ra
 
 ```markdown
-## 1. 关键词分类表
+## 1. Bảng phân loại từ khóa
 
-### 1.1 高频词提取
+### 1.1 Trích từ tần suất cao
 
-| 词 | 出现榜数 | 出现于哪些榜 | 归属类别 |
+| Từ | Số bảng xuất hiện | Xuất hiện ở bảng nào | Thuộc nhóm |
 |---|---|---|---|
-| <词> | 3/3 | 搜索量 / 供需比 / 增长率 | 核心词 |
+| <từ> | 3/3 | Lượng tìm kiếm / Tỷ lệ cung cầu / Tốc độ tăng trưởng | Từ cốt lõi |
 | ... | | | |
 
-> 出现于 ≥2 个榜单的词为「高频词」，优先级最高。
+> Từ xuất hiện ở ≥2 bảng là "từ tần suất cao", có độ ưu tiên cao nhất.
 
-### 1.2 分类汇总
+### 1.2 Tổng hợp phân loại
 
-| 类别 | 词数 | 词列表 | 用于何处 |
+| Nhóm | Số từ | Danh sách từ | Dùng ở đâu |
 |---|---|---|---|
-| 核心词 | 3 | ... | 标题前 30 字符 |
-| 参数词 | 11 | ... | 标题参数段 + 详情参数段 |
-| 人群词 | 4 | ... | 标题人群段 |
-| 功能词 | 8 | ... | 标题功能段 + 详情卖点段 |
-| 场景词 | 6 | ... | 详情场景段 |
-| 配件词 | 5 | ... | 详情参数段 |
-| 风险词 | 6 | ... | ⛔ 禁用，列入 forbidden_words |
+| Từ cốt lõi | 3 | ... | 30 ký tự đầu của tiêu đề |
+| Từ thông số | 11 | ... | Đoạn thông số của tiêu đề + đoạn thông số của trang chi tiết |
+| Từ nhóm khách hàng | 4 | ... | Đoạn nhóm khách hàng của tiêu đề |
+| Từ tính năng | 8 | ... | Đoạn tính năng của tiêu đề + đoạn điểm bán hàng của trang chi tiết |
+| Từ ngữ cảnh | 6 | ... | Đoạn ngữ cảnh của trang chi tiết |
+| Từ phụ kiện | 5 | ... | Đoạn thông số của trang chi tiết |
+| Từ rủi ro | 6 | ... | ⛔ Cấm dùng, đưa vào forbidden_words |
 
-### 1.3 风险词隔离清单（供下游 04/05 硬拦截）
+### 1.3 Danh sách cách ly từ rủi ro (để 04/05 phía sau chặn cứng)
 
-| 风险词 | 风险类型 | 原因 |
+| Từ rủi ro | Loại rủi ro | Lý do |
 |---|---|---|
-| <词> | 品牌侵权 | 未在 brand_authorization 中声明 |
-| <词> | 参数不符 | 与 spec_table 冲突（实际 X，该词暗示 Y） |
+| <từ> | Vi phạm thương hiệu | Chưa được khai báo trong brand_authorization |
+| <từ> | Thông số không khớp | Mâu thuẫn với spec_table (thực tế là X, từ này ngụ ý Y) |
 ```
 
-**规则**：风险词**不得出现在任何输出内容中**，但必须**完整列出**在 1.3 表格里——因为 04/05 需要它做拦截。
+**Quy tắc**: từ rủi ro **không được xuất hiện trong bất kỳ nội dung đầu ra nào**, nhưng phải được **liệt kê đầy đủ** trong bảng 1.3 — vì 04/05 cần nó để chặn.
 
 ---
 
-# STEP 2 · 标题生成
+# STEP 2 · Tạo tiêu đề
 
-## 组合公式（SOP 1.8）
+## Công thức ghép (SOP 1.8)
 
 ```
-核心产品词 + 人群/场景词 + 核心参数词 + 功能卖点词 + 补充关键词
+Từ sản phẩm cốt lõi + từ nhóm khách hàng/ngữ cảnh + từ thông số cốt lõi + từ điểm bán hàng tính năng + từ khóa bổ sung
 ```
 
-SOP 原例：
+Ví dụ gốc trong SOP:
 
 ```
 Patinete Elétrico Adulto 500W 150kg com Banco Dobrável para Mobilidade Urbana
 ```
-拆解：核心词 `Patinete Elétrico` / 人群词 `Adulto` / 参数词 `500W` `150kg` / 功能词 `com Banco` `Dobrável` / 场景词 `Mobilidade Urbana`
+Phân tích: từ cốt lõi `Patinete Elétrico` / từ nhóm khách hàng `Adulto` / từ thông số `500W` `150kg` / từ tính năng `com Banco` `Dobrável` / từ ngữ cảnh `Mobilidade Urbana`
 
-## 生成要求
+## Yêu cầu khi tạo
 
-1. **严格按 input.platform 的字符上限**，输出时**标注实际字符数**（格式：`116/120`）
-2. **主关键词前置**（Shopee 前 30 字符；ML 最前）
-3. **参数词只能用 `spec_table` 里的真实数值**
-4. **不做同义反复**（`Patinete Elétrico Patinete Elétrico Scooter` ❌）
-5. **不堆砌无关词**
-6. `mode = single` 时输出 **3 个备选**，覆盖不同侧重方向
-7. `mode = variant` 时输出 **variant_count 套差异化方案**，每套的**侧重方向必须不同**（详见下方）
-8. `mode = iterate` 时**只输出 1 套修改方案**，并要求：明确指出改了哪个位置、为什么这么改
+1. **Tuân thủ nghiêm giới hạn ký tự của input.platform**, khi xuất phải **ghi rõ số ký tự thực tế** (định dạng: `116/120`)
+2. **Từ khóa chính đặt lên đầu** (Shopee: trong 30 ký tự đầu; ML: đứng đầu tiên)
+3. **Từ thông số chỉ được dùng giá trị thật trong `spec_table`**
+4. **Không lặp nghĩa** (`Patinete Elétrico Patinete Elétrico Scooter` ❌)
+5. **Không nhồi từ không liên quan**
+6. Khi `mode = single` xuất **3 bản dự phòng**, mỗi bản một hướng trọng tâm khác nhau
+7. Khi `mode = variant` xuất **variant_count bộ phương án khác biệt hóa**, **hướng trọng tâm của mỗi bộ phải khác nhau** (chi tiết bên dưới)
+8. Khi `mode = iterate` **chỉ xuất 1 bộ phương án sửa**, và yêu cầu: chỉ rõ đã sửa ở vị trí nào, vì sao sửa như vậy
 
-## 三种模式的输出差异
+## Khác biệt đầu ra giữa ba chế độ
 
 ### mode = single
 
 ```markdown
-## 2. 标题方案（3 个备选）
+## 2. Phương án tiêu đề (3 bản dự phòng)
 
-| # | 标题 | 字符数 | 侧重方向 | 适用场景 |
+| # | Tiêu đề | Số ký tự | Hướng trọng tâm | Phù hợp khi |
 |---|---|---|---|---|
-| A | <标题> | 116/120 | 参数驱动 | 追求精准搜索流量 |
-| B | <标题> | 112/120 | 场景驱动 | 拓展泛流量 |
-| C | <标题> | 118/120 | 功能驱动 | 差异化卖点突出 |
+| A | <tiêu đề> | 116/120 | Thông số dẫn dắt | Muốn traffic tìm kiếm chính xác |
+| B | <tiêu đề> | 112/120 | Ngữ cảnh dẫn dắt | Mở rộng traffic rộng |
+| C | <tiêu đề> | 118/120 | Tính năng dẫn dắt | Làm nổi bật điểm bán hàng khác biệt |
 
-**推荐**：A（理由：<一句话>）
+**Đề xuất**: A (lý do: <một câu>)
 ```
 
-### mode = variant（对应 SOP 3.4 多链接测试 / SOP 2.3 多店铺差异化）
+### mode = variant (tương ứng SOP 3.4 test nhiều link / SOP 2.3 khác biệt hóa giữa nhiều shop)
 
-每套走**不同的侧重方向**，用于分别测试：
+Mỗi bộ đi một **hướng trọng tâm khác nhau** để test riêng:
 
-| 变体 | 侧重方向 | 标题差异点 | 适用测试目的 |
+| Biến thể | Hướng trọng tâm | Điểm khác của tiêu đề | Mục đích test |
 |---|---|---|---|
-| 1 | 参数驱动 | 参数前置、数值密度高 | 测精准搜索词的点击率 |
-| 2 | 场景驱动 | 场景词前置、弱化参数 | 测泛流量的转化率 |
-| 3 | 人群驱动 | 人群词前置 | 测特定人群的共鸣度 |
+| 1 | Thông số dẫn dắt | Thông số đặt lên đầu, mật độ con số cao | Test CTR của từ khóa tìm kiếm chính xác |
+| 2 | Ngữ cảnh dẫn dắt | Từ ngữ cảnh đặt lên đầu, giảm nhấn thông số | Test tỷ lệ chuyển đổi của traffic rộng |
+| 3 | Nhóm khách hàng dẫn dắt | Từ nhóm khách hàng đặt lên đầu | Test mức độ đồng cảm của nhóm khách hàng cụ thể |
 
-**硬要求**：变体之间必须有**实质性差异**，不能只换语序。若两个变体相似度超过 70%，必须重写其中一个并说明。
+**Yêu cầu cứng**: giữa các biến thể phải có **khác biệt thực chất**, không được chỉ đổi thứ tự từ. Nếu hai biến thể giống nhau quá 70%, bắt buộc viết lại một trong hai và giải thích.
 
-### mode = iterate（对应 SOP 3.6 广告回改）
+### mode = iterate (tương ứng SOP 3.6 sửa lại khi quảng cáo không chạy)
 
 ```markdown
-## 2. 标题迭代方案
+## 2. Phương án sửa tiêu đề
 
-- 现状：<existing_title>
-- 症状：<symptom>
-- 判断：<为什么会出现这个症状，对应 SOP 哪条规则>
-- 修改点：<具体改了哪里>（只改必要的位置，其余保持不动）
-- 修改后：<new_title>（<字符数>）
-- 预期效果：<一句话>
+- Hiện trạng: <existing_title>
+- Triệu chứng: <symptom>
+- Nhận định: <vì sao xuất hiện triệu chứng này, ứng với quy tắc nào trong SOP>
+- Điểm sửa: <cụ thể sửa ở đâu> (chỉ sửa vị trí cần thiết, phần còn lại giữ nguyên)
+- Sau khi sửa: <new_title> (<số ký tự>)
+- Hiệu quả kỳ vọng: <một câu>
 ```
 
 ---
 
-# STEP 3 · 标题合规自检
+# STEP 3 · Tự kiểm tra tuân thủ tiêu đề
 
 ```markdown
-## 3. 标题自检
+## 3. Tự kiểm tra tiêu đề
 
-| 检查项 | 结果 | 说明 |
+| Mục kiểm tra | Kết quả | Ghi chú |
 |---|---|---|
-| 字符数 ≤ <上限> | ✅ / ❌ | 实际 <n> 字符 |
-| 主关键词在前 30 字符内 | ✅ / ❌ | 位置：第 <n> 字符起 |
-| 无促销词 | ✅ / ❌ | |
-| 无表情符号 / 特殊字符 | ✅ / ❌ | |
-| 无全大写词 | ✅ / ❌ | |
-| 无堆砌重复词 | ✅ / ❌ | |
-| 无未授权品牌词 | ✅ / ❌ | |
-| 所有数值可溯源到 spec_table | ✅ / ❌ | 逐项列出 |
-| 单位公制 | ✅ / ❌ | |
-| 首字母大写规范 | ✅ / ❌ | |
+| Số ký tự ≤ <giới hạn> | ✅ / ❌ | Thực tế <n> ký tự |
+| Từ khóa chính nằm trong 30 ký tự đầu | ✅ / ❌ | Vị trí: bắt đầu từ ký tự thứ <n> |
+| Không có từ khuyến mãi | ✅ / ❌ | |
+| Không có emoji / ký tự đặc biệt | ✅ / ❌ | |
+| Không có từ viết hoa toàn bộ | ✅ / ❌ | |
+| Không nhồi từ lặp lại | ✅ / ❌ | |
+| Không có tên thương hiệu chưa ủy quyền | ✅ / ❌ | |
+| Mọi giá trị số đều truy được về spec_table | ✅ / ❌ | Liệt kê từng mục |
+| Đơn vị hệ mét | ✅ / ❌ | |
+| Viết hoa chữ cái đầu đúng quy cách | ✅ / ❌ | |
 ```
 
 ---
 
 # FINAL OUTPUT STRUCTURE
 
-严格按此顺序输出，不增删章节：
+Xuất nghiêm theo thứ tự này, không thêm bớt chương:
 
 ```markdown
-## 1. 关键词分类表
-### 1.1 高频词提取
-### 1.2 分类汇总
-### 1.3 风险词隔离清单
+## 1. Bảng phân loại từ khóa
+### 1.1 Trích từ tần suất cao
+### 1.2 Tổng hợp phân loại
+### 1.3 Danh sách cách ly từ rủi ro
 
-## 2. 标题方案
-（按 mode 输出对应格式）
+## 2. Phương án tiêu đề
+(xuất định dạng tương ứng theo mode)
 
-## 3. 标题自检
+## 3. Tự kiểm tra tiêu đề
 
-## 4. 合规扫描
-（按 00_system.md 的 COMPLIANCE GUARD 输出；无命中也必须写"无命中"）
+## 4. Quét tuân thủ
+(xuất theo COMPLIANCE GUARD của 00_system.md; không dính cũng phải ghi "không dính")
 
-## 5. 交付给下游模块的字段
+## 5. Các trường bàn giao cho module phía sau
 - core_selling_point:
-- keyword_classified: { 核心词: [...], 参数词: [...], ... }
+- keyword_classified: { từ cốt lõi: [...], từ thông số: [...], ... }
 - forbidden_words: [...]
 - title_final:
 ```
 
-> 第 5 段是 04 Product Image 和 05 Product Video 的输入契约，**不可省略**。
+> Đoạn 5 là hợp đồng đầu vào (input contract) của 04 Product Image và 05 Product Video, **không được bỏ**.
 
 ---
 
 # SELF-CHECK
 
-- [ ] 三榜关键词已全部合并去重，无遗漏
-- [ ] 每个词都被归入七类之一，无"其他"分类
-- [ ] 风险词已完整列出且未出现在标题中
-- [ ] 标题字符数是**实测值**，不是估算
-- [ ] `mode = variant` 时，变体间相似度 < 70%
-- [ ] 标题中每个数值都能在 `spec_table` 找到
-- [ ] 输出末尾已附合规扫描 + 下游字段
+- [ ] Từ khóa của ba bảng đã được gộp và loại trùng toàn bộ, không sót
+- [ ] Mỗi từ đều được xếp vào một trong 7 nhóm, không có nhóm "khác"
+- [ ] Từ rủi ro đã được liệt kê đầy đủ và không xuất hiện trong tiêu đề
+- [ ] Số ký tự tiêu đề là **giá trị đo thực tế**, không phải ước lượng
+- [ ] Khi `mode = variant`, độ giống nhau giữa các biến thể < 70%
+- [ ] Mọi giá trị số trong tiêu đề đều tìm được trong `spec_table`
+- [ ] Cuối đầu ra đã kèm quét tuân thủ + các trường cho module phía sau

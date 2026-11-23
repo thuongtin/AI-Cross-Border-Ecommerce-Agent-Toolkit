@@ -1,229 +1,229 @@
 # 06 · Advertising Optimization Agent
 
-**广告优化智能体** · 输入广告数据，输出**动作清单**——不是"建议优化"，是"关掉哪条词、换哪张主图、ROI 调到多少"。
+**Agent tối ưu quảng cáo** · Nhập dữ liệu quảng cáo, xuất ra **danh sách hành động** — không phải "đề xuất tối ưu" chung chung, mà là "tắt từ khóa nào, đổi ảnh chính nào, chỉnh ROI về bao nhiêu".
 
-> **Skill 化（v0.4）**：本模块已提供可被 Agent 直接调用的入口 [`SKILL.md`](SKILL.md)，
-> 并新增确定性算术脚本 [`scripts/ad_metrics.py`](scripts/ad_metrics.py)
-> （`calc` 算盈亏线/可承受 CPC，`diagnose` 读广告导出 CSV 输出 P0/P1/P2 分级动作，
-> 纯标准库、支持中/英/葡列名、含巴西税费项）。
-> 规则与口径见 [`references/`](references/) 四件套：[metrics](references/metrics.md) ·
-> [diagnosis](references/diagnosis.md) · [playbooks](references/playbooks.md) · [actions](references/actions.md)。
-> **本 Skill 只建议、不执行** —— 写后台属路线 B，未实现。
+> **Đóng gói thành Skill (v0.4)**: module này đã có entry để Agent gọi trực tiếp [`SKILL.md`](SKILL.md),
+> và bổ sung script tính toán xác định [`scripts/ad_metrics.py`](scripts/ad_metrics.py)
+> (`calc` tính ngưỡng hòa vốn/CPC chịu được, `diagnose` đọc CSV xuất từ quảng cáo và xuất hành động phân cấp P0/P1/P2,
+> chỉ dùng thư viện chuẩn, hỗ trợ tên cột tiếng Trung/Việt/Anh/Bồ Đào Nha, có tính thuế phí Brazil).
+> Quy tắc và cách tính xem bộ bốn tài liệu trong [`references/`](references/): [metrics](references/metrics.md) ·
+> [diagnosis](references/diagnosis.md) · [playbooks](references/playbooks.md) · [actions](references/actions.md).
+> **Skill này chỉ đề xuất, không thực thi** — ghi vào trang quản trị thuộc hướng B, chưa triển khai.
 
 ---
 
-## 一、它解决什么问题
+## I. Nó giải quyết vấn đề gì
 
-SOP 3.5 说广告的作用是"买曝光、测数据、抢排名、放大链接"。但实际投放中，运营最容易犯的错是**看到 ROI 差就去调 ROI 和预算**——调了三轮还是亏。
+SOP 3.5 nói vai trò của quảng cáo là "mua lượt hiển thị, test dữ liệu, giành thứ hạng, khuếch đại link". Nhưng khi chạy quảng cáo thực tế, lỗi người vận hành dễ mắc nhất là **thấy ROI kém là đi chỉnh ROI và ngân sách** — chỉnh ba vòng vẫn lỗ.
 
-原因：**ROI 差是结果，不是原因。** 真正的病因藏在前面的漏斗环节里。本模块做的事就是**逆着漏斗往回找病根**。
+Lý do: **ROI kém là kết quả, không phải nguyên nhân.** Nguyên nhân thật nằm ở các khâu phía trước trong phễu. Việc module này làm là **đi ngược phễu để tìm ra gốc bệnh**.
 
-| 痛点 | 表现 | 本模块怎么解 |
+| Nỗi đau | Biểu hiện | Module này giải quyết thế nào |
 |---|---|---|
-| **不知道问题出在哪一环** | ROI 差就调 ROI，越调越差 | 四类漏斗诊断：曝光→点击→加购→转化，逐环判定 |
-| **没有基准线，全凭感觉** | "CTR 1.4% 好像还行" | 强制对标 SOP 基准线（CTR 3–5% / 转化 >1% / 加购 >8%） |
-| **不知道该花多少钱** | 预算随便定，花完就停 | 最大预算 × 目标 ROI 双变量模型 + 盈亏线 ROAS 计算 |
-| **广告跑不动就束手无策** | 花不出钱，只能加价 | SOP 的解除 bug 方法：先改主图，再找客服提工单 |
+| **Không biết vấn đề nằm ở khâu nào** | ROI kém thì chỉnh ROI, càng chỉnh càng tệ | Chẩn đoán phễu bốn loại: hiển thị→click→thêm vào giỏ→chuyển đổi, xét từng khâu |
+| **Không có đường chuẩn, toàn dựa vào cảm giác** | "CTR 1.4% hình như cũng ổn" | Bắt buộc đối chiếu đường chuẩn SOP (CTR 3–5% / chuyển đổi >1% / thêm vào giỏ >8%) |
+| **Không biết nên chi bao nhiêu** | Ngân sách đặt tùy hứng, tiêu hết là dừng | Mô hình hai biến ngân sách tối đa × ROI mục tiêu + tính ROAS hòa vốn |
+| **Quảng cáo không chạy là bó tay** | Không tiêu được tiền, chỉ biết tăng giá thầu | Cách gỡ bug của SOP: đổi ảnh chính trước, rồi mới tìm CSKH mở ticket |
 
-**产出物**：四类漏斗诊断结果 + 逐广告组动作清单 + 预算/ROI 目标区间 + 盈亏线核算 + 预算节律方案。
+**Đầu ra**: kết quả chẩn đoán phễu bốn loại + danh sách hành động theo từng nhóm quảng cáo + khoảng mục tiêu ngân sách/ROI + tính ngưỡng hòa vốn + phương án nhịp ngân sách.
 
 ---
 
-## 二、覆盖的 SOP 章节
+## II. Các chương SOP được bao phủ
 
-| SOP | 内容 | 落在哪个 Prompt |
+| SOP | Nội dung | Nằm ở Prompt nào |
 |---|---|---|
-| **3.5** | 广告投放底层逻辑：最大预算 × 目标 ROI 双变量 | `02_budget_roi_model.md` |
-| **3.5** | 7 天测试区间（平台官方为 14 天） | `02_budget_roi_model.md` |
-| **3.6** | 四类漏斗诊断 + 优化方向 | `01_funnel_diagnosis.md` |
-| **3.6** | 健康指标基准线（CTR 3–5% / 转化 >1% / 加购 >8%） | `01_funnel_diagnosis.md` |
-| **3.6** | 广告 bug 解除：改主图 | `01_funnel_diagnosis.md`（末尾专节） |
-| **3.6** | 开关广告方法：非黄金时段调低预算而非暂停 | `02_budget_roi_model.md` |
-| **1.10** | 推广计划：看竞品多久起量 → 反推新品节奏 | `02_budget_roi_model.md`（阶段目标） |
+| **3.5** | Logic nền của chạy quảng cáo: hai biến ngân sách tối đa × ROI mục tiêu | `02_budget_roi_model.md` |
+| **3.5** | Khoảng test 7 ngày (sàn chính thức là 14 ngày) | `02_budget_roi_model.md` |
+| **3.6** | Chẩn đoán phễu bốn loại + hướng tối ưu | `01_funnel_diagnosis.md` |
+| **3.6** | Đường chuẩn chỉ số khỏe (CTR 3–5% / chuyển đổi >1% / thêm vào giỏ >8%) | `01_funnel_diagnosis.md` |
+| **3.6** | Gỡ bug quảng cáo: đổi ảnh chính | `01_funnel_diagnosis.md` (mục riêng cuối file) |
+| **3.6** | Cách bật/tắt quảng cáo: ngoài khung giờ vàng thì hạ ngân sách thay vì tạm dừng | `02_budget_roi_model.md` |
+| **1.10** | Kế hoạch đẩy sản phẩm: xem đối thủ bao lâu thì lên đơn → suy ngược nhịp cho sản phẩm mới | `02_budget_roi_model.md` (mục tiêu theo giai đoạn) |
 
 ---
 
-## 三、工作流
+## III. Quy trình
 
 ```text
-输入：广告数据表（曝光/点击/加购/订单/花费）+ 成本结构
+Đầu vào: bảng dữ liệu quảng cáo (hiển thị/click/thêm giỏ/đơn/chi phí) + cấu trúc chi phí
                          ▼
         ┌────────────────────────────────────┐
-        │ 00_system.md                       │  角色 + 基准线 + 盈亏线算法 + 合规守卫
+        │ 00_system.md                       │  Vai trò + đường chuẩn + thuật toán hòa vốn + tuân thủ
         └──────────────┬─────────────────────┘
                        ▼
         ┌────────────────────────────────────┐
-        │ 01_funnel_diagnosis.md             │  Step 1  逐广告组四类漏斗判定
-        │                                    │  Step 2  输出动作清单（含优先级）
+        │ 01_funnel_diagnosis.md             │  Step 1  Xét phễu bốn loại cho từng nhóm QC
+        │                                    │  Step 2  Xuất danh sách hành động (có ưu tiên)
         └──────────────┬─────────────────────┘
                        ▼
         ┌────────────────────────────────────┐
-        │ 02_budget_roi_model.md             │  Step 3  盈亏线 ROAS 核算
-        │                                    │  Step 4  预算 × ROI 目标区间
-        │                                    │  Step 5  分时段预算节律
+        │ 02_budget_roi_model.md             │  Step 3  Tính ROAS hòa vốn
+        │                                    │  Step 4  Khoảng mục tiêu ngân sách × ROI
+        │                                    │  Step 5  Nhịp ngân sách theo khung giờ
         └──────────────┬─────────────────────┘
                        ▼
-        输出：output_ad_action_plan.md  →  执行动作 → 7 天后回收数据复测
+        Đầu ra: output_ad_action_plan.md  →  thực thi hành động → sau 7 ngày thu dữ liệu để kiểm tra lại
 ```
 
-**这是一个闭环模块**：执行动作后必须回收数据复测，否则不知道动作是否有效。复测间隔用 SOP 的 **7 天测试区间**。
+**Đây là một module vòng khép kín (closed loop)**: sau khi thực thi hành động bắt buộc phải thu dữ liệu để kiểm tra lại, nếu không sẽ không biết hành động có hiệu quả hay không. Khoảng cách kiểm tra lại dùng **khoảng test 7 ngày** của SOP.
 
 ---
 
-## 四、四类漏斗诊断（核心）
+## IV. Chẩn đoán phễu bốn loại (cốt lõi)
 
-SOP 3.6 把广告问题分成了四类。**每一类对应不同的病因和不同的动作**——这是本模块最重要的判断表：
+SOP 3.6 chia vấn đề quảng cáo thành bốn loại. **Mỗi loại ứng với nguyên nhân khác nhau và hành động khác nhau** — đây là bảng phán đoán quan trọng nhất của module:
 
-| 症状 | 判定条件 | 病因所在环节 | 优先检查 | 优化动作 |
+| Triệu chứng | Điều kiện xác định | Khâu chứa nguyên nhân | Ưu tiên kiểm tra | Hành động tối ưu |
 |---|---|---|---|---|
-| **有曝光没点击** | CTR < 3% | 点击前（主图/标题） | 主图 / 标题 / 价格展示 / 核心卖点 / 是否有明显优惠 | 换主图、优化标题关键词、强化价格优势、主图加卖点、调整广告词 |
-| **有点击没加购** | CTR 达标 且 加购率 < 8% | 详情页 | 详情页 / SKU 结构 / 价格 / 评价数量 / 售后保障 / 描述清晰度 | 优化详情页、调整 SKU、增加优惠券、强化核心卖点、补真实买家反馈 |
-| **有加购没转化** | 加购率达标 且 转化率 < 1% | 决策环节 | 价格竞争力 / 优惠券力度 / 评价质量 / 发货承诺 / 竞品价格 / 售后保障 | 限时优惠、优化评价展示、优化发货与保修信息、调价、配合活动 |
-| **高花费低 ROI** | 三个漏斗指标都达标，但 ROAS < 盈亏线 | 成本环节（出价/词质量） | 关键词是否太泛 / 出价过高 / 主图点击低效 / 产品转化弱 / 价格没竞争力 | 降低效词预算、关无转化词、优化主图详情页、调价格优惠券、重测 ROI 区间 |
+| **Có hiển thị không có click** | CTR < 3% | Trước click (ảnh chính/tiêu đề) | Ảnh chính / tiêu đề / cách hiển thị giá / điểm bán hàng cốt lõi / có ưu đãi rõ ràng không | Đổi ảnh chính, tối ưu từ khóa trong tiêu đề, nhấn mạnh lợi thế giá, thêm điểm bán hàng vào ảnh chính, chỉnh từ khóa quảng cáo |
+| **Có click không thêm vào giỏ** | CTR đạt và tỷ lệ thêm vào giỏ < 8% | Trang chi tiết | Trang chi tiết / cấu trúc SKU / giá / số lượng đánh giá / cam kết hậu mãi / mô tả rõ ràng | Tối ưu trang chi tiết, chỉnh SKU, thêm voucher, nhấn mạnh điểm bán hàng cốt lõi, bổ sung phản hồi thật của người mua |
+| **Có thêm vào giỏ không chuyển đổi** | Tỷ lệ thêm vào giỏ đạt và tỷ lệ chuyển đổi < 1% | Khâu ra quyết định | Sức cạnh tranh về giá / mức voucher / chất lượng đánh giá / cam kết giao hàng / giá đối thủ / cam kết hậu mãi | Ưu đãi giới hạn thời gian, tối ưu hiển thị đánh giá, tối ưu thông tin giao hàng và bảo hành, chỉnh giá, tham gia chương trình |
+| **Chi phí cao ROI thấp** | Cả ba chỉ số phễu đều đạt, nhưng ROAS < ngưỡng hòa vốn | Khâu chi phí (giá thầu/chất lượng từ khóa) | Từ khóa có quá rộng không / giá thầu quá cao / ảnh chính click kém hiệu quả / sản phẩm chuyển đổi yếu / giá không cạnh tranh | Giảm ngân sách cho từ khóa kém hiệu quả, tắt từ khóa không chuyển đổi, tối ưu ảnh chính và trang chi tiết, chỉnh giá và voucher, test lại khoảng ROI |
 
-### 判定顺序很重要
+### Thứ tự xét rất quan trọng
 
-**必须按 CTR → 加购率 → 转化率 → ROAS 的顺序判定，不能跳。**
+**Bắt buộc xét theo thứ tự CTR → tỷ lệ thêm vào giỏ → tỷ lệ chuyển đổi → ROAS, không được bỏ bước.**
 
-原因：如果 CTR 不达标，就说明买家连点都没点进来——这时候去看加购率是没有意义的，样本从源头就是歪的。
+Lý do: nếu CTR không đạt nghĩa là người mua còn chưa bấm vào — lúc này xem tỷ lệ thêm vào giỏ chẳng có ý nghĩa gì, mẫu đã lệch ngay từ gốc.
 
 ```text
-CTR 不达标 → 病因在点击前 → 修主图/标题，此时不要动 ROI 和预算
-CTR 达标、加购不达标 → 病因在详情页 → 修详情页/SKU，此时不要动主图
-CTR 与加购都达标、转化不达标 → 病因在决策环节 → 修价格/评价/承诺
-三项都达标但 ROAS 差 → 病因在成本环节 → 才轮到调出价与 ROI
+CTR không đạt → nguyên nhân ở trước click → sửa ảnh chính/tiêu đề, lúc này đừng động vào ROI và ngân sách
+CTR đạt, thêm giỏ không đạt → nguyên nhân ở trang chi tiết → sửa trang chi tiết/SKU, lúc này đừng động vào ảnh chính
+CTR và thêm giỏ đều đạt, chuyển đổi không đạt → nguyên nhân ở khâu ra quyết định → sửa giá/đánh giá/cam kết
+Cả ba đều đạt nhưng ROAS kém → nguyên nhân ở khâu chi phí → lúc này mới tới lượt chỉnh giá thầu và ROI
 ```
 
-> **这是本模块最核心的一条纪律**：**只有当前面的环节都达标了，才允许动出价。** 前面没修好就调出价，等于给一个转化不了的链接加价买流量。
+> **Đây là kỷ luật cốt lõi nhất của module**: **chỉ khi các khâu phía trước đều đạt mới được phép động vào giá thầu.** Khâu phía trước chưa sửa xong mà đã chỉnh giá thầu thì chẳng khác gì trả thêm tiền mua traffic cho một link không chuyển đổi nổi.
 
 ---
 
-## 五、健康基准线（SOP 3.6）
+## V. Đường chuẩn sức khỏe (SOP 3.6)
 
-| 指标 | 基准 | 低于基准时的含义 |
+| Chỉ số | Chuẩn | Ý nghĩa khi thấp hơn chuẩn |
 |---|---|---|
-| 点击率 | **3–5%** | 主图/标题没吸引力 |
-| 转化率 | 稳定 **1% 以上** | 决策环节有阻力 |
-| 加购率 | **> 8%** | 详情页没说服力 |
+| CTR | **3–5%** | Ảnh chính/tiêu đề không hấp dẫn |
+| Tỷ lệ chuyển đổi | Ổn định **trên 1%** | Khâu ra quyết định có lực cản |
+| Tỷ lệ thêm vào giỏ | **> 8%** | Trang chi tiết thiếu sức thuyết phục |
 
-⚠️ **基准线是判断的锚点，不是目标。** SOP 给的是"及格线"——用来判断"哪一环不健康"，不是"做到这里就够了"。真正的目标由**盈亏线**决定（见下）。
+⚠️ **Đường chuẩn là điểm neo để phán đoán, không phải mục tiêu.** SOP đưa ra "điểm đạt" — dùng để xác định "khâu nào không khỏe", chứ không phải "làm tới đây là đủ". Mục tiêu thật do **ngưỡng hòa vốn** quyết định (xem bên dưới).
 
 ---
 
-## 六、比基准线更重要的一件事：盈亏线 ROAS
+## VI. Điều quan trọng hơn đường chuẩn: ROAS hòa vốn
 
-漏斗指标全达标**不等于赚钱**。这是本模块想强调的第二个核心观点。
+Chỉ số phễu đạt hết **không có nghĩa là có lãi**. Đây là quan điểm cốt lõi thứ hai mà module này muốn nhấn mạnh.
 
-### 盈亏线 ROAS 的计算
+### Cách tính ROAS hòa vốn
 
 ```
-广告前可支配毛利 = 售价 − 产品成本 − 尾程物流 − 仓储费 − 平台佣金 − 退货损耗
+Lợi nhuận gộp khả dụng trước quảng cáo = Giá bán − Giá vốn − Vận chuyển chặng cuối − Phí kho − Hoa hồng sàn − Hao hụt hoàn hàng
 
-盈亏线 ROAS = 售价 ÷ 广告前可支配毛利
+ROAS hòa vốn = Giá bán ÷ Lợi nhuận gộp khả dụng trước quảng cáo
 ```
 
-**ROAS < 盈亏线就是每单亏钱**，无论漏斗指标多漂亮。
+**ROAS < ngưỡng hòa vốn là mỗi đơn đều lỗ**, dù chỉ số phễu đẹp tới đâu.
 
-### 完整算例（接 [`Templates/cost_pricing_template.md`](../../Templates/cost_pricing_template.md) 的小件算例）
+### Ví dụ tính đầy đủ (tiếp nối ví dụ hàng nhỏ trong [`Templates/cost_pricing_template.md`](../../Templates/cost_pricing_template.md))
 
-| 项 | 金额 |
+| Hạng mục | Số tiền |
 |---|---|
-| 售价 | `R$ 113,40` |
-| 产品成本 + 尾程物流 + 仓储费 | `R$ 55,00` |
-| 平台佣金（14%） | `R$ 15,88` |
-| 退货损耗（2%） | `R$ 2,27` |
-| **广告前可支配毛利** | **`R$ 40,26`** |
+| Giá bán | `R$ 113,40` |
+| Giá vốn + vận chuyển chặng cuối + phí kho | `R$ 55,00` |
+| Hoa hồng sàn (14%) | `R$ 15,88` |
+| Hao hụt hoàn hàng (2%) | `R$ 2,27` |
+| **Lợi nhuận gộp khả dụng trước quảng cáo** | **`R$ 40,26`** |
 
 ```
-盈亏线 ROAS = 113,40 ÷ 40,26 = 2,82
+ROAS hòa vốn = 113,40 ÷ 40,26 = 2,82
 ```
 
-### 不同 ROAS 下的实际利润率
+### Biên lợi nhuận thực tế ở các mức ROAS khác nhau
 
-| ROAS | 广告费/单 | 剩余毛利 | 占售价 |
+| ROAS | Phí QC/đơn | Lợi nhuận gộp còn lại | % giá bán |
 |---|---|---|---|
-| 2,0 | R$ 56,70 | **−R$ 16,44** | **−14,5%** ❌ 亏 |
-| 2,5 | R$ 45,36 | −R$ 5,10 | −4,5% ❌ 亏 |
-| **2,82** | R$ 40,21 | R$ 0,04 | ~0% ⚠️ **盈亏平衡** |
+| 2,0 | R$ 56,70 | **−R$ 16,44** | **−14,5%** ❌ lỗ |
+| 2,5 | R$ 45,36 | −R$ 5,10 | −4,5% ❌ lỗ |
+| **2,82** | R$ 40,21 | R$ 0,04 | ~0% ⚠️ **hòa vốn** |
 | 3,5 | R$ 32,40 | R$ 7,86 | 6,9% ✅ |
 | 5,0 | R$ 22,68 | R$ 17,58 | 15,5% ✅ |
 | 8,0 | R$ 14,18 | R$ 26,08 | 23,0% ✅ |
-| 13,33 | R$ 8,50 | R$ 31,76 | 28,0% 🎯 达到定价目标 |
+| 13,33 | R$ 8,50 | R$ 31,76 | 28,0% 🎯 đạt mục tiêu định giá |
 
-### ⚠️ 一张必须看清的表
+### ⚠️ Một bảng bắt buộc phải nhìn rõ
 
-定价模型里预留的广告成本是 **7,5%**（SOP 给小件的区间 5–10%），对应 `R$ 8,51/单`，也就是 **ROAS 13,33**。
+Chi phí quảng cáo dự trù trong mô hình định giá là **7,5%** (SOP cho hàng nhỏ khoảng 5–10%), tương ứng `R$ 8,51/đơn`, tức **ROAS 13,33**.
 
-**而实际投放的 ROAS 通常在 3–8 之间。**
+**Trong khi ROAS khi chạy quảng cáo thực tế thường nằm trong khoảng 3–8.**
 
-| 对比 | ROAS | 对应毛利率 |
+| So sánh | ROAS | Biên lợi nhuận gộp tương ứng |
 |---|---|---|
-| 定价模型假设 | 13,33 | 28,0% |
-| 实际投放常见区间 | 3,5 – 8,0 | 6,9% – 23,0% |
+| Giả định trong mô hình định giá | 13,33 | 28,0% |
+| Khoảng thường gặp khi chạy thực tế | 3,5 – 8,0 | 6,9% – 23,0% |
 
-> **这意味着：小件走量的产品，广告实际吃掉的毛利会显著高于定价阶段的预算。**
-> 这个差距必须在**定价阶段**就看清楚——不是等投了广告才发现。
-> 两条应对路径：① 定价时把广告成本按 **12–15%** 而非 7,5% 预留；② 接受低毛利、靠**自然流量占比**提升整体盈利（广告只做冷启动的推力）。
+> **Điều này nghĩa là: với sản phẩm hàng nhỏ chạy số lượng, quảng cáo thực tế sẽ ăn mất lợi nhuận gộp nhiều hơn đáng kể so với ngân sách dự trù lúc định giá.**
+> Khoảng chênh này phải được nhìn rõ ngay **ở giai đoạn định giá** — chứ không phải đợi chạy quảng cáo rồi mới phát hiện.
+> Hai hướng xử lý: ① khi định giá, dự trù chi phí quảng cáo **12–15%** thay vì 7,5%; ② chấp nhận biên lợi nhuận thấp, dựa vào việc tăng **tỷ trọng traffic tự nhiên** để nâng lợi nhuận tổng thể (quảng cáo chỉ làm lực đẩy khởi động lạnh).
 
 ---
 
-## 七、SOP 的两条实战技巧
+## VII. Hai mẹo thực chiến từ SOP
 
-### 技巧 1 · 不要频繁暂停广告
+### Mẹo 1 · Đừng tạm dừng quảng cáo thường xuyên
 
-SOP 原文：
+Nguyên văn SOP:
 
-> 虾皮广告的调整不要经常去暂停，会浪费免费的额度，最好的方式是非黄金时间段调整为 10 块左右，到黄金时间段再调整为正常预算。
+> Khi điều chỉnh quảng cáo Shopee đừng thường xuyên tạm dừng, sẽ lãng phí hạn mức miễn phí, cách tốt nhất là ngoài khung giờ vàng thì chỉnh về khoảng 10, tới khung giờ vàng lại chỉnh về ngân sách bình thường.
 
-**做法**：把"开/关"改成"高/低"。非黄金时段把预算压到最低可跑量（如 `R$ 10`），黄金时段恢复目标预算。
+**Cách làm**: đổi "bật/tắt" thành "cao/thấp". Ngoài khung giờ vàng ép ngân sách về mức tối thiểu vẫn chạy được (như `R$ 10`), khung giờ vàng thì khôi phục ngân sách mục tiêu.
 
-**为什么**：暂停会损失平台给的新链接流量扶持额度；而调低预算只是减少花费，不触发这个损失。
+**Vì sao**: tạm dừng sẽ mất hạn mức traffic hỗ trợ link mới mà sàn cấp; còn hạ ngân sách chỉ giảm chi tiêu, không kích hoạt khoản mất này.
 
-### 技巧 2 · 广告跑不动时先改主图
+### Mẹo 2 · Quảng cáo không chạy thì đổi ảnh chính trước
 
-SOP 原文：
+Nguyên văn SOP:
 
-> 当广告出现跑不动的情况不只是单单调整 ROI 和预算，这个时候把主图，标题，详情页稍微改一下，一般改一下主图即可，解除广告的 bug，广告就能跑起来了，这个是解除 bug 的方式……其次的话就是找客服解决，客服会提交工单接触 bug。
+> Khi quảng cáo bị tình trạng không chạy thì không chỉ đơn thuần chỉnh ROI và ngân sách, lúc này sửa nhẹ ảnh chính, tiêu đề, trang chi tiết, thường chỉ cần sửa ảnh chính là đủ, gỡ được bug của quảng cáo thì quảng cáo sẽ chạy lại, đây là cách gỡ bug…… thứ hai là tìm CSKH giải quyết, CSKH sẽ mở ticket để gỡ bug.
 
-**动作顺序**：改主图 → 观察 1–2 天 → 仍不跑动 → 找客服提工单。
+**Thứ tự hành động**: đổi ảnh chính → theo dõi 1–2 ngày → vẫn không chạy → tìm CSKH mở ticket.
 
-> **注意**：这条技巧和第四章的"四类漏斗诊断"是**互补关系**，不是替代关系：
-> - **漏斗诊断**处理的是一般情况（数据能反映病因）
-> - **改主图解 bug** 处理的是异常情况（数据本身跑不出来，没有足够样本判断病因）
+> **Lưu ý**: mẹo này và "chẩn đoán phễu bốn loại" ở chương IV là quan hệ **bổ sung**, không phải thay thế:
+> - **Chẩn đoán phễu** xử lý tình huống thông thường (dữ liệu phản ánh được nguyên nhân)
+> - **Đổi ảnh chính để gỡ bug** xử lý tình huống bất thường (bản thân dữ liệu không chạy ra, không đủ mẫu để xác định nguyên nhân)
 >
-> 判断依据：**有没有曝光。** 有曝光 → 走漏斗诊断；花不出钱、拿不到曝光 → 走解 bug 流程。
+> Căn cứ phán đoán: **có lượt hiển thị hay không.** Có hiển thị → đi chẩn đoán phễu; không tiêu được tiền, không có hiển thị → đi quy trình gỡ bug.
 
 ---
 
-## 八、Prompt 文件
+## VIII. File Prompt
 
-| 文件 | 作用 |
+| File | Vai trò |
 |---|---|
-| [`prompts/00_system.md`](./prompts/00_system.md) | 系统 Prompt：角色 + 基准线 + 盈亏线算法 + 语言规则 + 合规守卫 |
-| [`prompts/01_funnel_diagnosis.md`](./prompts/01_funnel_diagnosis.md) | 任务 Prompt：逐广告组四类漏斗判定 + 动作清单 |
-| [`prompts/02_budget_roi_model.md`](./prompts/02_budget_roi_model.md) | 任务 Prompt：盈亏线核算 + 预算/ROI 目标区间 + 分时段预算节律 |
+| [`prompts/00_system.md`](./prompts/00_system.md) | System Prompt: vai trò + đường chuẩn + thuật toán hòa vốn + quy tắc ngôn ngữ + chốt chặn tuân thủ |
+| [`prompts/01_funnel_diagnosis.md`](./prompts/01_funnel_diagnosis.md) | Task Prompt: xét phễu bốn loại cho từng nhóm quảng cáo + danh sách hành động |
+| [`prompts/02_budget_roi_model.md`](./prompts/02_budget_roi_model.md) | Task Prompt: tính ngưỡng hòa vốn + khoảng mục tiêu ngân sách/ROI + nhịp ngân sách theo khung giờ |
 
-## 九、模板与案例
+## IX. Template và case study
 
-| 文件 | 说明 |
+| File | Giải thích |
 |---|---|
-| [`templates/input_ad_data.md`](./templates/input_ad_data.md) | 标准输入：广告数据表 + 成本结构 |
-| [`templates/output_ad_action_plan.md`](./templates/output_ad_action_plan.md) | 标准输出：动作清单 |
-| [`examples/powerbank_20000mah_ads.md`](./examples/powerbank_20000mah_ads.md) | 真实案例：充电宝 4 个广告组，四类症状齐全，整体 ROAS 1,84 亏损 |
+| [`templates/input_ad_data.md`](./templates/input_ad_data.md) | Đầu vào chuẩn: bảng dữ liệu quảng cáo + cấu trúc chi phí |
+| [`templates/output_ad_action_plan.md`](./templates/output_ad_action_plan.md) | Đầu ra chuẩn: danh sách hành động |
+| [`examples/powerbank_20000mah_ads.md`](./examples/powerbank_20000mah_ads.md) | Case study thật: sạc dự phòng với 4 nhóm quảng cáo, đủ cả bốn loại triệu chứng, ROAS tổng 1,84 đang lỗ |
 
 ---
 
-## 十、边界与限制
+## X. Phạm vi và giới hạn
 
-| 项 | 说明 |
+| Hạng mục | Giải thích |
 |---|---|
-| ✅ 负责 | 漏斗诊断、动作清单、盈亏线核算、预算与 ROI 目标、预算节律、复测方案 |
-| ❌ 不负责 | 实际改价改图（交给 03/04）、平台后台操作、实时竞价算法 |
-| ⚠️ 数据依赖 | **必须有真实的广告数据**。"一周曝光 100 次"的数据没有诊断价值，Agent 会拒绝分析 |
-| ⚠️ 样本量 | 单个广告组订单 < 5 时，诊断仅供参考——样本太小，指标波动大于信号 |
-| ⚠️ 费率 | 佣金率、物流成本必须按实际值填，否则盈亏线算错 |
-| ⚠️ 平台差异 | 各平台广告后台的指标定义不同（如"加购"的统计口径），**填数据前先确认口径一致** |
+| ✅ Phụ trách | Chẩn đoán phễu, danh sách hành động, tính ngưỡng hòa vốn, mục tiêu ngân sách và ROI, nhịp ngân sách, phương án kiểm tra lại |
+| ❌ Không phụ trách | Thực sự sửa giá sửa ảnh (giao cho 03/04), thao tác trên trang quản trị của sàn, thuật toán đấu thầu thời gian thực |
+| ⚠️ Phụ thuộc dữ liệu | **Bắt buộc có dữ liệu quảng cáo thật**. Dữ liệu kiểu "một tuần 100 lượt hiển thị" không có giá trị chẩn đoán, Agent sẽ từ chối phân tích |
+| ⚠️ Cỡ mẫu | Khi một nhóm quảng cáo có < 5 đơn, chẩn đoán chỉ mang tính tham khảo — mẫu quá nhỏ, dao động chỉ số lớn hơn tín hiệu |
+| ⚠️ Phí | Tỷ lệ hoa hồng, chi phí vận chuyển phải điền theo giá trị thực tế, nếu không ngưỡng hòa vốn sẽ tính sai |
+| ⚠️ Khác biệt giữa các sàn | Định nghĩa chỉ số trên trang quản trị quảng cáo của mỗi sàn khác nhau (như cách tính "thêm vào giỏ"), **trước khi điền dữ liệu hãy xác nhận cách tính thống nhất** |
 
 ---
 
-**返回**：[Agents 索引](../README.md) · **上游**：[03 Listing Creative](../03_Listing_Creative_Agent/) · [04 Product Image](../04_Product_Image_Agent/) · **下游**：[07 Review Analysis](../07_Review_Analysis_Agent/) · **文档**：[自检清单](../../docs/04_Result_Checklist.md)
+**Quay lại**: [Danh mục Agents](../README.md) · **Thượng nguồn**: [03 Listing Creative](../03_Listing_Creative_Agent/) · [04 Product Image](../04_Product_Image_Agent/) · **Hạ nguồn**: [07 Review Analysis](../07_Review_Analysis_Agent/) · **Tài liệu**: [Checklist tự kiểm tra](../../docs/04_Result_Checklist.md)

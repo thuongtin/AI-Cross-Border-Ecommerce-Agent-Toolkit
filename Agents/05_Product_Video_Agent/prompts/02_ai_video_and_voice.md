@@ -1,232 +1,232 @@
-# TASK · AI 视频 Prompt 与配音
+# TASK · Prompt video AI và lồng tiếng
 
-> 配套使用：`00_system.md` + `01_script_and_storyboard.md` 的输出（分镜表）
-> 本任务把分镜表落成**可执行的生成指令**：视频 Prompt、配音稿、字幕。
+> Dùng kèm: `00_system.md` + đầu ra của `01_script_and_storyboard.md` (bảng storyboard)
+> Nhiệm vụ này biến bảng storyboard thành **lệnh tạo nội dung thực thi được**: Prompt video, kịch bản lồng tiếng, phụ đề.
 
 ---
 
 # INPUT
 
-| 字段 | 来源 | 说明 |
+| Trường | Nguồn | Ghi chú |
 |---|---|---|
-| `platform` | 人工 | 决定比例与安全区 |
-| `target_market` | 人工 | 决定语言 |
-| `prompt_language` | 人工 | `en`（默认）/ `zh` |
-| `storyboard` | **01 的输出** | 分镜表 |
-| `production_mode` | 人工 | `ai_generated` / `real_shoot` / `mixed` |
-| `spec_table` | 03 | 参数校验 |
-| `forbidden_words[]` | 03 | 字幕拦截 |
-| `visual_tone_confirmed` | 04 | 风格统一 |
-| `hero_visual` | 04 | 首帧参考 |
-| `voice_style` | 人工 | 配音风格偏好（可选） |
+| `platform` | Nhập tay | Quyết định tỷ lệ khung hình và vùng an toàn |
+| `target_market` | Nhập tay | Quyết định ngôn ngữ |
+| `prompt_language` | Nhập tay | `en` (mặc định) / `zh` |
+| `storyboard` | **Đầu ra của 01** | Bảng storyboard |
+| `production_mode` | Nhập tay | `ai_generated` / `real_shoot` / `mixed` |
+| `spec_table` | 03 | Kiểm tra thông số |
+| `forbidden_words[]` | 03 | Chặn từ cấm trong phụ đề |
+| `visual_tone_confirmed` | 04 | Thống nhất phong cách |
+| `hero_visual` | 04 | Tham chiếu khung hình đầu |
+| `voice_style` | Nhập tay | Phong cách lồng tiếng mong muốn (tùy chọn) |
 
 ---
 
-# PART A · AI 视频 Prompt
+# PART A · Prompt video AI
 
-## Prompt 结构公式（六槽位）
+## Công thức cấu trúc Prompt (sáu ô)
 
 ```
-[SUBJECT]      主体：是什么，什么形态，颜色材质，处于什么状态
-[ACTION]       动作：主体在做什么（这是视频区别于图片的核心槽位）
-[CAMERA]       镜头运动：推 / 拉 / 摇 / 跟 / 环绕 / 固定，以及速度
-[LIGHTING]     光线：方向、柔硬、色温
-[ENVIRONMENT]  环境：背景、场景、氛围
-[STYLE]        风格 + 技术参数：写实/商业广告/材质质感、比例、时长
+[SUBJECT]      Chủ thể: là gì, hình dáng ra sao, màu sắc chất liệu, đang ở trạng thái nào
+[ACTION]       Hành động: chủ thể đang làm gì (đây là ô cốt lõi phân biệt video với ảnh)
+[CAMERA]       Chuyển động máy: push-in / pull-out / lia / bám theo / quay vòng / máy tĩnh, kèm tốc độ
+[LIGHTING]     Ánh sáng: hướng, mềm hay gắt, nhiệt độ màu
+[ENVIRONMENT]  Môi trường: nền, bối cảnh, không khí
+[STYLE]        Phong cách + thông số kỹ thuật: tả thực/quảng cáo thương mại/chất cảm vật liệu, tỷ lệ, thời lượng
 ```
 
-## 视频 Prompt 的三条特殊要求
+## Ba yêu cầu đặc biệt cho Prompt video
 
-| 要求 | 说明 |
+| Yêu cầu | Ghi chú |
 |---|---|
-| **动作要单一** | 一个镜头只做一件事。写"同时旋转、发光、变形"→ 模型会给出一团糊 |
-| **避免精细手部动作** | AI 视频模型对手指处理仍不稳定。需要手持产品时，用"手部出画/近景不露手"的方式规避 |
-| **镜头运动要慢** | 明确写 `slow`、`gentle`。快运镜在生成模型里极易产生位移扭曲 |
+| **Hành động phải đơn nhất** | Mỗi cảnh chỉ làm một việc. Viết "vừa xoay, vừa phát sáng, vừa biến hình" → mô hình sẽ cho ra một mớ nhòe nhoẹt |
+| **Tránh động tác tay tinh vi** | Mô hình video AI xử lý ngón tay vẫn chưa ổn định. Khi cần cầm sản phẩm, né bằng cách "tay ra khỏi khung hình/cận cảnh không lộ tay" |
+| **Chuyển động máy phải chậm** | Ghi rõ `slow`, `gentle`. Chuyển động máy nhanh rất dễ gây méo, lệch hình trong mô hình tạo video |
 
-## 输出格式
-
-```markdown
-### 镜头 <n> · <时间段>
-
-**视频 Prompt（<prompt_language>）**
-```text
-<六个槽位齐备>
-```
-
-**首帧参考 Prompt**（可选，需要图生视频时）
-```text
-<静态画面 Prompt>
-```
-
-**负面 Prompt**
-```text
-<排除元素>
-```
-
-**技术参数**
-- 比例：<1:1 / 9:16 / 16:9>
-- 时长：<n>s
-- 运动强度：<low / medium>
-- 生成方式：<文生视频 / 图生视频>
-
-**校验**
-- 数值一致性：✅ / ❌
-- 场景范围：✅ / ❌
-- 真人肖像：✅ 无真人 / ⚠️ 见下方特殊说明
-```
-
-## 真人镜头的特殊处理（重要）
-
-若分镜含真人出镜，**不输出 AI 生成 Prompt**，改为输出拍摄指令：
+## Định dạng đầu ra
 
 ```markdown
-### 镜头 <n> · <时间段> · [真人镜头 — 不生成 AI Prompt]
+### Cảnh <n> · <khoảng thời gian>
 
-**原因**：涉及真人肖像，按 V6 规则改为拍摄指令。
+**Prompt video (<prompt_language>)**
+```text
+<đủ sáu ô>
+```
 
-**拍摄指令**
-- 机位：<高度、角度、景别>
-- 动作：<人物的具体动作顺序>
-- 道具：<需要准备的物品>
-- 场地：<环境要求>
-- 时长：<n>s
-- 注意事项：<如"避免露出可识别面部"或"需签署肖像授权">
+**Prompt tham chiếu khung hình đầu** (tùy chọn, khi cần image-to-video)
+```text
+<Prompt hình ảnh tĩnh>
+```
 
-**替代 AI 方案**（如需全 AI 制作）
-- 采用不露脸构图：<手部 / 背影 / 远景 / 剪影>
-- 对应 Prompt：<...>
+**Negative Prompt**
+```text
+<các yếu tố cần loại trừ>
+```
+
+**Thông số kỹ thuật**
+- Tỷ lệ: <1:1 / 9:16 / 16:9>
+- Thời lượng: <n>s
+- Cường độ chuyển động: <low / medium>
+- Cách tạo: <text-to-video / image-to-video>
+
+**Kiểm tra**
+- Nhất quán số liệu: ✅ / ❌
+- Phạm vi bối cảnh: ✅ / ❌
+- Chân dung người thật: ✅ không có người thật / ⚠️ xem ghi chú đặc biệt bên dưới
+```
+
+## Xử lý đặc biệt cho cảnh người thật (quan trọng)
+
+Nếu storyboard có người thật xuất hiện, **không xuất Prompt tạo bằng AI**, thay vào đó xuất chỉ dẫn quay:
+
+```markdown
+### Cảnh <n> · <khoảng thời gian> · [Cảnh người thật — không tạo AI Prompt]
+
+**Lý do**: liên quan đến chân dung người thật, theo quy tắc V6 chuyển thành chỉ dẫn quay.
+
+**Chỉ dẫn quay**
+- Vị trí máy: <độ cao, góc máy, cỡ cảnh>
+- Động tác: <thứ tự động tác cụ thể của nhân vật>
+- Đạo cụ: <đồ cần chuẩn bị>
+- Địa điểm: <yêu cầu môi trường>
+- Thời lượng: <n>s
+- Lưu ý: <VD: "tránh lộ khuôn mặt có thể nhận diện" hoặc "cần ký giấy đồng ý sử dụng hình ảnh">
+
+**Phương án AI thay thế** (nếu cần làm hoàn toàn bằng AI)
+- Dùng bố cục không lộ mặt: <bàn tay / bóng lưng / cảnh xa / bóng đen>
+- Prompt tương ứng: <...>
 ```
 
 ---
 
-# PART B · 配音稿
+# PART B · Kịch bản lồng tiếng
 
-## 配音稿的写法规则
+## Quy tắc viết kịch bản lồng tiếng
 
-| 规则 | 说明 | 反例 |
+| Quy tắc | Ghi chú | Ví dụ sai |
 |---|---|---|
-| **短句** | 每句 ≤ 12 个词 | ❌ 一句话套三个从句 |
-| **口语** | 写"说出来的话"，不是"写下来的话" | ❌ `O dispositivo possui capacidade de…` |
-| **数字口语化** | 按朗读方式写 | ✅ `vinte mil mAh` / ❌ `20000mAh` |
-| **每句独立可用** | 单句拿出来也听得懂 | — |
-| **标注停顿** | 用 `|` 标注换气点 | — |
-| **标注重音** | 用 **加粗** 标注重读词 | — |
+| **Câu ngắn** | Mỗi câu ≤ 12 từ | ❌ Một câu lồng ba mệnh đề phụ |
+| **Văn nói** | Viết "lời nói ra miệng", không phải "lời viết ra giấy" | ❌ `O dispositivo possui capacidade de…` |
+| **Số theo cách đọc** | Viết theo cách đọc thành tiếng | ✅ `vinte mil mAh` / ❌ `20000mAh` |
+| **Mỗi câu dùng độc lập được** | Tách riêng một câu ra vẫn nghe hiểu | — |
+| **Đánh dấu ngắt hơi** | Dùng `|` để đánh dấu chỗ lấy hơi | — |
+| **Đánh dấu nhấn giọng** | Dùng **in đậm** để đánh dấu từ đọc nhấn | — |
 
-## 输出格式
+## Định dạng đầu ra
 
 ```markdown
-## 配音稿（<n>s 版）
+## Kịch bản lồng tiếng (bản <n>s)
 
-| 镜号 | 时间 | 配音文案 | 词数 | 累计词数 | 预估时长 |
+| Cảnh số | Thời gian | Lời lồng tiếng | Số từ | Số từ cộng dồn | Thời lượng ước tính |
 |---|---|---|---|---|---|
 | 1 | 0–3s | Você já ficou sem bateria no meio do dia? | 9 | 9 | 3,6s |
 | 2 | 3–6s | Este carregador tem **vinte mil mAh** … | 11 | 20 | 8,0s |
 ```
 
-**语速参考**（口语广告节奏）：
+**Tốc độ đọc tham khảo** (nhịp quảng cáo văn nói):
 
-| 语言 | 语速 |
+| Ngôn ngữ | Tốc độ đọc |
 |---|---|
-| 葡萄牙语（巴西） | 约 **2,5 词/秒** |
-| 西班牙语 | 约 **2,5 词/秒** |
-| 英语 | 约 **2,8 词/秒** |
+| Tiếng Bồ Đào Nha (Brazil) | Khoảng **2,5 từ/giây** |
+| Tiếng Tây Ban Nha | Khoảng **2,5 từ/giây** |
+| Tiếng Anh | Khoảng **2,8 từ/giây** |
 
-> 预估时长 = 词数 ÷ 语速。若累计时长超过该段的时间窗 → **删词，不加语速**。
+> Thời lượng ước tính = số từ ÷ tốc độ đọc. Nếu thời lượng cộng dồn vượt khung thời gian của phân đoạn → **cắt từ, không tăng tốc độ đọc**.
 
-## TTS 建议
+## Gợi ý TTS
 
 ```markdown
-**TTS 参数建议**
-- 语言 / 口音：Português (Brasil)
-- 音色：<男声 / 女声>，<年龄感>，<语气：亲切 / 专业 / 活力>
-- 语速：<1.0x>（不要加速超过 1.1x）
-- 停顿：句末 0,3s，镜头切换处 0,2s
-- 变音符号检查：✅ 已核对 ã ç õ é ê í ó ú
+**Gợi ý thông số TTS**
+- Ngôn ngữ / giọng: Português (Brasil)
+- Chất giọng: <giọng nam / giọng nữ>, <độ tuổi cảm nhận>, <ngữ điệu: thân thiện / chuyên nghiệp / năng động>
+- Tốc độ: <1.0x> (không tăng quá 1.1x)
+- Ngắt nghỉ: cuối câu 0,3s, chỗ chuyển cảnh 0,2s
+- Kiểm tra dấu thanh: ✅ đã kiểm tra ã ç õ é ê í ó ú
 ```
 
-> **变音符号是 PT-BR TTS 的翻车点。** 生成后必须人工核对一遍拼写，尤其是 `ã` `ç` `õ`。念错的听感极其明显。
+> **Dấu thanh là điểm hay "toang" của TTS PT-BR.** Sau khi tạo xong bắt buộc kiểm tra chính tả thủ công một lượt, đặc biệt là `ã` `ç` `õ`. Đọc sai là nghe ra ngay.
 
 ---
 
-# PART C · 字幕
+# PART C · Phụ đề
 
-## 字幕规则
+## Quy tắc phụ đề
 
-| 规则 | 值 |
+| Quy tắc | Giá trị |
 |---|---|
-| 每屏行数 | ≤ **2 行** |
-| 每行字符数 | ≤ **20 字符**（葡语） |
-| 位置 | 竖版避开底部 20% / 顶部 15%；横版居中偏下 |
-| 字号 | 移动端可读，等效高度 ≥ 视频高度的 4% |
-| 对比 | 必须有描边或底衬，避免压在浅色画面上 |
-| 与配音关系 | **不要求逐字对应**，可以精简——字幕要短，配音可以稍长 |
-| 与画面关系 | 字幕不能遮挡产品主体 |
+| Số dòng mỗi màn hình | ≤ **2 dòng** |
+| Số ký tự mỗi dòng | ≤ **20 ký tự** (tiếng Bồ Đào Nha) |
+| Vị trí | Video dọc tránh 20% phía dưới / 15% phía trên; video ngang đặt giữa lệch xuống dưới |
+| Cỡ chữ | Đọc được trên mobile, chiều cao tương đương ≥ 4% chiều cao video |
+| Độ tương phản | Bắt buộc có viền chữ hoặc nền lót, tránh đè lên vùng hình sáng màu |
+| Quan hệ với lồng tiếng | **Không yêu cầu khớp từng chữ**, có thể rút gọn——phụ đề phải ngắn, lồng tiếng có thể dài hơn một chút |
+| Quan hệ với hình ảnh | Phụ đề không được che chủ thể sản phẩm |
 
-## 输出格式
+## Định dạng đầu ra
 
 ```markdown
-## 字幕表（<n>s 版）
+## Bảng phụ đề (bản <n>s)
 
-| 镜号 | 时间 | 字幕（第 1 行） | 字幕（第 2 行） | 字数 | 位置 |
+| Cảnh số | Thời gian | Phụ đề (dòng 1) | Phụ đề (dòng 2) | Số ký tự | Vị trí |
 |---|---|---|---|---|---|
 | 1 | 0–3s | | | | |
 | ... | | | | | |
 ```
 
-## 静音测试
+## Kiểm tra khi tắt tiếng
 
-输出完字幕表后，做一次**静音自检**：
+Sau khi xuất xong bảng phụ đề, thực hiện một lượt **tự kiểm tra khi tắt tiếng**:
 
 ```markdown
-## 静音可理解性检查
+## Kiểm tra khả năng hiểu khi tắt tiếng
 
-| 检查项 | 结果 |
+| Mục kiểm tra | Kết quả |
 |---|---|
-| 关掉声音，能否看懂这是什么产品 | ✅ / ❌ |
-| 关掉声音，能否看懂核心卖点 | ✅ / ❌ |
-| 关掉声音，能否看懂结尾要做什么 | ✅ / ❌ |
+| Tắt tiếng, có hiểu đây là sản phẩm gì không | ✅ / ❌ |
+| Tắt tiếng, có hiểu điểm bán hàng cốt lõi không | ✅ / ❌ |
+| Tắt tiếng, có hiểu cuối video cần làm gì không | ✅ / ❌ |
 ```
 
-> 三项全 ✅ 才算通过。巴西站和短视频场景下，**多数用户是静音浏览的**——过不了这一关，配音写得再好也没有意义。
+> Cả ba mục đều ✅ mới tính là đạt. Trên Shopee Brazil và trong bối cảnh video ngắn, **phần lớn người dùng xem khi tắt tiếng**——không qua được bước này thì lồng tiếng hay mấy cũng vô nghĩa.
 
 ---
 
-# 分 production_mode 的处理
+# Xử lý theo production_mode
 
-| 模式 | 处理 |
+| Chế độ | Xử lý |
 |---|---|
-| `ai_generated` | 全部分镜输出视频 Prompt。避免复杂手部动作与真人出镜 |
-| `real_shoot` | 不输出视频 Prompt，全部输出拍摄指令（机位/动作/道具/场地） |
-| `mixed` | 逐镜头标注，AI 镜头出 Prompt，真人镜头出拍摄指令 |
+| `ai_generated` | Xuất Prompt video cho toàn bộ storyboard. Tránh động tác tay phức tạp và người thật xuất hiện |
+| `real_shoot` | Không xuất Prompt video, toàn bộ xuất chỉ dẫn quay (vị trí máy/động tác/đạo cụ/địa điểm) |
+| `mixed` | Ghi chú từng cảnh, cảnh AI xuất Prompt, cảnh người thật xuất chỉ dẫn quay |
 
 ---
 
-# 输出结构
+# Cấu trúc đầu ra
 
 ```markdown
-## 1. AI 视频 Prompt
-### 镜头 1 · 0–3s
-### 镜头 2 · 3–6s
+## 1. Prompt video AI
+### Cảnh 1 · 0–3s
+### Cảnh 2 · 3–6s
 ...
 
-## 2. 配音稿
-（表格 + TTS 参数建议）
+## 2. Kịch bản lồng tiếng
+(Bảng + gợi ý thông số TTS)
 
-## 3. 字幕表
-（表格）
+## 3. Bảng phụ đề
+(Bảng)
 
-## 4. 静音可理解性检查
+## 4. Kiểm tra khả năng hiểu khi tắt tiếng
 
-## 5. 技术与素材需求
-- 比例 / 分辨率
-- BGM 情绪：<...>（⚠️ 需可商用素材）
-- 音效清单
-- 后期需要叠加的图形元素（Logo 位置、参数卡）
+## 5. Yêu cầu kỹ thuật và nội dung
+- Tỷ lệ / độ phân giải
+- Cảm xúc BGM: <...> (⚠️ phải dùng nội dung được phép dùng thương mại)
+- Danh sách hiệu ứng âm thanh
+- Các thành phần đồ họa cần chèn ở hậu kỳ (vị trí Logo, thẻ thông số)
 
-## 6. 视频合规扫描
-（按 00_system.md 的 V1–V8；无命中写"无命中"）
+## 6. Quét tuân thủ video
+(Theo V1–V8 trong 00_system.md; không có vi phạm thì ghi "không có vi phạm")
 
-## 7. 交付字段
+## 7. Các trường bàn giao
 - prompt_count:
 - subtitle_lines: []
 - voiceover_word_count:
@@ -237,16 +237,16 @@
 
 # SELF-CHECK
 
-- [ ] 每个 AI 镜头 Prompt 六槽位齐备
-- [ ] 动作单一，无"同时做多件事"
-- [ ] 镜头运动标注了速度和方向
-- [ ] 真人镜头**未输出** AI 生成 Prompt，改为拍摄指令 + 不露脸替代方案
-- [ ] 配音稿每句 ≤12 词，数字已口语化
-- [ ] 配音累计词数符合时间窗，未超时
-- [ ] 字幕每屏 ≤2 行、每行 ≤20 字符
-- [ ] 已做变音符号核对
-- [ ] 静音可理解性三项全 ✅
-- [ ] 所有数值与 `spec_table` 一致
-- [ ] 字幕无 `forbidden_words[]` 中的任何词
-- [ ] BGM 已标注可商用要求
-- [ ] 末尾已附视频合规扫描
+- [ ] Prompt của mỗi cảnh AI đều đủ sáu ô
+- [ ] Hành động đơn nhất, không "làm nhiều việc cùng lúc"
+- [ ] Chuyển động máy đã ghi tốc độ và hướng
+- [ ] Cảnh người thật **không xuất** Prompt tạo bằng AI, thay bằng chỉ dẫn quay + phương án thay thế không lộ mặt
+- [ ] Kịch bản lồng tiếng mỗi câu ≤12 từ, số đã viết theo cách đọc
+- [ ] Số từ lồng tiếng cộng dồn khớp khung thời gian, không vượt giờ
+- [ ] Phụ đề mỗi màn hình ≤2 dòng, mỗi dòng ≤20 ký tự
+- [ ] Đã kiểm tra dấu thanh
+- [ ] Ba mục kiểm tra khi tắt tiếng đều ✅
+- [ ] Mọi giá trị số khớp với `spec_table`
+- [ ] Phụ đề không chứa bất kỳ từ nào trong `forbidden_words[]`
+- [ ] BGM đã ghi chú yêu cầu được phép dùng thương mại
+- [ ] Cuối đầu ra đã kèm quét tuân thủ video

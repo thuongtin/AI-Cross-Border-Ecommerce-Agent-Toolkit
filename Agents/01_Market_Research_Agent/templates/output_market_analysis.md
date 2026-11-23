@@ -1,234 +1,234 @@
-# 输出模板 · 市场分析报告
+# Mẫu đầu ra · Báo cáo phân tích thị trường
 
-> 01 Market Research Agent 的标准输出结构。
-> **下游消费者**：[02 Product Strategy](../../02_Product_Strategy_Agent/)（主需求）、[06 Advertising](../../06_Advertising_Optimization_Agent/)（推广节奏反推）。
+> Cấu trúc đầu ra chuẩn của 01 Market Research Agent.
+> **Bên sử dụng phía sau**: [02 Product Strategy](../../02_Product_Strategy_Agent/) (nhu cầu chính), [06 Advertising](../../06_Advertising_Optimization_Agent/) (suy ngược nhịp độ đẩy sản phẩm).
 
 ---
 
 ```markdown
 # Market Analysis · <category> · <platform> / <market>
 
-生成时间：<YYYY-MM-DD>
-Prompt 版本：01-Market-Research v0.3
-数据来源：<文件 / 平台>
-样本量：<n>
-数据日期：<YYYY-MM-DD>
+Thời gian tạo: <YYYY-MM-DD>
+Phiên bản Prompt: 01-Market-Research v0.3
+Nguồn dữ liệu: <file / sàn>
+Cỡ mẫu: <n>
+Ngày dữ liệu: <YYYY-MM-DD>
 
 ---
 
-## 0. 前置判断结论（来自 01_category_precheck）
+## 0. Kết luận sàng lọc sơ bộ (từ 01_category_precheck)
 
-| # | 结论项 | 内容 |
+| # | Hạng mục kết luận | Nội dung |
 |---|---|---|
-| 1 | 是否适合公司当前货盘 | |
-| 2 | 是否存在供应链优势 | |
-| 3 | 是否存在物流或仓储问题 | |
-| 4 | 风险等级 | 🟢 / 🟡 / 🔴 |
-| 5 | 高风险类目的利润承载力 | |
-| 6 | 平台限制 | |
-| 7 | **是否进入市场容量分析** | |
+| 1 | Có hợp với nguồn hàng hiện tại của công ty không | |
+| 2 | Có lợi thế chuỗi cung ứng không | |
+| 3 | Có vấn đề về vận chuyển hoặc kho bãi không | |
+| 4 | Mức độ rủi ro | 🟢 / 🟡 / 🔴 |
+| 5 | Khả năng gánh rủi ro bằng lợi nhuận của ngành hàng rủi ro cao | |
+| 6 | Hạn chế của sàn | |
+| 7 | **Có sang bước phân tích quy mô thị trường không** | |
 
-（`precheck_pass = false` 时，本报告到此结束）
+(Khi `precheck_pass = false`, báo cáo kết thúc tại đây)
 
 ---
 
-## 1. 数据可信度
+## 1. Độ tin cậy của dữ liệu
 
-| 项 | 值 | 判定 |
+| Hạng mục | Giá trị | Kết luận |
 |---|---|---|
-| 样本量 | | |
-| 数据日期 | | |
-| 配置维度抽取失败数 | | |
-| 数据期数 | | 单期 → 无法判断趋势 |
+| Cỡ mẫu | | |
+| Ngày dữ liệu | | |
+| Số sản phẩm không trích được chiều cấu hình | | |
+| Số kỳ dữ liệu | | Một kỳ → không đánh giá được xu hướng |
 
-**结论**：
+**Kết luận**:
 
 ---
 
-## 2. 市场容量
+## 2. Quy mô thị trường
 
-### 2.1 规模
+### 2.1 Quy mô
 
-| 指标 | 数值 | 判断 |
+| Chỉ số | Giá trị | Nhận định |
 |---|---|---|
-| 月总销量 | | |
-| 月总销售额 | | |
-| 均价 / 中位价 | | |
-| 隐含均价 | | |
-| 单商品平均月销量 | | |
+| Tổng lượng bán tháng | | |
+| Tổng doanh thu tháng | | |
+| Giá trung bình / giá trung vị | | |
+| Giá trung bình ngầm định | | |
+| Lượng bán tháng trung bình mỗi sản phẩm | | |
 
-【判断】
+【Nhận định】
 
-### 2.2 销售趋势
+### 2.2 Xu hướng bán hàng
 
-| 问题 | 结论 | 依据 |
+| Câu hỏi | Kết luận | Căn cứ |
 |---|---|---|
-| 是否持续出单 | | |
-| 增长 / 下滑 | | |
-| 是否短期爆发 | | |
-| 是否季节性 | | |
+| Có ra đơn đều đặn không | | |
+| Tăng trưởng / suy giảm | | |
+| Có phải bùng nổ ngắn hạn không | | |
+| Có theo mùa không | | |
 
-### 2.3 新品表现
+### 2.3 Hiệu quả sản phẩm mới
 
-| 问题 | 结论 | 依据 |
+| Câu hỏi | Kết luận | Căn cứ |
 |---|---|---|
 
-**数据可靠性标注**：
+**Ghi chú độ tin cậy của dữ liệu**:
 
 ---
 
-## 3. 集中度分析
+## 3. Phân tích mức độ tập trung
 
-### 3.1 品牌集中度
+### 3.1 Mức độ tập trung thương hiệu
 
-| 指标 | 数值 | 阈值 | 判定 |
+| Chỉ số | Giá trị | Ngưỡng | Kết luận |
 |---|---|---|---|
-| 品牌数 | | — | |
+| Số thương hiệu | | — | |
 | CR3 | | — | |
 | CR10 | | — | |
 | HHI | | — | |
 
-**头部品牌商品数占比**（区分占位 vs 效率）：
+**Tỷ trọng số sản phẩm của thương hiệu top đầu** (phân biệt chiếm chỗ vs hiệu suất):
 
-| 品牌 | 销售额占比 | 销量占比 | 商品数占比 | 类型判断 |
+| Thương hiệu | Tỷ trọng doanh thu | Tỷ trọng lượng bán | Tỷ trọng số sản phẩm | Phân loại |
 |---|---|---|---|---|
 
-【判断】
+【Nhận định】
 
-### 3.2 卖家集中度
+### 3.2 Mức độ tập trung người bán
 
-| 指标 | 数值 |
+| Chỉ số | Giá trị |
 |---|---|
-| 卖家数 | |
+| Số người bán | |
 | CR3 / CR10 | |
 | HHI | |
 
-| # | 卖家 | 销售额占比 | 销量占比 | 商品数占比 | 类型 |
+| # | Người bán | Tỷ trọng doanh thu | Tỷ trọng lượng bán | Tỷ trọng số sản phẩm | Loại |
 |---|---|---|---|---|---|
 
-【判断】
+【Nhận định】
 
 ---
 
-## 4. 价格带分析
+## 4. Phân tích dải giá
 
-### 4.1 销量曲线读数
+### 4.1 Đọc đường cong lượng bán
 
-- 曲线形态：
-- 峰值区间：
-- 占总销量：
+- Hình dạng đường cong:
+- Khoảng đỉnh:
+- Tỷ trọng trong tổng lượng bán:
 
-### 4.2 建议价格带
+### 4.2 Dải giá đề xuất
 
-| 价格带 | 区间 | 商品数 | 总销量 | 单商品均销 | 竞争强度 |
+| Dải giá | Khoảng giá | Số sản phẩm | Tổng lượng bán | Lượng bán TB/sản phẩm | Mức cạnh tranh |
 |---|---|---|---|---|---|
 | #1 | | | | | |
 | #2 | | | | | |
 | #3 | | | | | |
 
-### 4.3 目标价格带四项交叉判断
+### 4.3 Đánh giá chéo bốn điều kiện cho dải giá mục tiêu
 
-| 条件 | 判断 | 依据 |
+| Điều kiện | Nhận định | Căn cứ |
 |---|---|---|
-| ① 销量高 | | |
-| ② 平均销量高 | | |
-| ③ 公司产品有利润 | | |
-| ④ 竞品不是特别强 | | |
+| ① Lượng bán cao | | |
+| ② Lượng bán trung bình cao | | |
+| ③ Sản phẩm của công ty có lãi | | |
+| ④ Đối thủ không quá mạnh | | |
 
-**推荐目标价格区间**：R$ <n> – R$ <n>
-**理由**：
-**待确认**：
+**Khoảng giá mục tiêu khuyến nghị**: R$ <n> – R$ <n>
+**Lý do**:
+**Cần xác nhận**:
 
-### 4.4 初步定价建议
+### 4.4 Gợi ý định giá ban đầu
 
-| 项 | 建议 |
+| Hạng mục | Gợi ý |
 |---|---|
-| 日常售价 | |
-| 活动价 | |
-| 优惠券后价格 | |
-| 目标利润率 | |
-| 引流 SKU | |
+| Giá bán thường ngày | |
+| Giá chương trình | |
+| Giá sau voucher | |
+| Biên lợi nhuận mục tiêu | |
+| SKU kéo traffic | |
 
 ---
 
-## 5. 配置组合
+## 5. Tổ hợp cấu hình
 
-### 维度：<X>
+### Chiều: <X>
 
-| 配置值 | 商品数 | 数量占比 | 总销量 | 销量占比 | 平均销量 | 判断 |
+| Giá trị cấu hình | Số sản phẩm | Tỷ trọng số lượng | Tổng lượng bán | Tỷ trọng lượng bán | Lượng bán TB | Đánh giá |
 |---|---|---|---|---|---|---|
 
-- **主流配置**：
-- **高机会配置**：
-- **机会配置是否被头部占据**：
+- **Cấu hình phổ biến**:
+- **Cấu hình nhiều cơ hội**:
+- **Cấu hình cơ hội có bị nhóm top đầu chiếm không**:
 
-### 5.1 推荐配置组合
+### 5.1 Tổ hợp cấu hình khuyến nghị
 
-| 维度 | 推荐取值 | 依据 |
+| Chiều | Giá trị khuyến nghị | Căn cứ |
 |---|---|---|
 
-### 5.2 五项条件核对
+### 5.2 Đối chiếu năm điều kiện
 
-| 条件 | 是否满足 | 说明 |
+| Điều kiện | Có thỏa không | Giải thích |
 |---|---|---|
-| 总销量高 | | |
-| 平均销量高 | | |
-| 公司能做 | | |
-| 利润可接受 | | |
-| 售后可控 | | |
+| Tổng lượng bán cao | | |
+| Lượng bán trung bình cao | | |
+| Công ty làm được | | |
+| Lợi nhuận chấp nhận được | | |
+| Hậu mãi kiểm soát được | | |
 
 ---
 
-## 6. 竞品分析
+## 6. Phân tích đối thủ
 
-### 6.1 竞品概览
+### 6.1 Tổng quan đối thủ
 
-| 竞品 | 价格 | 月销量 | 月销额 | 增长率 | 上架天数 | 核心配置 | 评分/评价数 |
+| Đối thủ | Giá | Lượng bán tháng | Doanh thu tháng | Tốc độ tăng | Số ngày đăng bán | Cấu hình chính | Điểm/số đánh giá |
 |---|---|---|---|---|---|---|---|
 
-### 6.2 竞品卖点
+### 6.2 Điểm bán hàng của đối thủ
 
-| 竞品 | 标题结构 | 主图卖点 | 详情页特点 | 核心卖点 |
+| Đối thủ | Cấu trúc tiêu đề | Điểm bán hàng trên ảnh chính | Đặc điểm trang chi tiết | Điểm bán hàng cốt lõi |
 |---|---|---|---|---|
 
-### 6.3 好评与差评（浅层）
+### 6.3 Đánh giá tích cực và đánh giá tiêu cực (mức sơ bộ)
 
-| 竞品 | 好评集中点 | 差评集中点 | 差评高发类型 |
+| Đối thủ | Điểm khen tập trung | Điểm chê tập trung | Loại đánh giá tiêu cực hay gặp |
 |---|---|---|---|
 
-### 6.4 机会点与风险点
+### 6.4 Điểm cơ hội và điểm rủi ro
 
-| 类型 | 内容 | 依据 |
+| Loại | Nội dung | Căn cứ |
 |---|---|---|
-| 机会点 | | |
-| 风险点 | | |
+| Điểm cơ hội | | |
+| Điểm rủi ro | | |
 
-### 6.5 推广节奏反推
+### 6.5 Suy ngược nhịp độ đẩy sản phẩm
 
-| 项 | 竞品 A | 竞品 B | 反推结论 |
+| Hạng mục | Đối thủ A | Đối thủ B | Kết luận suy ngược |
 |---|---|---|---|
-| 上架时间 | | | |
-| 月销量 | | | |
-| 评价数 / 带图评价数 | | | |
-| 广告位 | | | |
+| Thời gian đăng bán | | | |
+| Lượng bán tháng | | | |
+| Số đánh giá / số đánh giá có ảnh | | | |
+| Vị trí quảng cáo | | | |
 
 ---
 
-## 7. 分析合规扫描
+## 7. Quét tuân thủ phân tích
 
-| 规则 | 命中 | 处理 |
+| Quy tắc | Vi phạm | Xử lý |
 |---|---|---|
-| M1 编造市场数据 | | |
-| M2 夸大市场机会 | | |
-| M3 替代人的决策 | | |
-| M4 建议规避平台规则 | | |
-| M5 臆断竞品数据真伪 | | |
+| M1 Bịa dữ liệu thị trường | | |
+| M2 Thổi phồng cơ hội thị trường | | |
+| M3 Quyết định thay con người | | |
+| M4 Gợi ý lách quy định của sàn | | |
+| M5 Phỏng đoán thật giả của dữ liệu đối thủ | | |
 
-（无命中时：`分析合规扫描：无命中`）
+(Khi không vi phạm: `Quét tuân thủ phân tích: không vi phạm`)
 
 ---
 
-## 8. 交付给 02 Product Strategy 的字段
+## 8. Các trường bàn giao cho 02 Product Strategy
 
 ```yaml
 target_price_range: [0.00, 0.00]
@@ -250,27 +250,27 @@ pending_confirmations: []
 
 ---
 
-## 9. 执行提醒
+## 9. Nhắc việc khi thực thi
 
-- [ ] 待确认项已人工补齐
-- [ ] 单期数据时已接受"无法判断趋势"
-- [ ] 竞品数据已人工抽查（样本可能有误）
-- [ ] 最终选品决策由人做，本报告只提供依据
+- [ ] Các mục cần xác nhận đã được con người bổ sung đủ
+- [ ] Khi chỉ có dữ liệu một kỳ đã chấp nhận "không đánh giá được xu hướng"
+- [ ] Dữ liệu đối thủ đã được kiểm tra thủ công ngẫu nhiên (mẫu có thể sai)
+- [ ] Quyết định chọn sản phẩm cuối cùng do con người đưa ra, báo cáo này chỉ cung cấp căn cứ
 ```
 
 ---
 
-## 下游如何消费
+## Các bước sau sử dụng thế nào
 
-| 字段 | 消费者 | 用途 |
+| Trường | Bên sử dụng | Mục đích |
 |---|---|---|
-| `target_price_range` | 02 | 定价模型的输入 |
-| `recommended_config` | 02 | 产品配置决策 |
-| `opportunity_config` | 02 | 差异化方向 |
-| `brand_barrier` / `seller_barrier` | 02 | 决定是否需要差异化定位 |
-| `competitor_weakness` | 02 / 03 | 差异化卖点表达 |
-| `benchmark_for_launch` | **06** | 反推新品启动的销量与评价目标 |
-| `pending_confirmations` | 人工 | 决策前必须补齐的项 |
+| `target_price_range` | 02 | Đầu vào của mô hình định giá |
+| `recommended_config` | 02 | Quyết định cấu hình sản phẩm |
+| `opportunity_config` | 02 | Hướng khác biệt hóa |
+| `brand_barrier` / `seller_barrier` | 02 | Quyết định có cần định vị khác biệt không |
+| `competitor_weakness` | 02 / 03 | Diễn đạt điểm bán hàng khác biệt |
+| `benchmark_for_launch` | **06** | Suy ngược mục tiêu lượng bán và đánh giá khi ra mắt sản phẩm mới |
+| `pending_confirmations` | Con người | Các mục bắt buộc bổ sung trước khi quyết định |
 
-> **注意**：本报告的结论是"**数据支持 / 不支持**"，不是"建议做"。
-> 最终决策涉及公司资源、供应链与风险偏好，必须由人做。
+> **Lưu ý**: kết luận của báo cáo này là "**dữ liệu ủng hộ / không ủng hộ**", không phải "khuyến nghị làm".
+> Quyết định cuối cùng liên quan đến nguồn lực công ty, chuỗi cung ứng và khẩu vị rủi ro, bắt buộc do con người đưa ra.

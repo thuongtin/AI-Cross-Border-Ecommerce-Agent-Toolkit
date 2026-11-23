@@ -1,60 +1,60 @@
-# 04 · check_main_image.py 测试夹具
+# 04 · Bộ ảnh test cho check_main_image.py
 
-5 张合成图，**每张都埋了已知的合规项与违规项**。
-clone 下来跑一遍，输出与下表一致 = 校验脚本工作正常。
+5 ảnh tổng hợp, **mỗi ảnh đều cài sẵn các mục tuân thủ và vi phạm đã biết**.
+Clone về chạy một lượt, kết quả khớp với bảng dưới = script kiểm tra hoạt động bình thường.
 
 ```bash
 cd Agents/04_Product_Image_Agent/scripts
 
-python check_main_image.py ../tests/ml_pass.png       --platform mercadolivre   # 预期 ✅
-python check_main_image.py ../tests/amazon_fail.png   --platform amazon         # 预期 ❌ coverage
+python check_main_image.py ../tests/ml_pass.png       --platform mercadolivre   # Mong đợi ✅
+python check_main_image.py ../tests/amazon_fail.png   --platform amazon         # Mong đợi ❌ coverage
 python check_main_image.py ../tests/shopee_fix.png    --platform shopee  --fix ../tests/shopee_fixed.png
-python check_main_image.py ../tests/ml_chaotic.png    --platform mercadolivre   # 预期 ❌ square
-python check_main_image.py ../tests/shopee_fixed.png  --platform shopee         # 预期 ✅
+python check_main_image.py ../tests/ml_chaotic.png    --platform mercadolivre   # Mong đợi ❌ square
+python check_main_image.py ../tests/shopee_fixed.png  --platform shopee         # Mong đợi ✅
 ```
 
 ---
 
-## 夹具清单与预期结果（实测值）
+## Danh sách ảnh test và kết quả mong đợi (giá trị đo thực tế)
 
-| 夹具 | 构造 | 平台 | 预期判定 |
+| Ảnh test | Cách dựng | Sàn | Kết luận mong đợi |
 |---|---|---|---|
-| `ml_pass.png` | 1200×1200 米色干净底 `#F5F0E8`，主体占 88% | mercadolivre | **✅ 通过** |
-| `amazon_fail.png` | 2000×2000 纯白底，主体只占 **60%** | amazon | **❌ coverage** 60% < 85% |
-| `shopee_fix.png` | 900×900 米白底 `#FAFAF8`（非纯白），主体占 **56%** | shopee | **❌ white_bg 0%** + **❌ coverage** |
-| `shopee_fixed.png` | 上者经 `--fix` 输出 | shopee | **✅ 通过**（1024px / 白底 100% / 占比 80%） |
-| `ml_chaotic.png` | **1100×1000 非正方形** + 边缘随机噪声背景 | mercadolivre | **❌ square** + **⚠️ bg_uniformity** + **⚠️ coverage 100%*** |
+| `ml_pass.png` | 1200×1200 nền be sạch `#F5F0E8`, chủ thể chiếm 88% | mercadolivre | **✅ Đạt** |
+| `amazon_fail.png` | 2000×2000 nền trắng tinh, chủ thể chỉ chiếm **60%** | amazon | **❌ coverage** 60% < 85% |
+| `shopee_fix.png` | 900×900 nền trắng ngà `#FAFAF8` (không phải trắng tinh), chủ thể chiếm **56%** | shopee | **❌ white_bg 0%** + **❌ coverage** |
+| `shopee_fixed.png` | Đầu ra của ảnh trên sau khi chạy `--fix` | shopee | **✅ Đạt** (1024px / nền trắng 100% / chiếm khung 80%) |
+| `ml_chaotic.png` | **1100×1000 không vuông** + nền nhiễu ngẫu nhiên ở viền | mercadolivre | **❌ square** + **⚠️ bg_uniformity** + **⚠️ coverage 100%*** |
 
-### 实测记录（2026-10-16）
+### Ghi nhận đo thực tế (2026-10-16)
 
-| 夹具 | 关键输出 |
+| Ảnh test | Đầu ra chính |
 |---|---|
-| ml_pass | ✅ size 1200px · ✅ square · ⚠️ coverage 100%（>97% 上限，正确告警）· ✅ bg_uniformity 100% |
+| ml_pass | ✅ size 1200px · ✅ square · ⚠️ coverage 100% (>97% giới hạn trên, cảnh báo đúng) · ✅ bg_uniformity 100% |
 | amazon_fail | ❌ coverage 60% < 85% · ✅ white_bg 100% · ✅ square |
 | shopee_fix | ❌ white_bg 0.0% < 90% · ❌ coverage 56% < 60% · ⚠️ size 900 < 1024 |
-| shopee_fixed | ✅ 1024px · ✅ white_bg 100% · ✅ coverage 80%（`--fix` 精准达标） |
-| ml_chaotic | ❌ square 1100×1000 · ⚠️ bg_uniformity 84%（背景略花）· ⚠️ size 1000 < 1200 · ⚠️ coverage 100%* |
+| shopee_fixed | ✅ 1024px · ✅ white_bg 100% · ✅ coverage 80% (`--fix` đạt chuẩn chính xác) |
+| ml_chaotic | ❌ square 1100×1000 · ⚠️ bg_uniformity 84% (nền hơi rối) · ⚠️ size 1000 < 1200 · ⚠️ coverage 100%* |
 
-> **\* 关于 ml_chaotic 的 coverage=100%**：占比用「非背景像素包围盒」测量，
-> 噪声像素本身就是非背景 → 包围盒被撑满全图。**杂乱背景下 bbox 占比法必然失效**
-> —— 这不是 bug，恰恰是脚本同时输出 `bg_uniformity` 警告的原因：
-> 背景花掉的图，占比数字不可信，先清背景再谈占比。
+> **\* Về coverage=100% của ml_chaotic**: tỷ lệ chiếm khung được đo bằng "khung bao các pixel không phải nền",
+> mà bản thân pixel nhiễu cũng không phải nền → khung bao bị kéo phủ kín toàn ảnh. **Với nền lộn xộn, phương pháp đo tỷ lệ bằng bbox chắc chắn mất tác dụng**
+> —— đây không phải bug, mà chính là lý do script đồng thời đưa ra cảnh báo `bg_uniformity`:
+> ảnh có nền rối thì con số tỷ lệ chiếm khung không đáng tin, làm sạch nền trước rồi mới bàn đến tỷ lệ.
 
 ---
 
-## 这组夹具覆盖了什么
+## Bộ ảnh test này bao phủ những gì
 
-| 能力 | 被哪张验证 |
+| Năng lực | Được kiểm chứng bởi ảnh nào |
 |---|---|
-| ML「背景干净即可，不要求纯白」（2026 新规） | `ml_pass`（米色底也判过） |
-| Amazon 白底纯度 + 85% 占比红线 | `amazon_fail` |
-| 近白像素拉纯白 + 占比重排的 `--fix` | `shopee_fix` → `shopee_fixed` |
-| 非正方形检测 | `ml_chaotic` |
-| 背景杂乱提示 + bbox 占比法在杂乱背景下的失效边界 | `ml_chaotic` |
-| 占比超上限告警（>97%） | `ml_pass`（100% 贴边） |
+| ML "nền chỉ cần sạch, không yêu cầu trắng tinh" (quy định mới 2026) | `ml_pass` (nền be vẫn đạt) |
+| Độ tinh nền trắng Amazon + lằn ranh đỏ tỷ lệ chiếm khung 85% | `amazon_fail` |
+| `--fix` kéo pixel gần trắng về trắng tinh + sắp xếp lại tỷ lệ chiếm khung | `shopee_fix` → `shopee_fixed` |
+| Phát hiện ảnh không vuông | `ml_chaotic` |
+| Nhắc nền lộn xộn + giới hạn mất tác dụng của phương pháp đo bằng bbox khi nền lộn xộn | `ml_chaotic` |
+| Cảnh báo tỷ lệ chiếm khung vượt giới hạn trên (>97%) | `ml_pass` (100% sát viền) |
 
-**不覆盖**：图内文字占比（需 OCR，列为人工确认项）、真实产品照片（夹具为合成图，只测几何与颜色）。
+**Không bao phủ**: tỷ lệ chữ trong ảnh (cần OCR, xếp vào mục người xác nhận), ảnh sản phẩm thật (ảnh test là ảnh tổng hợp, chỉ kiểm tra hình học và màu sắc).
 
 ---
 
-**脚本**：[`scripts/check_main_image.py`](../scripts/check_main_image.py) · **规则卡**：[Shopee](../references/platform-shopee.md) · [Mercado Livre](../references/platform-mercadolivre.md) · [Amazon](../references/platform-amazon.md)
+**Script**: [`scripts/check_main_image.py`](../scripts/check_main_image.py) · **Thẻ quy tắc**: [Shopee](../references/platform-shopee.md) · [Mercado Livre](../references/platform-mercadolivre.md) · [Amazon](../references/platform-amazon.md)

@@ -1,255 +1,255 @@
 # AI Cross Border Ecommerce Agent Toolkit
 
-**AI 跨境电商运营智能体工具箱** · *Turn cross-border ecommerce SOPs into reusable AI Agent workflows.*
+**Bộ công cụ (toolkit) AI Agent cho vận hành thương mại điện tử xuyên biên giới** · *Turn cross-border ecommerce SOPs into reusable AI Agent workflows.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Status: v0.3 beta](https://img.shields.io/badge/status-v0.3%20beta-orange.svg)](./CHANGELOG.md)
-[![Agents: 7/7 done](https://img.shields.io/badge/agents-7%2F7%20done-brightgreen.svg)](#-agent-全景)
+[![Agents: 7/7 done](https://img.shields.io/badge/agents-7%2F7%20done-brightgreen.svg)](#-toàn-cảnh-agent)
 
 ---
 
-## 这是什么
+## Đây là gì
 
-把**跨境运营 SOP 里沉淀的经验**，翻译成**可复制的 AI Agent 工作流**：一个标准 Prompt + 一份输入模板 + 一个真实案例，任何人都能拿去直接跑出可发布的商品素材。
+Biến **kinh nghiệm đúc kết trong SOP vận hành xuyên biên giới** thành **workflow AI Agent có thể nhân bản**: một Prompt chuẩn + một template đầu vào + một case study thật, ai cầm về cũng chạy ra được nội dung sản phẩm đủ chuẩn để đăng.
 
-不是软件，不是 SaaS，只做四件事：
+Không phải phần mềm, không phải SaaS, chỉ làm đúng bốn việc:
 
-| 交付物 | 说明 |
+| Sản phẩm bàn giao | Mô tả |
 |---|---|
-| 📘 运营方法论 | SOP 章节 → Agent 模块的完整拆解表 |
-| 🧠 AI Prompt | 角色 / 任务 / 输入契约 / 输出契约 / 自检 |
-| 🔁 工作流程 | 什么顺序跑、什么条件进入下一步、什么条件回流重改 |
-| 📄 模板 + 案例 | 标准输入格式 + 真实产品的完整跑通记录（含复测数据） |
+| 📘 Phương pháp vận hành | Bảng tách đầy đủ từ chương SOP → module Agent |
+| 🧠 AI Prompt | Vai trò / nhiệm vụ / hợp đồng đầu vào / hợp đồng đầu ra / tự kiểm tra |
+| 🔁 Quy trình làm việc | Chạy theo thứ tự nào, điều kiện nào thì sang bước tiếp, điều kiện nào thì quay vòng về sửa lại |
+| 📄 Template + case study | Định dạng đầu vào chuẩn + bản ghi chạy trọn vẹn trên sản phẩm thật (kèm số liệu kiểm tra lại) |
 
-**为什么做这个**：跨境运营的难点不是"不知道要做什么"，而是"知道但做不出稳定下限的产出"。同一个类目，老手写标题一次到位，新人写十遍还是堆词。这套工具箱的目标是把老手的**判断规则**结构化，让 AI 的产出稳定在老手水平线上。
-
----
-
-## 📎 原始资料来源
-
-本仓库的方法论拆解自一份 38 页的内部运营手册，原文已随仓库提供：
-
-📄 **[《Shopee 巴西站运营 SOP 总框架》（PDF · 38 页 · 29.7 MB）](./docs/电商运营SOP总框架.pdf)**
-
-SOP 章节与 Agent 模块的逐条对应关系见 [`docs/00_Architecture_SOP_to_Agent.md`](./docs/00_Architecture_SOP_to_Agent.md)。
-
-> ⚠️ **请注意**：这份 PDF 是**未经删改的原始内部手册**，其中包含平台明确禁止的做法（如刷单、诱导评价、虚假举报、参数虚标等）。
->
-> **本仓库的 7 个 Agent 模块均未实现这些做法**：已识别项及其合规替代方案见 [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md)，未实现项逐条登记见 [`docs/05_SOP_Gap_Register.md`](./docs/05_SOP_Gap_Register.md)。
->
-> 换句话说 —— **这份 PDF 是「原料」，不是「产品」。** 本仓库的产出物只包含合规路径。
+**Vì sao làm cái này**: cái khó của vận hành xuyên biên giới không phải là "không biết phải làm gì", mà là "biết nhưng không làm ra được output có chất lượng tối thiểu ổn định". Cùng một ngành hàng, người làm lâu năm viết tiêu đề một lần là chuẩn, người mới viết mười lần vẫn nhồi từ khóa. Mục tiêu của bộ công cụ này là cấu trúc hóa **quy tắc phán đoán** của người làm lâu năm, để output của AI luôn ổn định ở mức của họ.
 
 ---
 
-## 🗂 Agent 全景
+## 📎 Nguồn tài liệu gốc
 
-7 个模块，**全部已完成**。
+Phương pháp trong repo này được tách ra từ một cuốn cẩm nang vận hành nội bộ dài 38 trang, bản gốc được kèm luôn trong repo:
 
-| # | Agent | 中文 | 一句话职责 | 版本 |
+📄 **[《Khung tổng thể SOP vận hành Shopee Brazil》(PDF · 38 trang · 29.7 MB)](./docs/电商运营SOP总框架.pdf)**
+
+Bảng đối chiếu từng mục giữa chương SOP và module Agent xem tại [`docs/00_Architecture_SOP_to_Agent.md`](./docs/00_Architecture_SOP_to_Agent.md).
+
+> ⚠️ **Lưu ý**: File PDF này là **cẩm nang nội bộ gốc, chưa qua chỉnh sửa**, trong đó có những cách làm mà sàn cấm rõ ràng (như buff đơn ảo, dụ dỗ đánh giá, report sai sự thật, khai khống thông số, v.v.).
+>
+> **Cả 7 module Agent trong repo này đều không triển khai những cách làm đó**: các mục đã nhận diện cùng phương án thay thế tuân thủ (compliance) xem tại [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md), các mục không triển khai được ghi lại từng dòng tại [`docs/05_SOP_Gap_Register.md`](./docs/05_SOP_Gap_Register.md).
+>
+> Nói cách khác —— **file PDF này là「nguyên liệu」, không phải「sản phẩm」.** Output của repo này chỉ bao gồm các hướng đi tuân thủ.
+
+---
+
+## 🗂 Toàn cảnh Agent
+
+7 module, **đã hoàn thành toàn bộ**.
+
+| # | Agent | Tiếng Việt | Trách nhiệm trong một câu | Phiên bản |
 |---|---|---|---|---|
-| **01** | [Market Research Agent](./Agents/01_Market_Research_Agent/) | 市场分析 | 前置判断 / 容量 / 集中度 / 价格带（波谷检测）/ 配置组合 · **带计算脚本** | ✅ v0.4 |
-| **02** | [Product Strategy Agent](./Agents/02_Product_Strategy_Agent/) | 产品策略 | 定位 / 配置 / 主推卖点收敛 / 定价模型 / SKU 四角色 · **净利率/盈亏价/券余量矩阵** · Skill 化 | ✅ v0.4 |
-| 03 | [Listing Creative Agent](./Agents/03_Listing_Creative_Agent/) | 商品内容生成 | 关键词分类 → 标题 → 详情页 → 卖点/参数 · **字符实测/参数溯源校验** · Skill 化 | ✅ v0.4 |
-| 04 | [Product Image Agent](./Agents/04_Product_Image_Agent/) | 主图与详情图 | 9 图规划 → 出图 Prompt → **像素级合规校验** · Skill 化 | ✅ v0.4 |
-| 05 | [Product Video Agent](./Agents/05_Product_Video_Agent/) | 短视频生成 | 脚本 → 分镜 → AI 视频 Prompt → 配音字幕 | ✅ v0.4 |
-| 06 | [Advertising Optimization Agent](./Agents/06_Advertising_Optimization_Agent/) | 广告优化 | 四类漏斗诊断 + 盈亏线核算 + **P0/P1/P2 分级动作** · Skill 化 | ✅ v0.4 |
-| 07 | [Review Analysis Agent](./Agents/07_Review_Analysis_Agent/) | 评论分析 | 八类归因 + 误解型识别 → 详情页修补建议 | ✅ v0.4 |
+| **01** | [Market Research Agent](./Agents/01_Market_Research_Agent/) | Phân tích thị trường | Đánh giá sơ bộ / quy mô thị trường / mức độ tập trung / dải giá (phát hiện vùng trũng) / tổ hợp cấu hình · **kèm script tính toán** | ✅ v0.4 |
+| **02** | [Product Strategy Agent](./Agents/02_Product_Strategy_Agent/) | Chiến lược sản phẩm | Định vị / cấu hình / chốt điểm bán hàng chủ lực / mô hình định giá / 4 vai trò SKU · **ma trận biên lợi nhuận ròng/giá hòa vốn/dư địa voucher** · Skill hóa | ✅ v0.4 |
+| 03 | [Listing Creative Agent](./Agents/03_Listing_Creative_Agent/) | Tạo nội dung sản phẩm | Phân loại từ khóa → tiêu đề → trang chi tiết → điểm bán hàng/thông số · **đếm ký tự thực tế/kiểm tra nguồn gốc thông số** · Skill hóa | ✅ v0.4 |
+| 04 | [Product Image Agent](./Agents/04_Product_Image_Agent/) | Ảnh chính và ảnh chi tiết | Lên kế hoạch 9 ảnh → Prompt tạo ảnh → **kiểm tra tuân thủ ở mức pixel** · Skill hóa | ✅ v0.4 |
+| 05 | [Product Video Agent](./Agents/05_Product_Video_Agent/) | Tạo video ngắn | Kịch bản → storyboard → Prompt video AI → lồng tiếng & phụ đề | ✅ v0.4 |
+| 06 | [Advertising Optimization Agent](./Agents/06_Advertising_Optimization_Agent/) | Tối ưu quảng cáo | Chẩn đoán phễu 4 loại + tính ngưỡng hòa vốn + **hành động phân cấp P0/P1/P2** · Skill hóa | ✅ v0.4 |
+| 07 | [Review Analysis Agent](./Agents/07_Review_Analysis_Agent/) | Phân tích đánh giá | Quy nguyên nhân theo 8 nhóm + nhận diện loại hiểu lầm → đề xuất vá trang chi tiết | ✅ v0.4 |
 
-> **这七个模块构成一条完整链路，而且是闭环的**：
+> **Bảy module này tạo thành một chuỗi hoàn chỉnh, và là vòng khép kín (closed loop)**:
 >
 > ```text
-> 01 市场分析 ──► 02 产品策略 ──► 03/04/05 素材产出 ──► 上架
-> （做什么）      （做成什么样）    （怎么表达）
->                                                      │
->                          ┌───────────────────────────┘
->                          ▼
->              06 广告诊断 ─┐
->              07 评论诊断 ─┴──► 回流 03/04 修正 ──► 复测 ──► 达标放量 / 未达标回诊断
+> 01 Phân tích thị trường ──► 02 Chiến lược SP ──► 03/04/05 Tạo nội dung ──► Đăng bán
+> (làm gì)                    (làm thành ra sao)    (thể hiện thế nào)
+>                                                                            │
+>                                ┌───────────────────────────────────────────┘
+>                                ▼
+>              06 Chẩn đoán quảng cáo ─┐
+>              07 Chẩn đoán đánh giá  ─┴──► Quay về 03/04 sửa ──► Kiểm tra lại ──► Đạt thì scale / chưa đạt thì chẩn đoán lại
 > ```
 >
-> **为什么按这个顺序编号**：`01-02` 分析簇（前置链路）→ `03-04-05` 创意簇（素材产出）→ `06-07` 运营簇（数据回流）。
+> **Vì sao đánh số theo thứ tự này**: `01-02` cụm phân tích (chuỗi tiền đề) → `03-04-05` cụm sáng tạo (tạo nội dung) → `06-07` cụm vận hành (dữ liệu quay vòng về).
 >
-> ✅ 编号方案已确认。原始规划为 `03` Listing / `04` Advertising / `05` Review / `06` Video（且无 Market Research 与 Product Strategy 的独立编号），本仓库按工作簇重排，变更记录见 [CHANGELOG](./CHANGELOG.md)。
+> ✅ Phương án đánh số đã được chốt. Kế hoạch ban đầu là `03` Listing / `04` Advertising / `05` Review / `06` Video (và không có số riêng cho Market Research và Product Strategy); repo này đã sắp xếp lại theo cụm công việc, lịch sử thay đổi xem tại [CHANGELOG](./CHANGELOG.md).
 
 ---
 
-## 🚀 快速开始
+## 🚀 Bắt đầu nhanh
 
-不需要 API key，不需要装环境。**三个文件就能跑。**
+Không cần API key, không cần cài môi trường. **Ba file là chạy được.**
 
 ```text
-Step 1  复制 Agents/<模块>/templates/ 下的输入模板
-Step 2  填上你的产品信息（10 分钟）
-Step 3  把「系统 Prompt」+「任务 Prompt」+「填好的模板」丢给任意 LLM
-Step 4  用 docs/04_Result_Checklist.md 逐条自检，通过即发布
+Step 1  Sao chép template đầu vào trong Agents/<module>/templates/
+Step 2  Điền thông tin sản phẩm của bạn (10 phút)
+Step 3  Đưa「System Prompt」+「Task Prompt」+「template đã điền」cho bất kỳ LLM nào
+Step 4  Tự kiểm tra từng mục theo docs/04_Result_Checklist.md, đạt hết là đăng
 ```
 
-**第一次跑，建议按这个顺序**（以 Patinete Elétrico 为例，见 [`Examples/`](./Examples/)）：
+**Lần chạy đầu tiên, nên đi theo thứ tự này** (lấy Patinete Elétrico làm ví dụ, xem [`Examples/`](./Examples/)):
 
 ```mermaid
 flowchart LR
-    A["类目导出数据"] --> B["01 市场分析<br/>+ 脚本算指标"]
-    B -->|价格带/配置/机会点| C["02 产品策略<br/>定价+SKU"]
-    C -->|主卖点+盈亏线| D["03 Listing<br/>Creative"]
-    D -->|标题/卖点/参数| E["04 Product<br/>Image"]
-    D -->|核心卖点| F["05 Product<br/>Video"]
-    E --> G["上架"]
+    A["Dữ liệu xuất ngành hàng"] --> B["01 Phân tích thị trường<br/>+ script tính chỉ số"]
+    B -->|Dải giá/cấu hình/cơ hội| C["02 Chiến lược SP<br/>Định giá+SKU"]
+    C -->|Điểm bán hàng chính+ngưỡng hòa vốn| D["03 Listing<br/>Creative"]
+    D -->|Tiêu đề/điểm bán hàng/thông số| E["04 Product<br/>Image"]
+    D -->|Điểm bán hàng cốt lõi| F["05 Product<br/>Video"]
+    E --> G["Đăng bán"]
     F --> G
-    G -->|广告数据| H["06 广告<br/>漏斗诊断"]
-    G -->|评论数据| I["07 评论<br/>八类归因"]
-    H -.->|回改·iterate| D
-    H -.->|换主图| E
-    I -.->|补注意事项段| D
-    I -.->|补包装清单图| E
+    G -->|Dữ liệu quảng cáo| H["06 Quảng cáo<br/>Chẩn đoán phễu"]
+    G -->|Dữ liệu đánh giá| I["07 Đánh giá<br/>Quy nguyên nhân 8 nhóm"]
+    H -.->|Sửa lại·iterate| D
+    H -.->|Đổi ảnh chính| E
+    I -.->|Bổ sung đoạn lưu ý| D
+    I -.->|Bổ sung ảnh danh sách đóng gói| E
 ```
 
-三个关键点：
+Ba điểm mấu chốt:
 
-1. **01 带脚本**。指标（集中度、价格带、配置交叉表）由 `scripts/` 计算，**Agent 只负责解读**——能算的别让模型猜。
-2. **02 决定卖点，03/04/05 才能开工**。主卖点必须收敛成**唯一一句**，否则主图打两行字、视频开头讲两件事，两个都记不住。
-3. **06 和 07 会把结论回流到 03/04**。这一步是整套工具箱和"一次性生成工具"的分界线——产出的 Listing 会随着真实数据变准。见 [`Examples/03_Closed_Loop/`](./Examples/03_Closed_Loop/)。
+1. **01 có kèm script**. Các chỉ số (mức độ tập trung, dải giá, bảng chéo cấu hình) do `scripts/` tính, **Agent chỉ lo diễn giải** —— cái gì tính được thì đừng để model đoán.
+2. **02 chốt điểm bán hàng, rồi 03/04/05 mới bắt tay vào làm**. Điểm bán hàng chính phải được chốt lại thành **đúng một câu**, nếu không ảnh chính sẽ in hai dòng chữ, video mở đầu nói hai chuyện, rốt cuộc khách chẳng nhớ cái nào.
+3. **06 và 07 sẽ đưa kết luận quay vòng về 03/04**. Bước này là ranh giới giữa bộ công cụ này với các "công cụ tạo một lần rồi thôi" —— Listing tạo ra sẽ ngày càng chuẩn theo dữ liệu thực tế. Xem [`Examples/03_Closed_Loop/`](./Examples/03_Closed_Loop/).
 
 ---
 
-## 📁 目录结构
+## 📁 Cấu trúc thư mục
 
 ```text
 AI-Cross-Border-Ecommerce-Agent-Toolkit/
-├── SKILL.md                      # 伞形 Skill 总入口 ⭐（整个文件夹可整体安装为 Skill）
-├── README.md                     # 你在这里
+├── SKILL.md                      # Điểm vào tổng của Skill dạng ô dù ⭐ (có thể cài cả thư mục thành một Skill)
+├── README.md                     # Bạn đang ở đây
 ├── LICENSE  CONTRIBUTING.md  ROADMAP.md  CHANGELOG.md
 │
-├── docs/                         # 方法论
-│   ├── 00_Architecture_SOP_to_Agent.md   # SOP 章节 → Agent 拆解总表 ⭐
-│   ├── 01_Prompt_Design_Guide.md         # Prompt 五要素规范
-│   ├── 02_Platform_Output_Spec.md        # 各平台字段/字数硬指标
-│   ├── 03_Compliance_Guard.md            # 合规红线 + 灰产动作的合规改写 ⭐
-│   ├── 04_Result_Checklist.md            # 交付自检清单
-│   ├── 05_SOP_Gap_Register.md            # SOP 未实现项登记表（透明化）
-│   └── 电商运营SOP总框架.pdf              # 原始内部手册全文（38 页，未删改）
+├── docs/                         # Phương pháp vận hành
+│   ├── 00_Architecture_SOP_to_Agent.md   # Bảng tổng tách chương SOP → Agent ⭐
+│   ├── 01_Prompt_Design_Guide.md         # Chuẩn 5 thành phần của Prompt
+│   ├── 02_Platform_Output_Spec.md        # Chỉ tiêu cứng về trường/số ký tự của từng sàn
+│   ├── 03_Compliance_Guard.md            # Lằn ranh đỏ tuân thủ + viết lại các thao tác "xám" theo hướng tuân thủ ⭐
+│   ├── 04_Result_Checklist.md            # Checklist tự kiểm tra khi bàn giao
+│   ├── 05_SOP_Gap_Register.md            # Sổ đăng ký các mục SOP không triển khai (minh bạch hóa)
+│   └── 电商运营SOP总框架.pdf              # Toàn văn cẩm nang nội bộ gốc (38 trang, chưa chỉnh sửa)
 │
-├── Agents/                       # AI 智能体模块
-│   ├── README.md                 # 模块索引 + 交接契约
-│   ├── 01_Market_Research_Agent/              ✅ v0.4 Skill 化
-│   │   ├── SKILL.md    Agent 直接调用入口 ⭐
+├── Agents/                       # Các module AI Agent
+│   ├── README.md                 # Mục lục module + hợp đồng bàn giao
+│   ├── 01_Market_Research_Agent/              ✅ v0.4 Skill hóa
+│   │   ├── SKILL.md    Điểm vào để Agent gọi trực tiếp ⭐
 │   │   ├── scripts/    shaduola_parser · market_metrics · make_sample ⭐
-│   │   ├── samples/    样本数据（含预期结果，可复现）
+│   │   ├── samples/    Dữ liệu mẫu (kèm kết quả kỳ vọng, tái hiện được)
 │   │   ├── prompts/    00_system · 01_category_precheck · 02_market_analysis
 │   │   ├── templates/  input_category_research · output_market_analysis
 │   │   └── examples/   patinete_eletrico_market.md
-│   ├── 02_Product_Strategy_Agent/             ✅ v0.4 Skill 化
-│   │   ├── SKILL.md    Agent 直接调用入口 ⭐
-│   │   ├── references/ pricing-rules（公式与口径）⭐
-│   │   ├── scripts/    sku_pricing（净利率/盈亏价/目标价/券余量矩阵）+ platform_fees.json（5 平台费率预设）⭐
+│   ├── 02_Product_Strategy_Agent/             ✅ v0.4 Skill hóa
+│   │   ├── SKILL.md    Điểm vào để Agent gọi trực tiếp ⭐
+│   │   ├── references/ pricing-rules (công thức và cách tính) ⭐
+│   │   ├── scripts/    sku_pricing (ma trận biên lợi nhuận ròng/giá hòa vốn/giá mục tiêu/dư địa voucher) + platform_fees.json (preset biểu phí 5 sàn) ⭐
 │   │   ├── prompts/    00_system · 01_product_decision · 02_pricing_and_sku
 │   │   ├── templates/  input_strategy_brief · output_product_requirement
 │   │   └── examples/   patinete_eletrico_strategy.md · sample-skus.csv
-│   ├── 03_Listing_Creative_Agent/             ✅ v0.4 Skill 化
-│   │   ├── SKILL.md    Agent 直接调用入口 ⭐
-│   │   ├── references/ platform-title-rules（标题规则卡）⭐
-│   │   ├── scripts/    title_lint（字符实测/禁用词/堆砌）· spec_consistency（参数溯源）⭐
+│   ├── 03_Listing_Creative_Agent/             ✅ v0.4 Skill hóa
+│   │   ├── SKILL.md    Điểm vào để Agent gọi trực tiếp ⭐
+│   │   ├── references/ platform-title-rules (thẻ quy tắc tiêu đề) ⭐
+│   │   ├── scripts/    title_lint (đếm ký tự thực tế/từ cấm/nhồi từ khóa) · spec_consistency (nguồn gốc thông số) ⭐
 │   │   ├── prompts/    00_system · 01_keyword_to_title · 02_description_builder · 03_compliance_guard
 │   │   ├── templates/  input_product_brief · output_listing_pack
 │   │   └── examples/   powerbank_20000mah.md · spec_table.csv
-│   ├── 04_Product_Image_Agent/                ✅ v0.4 Skill 化
-│   │   ├── SKILL.md    Agent 直接调用入口 ⭐
+│   ├── 04_Product_Image_Agent/                ✅ v0.4 Skill hóa
+│   │   ├── SKILL.md    Điểm vào để Agent gọi trực tiếp ⭐
 │   │   ├── references/ platform-shopee · platform-mercadolivre · platform-amazon · scenarios-9grid
-│   │   ├── scripts/    check_main_image（像素级合规校验 + --fix）⭐
+│   │   ├── scripts/    check_main_image (kiểm tra tuân thủ ở mức pixel + --fix) ⭐
 │   │   ├── prompts/    00_system · 01_image_plan_9grid · 02_image_prompt_generator
 │   │   ├── templates/  input_image_brief · output_image_prompt_pack
 │   │   └── examples/   pet_carrier.md
 │   ├── 05_Product_Video_Agent/                ✅
-│   │   ├── SKILL.md + references/video-specs.md（平台视频规范卡）
-│   │   ├── scripts/    video_timing.py        # 时长/字幕确定性校验
+│   │   ├── SKILL.md + references/video-specs.md (thẻ quy chuẩn video theo sàn)
+│   │   ├── scripts/    video_timing.py        # Kiểm tra tất định thời lượng/phụ đề
 │   │   ├── prompts/    00_system · 01_script_and_storyboard · 02_ai_video_and_voice
 │   │   ├── templates/  input_video_brief · output_video_pack
 │   │   └── examples/   air_fryer.md + narration_airfryer.txt
-│   ├── 06_Advertising_Optimization_Agent/     ✅ v0.4 Skill 化
-│   │   ├── SKILL.md    Agent 直接调用入口 ⭐
+│   ├── 06_Advertising_Optimization_Agent/     ✅ v0.4 Skill hóa
+│   │   ├── SKILL.md    Điểm vào để Agent gọi trực tiếp ⭐
 │   │   ├── references/ metrics · diagnosis · playbooks · actions ⭐
-│   │   ├── scripts/    ad_metrics（盈亏线/可承受CPC/P0-P2分级，纯标准库）⭐
+│   │   ├── scripts/    ad_metrics (ngưỡng hòa vốn/CPC chịu được/phân cấp P0-P2, chỉ dùng thư viện chuẩn) ⭐
 │   │   ├── prompts/    00_system · 01_funnel_diagnosis · 02_budget_roi_model
 │   │   ├── templates/  input_ad_data · output_ad_action_plan
 │   │   └── examples/   powerbank_20000mah_ads.md · sample-ad-report.csv
 │   └── 07_Review_Analysis_Agent/              ✅
-│       ├── SKILL.md（分类交给模型、计数交给脚本）
-│       ├── scripts/    review_stats.py        # 归因聚合/可修复率/卖点排行
+│       ├── SKILL.md (phân loại giao cho model, đếm số giao cho script)
+│       ├── scripts/    review_stats.py        # Tổng hợp quy nguyên nhân/tỷ lệ sửa được/xếp hạng điểm bán hàng
 │       ├── prompts/    00_system · 01_classify_and_attribute · 02_misunderstanding_detector
 │       ├── templates/  input_review_batch · output_review_insights
 │       └── examples/   electric_scooter_reviews.md + sample-reviews.csv
 │
-├── Templates/                    # 跨模块通用模板库
-│   ├── product_brief_template.md         # 模块间通信契约 ⭐
-│   ├── keyword_analysis_template.md      # 关键词三榜底稿
-│   ├── cost_pricing_template.md          # 定价模型（可验算）
-│   └── output_qa_checklist.md            # 可打印版自检清单
+├── Templates/                    # Thư viện template dùng chung giữa các module
+│   ├── product_brief_template.md         # Hợp đồng giao tiếp giữa các module ⭐
+│   ├── keyword_analysis_template.md      # Bản nháp 3 bảng xếp hạng từ khóa
+│   ├── cost_pricing_template.md          # Mô hình định giá (kiểm tra lại được)
+│   └── output_qa_checklist.md            # Checklist tự kiểm tra bản in được
 │
-└── Examples/                     # 真实产品端到端案例库
-    ├── 01_Patinete_Eletrico_500W/        # 旗舰：03→04→05 全链路
-    ├── 02_Thermal_Bag/                   # iterate 模式：广告诊断→回改
-    └── 03_Closed_Loop/                   # 闭环：诊断→回流→复测 ⭐
+└── Examples/                     # Thư viện case study end-to-end trên sản phẩm thật
+    ├── 01_Patinete_Eletrico_500W/        # Flagship: toàn chuỗi 03→04→05
+    ├── 02_Thermal_Bag/                   # Chế độ iterate: chẩn đoán quảng cáo→sửa lại
+    └── 03_Closed_Loop/                   # Vòng khép kín: chẩn đoán→quay vòng về→kiểm tra lại ⭐
 ```
 
-案例产品覆盖（制作说明指定的五款）：Electric Scooter · Power Bank · Pet Carrier · Air Fryer · Thermal Bag ✅
+Sản phẩm trong các case study (năm sản phẩm theo yêu cầu của bản hướng dẫn thực hiện): Electric Scooter · Power Bank · Pet Carrier · Air Fryer · Thermal Bag ✅
 
-每个 Agent 模块固定四个子目录：`prompts/` + `templates/` + `examples/` + `README.md`。
+Mỗi module Agent cố định bốn thành phần con: `prompts/` + `templates/` + `examples/` + `README.md`.
 
 ---
 
-## 📱 平台支持
+## 📱 Sàn được hỗ trợ
 
-| 平台 | 状态 | 标题上限 | 主图规范 | 输出语言 |
+| Sàn | Trạng thái | Giới hạn tiêu đề | Quy chuẩn ảnh chính | Ngôn ngữ output |
 |---|---|---|---|---|
-| **Shopee** | ✅ 一等支持 | 120 字符（前 30 字符权重最高） | 白底，最多 9 图 | PT-BR / EN / 本地语 |
-| **Mercado Livre** | ✅ 一等支持 | 60 字符 | 背景干净（白/纯色/实景按类目），主体 85–95%，≥1200×1200 | PT-BR / ES |
-| Amazon | 📄 字段已适配 | 200 字符（建议 80） | 纯白底，≥1000×1000 | EN |
-| TikTok Shop | 📄 字段已适配 | 按站点 | 竖版 9:16 优先 | 本地语 |
-| Shopify | 📄 字段已适配 | 建议 70 | 无硬限制 | EN / 本地语 |
+| **Shopee** | ✅ Hỗ trợ hạng nhất | 120 ký tự (30 ký tự đầu có trọng số cao nhất) | Nền trắng, tối đa 9 ảnh | PT-BR / EN / ngôn ngữ bản địa |
+| **Mercado Livre** | ✅ Hỗ trợ hạng nhất | 60 ký tự | Nền sạch (trắng/màu trơn/bối cảnh thật tùy ngành hàng), chủ thể chiếm 85–95%, ≥1200×1200 | PT-BR / ES |
+| Amazon | 📄 Đã khớp các trường | 200 ký tự (khuyến nghị 80) | Nền trắng tinh, ≥1000×1000 | EN |
+| TikTok Shop | 📄 Đã khớp các trường | Tùy site | Ưu tiên khung dọc 9:16 | Ngôn ngữ bản địa |
+| Shopify | 📄 Đã khớp các trường | Khuyến nghị 70 | Không giới hạn cứng | EN / ngôn ngữ bản địa |
 
-详细字段规范见 [`docs/02_Platform_Output_Spec.md`](./docs/02_Platform_Output_Spec.md)。**所有硬指标以平台后台实时规则为准，发布前请复核。**
-
----
-
-## 🧭 设计原则
-
-1. **母语输出优先**——巴西站的标题必须像巴西人写的。直译英文 Listing 的 CTR 结构性偏低，所以 Prompt 强制要求原生 PT-BR 表达，而不是"翻译腔"。
-2. **输入契约化**——每个 Prompt 都声明"缺什么字段就不许输出什么内容"。宁可报错，不许编参数。
-3. **合规优先于转化**——涉及参数虚标、品牌词、夸大宣传的动作，Prompt 里一律做**硬拦截**，不是"建议"。详见 [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md)。
-4. **可验证**——每个模块交付时给一份自检清单，逐条打勾才算完成。产出对不对，不靠感觉。
+Quy chuẩn trường chi tiết xem tại [`docs/02_Platform_Output_Spec.md`](./docs/02_Platform_Output_Spec.md). **Mọi chỉ tiêu cứng đều lấy quy định hiện hành trong Seller Center của sàn làm chuẩn, vui lòng kiểm tra lại trước khi đăng.**
 
 ---
 
-## ⚠️ 合规声明
+## 🧭 Nguyên tắc thiết kế
 
-本工具箱只做**合法合规的运营提效**。原始 SOP 中存在少数平台明确禁止的灰产动作（如虚假交易/刷单、组织虚假举报、参数虚标与夸大宣传）。这些内容**已在本仓库中被识别并改写为合规替代方案**：
-
-- 改写对照表 → [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md)
-- 未实现项逐条登记（说明为什么不做、替代方案在哪）→ [`docs/05_SOP_Gap_Register.md`](./docs/05_SOP_Gap_Register.md)
-
-使用本工具箱产生的内容，**发布前请自行核对平台最新规则**。作者不对因违规使用导致的账号处罚承担责任。
+1. **Ưu tiên output bằng tiếng mẹ đẻ** —— tiêu đề trên Shopee Brazil phải đọc như người Brazil viết. Listing dịch thẳng từ tiếng Anh có CTR thấp về mặt cấu trúc, nên Prompt bắt buộc dùng cách diễn đạt PT-BR tự nhiên, chứ không phải "giọng văn dịch".
+2. **Hợp đồng hóa đầu vào** —— mỗi Prompt đều khai báo "thiếu trường nào thì không được xuất nội dung tương ứng". Thà báo lỗi, còn hơn bịa thông số.
+3. **Tuân thủ đặt trên chuyển đổi** —— mọi thao tác dính tới khai khống thông số, từ khóa thương hiệu, quảng cáo phóng đại đều bị Prompt **chặn cứng**, không phải "khuyến nghị". Chi tiết xem [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md).
+4. **Kiểm chứng được** —— mỗi module khi bàn giao đều kèm một checklist tự kiểm tra, tick đủ từng mục mới tính là xong. Output đúng hay sai không dựa vào cảm tính.
 
 ---
 
-## 🗺 路线图
+## ⚠️ Tuyên bố tuân thủ
 
-| 版本 | 内容 |
+Bộ công cụ này chỉ phục vụ **nâng cao hiệu quả vận hành một cách hợp pháp và tuân thủ**. SOP gốc có một số ít thao tác "xám" mà sàn cấm rõ ràng (như giao dịch ảo/buff đơn ảo, tổ chức report sai sự thật, khai khống thông số và quảng cáo phóng đại). Những nội dung này **đã được nhận diện trong repo và viết lại thành phương án thay thế tuân thủ**:
+
+- Bảng đối chiếu viết lại → [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md)
+- Ghi lại từng mục không triển khai (giải thích vì sao không làm, phương án thay thế nằm ở đâu) → [`docs/05_SOP_Gap_Register.md`](./docs/05_SOP_Gap_Register.md)
+
+Nội dung tạo ra bằng bộ công cụ này, **vui lòng tự đối chiếu quy định mới nhất của sàn trước khi đăng**. Tác giả không chịu trách nhiệm cho các hình phạt tài khoản do sử dụng sai quy định.
+
+---
+
+## 🗺 Lộ trình
+
+| Phiên bản | Nội dung |
 |---|---|
-| **v0.1** | 3 个创意 Agent（03/04/05）+ 方法论文档 + 案例库 |
-| **v0.2** | 2 个运营 Agent（06 广告 / 07 评论）+ 闭环案例 |
-| **v0.3** | 2 个分析 Agent（01 市场 / 02 策略）+ **数据解析与指标计算脚本**（当前） |
-| **v1.0** | 打通完整工作流，输出一键上架用的素材包 |
-| V2 | 接入平台 API（Shopee / Mercado Livre）自动拉取数据 |
-| V3 | 网页应用，可视化跑工作流 |
-| V4 | 升级为自动化 Agent 系统（定时执行 + 闭环优化） |
+| **v0.1** | 3 Agent sáng tạo (03/04/05) + tài liệu phương pháp + thư viện case study |
+| **v0.2** | 2 Agent vận hành (06 quảng cáo / 07 đánh giá) + case study vòng khép kín |
+| **v0.3** | 2 Agent phân tích (01 thị trường / 02 chiến lược) + **script phân tích dữ liệu và tính chỉ số** (hiện tại) |
+| **v1.0** | Nối thông toàn bộ workflow, xuất gói nội dung để đăng bán một chạm |
+| V2 | Kết nối API của sàn (Shopee / Mercado Livre) để tự động kéo dữ liệu |
+| V3 | Ứng dụng web, chạy workflow trực quan |
+| V4 | Nâng cấp thành hệ thống Agent tự động (chạy theo lịch + tối ưu vòng khép kín) |
 
-详见 [`ROADMAP.md`](./ROADMAP.md)。
+Chi tiết xem [`ROADMAP.md`](./ROADMAP.md).
 
 ---
 
-## 🤝 贡献
+## 🤝 Đóng góp
 
-欢迎补充新类目的配置维度表、新市场的平台规则、以及真实案例。请先读 [`CONTRIBUTING.md`](./CONTRIBUTING.md)。
-**提交案例必须脱敏**：不含真实店铺名、账号、买家信息、未授权品牌词。
+Hoan nghênh bổ sung bảng chiều cấu hình cho ngành hàng mới, quy định sàn cho thị trường mới, và case study thật. Vui lòng đọc [`CONTRIBUTING.md`](./CONTRIBUTING.md) trước.
+**Case study gửi lên bắt buộc phải ẩn danh**: không chứa tên shop thật, tài khoản, thông tin người mua, hay từ khóa thương hiệu chưa được cấp phép.
 
 ## 📄 License
 

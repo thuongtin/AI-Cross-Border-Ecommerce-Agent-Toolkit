@@ -1,7 +1,7 @@
-# 统一换行符，避免 Windows/Linux 提交时产生 CRLF 噪声与整文件 diff
+# Thống nhất ký tự xuống dòng, tránh nhiễu CRLF và diff cả file khi commit giữa Windows/Linux
 * text=auto eol=lf
 
-# 明确二进制类型，禁止 Git 做换行转换
+# Khai báo rõ các kiểu file nhị phân, không cho Git chuyển đổi xuống dòng
 *.png  binary
 *.jpg  binary
 *.jpeg binary
@@ -11,6 +11,6 @@
 *.xlsx binary
 *.zip  binary
 
-# 这些文件在 GitHub 上按语言统计时不计入
+# Các file này không được tính khi GitHub thống kê theo ngôn ngữ
 *.md   linguist-documentation
 docs/* linguist-documentation

@@ -1,144 +1,144 @@
-# 模板 · 关键词三榜分析表
+# Template · Bảng phân tích từ khóa theo 3 bảng xếp hạng
 
-> SOP **1.8 关键词表**的标准工作底稿。
-> **数据来源**：虾多拉 / 平台搜索词工具 / 卖家中心关键词分析。
+> Bảng làm việc chuẩn cho **SOP 1.8 Bảng từ khóa**.
+> **Nguồn dữ liệu**: Xiaduola / công cụ từ khóa tìm kiếm của sàn / mục phân tích từ khóa trong Seller Center.
 
 ---
 
-## 一、为什么三个榜要分开看
+## 1. Vì sao phải xem riêng từng bảng
 
-SOP 说得很明确：
+SOP nói rất rõ:
 
-> 不要把三个维度混在一起看，因为每个维度代表的意义不同。
+> Đừng gộp ba chiều dữ liệu lại để xem chung, vì mỗi chiều mang ý nghĩa khác nhau.
 
-| 榜单 | 反映什么 | 单独看会误判成什么 |
+| Bảng xếp hạng | Phản ánh điều gì | Nếu chỉ xem riêng dễ hiểu sai thành |
 |---|---|---|
-| **搜索量前 30** | 需求规模——有多少人在搜 | "搜的人多 = 好做"（但可能已经卷到没利润） |
-| **供需比前 30** | 竞争强度——需求除以供给 | "竞争小 = 机会"（但可能只是需求也小） |
-| **增长率前 30** | 趋势——需求在涨还是在落 | "涨得快 = 必做"（但可能只是短期热点） |
+| **Top 30 lượng tìm kiếm** | Quy mô nhu cầu — có bao nhiêu người đang tìm | "Nhiều người tìm = dễ bán" (nhưng có thể đã cạnh tranh đến mức hết lời) |
+| **Top 30 tỷ lệ cung cầu** | Mức độ cạnh tranh — nhu cầu chia cho nguồn cung | "Ít cạnh tranh = cơ hội" (nhưng có thể chỉ vì nhu cầu cũng nhỏ) |
+| **Top 30 tốc độ tăng trưởng** | Xu hướng — nhu cầu đang tăng hay giảm | "Tăng nhanh = phải làm" (nhưng có thể chỉ là trend ngắn hạn) |
 
-**三榜交叉**：同时出现在三个榜里的词，才是"需求大 + 竞争有空间 + 还在增长"的词——这是真正的机会词。
-
----
-
-## 二、工作底稿
-
-### 2.1 三个原始榜单（各 30 词）
-
-**榜 1 · 搜索量前 30**
-
-| # | 关键词 | 搜索量 | 备注 |
-|---|---|---|---|
-| 1 | | | |
-| ... | | | |
-
-**榜 2 · 供需比前 30**
-
-| # | 关键词 | 供需比 | 备注 |
-|---|---|---|---|
-| 1 | | | |
-| ... | | | |
-
-**榜 3 · 增长率前 30**
-
-| # | 关键词 | 增长率 | 备注 |
-|---|---|---|---|
-| 1 | | | |
-| ... | | | |
+**Đối chiếu 3 bảng**: chỉ những từ xuất hiện cùng lúc ở cả ba bảng mới là từ "nhu cầu lớn + còn dư địa cạnh tranh + vẫn đang tăng" — đó mới là từ khóa cơ hội thực sự.
 
 ---
 
-### 2.2 高频词提取（三榜交叉）
+## 2. Bảng làm việc
 
-把三个榜的关键词**拆成词根**，统计重复出现。
+### 2.1 Ba bảng xếp hạng gốc (mỗi bảng 30 từ)
 
-| 词根 | 出现榜数 | 榜 1 位置 | 榜 2 位置 | 榜 3 位置 | 优先级 |
+**Bảng 1 · Top 30 lượng tìm kiếm**
+
+| # | Từ khóa | Lượng tìm kiếm | Ghi chú |
+|---|---|---|---|
+| 1 | | | |
+| ... | | | |
+
+**Bảng 2 · Top 30 tỷ lệ cung cầu**
+
+| # | Từ khóa | Tỷ lệ cung cầu | Ghi chú |
+|---|---|---|---|
+| 1 | | | |
+| ... | | | |
+
+**Bảng 3 · Top 30 tốc độ tăng trưởng**
+
+| # | Từ khóa | Tốc độ tăng trưởng | Ghi chú |
+|---|---|---|---|
+| 1 | | | |
+| ... | | | |
+
+---
+
+### 2.2 Lọc từ tần suất cao (đối chiếu 3 bảng)
+
+**Tách từ khóa** của cả ba bảng **thành từ gốc**, rồi đếm số lần lặp lại.
+
+| Từ gốc | Số bảng xuất hiện | Vị trí ở bảng 1 | Vị trí ở bảng 2 | Vị trí ở bảng 3 | Mức ưu tiên |
 |---|---|---|---|---|---|
-| | **3/3** | | | | 🔴 最高 |
-| | 2/3 | | | | 🟡 高 |
-| | 1/3 | | | | ⚪ 一般 |
+| | **3/3** | | | | 🔴 Cao nhất |
+| | 2/3 | | | | 🟡 Cao |
+| | 1/3 | | | | ⚪ Bình thường |
 
-> **拆词根**：`Patinete Elétrico Adulto` 拆成 `Patinete`、`Elétrico`、`Adulto` 三个词根，分别统计。
+> **Tách từ gốc**: `Patinete Elétrico Adulto` tách thành 3 từ gốc `Patinete`, `Elétrico`, `Adulto`, rồi đếm riêng từng từ.
 
 ---
 
-### 2.3 七类分词（SOP 定义的分类）
+### 2.3 Phân loại từ khóa theo 7 nhóm (theo định nghĩa của SOP)
 
-| 类别 | 定义 | 词列表 | 词数 | 用在哪 |
+| Nhóm | Định nghĩa | Danh sách từ | Số từ | Dùng ở đâu |
 |---|---|---|---|---|
-| **核心词** | 说明产品是什么 | | | 标题前 30 字符 |
-| **参数词** | 功率 / 承重 / 容量等配置 | | | 标题参数段 + 详情参数段 |
-| **人群词** | 适合成人 / 儿童 / 男女 | | | 标题人群段 |
-| **功能词** | 带座椅 / 可折叠 / 有减震 | | | 标题功能段 + 详情卖点段 |
-| **场景词** | 通勤 / 越野 / 城市出行 | | | 详情场景段 |
-| **配件词** | 电机 / 电池 / 座椅 / 头盔 | | | 详情参数段 |
-| **风险词** | ⛔ 品牌词 / 侵权词 / 与实际不符的参数词 | | | **禁用**，列入 `forbidden_words` |
+| **Từ cốt lõi** | Cho biết sản phẩm là gì | | | 30 ký tự đầu của tiêu đề |
+| **Từ thông số** | Cấu hình như công suất / tải trọng / dung tích | | | Phần thông số trong tiêu đề + phần thông số trong trang chi tiết |
+| **Từ đối tượng** | Phù hợp cho người lớn / trẻ em / nam / nữ | | | Phần đối tượng trong tiêu đề |
+| **Từ tính năng** | Có yên / gấp gọn được / có giảm xóc | | | Phần tính năng trong tiêu đề + phần điểm bán hàng trong trang chi tiết |
+| **Từ ngữ cảnh** | Đi làm / địa hình / di chuyển trong thành phố | | | Phần ngữ cảnh sử dụng trong trang chi tiết |
+| **Từ phụ kiện** | Motor / pin / yên / mũ bảo hiểm | | | Phần thông số trong trang chi tiết |
+| **Từ rủi ro** | ⛔ Tên thương hiệu / từ vi phạm bản quyền / từ thông số không đúng thực tế | | | **Cấm dùng**, đưa vào `forbidden_words` |
 
-**风险词的三种典型**：
+**Ba dạng từ rủi ro điển hình**:
 
-| 类型 | 例子 | 为什么不能用 |
+| Dạng | Ví dụ | Vì sao không được dùng |
 |---|---|---|
-| 品牌侵权词 | 未授权的品牌名 | 侵权投诉风险 |
-| 参数不符词 | 商品是 18W，但有人搜 `65W` | 标题写 `65W` = 参数虚标 |
-| 平台敏感词 | 医疗、认证、绝对化表述 | 平台违规 |
+| Từ vi phạm thương hiệu | Tên thương hiệu chưa được ủy quyền | Rủi ro bị khiếu nại vi phạm bản quyền |
+| Từ sai thông số | Sản phẩm 18W nhưng có người tìm `65W` | Ghi `65W` vào tiêu đề = khai khống thông số |
+| Từ nhạy cảm với sàn | Y tế, chứng nhận, cách nói tuyệt đối | Vi phạm chính sách sàn |
 
 ---
 
-### 2.4 标题组合
+### 2.4 Ghép tiêu đề
 
-**公式**（SOP 1.8）：
+**Công thức** (SOP 1.8):
 
 ```
-核心产品词 + 人群/场景词 + 核心参数词 + 功能卖点词 + 补充关键词
+Từ sản phẩm cốt lõi + Từ đối tượng/ngữ cảnh + Từ thông số chính + Từ tính năng/điểm bán hàng + Từ khóa bổ sung
 ```
 
-**SOP 原始示例**：
+**Ví dụ gốc trong SOP**:
 
 ```
 Patinete Elétrico Adulto 500W 150kg com Banco Dobrável para Mobilidade Urbana
 ```
 
-| 成分 | 词 |
+| Thành phần | Từ |
 |---|---|
-| 核心词 | `Patinete Elétrico` |
-| 人群词 | `Adulto` |
-| 参数词 | `500W` `150kg` |
-| 功能词 | `com Banco` `Dobrável` |
-| 场景词 | `Mobilidade Urbana` |
+| Từ cốt lõi | `Patinete Elétrico` |
+| Từ đối tượng | `Adulto` |
+| Từ thông số | `500W` `150kg` |
+| Từ tính năng | `com Banco` `Dobrável` |
+| Từ ngữ cảnh | `Mobilidade Urbana` |
 
-**备选标题**（SOP 要求最后得出 2–3 个）：
+**Tiêu đề dự phòng** (SOP yêu cầu cuối cùng ra được 2–3 phương án):
 
-| # | 标题 | 字符数 | 侧重方向 | 用于 |
+| # | Tiêu đề | Số ký tự | Hướng nhấn mạnh | Dùng cho |
 |---|---|---|---|---|
-| A | | /120 | 参数驱动 | 主链接 |
-| B | | /120 | 场景驱动 | 多链接测试 |
-| C | | /120 | 功能驱动 | 多链接测试 |
+| A | | /120 | Nhấn thông số | Link chính |
+| B | | /120 | Nhấn ngữ cảnh | Test nhiều link |
+| C | | /120 | Nhấn tính năng | Test nhiều link |
 
 ---
 
-### 2.5 埋词位置分配
+### 2.5 Phân bổ vị trí cài từ khóa
 
-| 位置 | 放哪些词 | 不放哪些词 |
+| Vị trí | Đặt những từ nào | Không đặt những từ nào |
 |---|---|---|
-| 标题 | 核心词 + 高频参数词 + 1–2 个功能词 | 风险词、低频词、场景长尾词 |
-| 详情页第 3 段（场景） | 场景词 | 参数词（放第 4 段） |
-| 详情页第 4 段（参数） | 参数词 | 场景词 |
-| 详情页第 7 段（标签） | 核心词 + 功能词 + 场景词 + 配件词 | 风险词（**绝对不放**） |
-| 广告投放词 | 高频核心词 + 高转化功能词 | 泛词、无转化词 |
+| Tiêu đề | Từ cốt lõi + từ thông số tần suất cao + 1–2 từ tính năng | Từ rủi ro, từ tần suất thấp, từ đuôi dài về ngữ cảnh |
+| Đoạn 3 trang chi tiết (ngữ cảnh) | Từ ngữ cảnh | Từ thông số (để ở đoạn 4) |
+| Đoạn 4 trang chi tiết (thông số) | Từ thông số | Từ ngữ cảnh |
+| Đoạn 7 trang chi tiết (tag) | Từ cốt lõi + từ tính năng + từ ngữ cảnh + từ phụ kiện | Từ rủi ro (**tuyệt đối không đặt**) |
+| Từ khóa chạy quảng cáo | Từ cốt lõi tần suất cao + từ tính năng chuyển đổi cao | Từ chung chung, từ không có chuyển đổi |
 
 ---
 
-## 三、填写自检
+## 3. Tự kiểm tra khi điền
 
-- [ ] 三榜各 30 词，共 90 词，无遗漏
-- [ ] 已拆词根统计，标注了三榜交叉的高频词
-- [ ] 每个词都被归入七类之一，无"其他"分类
-- [ ] 风险词已完整列出并标记为禁用
-- [ ] 标题公式的五段成分齐备
-- [ ] 输出了 2–3 个备选标题，且侧重方向不同
-- [ ] 每个标题都标注了**实测字符数**（不是估算）
-- [ ] 埋词位置已分配，风险词未出现在任何可发布位置
+- [ ] Mỗi bảng đủ 30 từ, tổng 90 từ, không sót
+- [ ] Đã tách từ gốc để thống kê, đánh dấu các từ tần suất cao trùng ở cả 3 bảng
+- [ ] Mỗi từ đều được xếp vào một trong 7 nhóm, không có nhóm "khác"
+- [ ] Đã liệt kê đầy đủ từ rủi ro và đánh dấu cấm dùng
+- [ ] Đủ 5 thành phần của công thức tiêu đề
+- [ ] Đã đưa ra 2–3 tiêu đề dự phòng với hướng nhấn mạnh khác nhau
+- [ ] Mỗi tiêu đề đều ghi **số ký tự đo thực tế** (không phải ước lượng)
+- [ ] Đã phân bổ vị trí cài từ khóa, từ rủi ro không xuất hiện ở bất kỳ vị trí nào được đăng công khai
 
 ---
 
-**相关文档**：[SOP→Agent 拆解](../docs/00_Architecture_SOP_to_Agent.md) · [平台字段规范](../docs/02_Platform_Output_Spec.md) · [03 Listing Creative Agent](../Agents/03_Listing_Creative_Agent/)
+**Tài liệu liên quan**: [Phân rã SOP→Agent](../docs/00_Architecture_SOP_to_Agent.md) · [Quy chuẩn trường dữ liệu theo sàn](../docs/02_Platform_Output_Spec.md) · [03 Listing Creative Agent](../Agents/03_Listing_Creative_Agent/)

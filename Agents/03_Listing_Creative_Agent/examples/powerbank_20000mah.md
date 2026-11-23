@@ -1,41 +1,41 @@
-# 案例 · Carregador Portátil 20000mAh 45W（Shopee 巴西站）
+# Case study · Carregador Portátil 20000mAh 45W (Shopee Brazil)
 
-> **案例类型**：真实产品 · 已脱敏（无店铺名、无账号、无未授权品牌词）
-> **使用模块**：03 Listing Creative Agent
-> **对应 SOP**：1.8 关键词表 · 3.3 Listing 打造 · 3.6 广告回改
+> **Loại case study**: sản phẩm thật · đã ẩn danh (không có tên shop, không có tài khoản, không có tên thương hiệu chưa ủy quyền)
+> **Module sử dụng**: 03 Listing Creative Agent
+> **SOP tương ứng**: 1.8 Bảng từ khóa · 3.3 Xây dựng Listing · 3.6 Sửa lại khi quảng cáo không chạy
 
 ---
 
-## 一、产品背景
+## 1. Bối cảnh sản phẩm
 
-| 项 | 内容 |
+| Mục | Nội dung |
 |---|---|
-| 产品 | 20000mAh 45W 快充充电宝，带数字显示屏，3 输出口 |
-| 市场 | 巴西（Shopee BR） |
-| 类目 | 电池 / 充电类 |
-| 定位 | 引流款，主推广告品 |
-| 上架背景 | 新品冷启动，需要一套能撑起点击率的 Listing |
+| Sản phẩm | Sạc dự phòng sạc nhanh 20000mAh 45W, có màn hình số, 3 cổng ra |
+| Thị trường | Brazil (Shopee BR) |
+| Ngành hàng | Pin / sạc |
+| Định vị | SKU kéo traffic, sản phẩm chủ lực chạy quảng cáo |
+| Bối cảnh đăng bán | Khởi động sản phẩm mới, cần một bộ Listing đủ sức kéo CTR |
 
-**为什么选这个案例**：巴西站充电宝类目竞争激烈，是"标题写法差异直接反映在点击率上"的典型类目；同时它有明确的**误解型差评**（买家以为含数据线），可以用来演示"评论 → 详情页"的闭环。
+**Vì sao chọn case study này**: ngành hàng sạc dự phòng trên Shopee Brazil cạnh tranh gay gắt, là ngành hàng điển hình mà "khác biệt trong cách viết tiêu đề thể hiện trực tiếp lên CTR"; đồng thời sản phẩm có **đánh giá tiêu cực loại hiểu lầm** rõ ràng (người mua tưởng có kèm cáp sạc), có thể dùng để minh họa vòng khép kín (closed loop) "đánh giá → trang chi tiết".
 
 ---
 
-## 二、输入端（节选）
+## 2. Phía đầu vào (trích)
 
-完整模板见 [`../templates/input_product_brief.md`](../templates/input_product_brief.md)。
+Template đầy đủ xem tại [`../templates/input_product_brief.md`](../templates/input_product_brief.md).
 
 ```yaml
 platform: shopee
-target_market: 巴西
+target_market: Brazil
 mode: single
 
 product_name: "Carregador Portátil"
-category: "电池 / 充电类"
+category: "Pin / sạc"
 ```
 
-### spec_table（节选）
+### spec_table (trích)
 
-| 参数键 | 值 |
+| Key thông số | Giá trị |
 |---|---|
 | `capacidade` | `20000 mAh` |
 | `potencia_saida` | `45 W` |
@@ -46,7 +46,7 @@ category: "电池 / 充电类"
 | `display` | `Display digital de bateria` |
 | `tempo_recarga` | `≈ 4 h com carregador de 45 W` |
 | `garantia` | `6 meses (defeito de fabricação)` |
-| `certificacoes` | `（留空 —— 未持有 ANATEL，不填不虚构）` |
+| `certificacoes` | `(để trống — chưa có ANATEL, không điền thì không bịa)` |
 
 ### package_content
 
@@ -64,7 +64,7 @@ category: "电池 / 充电类"
 - "Emergência durante o dia fora de casa"
 ```
 
-### selling_points_input（含夸张表述，待改写）
+### selling_points_input (có cách nói phóng đại, chờ viết lại)
 
 ```yaml
 - "Bateria gigante, dura dias inteiros sem precisar de tomada"
@@ -77,76 +77,76 @@ category: "电池 / 充电类"
 ### review_insights
 
 ```yaml
-- type: 误解型
-  content: "买家评论提到『esperava que viesse o cabo longo』，以为含长数据线"
-  action: "详情页注意事项段写明 cabo incluso tem 30 cm"
-- type: 误解型
-  content: "买家以为能给笔记本充电"
-  action: "注意事项段与参数段明确 scope：celular e tablet"
+- type: loại hiểu lầm
+  content: "Đánh giá của người mua có câu 'esperava que viesse o cabo longo', tưởng có kèm cáp dài"
+  action: "Ghi rõ cabo incluso tem 30 cm trong đoạn Lưu ý của trang chi tiết"
+- type: loại hiểu lầm
+  content: "Người mua tưởng sạc được cho laptop"
+  action: "Ghi rõ scope ở đoạn Lưu ý và đoạn thông số: celular e tablet"
 ```
 
 ### brand_authorization
 
 ```yaml
-brand_authorization: []      # 无任何品牌授权
+brand_authorization: []      # không có bất kỳ ủy quyền thương hiệu nào
 ```
 
 ---
 
-## 三、AI 处理流程
+## 3. Quy trình AI xử lý
 
 ```text
-[Step 1] 00_system.md                    → 载入角色、平台规则(120字符)、PT-BR 输出规则、合规守卫
-[Step 2] 01_keyword_to_title.md          → 三榜 84 词合并去重 → 七类分词 → 3 个备选标题
-[Step 3] 02_description_builder.md       → 详情页 7 段 + 卖点分层 + 参数一致性校验
-[Step 4] 03_compliance_guard.md          → 合规扫描 → 命中 3 条 → 改写 → 二次扫描确认零命中
-[Step 5] 输出 output_listing_pack.md     → 交付 core_selling_point / forbidden_words 给 04、05
+[Step 1] 00_system.md                    → nạp vai trò, quy tắc sàn (120 ký tự), quy tắc đầu ra PT-BR, chốt chặn tuân thủ
+[Step 2] 01_keyword_to_title.md          → gộp và loại trùng 84 từ của 3 bảng → chia 7 nhóm → 3 tiêu đề dự phòng
+[Step 3] 02_description_builder.md       → trang chi tiết 7 đoạn + phân tầng điểm bán hàng + kiểm tra nhất quán thông số
+[Step 4] 03_compliance_guard.md          → quét tuân thủ → dính 3 mục → viết lại → quét lần hai xác nhận không dính
+[Step 5] Xuất output_listing_pack.md     → bàn giao core_selling_point / forbidden_words cho 04, 05
 ```
 
-**中转注意**：Step 2 的关键词分类表直接喂给 Step 3（详情页第 7 段埋词用），不重新生成。
+**Lưu ý khi chuyển tiếp**: bảng phân loại từ khóa của Step 2 đưa thẳng vào Step 3 (để cài từ khóa ở đoạn 7 của trang chi tiết), không tạo lại.
 
 ---
 
-## 四、生成结果
+## 4. Kết quả tạo ra
 
-### 4.1 关键词分类（节选）
+### 4.1 Phân loại từ khóa (trích)
 
-| 类别 | 词数 | 代表词 |
+| Nhóm | Số từ | Từ tiêu biểu |
 |---|---|---|
-| 核心词 | 3 | `Carregador Portátil`、`Bateria Externa`、`Power Bank` |
-| 参数词 | 11 | `20000mAh`、`45W`、`3 Saídas`、`USB-C` |
-| 人群词 | 4 | `Unissex`、`Viagem`、`Trabalho`、`Estudante` |
-| 功能词 | 8 | `Turbo Carga Rápida`、`Display Digital`、`Carregamento Simultâneo` |
-| 场景词 | 6 | `Viagem`、`Trabalho Remoto`、`Camping`、`Emergência` |
-| 配件词 | 5 | `com Cabo USB-C`、`com Manual`、`Bateria` |
-| **风险词** | **6** | ⛔ `iPhone`（未授权品牌）、`100% Original`、`À Prova de Água`（参数不符）等 |
+| Từ cốt lõi | 3 | `Carregador Portátil`, `Bateria Externa`, `Power Bank` |
+| Từ thông số | 11 | `20000mAh`, `45W`, `3 Saídas`, `USB-C` |
+| Từ nhóm khách hàng | 4 | `Unissex`, `Viagem`, `Trabalho`, `Estudante` |
+| Từ tính năng | 8 | `Turbo Carga Rápida`, `Display Digital`, `Carregamento Simultâneo` |
+| Từ ngữ cảnh | 6 | `Viagem`, `Trabalho Remoto`, `Camping`, `Emergência` |
+| Từ phụ kiện | 5 | `com Cabo USB-C`, `com Manual`, `Bateria` |
+| **Từ rủi ro** | **6** | ⛔ `iPhone` (thương hiệu chưa ủy quyền), `100% Original`, `À Prova de Água` (thông số không khớp)... |
 
-> **风险词处理**：6 个风险词全部隔离，**不得出现在任何输出中**，但完整交付给 04/05 做拦截。
-> 特别说明：`iPhone` 属未授权品牌词，但 `Celular` 是通用词，可以正常使用——两者不是一回事。
+> **Xử lý từ rủi ro**: cả 6 từ rủi ro đều được cách ly, **không được xuất hiện trong bất kỳ đầu ra nào**, nhưng được bàn giao đầy đủ cho 04/05 để chặn.
+> Lưu ý riêng: `iPhone` là tên thương hiệu chưa được ủy quyền, còn `Celular` là từ thông dụng, dùng bình thường được — hai cái này không giống nhau.
 
-### 4.2 标题（3 个备选，字符数已实测）
+### 4.2 Tiêu đề (3 bản dự phòng, số ký tự đã đo thực tế)
 
-| # | 标题 | 字符数 | 侧重方向 |
+| # | Tiêu đề | Số ký tự | Hướng trọng tâm |
 |---|---|---|---|
-| **A** | `Carregador Portátil 20000mAh 45W Turbo Carga Rápida 3 Saídas com Display Digital para Celular Viagem` | **100/120** | 参数驱动 |
-| **B** | `Carregador Portátil 20000mAh 45W com Display Digital 3 Saídas para Viagem e Trabalho Remoto` | **91/120** | 场景驱动 |
-| **C** | `Carregador Portátil 20000mAh 45W Bateria Externa com Display Digital 3 Saídas para Celular Viagem` | **97/120** | 功能驱动 |
+| **A** | `Carregador Portátil 20000mAh 45W Turbo Carga Rápida 3 Saídas com Display Digital para Celular Viagem` | **100/120** | Thông số dẫn dắt |
+| **B** | `Carregador Portátil 20000mAh 45W com Display Digital 3 Saídas para Viagem e Trabalho Remoto` | **91/120** | Ngữ cảnh dẫn dắt |
+| **C** | `Carregador Portátil 20000mAh 45W Bateria Externa com Display Digital 3 Saídas para Celular Viagem` | **97/120** | Tính năng dẫn dắt |
 
-**推荐 A**，理由：主关键词 `Carregador Portátil` 落在第 1–19 字符，`20000mAh 45W` 落在前 30 字符内，参数密度最高，适合新品冷启动阶段抢精准搜索流量。
+**Đề xuất A**, lý do: từ khóa chính `Carregador Portátil` nằm ở ký tự 1–19, `20000mAh 45W` nằm trong 30 ký tự đầu, mật độ thông số cao nhất, phù hợp giai đoạn khởi động sản phẩm mới để giành traffic tìm kiếm chính xác.
 
-> **没有强行填满 120 字符**。SOP 提到"标题写满在完整性评分上更占优"，但**前提是每个词都必须是买家会搜的词**。为了凑字数加 `Hot Sale`、`Novo` 这类词，属于平台明确禁止的堆砌行为。
+> **Không cố nhồi cho đủ 120 ký tự**. SOP có nhắc "tiêu đề viết đủ ký tự sẽ có lợi hơn ở điểm độ hoàn thiện", nhưng **điều kiện tiên quyết là mỗi từ đều phải là từ người mua sẽ tìm**. Thêm những từ như `Hot Sale`, `Novo` chỉ để đủ số ký tự là hành vi nhồi từ khóa bị sàn cấm rõ ràng.
 
-### 4.3 详情页（节选）
+### 4.3 Trang chi tiết (trích)
 
-**段 1 · 欢迎语**
+**Đoạn 1 · Lời chào**
 ```text
 Carregador portátil de 20000mAh com saída de 45W e display digital.
 Ideal para quem passa o dia fora de casa e não pode ficar sem bateria.
 ```
 
-**段 2 · 核心卖点**（含改写对照）
+**Đoạn 2 · Điểm bán hàng cốt lõi** (kèm đối chiếu trước/sau khi viết lại)
 
-| 输入（夸张） | 输出（可验证） |
+| Đầu vào (phóng đại) | Đầu ra (kiểm chứng được) |
 |---|---|
 | Bateria gigante, dura dias | `Capacidade de 20000 mAh — recarrega um celular comum cerca de 4 vezes` |
 | Carrega ultra rápido | `Saída de 45W, recarga completa de um celular em cerca de 40 minutos*` |
@@ -154,17 +154,17 @@ Ideal para quem passa o dia fora de casa e não pode ficar sem bateria.
 | Design moderno e compacto | `Corpo em ABS de 14,2 × 6,8 × 2,8 cm e 380 g` |
 | Seguro, não esquenta | `Proteção contra sobrecarga, sobrecorrente e curto-circuito` |
 
-> `*` 需在段 6 补充测试条件。
+> `*` cần bổ sung điều kiện test ở đoạn 6.
 
-**段 3 · 使用场景**（全部在 `usage_scope` 内）
+**Đoạn 3 · Ngữ cảnh sử dụng** (toàn bộ nằm trong `usage_scope`)
 
-| 场景 | 具体用法 |
+| Ngữ cảnh | Cách dùng cụ thể |
 |---|---|
 | Viagem e deslocamentos | Carregue o celular no aeroporto, no ônibus ou no carro |
 | Trabalho remoto | Mantenha o celular carregado durante o dia de reuniões |
 | Emergência durante o dia | Saia de casa sem se preocupar com a bateria baixa |
 
-**段 6 · 注意事项**（由 `review_insights` 驱动生成）
+**Đoạn 6 · Lưu ý** (được tạo dựa trên `review_insights`)
 
 ```text
 - O cabo incluso (USB-C) tem 30 cm. Não é um cabo longo.
@@ -174,34 +174,34 @@ Ideal para quem passa o dia fora de casa e não pode ficar sem bateria.
 - Nunca use o aparelho molhado ou sobre superfícies inflamáveis.
 ```
 
-> 这一段是**本案例收益最高的产出**。两条误解型差评 → 两条前置说明，直接减少后续退货和差评。
+> Đoạn này là **đầu ra mang lại hiệu quả cao nhất của case study**. Hai đánh giá tiêu cực loại hiểu lầm → hai lời giải thích đặt trước, giảm trực tiếp trả hàng và đánh giá tiêu cực về sau.
 
-### 4.4 卖点分层
+### 4.4 Phân tầng điểm bán hàng
 
-| 层级 | 卖点 | 支撑依据 |
+| Tầng | Điểm bán hàng | Căn cứ chứng minh |
 |---|---|---|
-| **主卖点** | `45W 快充 + 20000mAh 容量组合` | `spec_table`：`45 W` / `20000 mAh` |
-| 副卖点 | 数字显示屏；3 输出口；100–240V 宽电压 | `display` / `portas` / `voltagem_entrada` |
-| 备用卖点 | 380 g 便携；6 个月保修 | `peso` / `garantia` |
-| 禁用卖点 | `100% original`、`à prova d'água`、`serve para tudo` | 品牌未授权 / 参数不符 / 绝对化 |
+| **Điểm bán hàng chính** | `Kết hợp sạc nhanh 45W + dung lượng 20000mAh` | `spec_table`: `45 W` / `20000 mAh` |
+| Điểm bán hàng phụ | Màn hình số; 3 cổng ra; dải điện áp rộng 100–240V | `display` / `portas` / `voltagem_entrada` |
+| Điểm bán hàng dự phòng | 380 g gọn nhẹ; bảo hành 6 tháng | `peso` / `garantia` |
+| Điểm bán hàng bị cấm | `100% original`, `à prova d'água`, `serve para tudo` | Thương hiệu chưa ủy quyền / thông số không khớp / tuyệt đối hóa |
 
-### 4.5 合规扫描结果
+### 4.5 Kết quả quét tuân thủ
 
-| 规则 | 命中数 | 处理 |
+| Quy tắc | Số lần dính | Xử lý |
 |---|---|---|
-| R1 绝对化用语 | 1 | `mais rápido que carregador comum` → 改为带测试条件的量化表达 |
-| R2 未授权品牌词 | 1 | `iPhone` → 改为通用词 `Celular` |
-| R3 参数虚标 | 0 | — |
-| R4 促销词入标题 | 1 | 标题中的 `Promoção` 已移入详情页段 1 |
-| R5 敏感表述 | 0 | — |
-| R6 场景超范围 | 1 | 输入的 `Camping` 不在 `usage_scope` 内 → 删除并记录 `[SCENE_DROPPED]` |
-| R7 伪造证明 | 0 | — |
+| R1 Từ ngữ tuyệt đối hóa | 1 | `mais rápido que carregador comum` → đổi thành cách diễn đạt định lượng kèm điều kiện test |
+| R2 Tên thương hiệu chưa được ủy quyền | 1 | `iPhone` → đổi thành từ thông dụng `Celular` |
+| R3 Khai khống thông số | 0 | — |
+| R4 Từ khuyến mãi trong tiêu đề | 1 | `Promoção` trong tiêu đề đã chuyển sang đoạn 1 của trang chi tiết |
+| R5 Nội dung nhạy cảm | 0 | — |
+| R6 Ngữ cảnh vượt phạm vi | 1 | `Camping` ở đầu vào không nằm trong `usage_scope` → xóa và ghi `[SCENE_DROPPED]` |
+| R7 Chứng cứ giả mạo | 0 | — |
 
-**结论**：命中 4 条（R2 高危），全部处理完毕，**二次扫描零命中**，可发布。
+**Kết luận**: dính 4 mục (R2 nguy cơ cao), đã xử lý toàn bộ, **quét lần hai không dính mục nào**, có thể đăng.
 
 ---
 
-## 五、交付给下游模块
+## 5. Bàn giao cho module phía sau
 
 ```yaml
 core_selling_point: "20000mAh com saída de 45W — recarga completa do celular em cerca de 40 minutos"
@@ -209,7 +209,7 @@ secondary_points:
   - "Display digital de bateria"
   - "3 saídas (2× USB-A + 1× USB-C) para carregamento simultâneo"
   - "Entrada 100–240V, funciona em qualquer tomada do Brasil"
-spec_table: { ... }          # 同 input
+spec_table: { ... }          # giống input
 forbidden_words:
   - "iPhone"
   - "100% Original"
@@ -226,48 +226,48 @@ usage_scope_confirmed:
   - "Emergência durante o dia fora de casa"
 ```
 
-`visual_tone_hint` 会被 04（图片）和 05（视频）共同读取，保证两者的视觉风格一致。
+`visual_tone_hint` được cả 04 (hình ảnh) và 05 (video) cùng đọc, đảm bảo phong cách hình ảnh của hai bên thống nhất.
 
 ---
 
-## 六、其他平台版本（同一产品）
+## 6. Phiên bản cho sàn khác (cùng sản phẩm)
 
-### Mercado Livre（60 字符上限，需大幅精简）
+### Mercado Livre (giới hạn 60 ký tự, cần rút gọn mạnh)
 
-| # | 标题 | 字符数 |
+| # | Tiêu đề | Số ký tự |
 |---|---|---|
 | A | `Carregador Portátil 20000mAh 45W 3 Saídas Display Digital` | **57/60** |
 
-**砍词过程**：`Viagem`（场景词，首个被砍）→ `Turbo Carga Rápida`（功能词，与 45W 语义重复）→ 保留 `Carregador Portátil`（核心词）+ `20000mAh 45W`（参数）+ `3 Saídas Display Digital`（功能）。
-**主关键词与核心参数一个都没砍**——符合 ML 的砍词优先级规则。
+**Quá trình cắt từ**: `Viagem` (từ ngữ cảnh, bị cắt đầu tiên) → `Turbo Carga Rápida` (từ tính năng, trùng nghĩa với 45W) → giữ lại `Carregador Portátil` (từ cốt lõi) + `20000mAh 45W` (thông số) + `3 Saídas Display Digital` (tính năng).
+**Không cắt bất kỳ từ khóa chính hay thông số cốt lõi nào** — đúng quy tắc ưu tiên cắt từ của ML.
 
-⚠️ **ML 图片规范与 Shopee 冲突**：ML 主图禁止出现任何文字与水印，而 Shopee 主图习惯打卖点文字。因此 04 Product Image Agent 需要输出**两套主图方案**，不能复用。
+⚠️ **Quy chuẩn hình ảnh của ML xung đột với Shopee**: ảnh chính trên ML cấm mọi chữ và watermark, trong khi ảnh chính trên Shopee thường chèn chữ nêu điểm bán hàng. Vì vậy 04 Product Image Agent cần xuất **hai bộ phương án ảnh chính**, không dùng chung được.
 
 ---
 
-## 七、优化建议（给使用者的下一步）
+## 7. Gợi ý tối ưu (bước tiếp theo cho người dùng)
 
-| # | 建议 | 依据 |
+| # | Gợi ý | Căn cứ |
 |---|---|---|
-| 1 | 用 title A/B/C 做 **3 条链接 A/B 测试**（SOP 3.4 方式二） | 三条标题侧重方向不同，可快速判断哪种方向点击率更高 |
-| 2 | 图片来源优先拍**数字显示屏亮起**的状态 | 卖点中最直观、竞品普遍拍得差的一项 |
-| 3 | 补拍一张**包装清单平铺图** | 直接对冲"以为含长线"的误解型差评 |
-| 4 | 广告跑不动时先改主图，再动 ROI（SOP 3.6） | 改主图常能解除广告 bug，比盲目调价有效 |
-| 5 | 详情页第 6 段上线后**监测差评变化** | 验证"误解型差评前置说明"是否真的降低了退货 |
-| 6 | 拿到 ANATEL 认证后再补认证图 | 目前留空是对的——虚构认证属高危违规 |
+| 1 | Dùng tiêu đề A/B/C để **A/B test 3 link** (SOP 3.4 cách hai) | Ba tiêu đề có hướng trọng tâm khác nhau, nhanh chóng biết hướng nào có CTR cao hơn |
+| 2 | Ưu tiên chụp ảnh lúc **màn hình số đang sáng** | Đây là điểm bán hàng trực quan nhất, đối thủ phần lớn chụp kém |
+| 3 | Chụp bổ sung một ảnh **trải phẳng các món trong hộp** | Đối phó trực tiếp với đánh giá tiêu cực loại hiểu lầm "tưởng có kèm cáp dài" |
+| 4 | Quảng cáo không chạy thì sửa ảnh chính trước, rồi mới động tới ROI (SOP 3.6) | Sửa ảnh chính thường gỡ được "bug" quảng cáo, hiệu quả hơn chỉnh giá mù quáng |
+| 5 | Sau khi đoạn 6 của trang chi tiết lên sóng thì **theo dõi biến động đánh giá tiêu cực** | Kiểm chứng "giải thích trước cho đánh giá tiêu cực loại hiểu lầm" có thực sự giảm trả hàng không |
+| 6 | Có chứng nhận ANATEL rồi mới bổ sung ảnh chứng nhận | Hiện để trống là đúng — bịa chứng nhận là vi phạm nguy cơ cao |
 
 ---
 
-## 八、这个案例证明了什么
+## 8. Case study này chứng minh điều gì
 
-| 结论 | 证据 |
+| Kết luận | Bằng chứng |
 |---|---|
-| **Agent 能守住参数真实性的底线** | 全程 0 次 `[PARAM_DROPPED]`，因为所有数值都来自 `spec_table` |
-| **合规守卫是有效的** | 拦截了 4 条，包括 1 条高危的未授权品牌词 |
-| **评论能反向修复 Listing** | 2 条误解型差评 → 2 条前置说明，且这两条说明在优化建议里被列为本案例最高收益项 |
-| **跨平台不能简单复制** | 同一个商品，Shopee 100 字符 vs ML 57 字符；且主图规范直接冲突 |
-| **上限在人不在模型** | Agent 只能保证"输出 = 输入"，参数本身是否真实，是使用者的责任 |
+| **Agent giữ được mức sàn về tính xác thực của thông số** | Toàn bộ quá trình 0 lần `[PARAM_DROPPED]`, vì mọi giá trị số đều lấy từ `spec_table` |
+| **Chốt chặn tuân thủ có hiệu quả** | Chặn 4 mục, trong đó có 1 tên thương hiệu chưa ủy quyền nguy cơ cao |
+| **Đánh giá có thể sửa ngược lại Listing** | 2 đánh giá tiêu cực loại hiểu lầm → 2 lời giải thích đặt trước, và hai lời giải thích này được xếp là mục hiệu quả cao nhất trong phần gợi ý tối ưu |
+| **Không thể sao chép đơn giản giữa các sàn** | Cùng một sản phẩm, Shopee 100 ký tự vs ML 57 ký tự; hơn nữa quy chuẩn ảnh chính xung đột trực tiếp |
+| **Mức trần nằm ở người chứ không ở model** | Agent chỉ đảm bảo được "đầu ra = đầu vào", bản thân thông số có đúng sự thật hay không là trách nhiệm của người dùng |
 
 ---
 
-**相关文件**：[模块说明](../README.md) · [输入模板](../templates/input_product_brief.md) · [输出模板](../templates/output_listing_pack.md) · [合规红线](../../../docs/03_Compliance_Guard.md)
+**File liên quan**: [Mô tả module](../README.md) · [Template đầu vào](../templates/input_product_brief.md) · [Template đầu ra](../templates/output_listing_pack.md) · [Lằn ranh đỏ tuân thủ](../../../docs/03_Compliance_Guard.md)

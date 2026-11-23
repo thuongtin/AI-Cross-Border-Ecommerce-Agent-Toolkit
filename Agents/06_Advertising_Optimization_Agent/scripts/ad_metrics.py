@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-"""广告决策层算术脚本（Shopee / Mercado Livre 广告）—— 只算，不猜，不执行。
+"""Script tính toán cho tầng ra quyết định quảng cáo (quảng cáo Shopee / Mercado Livre) — chỉ tính, không đoán, không thực thi.
 
   python ad_metrics.py calc --price 113.40 --product-cost 55 --commission 14 \
       --return 2 --tax 0 --target-acos 25 --cvr 0.44
   python ad_metrics.py diagnose --file ../examples/sample-ad-report.csv \
       --price 113.40 --product-cost 55 --commission 14 --return 2 --tax 0 --target-acos 25
 
-设计原则（与 01 模块一致）：能算的别让模型猜。
-  本脚本只输出确定性数字与分级动作建议（P0 止血 / P1 改善 / P2 放量），
-  **不改后台、不执行** —— 执行由人决定（合规与风控要求）。
+Nguyên tắc thiết kế (giống module 01): cái gì tính được thì đừng để mô hình đoán.
+  Script này chỉ xuất ra con số xác định và đề xuất hành động theo cấp (P0 cắt lỗ / P1 cải thiện / P2 scale),
+  **không sửa trên trang quản trị, không thực thi** — việc thực thi do con người quyết định (yêu cầu tuân thủ và kiểm soát rủi ro).
 
-盈亏线公式（含巴西税费项）：
-  广告前贡献 = 售价 − 产品成本 − 头程 − 尾程 − 售价×佣金% − 售价×退货损耗% − 售价×税率%
-  盈亏线 ACoS = 广告前贡献 ÷ 售价      盈亏线 ROAS = 1 ÷ 盈亏线 ACoS
-  可承受 CPC  = 售价 × 转化率 × 目标 ACoS
-税率口径：巴西税制复杂（ICMS/PIS/COFINS/Simples Nacional），此处用「综合有效税率」
-  一个参数表示（按售价百分比），由使用者按自己的税制填。
+Công thức ngưỡng hòa vốn (có tính thuế phí Brazil):
+  Đóng góp trước quảng cáo = Giá bán − Giá vốn − Vận chuyển chặng đầu − Vận chuyển chặng cuối − Giá bán×Hoa hồng% − Giá bán×Hao hụt hoàn hàng% − Giá bán×Thuế suất%
+  ACoS hòa vốn = Đóng góp trước quảng cáo ÷ Giá bán      ROAS hòa vốn = 1 ÷ ACoS hòa vốn
+  CPC chịu được = Giá bán × Tỷ lệ chuyển đổi × ACoS mục tiêu
+Cách tính thuế: hệ thống thuế Brazil phức tạp (ICMS/PIS/COFINS/Simples Nacional), ở đây gộp thành một tham số
+  「thuế suất hiệu dụng tổng hợp」 (tính theo % giá bán), người dùng tự điền theo chế độ thuế của mình.
 """
 import argparse
 import csv
@@ -23,7 +23,7 @@ import json
 import sys
 from pathlib import Path
 
-# 与 02 模块共用同一份平台费率预设（单一事实来源）
+# Dùng chung bộ preset phí sàn với module 02 (nguồn sự thật duy nhất)
 PLATFORM_FEES = (Path(__file__).resolve().parents[2]
                  / "02_Product_Strategy_Agent" / "scripts" / "platform_fees.json")
 
@@ -37,13 +37,13 @@ def _tier_lookup(price, tiers, default=0.0):
 
 
 def _resolve_fees(args):
-    """费率解析：显式 CLI 参数 > 平台预设（--platform）> 0。"""
+    """Xác định phí: tham số CLI tường minh > preset sàn (--platform) > 0."""
     preset = None
     if getattr(args, "platform", None):
         try:
             plats = json.loads(PLATFORM_FEES.read_text(encoding="utf-8"))
         except OSError:
-            sys.exit(f"[ERROR] 读不到平台费率表：{PLATFORM_FEES}")
+            sys.exit(f"[ERROR] Không đọc được bảng phí sàn: {PLATFORM_FEES}")
         key = args.platform.strip()
         if key not in plats:
             matches = [k for k in plats
@@ -51,8 +51,8 @@ def _resolve_fees(args):
             if len(matches) == 1:
                 key = matches[0]
             else:
-                keys = "、".join(k for k in plats if not k.startswith("_"))
-                sys.exit(f"[INPUT_MISSING] 未知平台 {args.platform!r}。可用：{keys}")
+                keys = ", ".join(k for k in plats if not k.startswith("_"))
+                sys.exit(f"[INPUT_MISSING] Sàn không xác định {args.platform!r}. Có thể dùng: {keys}")
         preset = plats[key]
 
     price = args.price
@@ -87,24 +87,25 @@ def _resolve_fees(args):
         (preset or {}).get("label", getattr(args, "platform", None) or "custom")
 import sys
 
-# 列名自动映射（中 / 英 / 葡）
+# Tự động ánh xạ tên cột (Trung / Việt / Anh / Bồ Đào Nha)
 COLUMN_MAP = {
-    "name":    ["广告名称", "广告组", "计划名称", "campaign", "name", "ad_group", "campanha"],
-    "impressions": ["曝光量", "曝光", "展示量", "impressions", "imps", "impressoes"],
-    "clicks":  ["点击量", "点击数", "点击", "clicks", "cliques"],
-    "spend":   ["花费", "消耗", "花费金额", "spend", "cost", "gasto"],
-    "orders":  ["订单数", "订单", "成交订单", "orders", "conversions", "pedidos"],
-    "gmv":     ["销售额", "成交金额", "广告销售额", "gmv", "sales", "receita"],
+    "name":    ["广告名称", "广告组", "计划名称", "tên quảng cáo", "nhóm quảng cáo", "tên chiến dịch",
+                "chiến dịch", "campaign", "name", "ad_group", "campanha"],
+    "impressions": ["曝光量", "曝光", "展示量", "lượt hiển thị", "hiển thị", "impressions", "imps", "impressoes"],
+    "clicks":  ["点击量", "点击数", "点击", "lượt click", "lượt nhấp", "số lượt click", "clicks", "cliques"],
+    "spend":   ["花费", "消耗", "花费金额", "chi phí", "chi tiêu", "spend", "cost", "gasto"],
+    "orders":  ["订单数", "订单", "成交订单", "số đơn", "đơn hàng", "lượt chuyển đổi", "orders", "conversions", "pedidos"],
+    "gmv":     ["销售额", "成交金额", "广告销售额", "doanh thu", "doanh số", "gmv", "sales", "receita"],
 }
 
 
 def _num(v, default=0.0, kind="dec"):
-    """容忍 'R$ 1.234,56' / '1,234' / '1.500' / '12.3%' / '-' / 空串。
+    """Chấp nhận 'R$ 1.234,56' / '1,234' / '1.500' / '12.3%' / '-' / chuỗi rỗng.
 
-    kind="int"（曝光/点击/订单）：点、逗号一律视为千分位，只留数字。
-    kind="dec"（花费/销售额）：
-      同时有 , 和 .  → 靠右的是小数分隔符；
-      只有一个分隔符 → 小数位 ≤2 位按小数，否则按千分位（巴西 '1.500'=1500）。
+    kind="int" (hiển thị/click/đơn): dấu chấm, dấu phẩy đều coi là phân cách hàng nghìn, chỉ giữ chữ số.
+    kind="dec" (chi phí/doanh thu):
+      có cả , và .  → dấu nằm bên phải là dấu thập phân;
+      chỉ có một dấu → phần sau dấu ≤2 chữ số thì là thập phân, ngược lại là hàng nghìn (Brazil '1.500'=1500).
     """
     if v is None:
         return default
@@ -164,13 +165,13 @@ def cmd_calc(args):
         out["target_roas"] = round(1 / ta, 2)
         if args.cvr:
             out["affordable_cpc"] = round(m["price"] * (args.cvr / 100) * ta, 2)
-            out["affordable_cpc_note"] = "售价 × 转化率 × 目标ACoS —— 出价高于它即亏损加速"
+            out["affordable_cpc_note"] = "Giá bán × Tỷ lệ chuyển đổi × ACoS mục tiêu — đặt giá thầu cao hơn mức này là lỗ càng nhanh"
     print(json.dumps(out, ensure_ascii=False, indent=2))
     return 0
 
 
 def _grade(row, m, args, be_roas, target_roas):
-    """确定性分级：P0 止血 / P1 改善 / P2 放量 / INFO 数据不足。返回 (级别, 动作列表)。"""
+    """Phân cấp xác định: P0 cắt lỗ / P1 cải thiện / P2 scale / INFO thiếu dữ liệu. Trả về (cấp, danh sách hành động)."""
     acts = []
     name = row["name"]
     imp, clk, spend, orders = row["impressions"], row["clicks"], row["spend"], row["orders"]
@@ -181,50 +182,50 @@ def _grade(row, m, args, be_roas, target_roas):
     roas = gmv / spend if spend else None
     affordable_cpc = m["price"] * cvr * (args.target_acos / 100) if cvr else None
 
-    # 0) 数据充分性 —— 数据不足一律不动（攒数据，过早上手段=噪声驱动）
+    # 0) Độ đủ dữ liệu — thiếu dữ liệu thì không động vào (gom thêm dữ liệu, ra tay quá sớm = chạy theo nhiễu)
     if imp < args.min_impressions:
-        return "INFO", [f"曝光 {imp:,.0f} < {args.min_impressions:,}，数据不足，本轮不动，继续攒数据"], dict(
+        return "INFO", [f"Lượt hiển thị {imp:,.0f} < {args.min_impressions:,}, thiếu dữ liệu, vòng này không động vào, tiếp tục gom dữ liệu"], dict(
             ctr=ctr, cvr=cvr, cpc=cpc, roas=roas, affordable_cpc=affordable_cpc, gmv=gmv)
     if not spend:
-        return "INFO", ["无花费，本轮不动"], dict(ctr=ctr, cvr=cvr, cpc=cpc, roas=roas,
+        return "INFO", ["Không có chi phí, vòng này không động vào"], dict(ctr=ctr, cvr=cvr, cpc=cpc, roas=roas,
                                                 affordable_cpc=affordable_cpc, gmv=gmv)
 
-    # 1) CTR 检查（基准 3–5%，<2% 明确偏低）—— 症状指向素材，回流 04
+    # 1) Kiểm tra CTR (chuẩn 3–5%, <2% là thấp rõ ràng) — triệu chứng chỉ về creative, quay vòng về 04
     if ctr < 0.02:
-        acts.append(f"CTR {ctr:.2%} 低于 2% —— 回流 04 换主图/首图（不要在广告端解决素材问题）")
+        acts.append(f"CTR {ctr:.2%} dưới 2% — quay vòng về 04 để đổi ảnh chính/ảnh đầu (đừng xử lý vấn đề creative ở phía quảng cáo)")
     elif ctr < 0.03:
-        acts.append(f"CTR {ctr:.2%} 处于 2–3% 观察区，暂不动素材")
+        acts.append(f"CTR {ctr:.2%} nằm trong vùng theo dõi 2–3%, tạm chưa động vào creative")
 
-    # 2) 订单为零（点击足够 = 素材没问题，落地页/价格/评论有问题）
+    # 2) Không có đơn (đủ click = creative ổn, vấn đề nằm ở trang đích/giá/đánh giá)
     if orders == 0 and clk >= 30:
-        acts.append(f"点击 {clk:,.0f} 零订单 —— 回流 03 检查详情页与价格带，广告端只降出价止血")
-        acts.append(f"出价降至可承受 CPC {affordable_cpc:.2f} 以下（当前 CPC {cpc:.2f}）")
+        acts.append(f"{clk:,.0f} click mà 0 đơn — quay vòng về 03 kiểm tra trang chi tiết và dải giá, phía quảng cáo chỉ hạ giá thầu để cắt lỗ")
+        acts.append(f"Hạ giá thầu xuống dưới CPC chịu được {affordable_cpc:.2f} (CPC hiện tại {cpc:.2f})")
         return "P0", acts, dict(ctr=ctr, cvr=cvr, cpc=cpc, roas=roas,
                                 affordable_cpc=affordable_cpc, gmv=gmv)
 
-    # 3) ROAS 分级（锚盈亏线，不锚感觉）
+    # 3) Phân cấp ROAS (neo theo ngưỡng hòa vốn, không neo theo cảm giác)
     if roas is None:
-        return "INFO", ["无花费数据"], dict(ctr=ctr, cvr=cvr, cpc=cpc, roas=None,
+        return "INFO", ["Không có dữ liệu chi phí"], dict(ctr=ctr, cvr=cvr, cpc=cpc, roas=None,
                                             affordable_cpc=affordable_cpc, gmv=gmv)
     if roas < 0.5 * be_roas:
-        acts.append(f"ROAS {roas:.2f} < 盈亏线一半（{be_roas:.2f}）—— P0 止血")
-        acts.append(f"预算降至最低档、出价降至 {affordable_cpc:.2f} 以下（当前 CPC {cpc:.2f}）")
-        acts.append("❗ 不要暂停广告 —— 暂停破坏连续性并降低广告权重（应降预算降出价，见 actions.md）")
+        acts.append(f"ROAS {roas:.2f} < một nửa ngưỡng hòa vốn ({be_roas:.2f}) — P0 cắt lỗ")
+        acts.append(f"Hạ ngân sách về mức thấp nhất, hạ giá thầu xuống dưới {affordable_cpc:.2f} (CPC hiện tại {cpc:.2f})")
+        acts.append("❗ Đừng tạm dừng quảng cáo — tạm dừng làm đứt tính liên tục và giảm điểm quảng cáo (nên hạ ngân sách, hạ giá thầu, xem actions.md)")
     elif roas < be_roas:
-        acts.append(f"ROAS {roas:.2f} 低于盈亏线 {be_roas:.2f} —— P1 改善")
-        acts.append(f"出价降至 {affordable_cpc:.2f} 以下（当前 CPC {cpc:.2f}），预算暂不动")
+        acts.append(f"ROAS {roas:.2f} dưới ngưỡng hòa vốn {be_roas:.2f} — P1 cải thiện")
+        acts.append(f"Hạ giá thầu xuống dưới {affordable_cpc:.2f} (CPC hiện tại {cpc:.2f}), tạm giữ nguyên ngân sách")
         if cvr < 0.01:
-            acts.append(f"转化率 {cvr:.2%} < 1% —— 瓶颈在转化不在流量，回流 03/07，广告端不加大投放")
+            acts.append(f"Tỷ lệ chuyển đổi {cvr:.2%} < 1% — nút thắt ở chuyển đổi chứ không ở traffic, quay vòng về 03/07, phía quảng cáo không đẩy thêm")
     elif roas < target_roas:
-        acts.append(f"ROAS {roas:.2f} 在盈亏线与目标 {target_roas:.2f} 之间 —— P1 维持")
-        acts.append("预算与出价都不动；改善转化率是唯一杠杆")
+        acts.append(f"ROAS {roas:.2f} nằm giữa ngưỡng hòa vốn và mục tiêu {target_roas:.2f} — P1 giữ nguyên")
+        acts.append("Giữ nguyên cả ngân sách lẫn giá thầu; cải thiện tỷ lệ chuyển đổi là đòn bẩy duy nhất")
     else:
-        acts.append(f"ROAS {roas:.2f} ≥ 目标 {target_roas:.2f} —— P2 放量")
-        acts.append("预算 +20~30%（一次只加这一档），观察 3 天再决定下一档")
+        acts.append(f"ROAS {roas:.2f} ≥ mục tiêu {target_roas:.2f} — P2 scale")
+        acts.append("Ngân sách +20~30% (mỗi lần chỉ tăng một nấc), theo dõi 3 ngày rồi mới quyết định nấc tiếp theo")
 
-    # 4) 迭代纪律：输出「本轮明确不动」清单
-    keep = "预算与出价结构、素材、listing 文案" if roas >= be_roas else "listing 文案与素材"
-    acts.append(f"本轮明确不动：{keep}（一次只改一个病因）")
+    # 4) Kỷ luật iterate: xuất danh sách 「vòng này dứt khoát không động vào」
+    keep = "cấu trúc ngân sách và giá thầu, creative, nội dung Listing" if roas >= be_roas else "nội dung Listing và creative"
+    acts.append(f"Vòng này dứt khoát không động vào: {keep} (mỗi lần chỉ sửa một nguyên nhân gốc)")
     return ("P0" if roas < 0.5 * be_roas else
             "P2" if roas >= target_roas else "P1"), acts, dict(
         ctr=ctr, cvr=cvr, cpc=cpc, roas=roas, affordable_cpc=affordable_cpc, gmv=gmv)
@@ -239,15 +240,15 @@ def cmd_diagnose(args):
         with open(args.file, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
     except OSError as e:
-        sys.exit(f"[ERROR] 读不了文件：{e}")
+        sys.exit(f"[ERROR] Không đọc được file: {e}")
     if not rows:
-        sys.exit("[ERROR] CSV 里没有数据行")
+        sys.exit("[ERROR] File CSV không có dòng dữ liệu nào")
 
     header = list(rows[0].keys())
     col = {k: _pick(header, k) for k in COLUMN_MAP}
     missing = [k for k, v in col.items() if v is None and k != "gmv"]
     if missing:
-        sys.exit(f"[ERROR] 认不出这些列（可用映射见 references/metrics.md）：{missing}")
+        sys.exit(f"[ERROR] Không nhận ra các cột sau (xem bảng ánh xạ trong references/metrics.md): {missing}")
 
     results, totals = [], dict(spend=0.0, gmv=0.0, orders=0.0, clicks=0.0, impressions=0.0)
     for r in rows:
@@ -277,11 +278,11 @@ def cmd_diagnose(args):
 
     if not args.json:
         icon = {"P0": "🔴", "P1": "🟡", "P2": "🟢", "INFO": "⚪"}
-        print(f"\n盈亏线 ROAS {be_roas} ｜ 目标 ROAS {target_roas} ｜ "
-              f"整体 ROAS {out['total']['roas']} ｜ 整体净贡献 R$ {out['total']['net_contribution']}\n")
+        print(f"\nROAS hòa vốn {be_roas} ｜ ROAS mục tiêu {target_roas} ｜ "
+              f"ROAS tổng {out['total']['roas']} ｜ Đóng góp ròng tổng R$ {out['total']['net_contribution']}\n")
         for c in out["campaigns"]:
             print(f"{icon[c['grade']]} [{c['grade']}] {c['campaign']}  "
-                  f"ROAS {c['roas'] if c['roas'] else '-'}  花费 R$ {c['spend']}  订单 {c['orders']:g}")
+                  f"ROAS {c['roas'] if c['roas'] else '-'}  Chi phí R$ {c['spend']}  Đơn {c['orders']:g}")
             for a in c["actions"]:
                 print(f"     · {a}")
             print()
@@ -289,37 +290,37 @@ def cmd_diagnose(args):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="广告决策层算术脚本（只算不执行）")
+    ap = argparse.ArgumentParser(description="Script tính toán cho tầng ra quyết định quảng cáo (chỉ tính, không thực thi)")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    c = sub.add_parser("calc", help="由成本结构算盈亏线 / 可承受 CPC")
-    c.add_argument("--price", type=float, required=True, help="售价 R$")
+    c = sub.add_parser("calc", help="Tính ngưỡng hòa vốn / CPC chịu được từ cấu trúc chi phí")
+    c.add_argument("--price", type=float, required=True, help="Giá bán R$")
     c.add_argument("--product-cost", type=float, required=True)
-    c.add_argument("--shipping", type=float, default=0, help="尾程运费")
-    c.add_argument("--first-leg", type=float, default=0, help="头程运费")
-    c.add_argument("--platform", help="平台费率预设 key（与 02 sku_pricing 共用 platform_fees.json）")
-    c.add_argument("--commission", type=float, default=None, help="平台佣金 %%（覆盖预设）")
-    c.add_argument("--return", dest="return_rate", type=float, default=None, help="退货损耗 %%（覆盖预设）")
-    c.add_argument("--tax", type=float, default=None, help="综合有效税率 %%（巴西税制自行折算）")
-    c.add_argument("--extra-pct", type=float, default=None, help="平台附加 %%（如免运计划；覆盖预设）")
-    c.add_argument("--fixed-fee", type=float, default=None, help="按件固定费 R$（覆盖预设阶梯）")
-    c.add_argument("--target-acos", type=float, help="目标 ACoS %%")
-    c.add_argument("--cvr", type=float, help="转化率 %%（算可承受 CPC 用）")
+    c.add_argument("--shipping", type=float, default=0, help="Phí vận chuyển chặng cuối")
+    c.add_argument("--first-leg", type=float, default=0, help="Phí vận chuyển chặng đầu")
+    c.add_argument("--platform", help="Key preset phí sàn (dùng chung platform_fees.json với 02 sku_pricing)")
+    c.add_argument("--commission", type=float, default=None, help="Hoa hồng sàn %% (ghi đè preset)")
+    c.add_argument("--return", dest="return_rate", type=float, default=None, help="Hao hụt hoàn hàng %% (ghi đè preset)")
+    c.add_argument("--tax", type=float, default=None, help="Thuế suất hiệu dụng tổng hợp %% (tự quy đổi theo chế độ thuế Brazil)")
+    c.add_argument("--extra-pct", type=float, default=None, help="Phụ phí sàn %% (vd. chương trình Freeship; ghi đè preset)")
+    c.add_argument("--fixed-fee", type=float, default=None, help="Phí cố định mỗi đơn vị R$ (ghi đè bậc phí của preset)")
+    c.add_argument("--target-acos", type=float, help="ACoS mục tiêu %%")
+    c.add_argument("--cvr", type=float, help="Tỷ lệ chuyển đổi %% (dùng để tính CPC chịu được)")
 
-    d = sub.add_parser("diagnose", help="读广告导出 CSV → 指标 + P0/P1/P2 分级动作")
+    d = sub.add_parser("diagnose", help="Đọc file CSV xuất từ quảng cáo → chỉ số + hành động phân cấp P0/P1/P2")
     d.add_argument("--file", required=True)
     d.add_argument("--price", type=float, required=True)
     d.add_argument("--product-cost", type=float, required=True)
     d.add_argument("--shipping", type=float, default=0)
     d.add_argument("--first-leg", type=float, default=0)
-    d.add_argument("--platform", help="平台费率预设 key（与 02 sku_pricing 共用 platform_fees.json）")
+    d.add_argument("--platform", help="Key preset phí sàn (dùng chung platform_fees.json với 02 sku_pricing)")
     d.add_argument("--commission", type=float, default=None)
     d.add_argument("--return", dest="return_rate", type=float, default=None)
     d.add_argument("--tax", type=float, default=None)
     d.add_argument("--extra-pct", type=float, default=None)
     d.add_argument("--fixed-fee", type=float, default=None)
     d.add_argument("--target-acos", type=float, default=25)
-    d.add_argument("--min-impressions", type=int, default=1000, help="数据充分性门槛")
+    d.add_argument("--min-impressions", type=int, default=1000, help="Ngưỡng đủ dữ liệu")
     d.add_argument("--json", action="store_true")
 
     args = ap.parse_args()

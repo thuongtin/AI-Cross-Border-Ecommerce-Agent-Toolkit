@@ -4,16 +4,16 @@
     "row_count_raw": 50,
     "row_count_kept": 50,
     "column_map": {
-      "title": "商品名称",
-      "price": "价格",
-      "monthly_sales": "月销量",
-      "monthly_revenue": "月销售额",
-      "seller": "卖家",
-      "brand": "品牌",
-      "rating": "评分",
-      "review_count": "评价数",
-      "listing_age_days": "上架时间",
-      "url": "商品链接"
+      "title": "Tên sản phẩm",
+      "price": "Giá",
+      "monthly_sales": "Lượng bán tháng",
+      "monthly_revenue": "Doanh thu tháng",
+      "seller": "Người bán",
+      "brand": "Thương hiệu",
+      "rating": "Điểm đánh giá",
+      "review_count": "Số đánh giá",
+      "listing_age_days": "Thời gian đăng bán",
+      "url": "Link sản phẩm"
     }
   },
   "items": [

@@ -1,64 +1,65 @@
-# samples · 样本数据
+# samples · Dữ liệu mẫu
 
-> ⚠️ **全部为合成数据**，用于验证脚本环境与演示格式清洗能力，**不代表任何真实市场**。
-> 由 [`scripts/make_sample.py`](../scripts/make_sample.py) 生成（`random.seed(20261013)`，可复现）。
+> ⚠️ **Toàn bộ là dữ liệu tổng hợp (synthetic)**, dùng để kiểm tra môi trường chạy script và minh họa khả năng làm sạch định dạng, **không đại diện cho bất kỳ thị trường thật nào**.
+> Được tạo bởi [`scripts/make_sample.py`](../scripts/make_sample.py) (`random.seed(20261013)`, tái lập được).
 
 ---
 
-## 文件
+## Các file
 
-| 文件 | 说明 |
+| File | Mô tả |
 |---|---|
-| `sample_patinete_eletrico.csv` | 原始导出表（50 行），**刻意混入了各种脏数据格式** |
-| `sample_patinete_eletrico.normalized.json` | `shaduola_parser.py` 的输出 |
-| `sample_patinete_eletrico.metrics.md` | `market_metrics.py` 的报告（给人看） |
-| `sample_patinete_eletrico.metrics.json` | 同上（给机器看） |
+| `sample_patinete_eletrico.csv` | Bảng xuất gốc (50 dòng), **cố ý trộn đủ kiểu định dạng dữ liệu bẩn** |
+| `sample_patinete_eletrico.normalized.json` | Đầu ra của `shaduola_parser.py` |
+| `sample_patinete_eletrico.metrics.md` | Báo cáo của `market_metrics.py` (cho người đọc) |
+| `sample_patinete_eletrico.metrics.json` | Như trên (cho máy đọc) |
 
 ---
 
-## 为什么样本要"脏"
+## Vì sao dữ liệu mẫu phải "bẩn"
 
-真实的类目导出表不会干干净净。这个样本刻意混入了以下格式，用来验证清洗逻辑：
+Bảng xuất ngành hàng thực tế không bao giờ sạch sẽ. Mẫu này cố ý trộn các định dạng dưới đây để kiểm tra logic làm sạch:
 
-| 脏数据形式 | 出现位置 | 期望处理 |
+| Dạng dữ liệu bẩn | Vị trí xuất hiện | Kết quả mong đợi |
 |---|---|---|
-| `R$ 2.199,90` | 价格 | 欧式千分位+小数 → `2199.9` |
-| `R$ 2,199.90` | 价格 | 美式格式 → `2199.9` |
-| `1.234` | 销量 | 点作千分位 → `1234` |
-| `4个月` / `2025-06-15` / `420天` / `420` | 上架时间 | 统一为天数 |
-| 空字符串 | 月销售额（25% 的行） | 用 `价格 × 月销量` 补算 |
+| `R$ 2.199,90` | Giá | Phân cách hàng nghìn + thập phân kiểu châu Âu → `2199.9` |
+| `R$ 2,199.90` | Giá | Định dạng kiểu Mỹ → `2199.9` |
+| `1.234` | Lượng bán | Dấu chấm làm phân cách hàng nghìn → `1234` |
+| `4 tháng` / `2025-06-15` / `420 ngày` / `420` | Thời gian đăng bán | Quy về số ngày |
+| Chuỗi rỗng | Doanh thu tháng (25% số dòng) | Tính bù bằng `giá × lượng bán tháng` |
 
-跑完后 `meta.row_count_kept` 应该等于 `row_count_raw`（50 = 50），说明没有行被误丢。
+Chạy xong, `meta.row_count_kept` phải bằng `row_count_raw` (50 = 50), tức là không có dòng nào bị bỏ nhầm.
 
 ---
 
-## 复现方式
+## Cách tái lập
 
 ```bash
 cd ../scripts
-python make_sample.py                    # 重新生成 CSV（结果与仓库内一致）
+python make_sample.py                    # tạo lại CSV (kết quả giống file trong repo)
 python shaduola_parser.py ../samples/sample_patinete_eletrico.csv
 python market_metrics.py ../samples/sample_patinete_eletrico.normalized.json \
-    --bins 10 --config-fields "功率,承重"
+    --bins 10 --config-fields "công suất,tải trọng,dung lượng" \
+    -o ../samples/sample_patinete_eletrico.metrics
 ```
 
 ---
 
-## 跑通后你应该看到的关键结果
+## Kết quả chính bạn sẽ thấy khi chạy trọn vẹn
 
-| 指标 | 值 | 说明 |
+| Chỉ số | Giá trị | Ghi chú |
 |---|---|---|
-| 样本商品数 | 50 | — |
-| 品牌数 | 6 | 只有 6 个 → **触发 CR10 无意义提示**，应改用 CR3 |
-| 品牌 CR3 | 74.1% | 集中度偏高（合成数据里头部品牌商品数多） |
-| 卖家数 | 34 | CR10 = 71.5% |
-| 价格范围 | R$ 1,500.59 – 3,129.06 | 箱宽 R$ 162.85 |
-| **检测到的波谷** | **2 个**（R$ 1,989.13 / R$ 2,966.21） | 落在箱 3 与箱 9 |
-| **建议价格带** | **3 个** | 对应 SOP 1.4 的"从波谷到波谷划分" |
-| 配置维度 | 功率 3 个取值 / 承重 3 个取值 | 500W 与 150kg 为主流（各 30 件，60%） |
+| Số sản phẩm trong mẫu | 50 | — |
+| Số thương hiệu | 6 | Chỉ có 6 → **kích hoạt cảnh báo CR10 vô nghĩa**, nên chuyển sang CR3 |
+| CR3 thương hiệu | 74.1% | Mức độ tập trung khá cao (trong dữ liệu tổng hợp, thương hiệu top đầu có nhiều sản phẩm) |
+| Số người bán | 34 | CR10 = 71.5% |
+| Khoảng giá | R$ 1,500.59 – 3,129.06 | Độ rộng bin R$ 162.85 |
+| **Vùng trũng phát hiện được** | **2** (R$ 1,989.13 / R$ 2,966.21) | Nằm ở bin 3 và bin 9 |
+| **Dải giá đề xuất** | **3** | Tương ứng với "chia từ vùng trũng đến vùng trũng" của SOP 1.4 |
+| Chiều cấu hình | công suất 3 giá trị / tải trọng 3 giá trị | 500W và 150kg là cấu hình phổ biến (mỗi loại 30 sản phẩm, 60%) |
 
-> **如果波谷数不是 2 个**，说明你的 Python 环境或参数与本文档不一致——检查是否用了 `--bins 10`、`--valley-min-drop 0.15`。
+> **Nếu số vùng trũng không phải là 2**, nghĩa là môi trường Python hoặc tham số của bạn khác với tài liệu này — hãy kiểm tra đã dùng `--bins 10`, `--valley-min-drop 0.15` chưa.
 
 ---
 
-**返回**：[scripts 说明](../scripts/README.md) · [01 模块说明](../README.md)
+**Quay lại**: [Hướng dẫn scripts](../scripts/README.md) · [Mô tả module 01](../README.md)

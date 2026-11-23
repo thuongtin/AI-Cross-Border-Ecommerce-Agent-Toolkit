@@ -1,5 +1,5 @@
-# 输出模板 · 视频素材包
-# 05 Product Video Agent 的标准输出结构
+# Template đầu ra · Gói nội dung video
+# Cấu trúc đầu ra chuẩn của 05 Product Video Agent
 
 meta:
   product_name: ""
@@ -11,85 +11,85 @@ meta:
   upstream: ["03-Listing-Creative", "04-Product-Image"]
 
 # ─────────────────────────────────────────────
-# 1. 钩子
+# 1. Hook
 # ─────────────────────────────────────────────
 hook:
   candidates:
-    - type: ""                 # 痛点直击 | 结果前置 | 反常识 | 对比冲击 | 场景代入
+    - type: ""                 # Đánh thẳng nỗi đau | Đưa kết quả lên trước | Phản trực giác | Đối chiếu gây sốc | Nhập vai bối cảnh
       copy: ""
       visual: ""
   selected: ""
   selected_type: ""
   reason: ""
-  source: ""                   # 来自哪条评论洞察
+  source: ""                   # Lấy từ insight review nào
 
 # ─────────────────────────────────────────────
-# 2. 脚本
+# 2. Kịch bản
 # ─────────────────────────────────────────────
 scripts:
   - duration: 15
     segments:
-      - {stage: "钩子", time: "0-3s", goal: "", content: ""}
-      - {stage: "核心卖点", time: "3-9s", goal: "", content: ""}
-      - {stage: "场景", time: "9-13s", goal: "", content: ""}
+      - {stage: "Hook", time: "0-3s", goal: "", content: ""}
+      - {stage: "Điểm bán hàng cốt lõi", time: "3-9s", goal: "", content: ""}
+      - {stage: "Bối cảnh", time: "9-13s", goal: "", content: ""}
       - {stage: "CTA", time: "13-15s", goal: "", content: ""}
   - duration: 30
     segments:
-      - {stage: "钩子", time: "0-3s", goal: "", content: ""}
-      - {stage: "卖点 1", time: "3-9s", goal: "", content: ""}
-      - {stage: "卖点 2", time: "9-16s", goal: "", content: ""}
-      - {stage: "场景", time: "16-23s", goal: "", content: ""}
-      - {stage: "参数/信任", time: "23-28s", goal: "", content: ""}
+      - {stage: "Hook", time: "0-3s", goal: "", content: ""}
+      - {stage: "Điểm bán hàng 1", time: "3-9s", goal: "", content: ""}
+      - {stage: "Điểm bán hàng 2", time: "9-16s", goal: "", content: ""}
+      - {stage: "Bối cảnh", time: "16-23s", goal: "", content: ""}
+      - {stage: "Thông số/Niềm tin", time: "23-28s", goal: "", content: ""}
       - {stage: "CTA", time: "28-30s", goal: "", content: ""}
 
 # ─────────────────────────────────────────────
-# 3. 分镜表
+# 3. Bảng storyboard
 # ─────────────────────────────────────────────
 storyboard:
   - shot: 1
     time: "0-3s"
     duration_s: 3
-    visual: ""                 # 具体到能拍
-    camera: ""                 # 固定 / 推近 / 跟随 / 环绕 …
-    subtitle: ""               # 静音字幕，≤20 字符
-    audio: ""                  # 人声 / 环境音 / 音效
+    visual: ""                 # Cụ thể đến mức quay được ngay
+    camera: ""                 # Máy tĩnh / Push-in / Bám theo / Quay vòng …
+    subtitle: ""               # Phụ đề xem khi tắt tiếng, ≤20 ký tự
+    audio: ""                  # Giọng đọc / Âm thanh môi trường / Hiệu ứng âm thanh
     type: "ai"                 # ai | real_shoot
-  # ... 继续
+  # ... tiếp tục
 
 # ─────────────────────────────────────────────
-# 4. AI 视频 Prompt（type = ai 的镜头）
+# 4. Prompt video AI (các cảnh có type = ai)
 # ─────────────────────────────────────────────
 video_prompts:
   - shot: 1
-    prompt: ""                 # 六槽位：SUBJECT / ACTION / CAMERA / LIGHTING / ENVIRONMENT / STYLE
+    prompt: ""                 # Sáu ô: SUBJECT / ACTION / CAMERA / LIGHTING / ENVIRONMENT / STYLE
     negative_prompt: ""
     aspect_ratio: "1:1"
     duration_s: 3
     motion_intensity: "low"    # low | medium
     generation_mode: "text2video"   # text2video | image2video
-    first_frame_prompt: ""     # image2video 时的首帧
+    first_frame_prompt: ""     # Khung hình đầu khi dùng image2video
     checks:
       param_consistency: true
       scene_in_scope: true
       no_real_person: true
 
 # ─────────────────────────────────────────────
-# 5. 真人镜头拍摄指令（type = real_shoot）
+# 5. Chỉ dẫn quay cảnh người thật (type = real_shoot)
 # ─────────────────────────────────────────────
 shoot_instructions:
   - shot: 5
-    reason: "涉及真人肖像，按 V6 规则改为拍摄指令"
+    reason: "Liên quan đến chân dung người thật, theo quy tắc V6 chuyển thành chỉ dẫn quay"
     camera_height: ""
-    framing: ""                # 景别
-    action: ""                 # 动作顺序
+    framing: ""                # Cỡ cảnh
+    action: ""                 # Thứ tự động tác
     props: []
     location: ""
-    note: ""                   # 如"避免露出可识别面部"
-    ai_alternative: ""         # 不露脸替代方案（手部/背影/远景）
+    note: ""                   # VD: "tránh lộ khuôn mặt có thể nhận diện"
+    ai_alternative: ""         # Phương án thay thế không lộ mặt (bàn tay/bóng lưng/cảnh xa)
     ai_alternative_prompt: ""
 
 # ─────────────────────────────────────────────
-# 6. 配音稿
+# 6. Kịch bản lồng tiếng
 # ─────────────────────────────────────────────
 voiceover:
   language: "pt-BR"
@@ -102,18 +102,18 @@ voiceover:
       cumulative_words: 0
       estimated_seconds: 0
   total_words: 0
-  overlaps_time_window: false   # 必须为 false
+  overlaps_time_window: false   # Bắt buộc là false
 
 tts_settings:
   accent: "Português (Brasil)"
   gender: ""
   tone: ""
-  speed: 1.0                    # 不超过 1.1
-  pauses: "句末 0,3s / 镜头切换 0,2s"
-  diacritics_checked: true      # ã ç õ é ê í ó ú 已核对
+  speed: 1.0                    # Không vượt quá 1.1
+  pauses: "Cuối câu 0,3s / Chuyển cảnh 0,2s"
+  diacritics_checked: true      # Đã kiểm tra ã ç õ é ê í ó ú
 
 # ─────────────────────────────────────────────
-# 7. 字幕
+# 7. Phụ đề
 # ─────────────────────────────────────────────
 subtitles:
   lines:
@@ -123,29 +123,29 @@ subtitles:
       line2: ""
       chars: 0
       chars_limit: 20
-      line_count: 1             # 必须 ≤2
+      line_count: 1             # Bắt buộc ≤2
       position: ""
-  safe_area_note: "竖版避开底部 20% / 顶部 15%"
+  safe_area_note: "Video dọc tránh 20% phía dưới / 15% phía trên"
 
 silent_test:
-  understand_product: true      # 静音能否看懂是什么产品
+  understand_product: true      # Tắt tiếng có hiểu đây là sản phẩm gì không
   understand_selling_point: true
   understand_cta: true
-  passed: true                  # 三项全 true 才算通过
+  passed: true                  # Cả ba mục đều true mới tính là đạt
 
 # ─────────────────────────────────────────────
-# 8. 技术需求
+# 8. Yêu cầu kỹ thuật
 # ─────────────────────────────────────────────
 tech_requirements:
-  aspect_ratio: "1:1"           # 或 9:16 / 16:9
+  aspect_ratio: "1:1"           # Hoặc 9:16 / 16:9
   resolution: ""
   bgm_mood: ""
-  bgm_license: "需使用可商用素材"   # 强制标注
+  bgm_license: "Phải dùng nội dung được phép dùng thương mại"   # Bắt buộc ghi chú
   sfx_list: []
-  overlay_elements: []          # 后期叠加的图形（Logo 位、参数卡）
+  overlay_elements: []          # Đồ họa chèn ở hậu kỳ (vị trí Logo, thẻ thông số)
 
 # ─────────────────────────────────────────────
-# 9. 视频合规扫描
+# 9. Quét tuân thủ video
 # ─────────────────────────────────────────────
 compliance_scan:
   V1_fake_proof: {hits: 0, actions: []}
@@ -156,15 +156,15 @@ compliance_scan:
   V6_real_person_portrait: {hits: 0, actions: []}
   V7_dangerous_demo: {hits: 0, actions: []}
   V8_license_required: {hits: 0, actions: []}
-  conclusion: ""                # 全 0 时写 "视频合规扫描：无命中"
+  conclusion: ""                # Khi tất cả bằng 0 thì ghi "Quét tuân thủ video: không có vi phạm"
 
 # ─────────────────────────────────────────────
-# 10. 发布前提醒
+# 10. Lưu ý trước khi đăng
 # ─────────────────────────────────────────────
 pre_publish:
-  - "已按配音音频对齐分镜时长（分镜时长是建议值）"
-  - "已核对 PT-BR 变音符号（TTS 易错点）"
-  - "BGM / 音效已确认可商用"
-  - "静音状态下核心信息可理解"
-  - "结尾 CTA 与 title_final 一致"
-  - "已记录本次 Prompt 版本号"
+  - "Đã căn thời lượng storyboard theo audio lồng tiếng (thời lượng storyboard chỉ là giá trị đề xuất)"
+  - "Đã kiểm tra dấu thanh PT-BR (điểm TTS hay đọc sai)"
+  - "Đã xác nhận BGM / hiệu ứng âm thanh được phép dùng thương mại"
+  - "Tắt tiếng vẫn hiểu được thông tin cốt lõi"
+  - "CTA cuối video khớp với title_final"
+  - "Đã ghi lại số phiên bản Prompt lần này"

@@ -1,41 +1,41 @@
-# 案例 · Bolsa Transportadora para Pets（Mercado Livre 巴西站）
+# Case study · Bolsa Transportadora para Pets (Mercado Livre Brazil)
 
-> ⚠️ **规则更新说明（2026-10）**：本案例写作时 ML 要求主图纯白底。
-> **现行规则已放宽**——白/纯色/实景按类目，但「背景干净 + 首图禁促销文字」不变。
-> 本案例的白底方案仍是宠物用品类目的**最安全选择**，可继续使用；
-> 最新规则见 [`../references/platform-mercadolivre.md`](../references/platform-mercadolivre.md)。
+> ⚠️ **Ghi chú cập nhật quy tắc (2026-10)**: khi viết case study này, ML yêu cầu ảnh chính nền trắng tinh.
+> **Quy tắc hiện hành đã nới lỏng** —— trắng/màu trơn/bối cảnh thật theo ngành hàng, nhưng "nền sạch + ảnh đầu cấm chữ khuyến mãi" vẫn giữ nguyên.
+> Phương án nền trắng trong case study này vẫn là **lựa chọn an toàn nhất** cho ngành hàng đồ thú cưng, có thể tiếp tục dùng;
+> quy tắc mới nhất xem [`../references/platform-mercadolivre.md`](../references/platform-mercadolivre.md).
 
-> **案例类型**：真实产品 · 已脱敏
-> **使用模块**：04 Product Image Agent（上游依赖 03 Listing Creative）
-> **对应 SOP**：3.3 9 张电商图片生成逻辑
-> **重点演示**：ML 与 Shopee 的**主图规范冲突**处理
+> **Loại case study**: sản phẩm thật · đã ẩn danh
+> **Module sử dụng**: 04 Product Image Agent (phụ thuộc upstream 03 Listing Creative)
+> **SOP tương ứng**: 3.3 Logic tạo 9 ảnh thương mại điện tử
+> **Trọng tâm minh họa**: xử lý **xung đột quy chuẩn ảnh chính** giữa ML và Shopee
 
 ---
 
-## 一、产品背景
+## I. Bối cảnh sản phẩm
 
-| 项 | 内容 |
+| Mục | Nội dung |
 |---|---|
-| 产品 | 宠物外出便携包，可折叠软箱式，透气网面，肩背两用 |
-| 市场 | 巴西（站点：Mercado Livre） |
-| 类目 | 母婴 / 宠物 |
-| 定位 | 常规款 |
-| 视觉调性 | 温柔、软质、浅色系 |
+| Sản phẩm | Túi đựng thú cưng đi ra ngoài, dạng hộp mềm gấp gọn được, mặt lưới thoáng khí, đeo vai/xách tay hai kiểu |
+| Thị trường | Brazil (sàn: Mercado Livre) |
+| Ngành hàng | Mẹ & bé / thú cưng |
+| Định vị | Sản phẩm phổ thông |
+| Tông hình ảnh | Dịu dàng, chất liệu mềm, tông nhạt |
 
-**为什么选这个案例**：宠物类目是典型的「尺寸不符预期」差评高发区——买家对"能装多大的狗/猫"没有概念，尺寸图做不好直接退货。同时 ML 首图禁促销文字与平台属性词（比 Shopee 严），和 Shopee 的常规做法直接冲突，正好演示 `platform_variant`。
+**Vì sao chọn case study này**: ngành hàng thú cưng là vùng điển hình hay bị đánh giá tiêu cực kiểu "kích thước không như mong đợi" —— người mua không hình dung được "đựng được chó/mèo cỡ nào", ảnh kích thước làm không tốt là bị hoàn hàng ngay. Đồng thời ML cấm chữ khuyến mãi và từ thuộc tính của sàn ở ảnh đầu (khắt khe hơn Shopee), xung đột trực tiếp với cách làm phổ biến trên Shopee, vừa đúng để minh họa `platform_variant`.
 
 ---
 
-## 二、输入端（从 03 继承）
+## II. Đầu vào (kế thừa từ 03)
 
 ```yaml
 platform: mercadolivre
-target_market: 巴西
+target_market: Brazil
 mode: standard
 prompt_language: en
 has_product_photo: true
 
-# ── 03 的输出（阻塞项，全部齐备）──
+# ── Đầu ra của 03 (các mục chặn, đã đầy đủ) ──
 core_selling_point: "Ventilação em 3 lados com tela reforçada — seu pet respira e enxerga durante todo o trajeto"
 
 secondary_points:
@@ -59,60 +59,60 @@ usage_scope_confirmed:
   - "Viagens de ônibus de curta distância"
 
 forbidden_words:
-  - "À Prova d'Água"          # 参数不符：面料仅防泼水，不是防水
-  - "Grau de Companhia Aérea"  # 无认证，不可宣称
+  - "À Prova d'Água"          # Thông số không khớp: vải chỉ chống bắn nước, không phải chống nước
+  - "Grau de Companhia Aérea"  # Không có chứng nhận, không được tuyên bố
   - "100% Seguro"
   - "Irresistível"
-  - "Gucci"                    # 未授权品牌
+  - "Gucci"                    # Thương hiệu không được ủy quyền
 
 visual_tone_hint: "Suave e acolhedor — fundo claro, tons pastel, sem elementos agressivos"
-certifications: []             # 留空 → 不生成任何认证图
+certifications: []             # Để trống → không tạo bất kỳ ảnh chứng nhận nào
 ```
 
 ---
 
-## 三、AI 处理流程
+## III. Quy trình xử lý của AI
 
 ```text
-[依赖检查] core_selling_point / secondary_points / spec_table / forbidden_words / usage_scope 全部齐备 ✅
-[Step 1] 01_image_plan_9grid.md        → 9 图规划 + 图内文案
-[Step 2] 检测到 platform = mercadolivre → 触发 platform_variant，输出两套主图方案
-[Step 3] 02_image_prompt_generator.md  → 逐图出图 Prompt + 负面词
-[Step 4] IMAGE COMPLIANCE GUARD I1–I8  → 扫描 → 命中 3 条 → 处理
+[Kiểm tra phụ thuộc] core_selling_point / secondary_points / spec_table / forbidden_words / usage_scope đều đầy đủ ✅
+[Step 1] 01_image_plan_9grid.md        → kế hoạch 9 ảnh + text trong ảnh
+[Step 2] Phát hiện platform = mercadolivre → kích hoạt platform_variant, xuất hai phương án ảnh chính
+[Step 3] 02_image_prompt_generator.md  → Prompt ra ảnh từng ảnh + negative prompt
+[Step 4] IMAGE COMPLIANCE GUARD I1–I8  → quét → vi phạm 3 mục → xử lý
 ```
 
 ---
 
-## 四、生成结果
+## IV. Kết quả tạo ra
 
-### 4.1 9 图内容规划
+### 4.1 Kế hoạch nội dung 9 ảnh
 
-| # | 图位 | 承载信息 | 类型 | 画面构成 | 图内文案 | 字数 |
+| # | Vị trí ảnh | Thông tin truyền tải | Loại | Thành phần khung hình | Text trong ảnh | Số ký tự |
 |---|---|---|---|---|---|---|
-| **1** | 主图 | 这是一个宠物外出包 | 识别 | 纯白底，包体 3/4 正面角度，肩带自然垂落 | **无文字**（ML 强制） | 0 |
-| **2** | 核心卖点图 | 三面透气网，宠物能呼吸能看见 | 说服 | 包内一只小型犬侧脸贴近网面，光线透过网孔 | `Ventilação em 3 lados` | 22 |
-| **3** | 参数规格图 | 尺寸与承重 | 信息 | 白色背景排版图 | 内部尺寸 / 承重 / 重量 / 面料 | — |
-| **4** | 场景图 A | 带去宠物医院 | 代入 | 主人手提包在医院走廊，不露脸（手部 + 背景） | （无文字） | 0 |
-| **5** | 场景图 B | 车内短途出行 | 代入 | 包放在汽车后座，包内宠物探出头 | （无文字） | 0 |
-| **6** | 细节特写图 | 内部挂扣 + 双层拉链 | 说服 | 微距特写，金属扣与拉链齿清晰 | `Mosquetão interno incluso` | 25 |
-| **7** | 尺寸/对比图 | 41×25×26 cm 有多大 | 消除疑虑 | 包体旁放置成年女性手掌与前臂作为参照 | 尺寸数值 | — |
-| **8** | 包装清单图 | 含什么 / 不含什么 | 消除纠纷 | **实拍**平铺俯拍 | `Não incluso: comedouro` | 22 |
-| **9** | 售后/保修图 | 保修与客服 | 信任 | 深灰底排版图 | `3 meses · Garantia legal` | — |
+| **1** | Ảnh chính | Đây là một chiếc túi đựng thú cưng đi ra ngoài | Nhận diện | Nền trắng tinh, thân túi góc chính diện 3/4, dây đeo vai buông tự nhiên | **Không có chữ** (ML bắt buộc) | 0 |
+| **2** | Ảnh điểm bán hàng chủ lực | Lưới thoáng khí ba mặt, thú cưng thở được và nhìn được | Thuyết phục | Trong túi có một chú chó nhỏ áp mặt nghiêng sát mặt lưới, ánh sáng xuyên qua lỗ lưới | `Ventilação em 3 lados` | 22 |
+| **3** | Ảnh thông số kỹ thuật | Kích thước và tải trọng | Thông tin | Ảnh dàn trang nền trắng | Kích thước trong / tải trọng / trọng lượng / chất liệu vải | — |
+| **4** | Ảnh bối cảnh A | Mang đi phòng khám thú y | Nhập vai | Chủ xách túi ở hành lang phòng khám, không lộ mặt (bàn tay + hậu cảnh) | (không có chữ) | 0 |
+| **5** | Ảnh bối cảnh B | Đi lại ngắn bằng ô tô | Nhập vai | Túi đặt ở ghế sau ô tô, thú cưng trong túi thò đầu ra | (không có chữ) | 0 |
+| **6** | Ảnh cận cảnh chi tiết | Móc khóa bên trong + khóa kéo hai đầu | Thuyết phục | Cận cảnh macro, móc kim loại và răng khóa kéo rõ nét | `Mosquetão interno incluso` | 25 |
+| **7** | Ảnh kích thước/so sánh | 41×25×26 cm to cỡ nào | Xóa nghi ngờ | Đặt bàn tay và cẳng tay của một phụ nữ trưởng thành cạnh thân túi làm tham chiếu | Con số kích thước | — |
+| **8** | Ảnh danh sách đóng gói | Có gì / không có gì | Ngăn tranh chấp | **Chụp thật** bày phẳng từ trên xuống | `Não incluso: comedouro` | 22 |
+| **9** | Ảnh hậu mãi/bảo hành | Bảo hành và CSKH | Niềm tin | Ảnh dàn trang nền xám đậm | `3 meses · Garantia legal` | — |
 
-**关键判断**：图 1 在 ML 上必须是**零文字**——这是本案例和 Shopee 版本最大的差异。
+**Phán đoán then chốt**: ảnh 1 trên ML bắt buộc **không có chữ nào** —— đây là khác biệt lớn nhất giữa case study này và bản Shopee.
 
-### 4.2 平台差异方案
+### 4.2 Phương án theo khác biệt sàn
 
-| 方案 | 适用平台 | 主图 | 说明 |
+| Phương án | Sàn áp dụng | Ảnh chính | Ghi chú |
 |---|---|---|---|
-| **A** | **Mercado Livre** / Amazon | 纯白底，**无任何文字** | ✅ 本案例采用 |
-| B | Shopee / TikTok Shop | 白底 + 文字徽章（`3 Lados de Tela`） | 站内提升点击率的常见做法 |
+| **A** | **Mercado Livre** / Amazon | Nền trắng tinh, **không có chữ nào** | ✅ Case study này áp dụng |
+| B | Shopee / TikTok Shop | Nền trắng + huy hiệu chữ (`3 Lados de Tela`) | Cách làm phổ biến để tăng CTR trên sàn |
 
-⚠️ **冲突点**：Shopee 版本的主图如果直接上传到 ML，会被判违规（主图含文字）→ 可能被下架或要求整改。**两套素材必须分开管理。**
+⚠️ **Điểm xung đột**: nếu tải thẳng ảnh chính bản Shopee lên ML sẽ bị xử vi phạm (ảnh chính có chữ) → có thể bị gỡ hoặc bị yêu cầu chỉnh sửa. **Hai bộ creative bắt buộc quản lý riêng.**
 
-### 4.3 出图 Prompt（节选三张）
+### 4.3 Prompt ra ảnh (trích ba ảnh)
 
-#### 图 1 · 主图（ML 版，无文字）
+#### Ảnh 1 · Ảnh chính (bản ML, không có chữ)
 
 ```text
 [SUBJECT] A soft-sided pet carrier bag, rectangular box shape with rounded corners,
@@ -140,7 +140,7 @@ high detail, sharp focus across the entire product, commercial catalog quality.
 [PARAMETERS] 1:1 square aspect ratio, 1024x1024, no text or graphics anywhere.
 ```
 
-**负面 Prompt**
+**Negative Prompt**
 
 ```text
 text of any kind, letters, numbers printed on the image, watermark, logo, badge,
@@ -149,7 +149,7 @@ accessories not included in the package, animals outside the carrier,
 low resolution, blurry, oversaturated, distorted proportions, cluttered background
 ```
 
-#### 图 2 · 核心卖点图
+#### Ảnh 2 · Ảnh điểm bán hàng chủ lực
 
 ```text
 [SUBJECT] The same grey and blue pet carrier bag with a small short-haired dog
@@ -175,7 +175,7 @@ on background, crisp focus on the mesh and the dog's face.
 [PARAMETERS] 1:1 square aspect ratio, 1024x1024, reserve right 35% for text overlay.
 ```
 
-**负面 Prompt**
+**Negative Prompt**
 
 ```text
 watermark, logo, brand names, rain, water, wet fur, swimming pool, outdoor storm,
@@ -183,9 +183,9 @@ medical setting, hospital equipment, exaggerated dramatic lighting,
 text rendered by the model, multiple animals, distressed animal, aggressive dog
 ```
 
-> **`rain, water, wet fur` 是必加的**：本产品面料仅防泼水、不防水。画面里出现水，等于暗示产品防水——属虚假宣传（对应 `forbidden_words` 中的 `À Prova d'Água`）。
+> **`rain, water, wet fur` là bắt buộc phải thêm**: vải của sản phẩm này chỉ chống bắn nước, không chống nước. Trong khung hình có nước tức là ngầm ám chỉ sản phẩm chống nước —— thuộc quảng cáo sai sự thật (ứng với `À Prova d'Água` trong `forbidden_words`).
 
-#### 图 4 · 使用场景图 A
+#### Ảnh 4 · Ảnh bối cảnh sử dụng A
 
 ```text
 [SUBJECT] A person's hand and forearm carrying the grey pet carrier by its top
@@ -210,7 +210,7 @@ moderate depth of field.
 [PARAMETERS] 1:1 square aspect ratio, 1024x1024, no face visible, no text.
 ```
 
-**负面 Prompt**
+**Negative Prompt**
 
 ```text
 visible human face, recognizable person, rain, water, swimming pool,
@@ -218,44 +218,44 @@ large breed dog, multiple animals, cluttered background, readable signage,
 medical equipment, syringes, distressed pets, watermark
 ```
 
-### 4.4 非 AI 图位的版式规格
+### 4.4 Đặc tả layout cho các vị trí ảnh không dùng AI
 
-| 图位 | 类型 | 处理方式 |
+| Vị trí ảnh | Loại | Cách xử lý |
 |---|---|---|
-| 图 3 | 参数排版图 | 设计工具制作。白底，4 行参数（`Dimensões internas 38 × 23 × 23 cm` / `Peso suportado até 8 kg` / `Peso do produto 1,2 kg` / `Poliéster 600D + tela respirável`），无衬线字体，主文案高度 ≥ 图高 4% |
-| 图 7 | 尺寸对比图 | **实拍**：包体旁放成年女性手掌 + 前臂，标出 `41 × 25 × 26 cm`（逐字符等于 `spec_table.dimensoes_externas`） |
-| 图 8 | 包装清单图 | **必须实拍**：平铺俯拍，含 `1× Bolsa` / `1× Alça de ombro` / `1× Base rígida removível` / `1× Manual`，并在角落明确标注 **`Não incluso: comedouro e coleira`** |
-| 图 9 | 售后排版图 | 设计工具制作。深灰底，含保修时长 `3 meses`、范围、客服通道。**不得生成仿 ML 官方标识的图形** |
+| Ảnh 3 | Ảnh dàn trang thông số | Làm bằng công cụ thiết kế. Nền trắng, 4 dòng thông số (`Dimensões internas 38 × 23 × 23 cm` / `Peso suportado até 8 kg` / `Peso do produto 1,2 kg` / `Poliéster 600D + tela respirável`), font không chân, chiều cao text chính ≥ 4% chiều cao ảnh |
+| Ảnh 7 | Ảnh so sánh kích thước | **Chụp thật**: đặt bàn tay + cẳng tay của một phụ nữ trưởng thành cạnh thân túi, ghi `41 × 25 × 26 cm` (khớp từng ký tự với `spec_table.dimensoes_externas`) |
+| Ảnh 8 | Ảnh danh sách đóng gói | **Bắt buộc chụp thật**: bày phẳng chụp từ trên xuống, gồm `1× Bolsa` / `1× Alça de ombro` / `1× Base rígida removível` / `1× Manual`, và ghi rõ ở góc ảnh **`Não incluso: comedouro e coleira`** |
+| Ảnh 9 | Ảnh dàn trang hậu mãi | Làm bằng công cụ thiết kế. Nền xám đậm, gồm thời hạn bảo hành `3 meses`, phạm vi, kênh CSKH. **Không được tạo đồ họa nhái biểu tượng chính thức của ML** |
 
-> **图 8 为什么必须实拍**：AI 生成的包装清单图容易"多画一件"或少画一件。买家收到实物后对照图片发现不符 → 直接差评"配件缺失"。这是最容易避免、也最不值得冒的险。
+> **Vì sao ảnh 8 bắt buộc chụp thật**: ảnh danh sách đóng gói do AI tạo dễ "vẽ thừa một món" hoặc vẽ thiếu một món. Người mua nhận hàng, đối chiếu với ảnh thấy không khớp → đánh giá tiêu cực "thiếu phụ kiện" ngay. Đây là rủi ro dễ tránh nhất và cũng không đáng mạo hiểm nhất.
 
-### 4.5 图片合规扫描结果
+### 4.5 Kết quả quét tuân thủ hình ảnh
 
-| 规则 | 命中 | 处理 |
+| Quy tắc | Vi phạm | Xử lý |
 |---|---|---|
-| I1 伪造认证标志 | 0 | `certifications` 为空，未生成认证图 ✅ |
-| I2 伪造评价 / 销量 | 0 | 无任何评价截图、销量角标 ✅ |
-| I3 未授权品牌 | **1** | 输入的 `forbidden_words` 含 `Gucci`，已在全部 Prompt 与图内文案中拦截；主图 Prompt 负面词加入 `logo, brand names` |
-| I4 参数不一致 | **1** | 图 7 尺寸标注初稿写成 `41 x 25 x 26 cm`（半角 x），已修正为 `41 × 25 × 26 cm`（与 `spec_table` 逐字符一致） |
-| I5 场景超范围 | **1** | 场景图原计划包含"航空托运"，不在 `usage_scope_confirmed` 内 → 删除并记录 `[SCENE_DROPPED]` |
-| I6 真人肖像 | 0 | 场景图均采用不露脸构图（手部 / 背影） ✅ |
-| I7 绝对化用语 | 0 | 图内文案无绝对化表述 ✅ |
-| I8 对比图约束 | 0 | 尺寸图参照物为手掌与前臂（通用形态） ✅ |
+| I1 Giả mạo dấu chứng nhận | 0 | `certifications` trống, không tạo ảnh chứng nhận ✅ |
+| I2 Giả mạo đánh giá / doanh số | 0 | Không có ảnh chụp màn hình đánh giá, nhãn góc doanh số nào ✅ |
+| I3 Thương hiệu không được ủy quyền | **1** | `forbidden_words` đầu vào có `Gucci`, đã chặn trong toàn bộ Prompt và text trong ảnh; negative prompt của Prompt ảnh chính thêm `logo, brand names` |
+| I4 Thông số không nhất quán | **1** | Bản nháp đầu của chú thích kích thước ảnh 7 ghi `41 x 25 x 26 cm` (chữ x nửa độ rộng), đã sửa thành `41 × 25 × 26 cm` (khớp từng ký tự với `spec_table`) |
+| I5 Bối cảnh vượt phạm vi | **1** | Ảnh bối cảnh ban đầu dự kiến có "ký gửi hàng không", không nằm trong `usage_scope_confirmed` → xóa và ghi `[SCENE_DROPPED]` |
+| I6 Chân dung người thật | 0 | Ảnh bối cảnh đều dùng bố cục không lộ mặt (bàn tay / bóng lưng) ✅ |
+| I7 Từ ngữ tuyệt đối hóa | 0 | Text trong ảnh không có cách diễn đạt tuyệt đối hóa ✅ |
+| I8 Ràng buộc ảnh so sánh | 0 | Vật tham chiếu của ảnh kích thước là bàn tay và cẳng tay (hình dạng chung) ✅ |
 
-**结论**：命中 3 条，全部处理完毕，**二次扫描零命中**。
+**Kết luận**: vi phạm 3 mục, đã xử lý xong toàn bộ, **quét lần hai không còn vi phạm**.
 
 ---
 
-## 五、交付给 05 Product Video Agent
+## V. Giao cho 05 Product Video Agent
 
 ```yaml
 visual_tone_confirmed: "Suave e acolhedor — fundo claro, tons pastel, sem elementos agressivos"
-hero_visual: "包体 3/4 正面角度，浅灰混色面料配蓝色细节，三面透气网清晰可见"
+hero_visual: "Thân túi góc chính diện 3/4, vải xám pha màu với chi tiết xanh dương, lưới thoáng khí ba mặt nhìn rõ"
 key_visual_moments:
-  - "宠物隔着网面向外看的侧脸 —— 直观传达'能呼吸能看见'"
-  - "内部金属挂扣特写 —— 传达安全细节"
-  - "折叠后平放的状态 —— 传达收纳便利"
-forbidden_words:            # 透传给 05，做字幕硬拦截
+  - "Mặt nghiêng của thú cưng nhìn ra qua mặt lưới —— truyền tải trực quan 'thở được, nhìn được'"
+  - "Cận cảnh móc kim loại bên trong —— truyền tải chi tiết an toàn"
+  - "Trạng thái gấp phẳng —— truyền tải sự tiện lợi khi cất gọn"
+forbidden_words:            # Chuyển tiếp cho 05, dùng để chặn cứng từ cấm trong phụ đề
   - "À Prova d'Água"
   - "Grau de Companhia Aérea"
   - "100% Seguro"
@@ -265,30 +265,30 @@ forbidden_words:            # 透传给 05，做字幕硬拦截
 
 ---
 
-## 六、优化建议
+## VI. Gợi ý tối ưu
 
-| # | 建议 | 依据 |
+| # | Gợi ý | Căn cứ |
 |---|---|---|
-| 1 | 图 2 作为**视频首帧**候选 | 宠物隔网看镜头是本案例最有情绪张力的画面 |
-| 2 | 图 7 的参照物换成**实物同框**（如 5 kg 标准砝码或常见宠物） | 手掌参照对"能装多大的狗"帮助有限，买家真正的疑问是承重 |
-| 3 | ML 的 `Ficha Técnica` 字段**逐项填满** | 公开测试数据显示完整填写的 listing 自然流量获取概率显著更高 |
-| 4 | 补拍**折叠状态图**作为候选第 10 张 | ML 允许 12 张，折叠收纳是差异化卖点，目前只在文案里 |
-| 5 | 主图两套素材**分开命名存放**（`ML_` / `SP_` 前缀） | 防止误传导致 ML 主图违规下架 |
-| 6 | 上线后监测"尺寸不符"类差评 | 验证图 7 是否真的起到了消除疑虑的作用 |
+| 1 | Ảnh 2 là ứng viên cho **khung hình đầu của video** | Thú cưng nhìn vào ống kính qua lớp lưới là khung hình giàu cảm xúc nhất của case study này |
+| 2 | Đổi vật tham chiếu của ảnh 7 thành **vật thật đặt cùng khung** (ví dụ quả cân chuẩn 5 kg hoặc thú cưng phổ biến) | Tham chiếu bằng bàn tay ít giúp trả lời "đựng được chó cỡ nào", thắc mắc thật sự của người mua là tải trọng |
+| 3 | Trường `Ficha Técnica` của ML **điền đầy đủ từng mục** | Dữ liệu thử nghiệm công khai cho thấy listing điền đầy đủ có xác suất nhận traffic tự nhiên cao hơn rõ rệt |
+| 4 | Chụp bổ sung **ảnh trạng thái gấp gọn** làm ứng viên cho ảnh thứ 10 | ML cho phép 12 ảnh, gấp gọn cất giữ là điểm bán hàng khác biệt, hiện mới chỉ có trong text |
+| 5 | Hai bộ creative ảnh chính **đặt tên và lưu riêng** (tiền tố `ML_` / `SP_`) | Tránh tải nhầm khiến ảnh chính ML vi phạm và bị gỡ |
+| 6 | Sau khi lên sàn theo dõi đánh giá tiêu cực loại "kích thước không khớp" | Kiểm chứng ảnh 7 có thật sự xóa được nghi ngờ hay không |
 
 ---
 
-## 七、这个案例证明了什么
+## VII. Case study này chứng minh điều gì
 
-| 结论 | 证据 |
+| Kết luận | Bằng chứng |
 |---|---|
-| **平台规范冲突必须显式处理** | ML 零文字 vs Shopee 带卖点，同一商品两套主图 |
-| **有些图不能用 AI 生成** | 图 8 包装清单必须实拍，AI 生成=配件缺失差评 |
-| **负面 Prompt 是防御手段** | `rain, water, wet fur` 直接挡住了"暗示防水"的虚假宣传风险 |
-| **信息排版图 ≠ AI 出图** | 图 3/7/9 输出「版式规格」比输出 Prompt 更有用 |
-| **参数一致性要到字符级** | 半角 `x` 与全角 `×` 都要统一——买家不会在意，但一致性是专业度的底线 |
-| **阻塞机制真的会触发** | 场景"航空托运"因不在 `usage_scope_confirmed` 内被删除，证明 R6/I5 守卫生效 |
+| **Xung đột quy chuẩn giữa các sàn phải được xử lý tường minh** | ML không có chữ vs Shopee có điểm bán hàng, cùng một sản phẩm hai bộ ảnh chính |
+| **Có những ảnh không thể tạo bằng AI** | Danh sách đóng gói ở ảnh 8 bắt buộc chụp thật, AI tạo = đánh giá tiêu cực thiếu phụ kiện |
+| **Negative Prompt là công cụ phòng thủ** | `rain, water, wet fur` chặn đứng rủi ro quảng cáo sai sự thật kiểu "ám chỉ chống nước" |
+| **Ảnh dàn trang thông tin ≠ ảnh AI** | Với ảnh 3/7/9, xuất "đặc tả layout" hữu ích hơn xuất Prompt |
+| **Tính nhất quán của thông số phải đến cấp ký tự** | Chữ `x` nửa độ rộng và dấu `×` đều phải thống nhất —— người mua không để ý, nhưng nhất quán là mức sàn của sự chuyên nghiệp |
+| **Cơ chế chặn thật sự được kích hoạt** | Bối cảnh "ký gửi hàng không" bị xóa vì không nằm trong `usage_scope_confirmed`, chứng minh bộ chặn R6/I5 có hiệu lực |
 
 ---
 
-**相关文件**：[模块说明](../README.md) · [9 图规划 Prompt](../prompts/01_image_plan_9grid.md) · [出图 Prompt 生成](../prompts/02_image_prompt_generator.md) · [输出模板](../templates/output_image_prompt_pack.yaml) · [平台字段规范](../../../docs/02_Platform_Output_Spec.md)
+**File liên quan**: [Mô tả module](../README.md) · [Prompt kế hoạch 9 ảnh](../prompts/01_image_plan_9grid.md) · [Tạo Prompt ra ảnh](../prompts/02_image_prompt_generator.md) · [Template đầu ra](../templates/output_image_prompt_pack.yaml) · [Quy chuẩn trường dữ liệu sàn](../../../docs/02_Platform_Output_Spec.md)

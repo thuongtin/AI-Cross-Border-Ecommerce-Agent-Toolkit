@@ -1,319 +1,319 @@
 # CHANGELOG
 
-本文件记录本工具箱的结构与内容变更。
+File này ghi lại các thay đổi về cấu trúc và nội dung của bộ công cụ.
 
 ---
 
 ## [v0.3] — 2026-10-13
 
-补齐 **分析簇（前置链路）**：01 市场分析、02 产品策略。**7 个 Agent 模块全部完成。**
+Bổ sung **cụm phân tích (chuỗi tiền đề)**: 01 Phân tích thị trường, 02 Chiến lược sản phẩm. **Cả 7 module Agent đã hoàn thành.**
 
-本次还落地了三项此前标记为"待确认"的决策，并新增差异登记文档。
+Đợt này cũng chốt ba quyết định trước đó được đánh dấu "chờ xác nhận", đồng thời thêm tài liệu sổ đăng ký khác biệt.
 
-### 决策确认
+### Xác nhận quyết định
 
-| # | 事项 | 结论 |
+| # | Hạng mục | Kết luận |
 |---|---|---|
-| 1 | **Agent 编号重排** | ✅ **接受**。按工作簇：`01-02` 分析簇 → `03-04-05` 创意簇 → `06-07` 运营簇 |
-| 2 | **SOP 的「9 图生成逻辑」原始清单** | ✅ **采用本仓库推导的 9 图框架**，不再等待原文。推导逻辑（三步）已写入 [`04 README`](./Agents/04_Product_Image_Agent/README.md) 第二节 |
-| 3 | **SOP 灰产部分是否留附录** | ✅ **留，但做成"登记表"而非"操作指南"**。见下方新增文档 |
+| 1 | **Sắp xếp lại mã số Agent** | ✅ **Chấp nhận**. Theo cụm công việc: `01-02` cụm phân tích → `03-04-05` cụm sáng tạo → `06-07` cụm vận hành |
+| 2 | **Danh sách gốc「logic tạo 9 ảnh」trong SOP** | ✅ **Dùng khung 9 ảnh do repo này tự suy ra**, không chờ bản gốc nữa. Logic suy ra (ba bước) đã được viết vào mục 2 của [`04 README`](./Agents/04_Product_Image_Agent/README.md) |
+| 3 | **Có giữ phần "xám" của SOP làm phụ lục không** | ✅ **Giữ, nhưng làm thành "sổ đăng ký" chứ không phải "hướng dẫn thao tác"**. Xem tài liệu mới bên dưới |
 
-### 新增文档
+### Tài liệu mới
 
-#### `docs/05_SOP_Gap_Register.md` — SOP 差异登记表
+#### `docs/05_SOP_Gap_Register.md` — Sổ đăng ký khác biệt so với SOP
 
-登记原始 SOP 中未实现的内容：**原始提及了什么 → 为什么未实现 → 是否有合规替代 → 替代落在哪**。
+Ghi lại những nội dung trong SOP gốc không được triển khai: **bản gốc đề cập gì → vì sao không triển khai → có phương án thay thế tuân thủ không → phương án thay thế nằm ở đâu**.
 
-- 覆盖 10 项，分三类：数据与评价类 / 内容与参数类 / 运营节奏类
-- 另列出本仓库做的 **7 处"加法"**（SOP 没有、我们补的）
-- 同时给出使用者的自查方法（三个问题判断某个动作是否该做）
+- Bao quát 10 mục, chia ba nhóm: dữ liệu và đánh giá / nội dung và thông số / nhịp độ vận hành
+- Liệt kê thêm **7 chỗ "cộng thêm"** của repo này (SOP không có, chúng tôi bổ sung)
+- Đồng thời đưa ra cách tự kiểm tra cho người dùng (ba câu hỏi để xác định có nên làm một hành động hay không)
 
-> ⚠️ **安全设计决策**：本文档只登记到"**结论层级**"，**不复述操作细节**。
-> 原因：开源仓库含违规操作指引会被平台风控识别，也会让使用者连带受损。**登记的目的是透明，不是传播。**
+> ⚠️ **Quyết định thiết kế an toàn**: tài liệu này chỉ ghi ở "**mức kết luận**", **không thuật lại chi tiết thao tác**.
+> Lý do: repo mã nguồn mở chứa hướng dẫn thao tác vi phạm sẽ bị hệ thống kiểm soát rủi ro của sàn nhận diện, và cũng khiến người dùng bị liên đới thiệt hại. **Mục đích của việc đăng ký là minh bạch, không phải phát tán.**
 
-### 新增模块
+### Module mới
 
 #### `Agents/01_Market_Research_Agent`
 
-⚠️ **这个模块和前面五个不一样：它带脚本。**
+⚠️ **Module này khác với năm module trước: nó có kèm script.**
 
-之前的判断是"01 的瓶颈在数据获取，不在 Prompt"。既然认了这个判断，就把脚本一起做了——否则只是把坑留给了使用者。
+Nhận định trước đó là "nút thắt của 01 nằm ở việc lấy dữ liệu, không nằm ở Prompt". Đã chấp nhận nhận định này thì làm luôn cả script —— nếu không thì chỉ là đẩy cái khó sang cho người dùng.
 
-| 文件 | 内容 |
+| File | Nội dung |
 |---|---|
-| `scripts/shaduola_parser.py` | 格式标准化：货币符号 / 千分位 / 欧式小数 / 中文数量单位 / 空值标记 / 日期 → 统一 JSON；列名模糊匹配 + `--mapping` 手动指定；`--profile` 只看识别结果 |
-| `scripts/market_metrics.py` | 指标计算：市场容量 / 品牌与卖家集中度（CR3·CR10·HHI）/ 价格分箱 + **波谷检测** / 配置交叉表（四维判断） |
-| `scripts/make_sample.py` | 生成带脏数据的样本，让使用者一 clone 就能跑通 |
-| `scripts/README.md` | 用法 + 算法说明（含为什么不做平滑） |
-| `samples/` | 样本 CSV + 标准化 JSON + 指标报告（含**预期结果表**，用于验证环境） |
-| `prompts/00_system.md` | 角色 + SOP 判断阈值 + M1–M5 合规守卫 |
-| `prompts/01_category_precheck.md` | SOP 1.1 前置判断（含高风险类目的**利润承载力检验**） |
-| `prompts/02_market_analysis.md` | SOP 1.2–1.6（容量 / 集中度 / 价格带 / 配置 / 竞品） |
+| `scripts/shaduola_parser.py` | Chuẩn hóa định dạng: ký hiệu tiền tệ / dấu phân cách hàng nghìn / số thập phân kiểu châu Âu / đơn vị số lượng tiếng Trung (万/亿) / ký hiệu giá trị rỗng / ngày tháng → JSON thống nhất; khớp mờ tên cột + chỉ định thủ công bằng `--mapping`; `--profile` chỉ xem kết quả nhận diện |
+| `scripts/market_metrics.py` | Tính chỉ số: quy mô thị trường / mức độ tập trung thương hiệu và người bán (CR3·CR10·HHI) / chia khoảng giá + **phát hiện vùng trũng** / bảng chéo cấu hình (phán đoán 4 chiều) |
+| `scripts/make_sample.py` | Tạo dữ liệu mẫu có lẫn dữ liệu bẩn, để người dùng vừa clone về là chạy trọn vẹn được |
+| `scripts/README.md` | Cách dùng + giải thích thuật toán (kèm lý do không làm mượt) |
+| `samples/` | CSV mẫu + JSON đã chuẩn hóa + báo cáo chỉ số (kèm **bảng kết quả kỳ vọng**, dùng để kiểm tra môi trường) |
+| `prompts/00_system.md` | Vai trò + ngưỡng phán đoán của SOP + lớp bảo vệ tuân thủ M1–M5 |
+| `prompts/01_category_precheck.md` | Đánh giá sơ bộ SOP 1.1 (kèm **kiểm tra sức chịu lợi nhuận** cho ngành hàng rủi ro cao) |
+| `prompts/02_market_analysis.md` | SOP 1.2–1.6 (quy mô thị trường / mức độ tập trung / dải giá / cấu hình / đối thủ) |
 | `templates/` | input_category_research · output_market_analysis |
-| `examples/patinete_eletrico_market.md` | 可复现案例（三条命令核对每个数字） |
+| `examples/patinete_eletrico_market.md` | Case study tái hiện được (ba lệnh đối chiếu từng con số) |
 
-**四个核心设计**：
+**Bốn thiết kế cốt lõi**:
 
-1. **能算的别让模型猜** —— 集中度/分箱/交叉表是确定性计算，交脚本；Agent 只解读"这些数字意味着什么"
-2. **波谷检测不平滑** —— 3 点滑动平均会抹掉陡峭波谷（样本里 `799→618→1120` 的波谷被平均成 `639→846→912`，波谷消失）
-3. **前置判断能叫停** —— SOP 1.1 说"没有供应链/售后能力/价格优势，即使市场好也不一定适合做"，所以判定不通过时**停止，不做下游分析**
-4. **CR-n 的陷阱自动提示** —— 主体数 ≤ n 时 CR-n 恒为 100%，脚本自动提示改用 CR3 与 HHI
+1. **Cái gì tính được thì đừng để model đoán** —— mức độ tập trung/chia khoảng/bảng chéo là tính toán tất định, giao cho script; Agent chỉ diễn giải "những con số này có ý nghĩa gì"
+2. **Phát hiện vùng trũng không làm mượt** —— trung bình trượt 3 điểm sẽ xóa mất các vùng trũng dốc (trong dữ liệu mẫu, vùng trũng `799→618→1120` bị làm trung bình thành `639→846→912`, vùng trũng biến mất)
+3. **Đánh giá sơ bộ có quyền dừng** —— SOP 1.1 nói "không có năng lực chuỗi cung ứng/hậu mãi hay lợi thế giá thì dù thị trường tốt cũng chưa chắc nên làm", nên khi không đạt thì **dừng, không làm phân tích hạ nguồn**
+4. **Tự động cảnh báo bẫy CR-n** —— khi số chủ thể ≤ n thì CR-n luôn bằng 100%, script tự động nhắc chuyển sang dùng CR3 và HHI
 
 #### `Agents/02_Product_Strategy_Agent`
 
-| 文件 | 内容 |
+| File | Nội dung |
 |---|---|
-| `prompts/00_system.md` | 角色 + 定价与 SKU 规则 + S1–S5 合规守卫 |
-| `prompts/01_product_decision.md` | SOP 1.7 + 3.1：定位 / 配置 / **主推卖点收敛（唯一）** / 风险规避 / 上架前 8 问 |
-| `prompts/02_pricing_and_sku.md` | SOP 1.9 + 3.2：定价公式 + 逐 SKU 验算 + SKU 四角色 + 优惠券设计 + 盈亏线 |
+| `prompts/00_system.md` | Vai trò + quy tắc định giá và SKU + lớp bảo vệ tuân thủ S1–S5 |
+| `prompts/01_product_decision.md` | SOP 1.7 + 3.1: định vị / cấu hình / **chốt điểm bán hàng chủ lực (duy nhất)** / né rủi ro / 8 câu hỏi trước khi đăng bán |
+| `prompts/02_pricing_and_sku.md` | SOP 1.9 + 3.2: công thức định giá + kiểm tra lại từng SKU + 4 vai trò SKU + thiết kế voucher + ngưỡng hòa vốn |
 | `templates/` | input_strategy_brief · output_product_requirement |
-| `examples/patinete_eletrico_strategy.md` | 完整案例（接 01 的输出） |
+| `examples/patinete_eletrico_strategy.md` | Case study đầy đủ (nối tiếp output của 01) |
 
-**三个核心设计**：
+**Ba thiết kế cốt lõi**:
 
-1. **`decision_approved` 阻塞机制** —— 本模块**不做选品决策**，只做"把已决策的产品规格化"。未由人确认就往下跑 = 让 Agent 替你做商业决策
-2. **主卖点必须唯一** —— 两个并列等于零个。主卖点决定主图打什么字、视频开头放什么镜头
-3. **SKU 四角色 + 价格阶梯双向检查** —— 价差过大买家不升级、过小引流款失去意义
+1. **Cơ chế chặn `decision_approved`** —— module này **không ra quyết định chọn sản phẩm**, chỉ "chuẩn hóa thông số cho sản phẩm đã được quyết định". Chạy tiếp khi chưa có người xác nhận = để Agent ra quyết định kinh doanh thay bạn
+2. **Điểm bán hàng chính phải là duy nhất** —— hai điểm ngang hàng nhau cũng như không có điểm nào. Điểm bán hàng chính quyết định ảnh chính in chữ gì, video mở đầu bằng cảnh nào
+3. **4 vai trò SKU + kiểm tra bậc giá hai chiều** —— chênh giá quá lớn thì người mua không nâng cấp, quá nhỏ thì SKU kéo traffic mất ý nghĩa
 
-### 案例中的两个"自洽巧合"
+### Hai "sự trùng hợp nhất quán" trong case study
 
-在做 01、02 的案例时，出现了两处**独立推导指向同一结果**的验证点，都保留在案例里：
+Khi làm case study cho 01, 02, xuất hiện hai điểm kiểm chứng mà **hai cách suy luận độc lập cùng dẫn tới một kết quả**, cả hai đều được giữ lại trong case study:
 
-| 发现的巧合 | 意义 |
+| Sự trùng hợp phát hiện được | Ý nghĩa |
 |---|---|
-| 波谷检测出的价格带下界 **R$ 1.989,13** vs 定价公式反算的成本可行价 **R$ 1.989,36**，相差 **R$ 0,23** | 一条是纯数学（销量曲线），一条是纯财务（成本结构）→ 该价位同时满足市场结构与成本可行 |
-| 主推款毛利余量 **R$ 98,95** vs 拟发券面额 **R$ 100**，相差 **R$ 1,05** | 市场给的价格（2.199）与成本要求（1.989）之间的空间，刚好够发一张"缩小价格差距"的券 |
+| Cận dưới dải giá do phát hiện vùng trũng tìm ra là **R$ 1.989,13** vs giá khả thi theo chi phí tính ngược từ công thức định giá là **R$ 1.989,36**, chênh **R$ 0,23** | Một bên thuần toán học (đường cong doanh số), một bên thuần tài chính (cấu trúc chi phí) → mức giá này vừa khớp cấu trúc thị trường vừa khả thi về chi phí |
+| Dư địa lợi nhuận gộp của SKU chủ lực **R$ 98,95** vs mệnh giá voucher dự kiến **R$ 100**, chênh **R$ 1,05** | Khoảng cách giữa giá thị trường chấp nhận (2.199) và yêu cầu chi phí (1.989) vừa đủ để phát một voucher "thu hẹp chênh lệch giá" |
 
-> 这两个数字不是凑的，是"市场愿意给多少 + 成本需要多少"共同决定的结果。**它们出现，说明这套方法论内部是自洽的。**
+> Hai con số này không phải gán ghép, mà là kết quả cùng quyết định bởi "thị trường sẵn sàng trả bao nhiêu + chi phí cần bao nhiêu". **Việc chúng xuất hiện cho thấy phương pháp này nhất quán từ bên trong.**
 
-### 新增认知
+### Nhận thức mới
 
-| # | 认知 | 证据 |
+| # | Nhận thức | Bằng chứng |
 |---|---|---|
-| 1 | **CR 高 ≠ 垄断** | 案例中品牌 CR3 = 74,1% 看似很高，但**前三名全是白牌** → 买家不认品牌，新店仍有空间 |
-| 2 | **要看份额与商品数的比值** | 某卖家销售额占比 8,5% 但商品数占 12% → **占位型而非效率型**，是可超越对象 |
-| 3 | **"高配"未必高毛利** | 800W 成本涨 34,8% 但售价只涨 22,7% → 高配净利率 32,3% **低于主推 36,5%** |
-| 4 | **"前期降毛利养权重"的自由度取决于余量** | 案例中 R$ 1.999 的净利率仍有 32,2%，其实没真降——因为定价本身有充足余量 |
-| 5 | **引流款低于目标毛利 ≠ 战略亏损** | 27,5% 低于 32% 目标但仍在盈亏线（临界价 R$ 1.113）之上 → 无需标注亏损与退出条件 |
+| 1 | **CR cao ≠ độc quyền** | Trong case study, CR3 thương hiệu = 74,1% trông rất cao, nhưng **cả ba vị trí đầu đều là hàng no-brand** → người mua không quan tâm thương hiệu, shop mới vẫn còn đất |
+| 2 | **Phải xem tỷ lệ giữa thị phần và số sản phẩm** | Một người bán chiếm 8,5% doanh số nhưng chiếm 12% số sản phẩm → **kiểu chiếm chỗ chứ không phải kiểu hiệu quả**, là đối tượng có thể vượt qua |
+| 3 | **"Cấu hình cao" chưa chắc lợi nhuận gộp cao** | Bản 800W chi phí tăng 34,8% nhưng giá bán chỉ tăng 22,7% → biên lợi nhuận ròng bản cấu hình cao 32,3% **thấp hơn SKU chủ lực 36,5%** |
+| 4 | **Mức tự do của "giai đoạn đầu giảm lợi nhuận gộp để nuôi trọng số" phụ thuộc vào dư địa** | Trong case study, ở R$ 1.999 biên lợi nhuận ròng vẫn còn 32,2%, thực ra chưa hề giảm thật —— vì bản thân mức định giá đã có dư địa dồi dào |
+| 5 | **SKU kéo traffic thấp hơn lợi nhuận gộp mục tiêu ≠ lỗ chiến lược** | 27,5% thấp hơn mục tiêu 32% nhưng vẫn trên ngưỡng hòa vốn (giá tới hạn R$ 1.113) → không cần ghi chú lỗ và điều kiện rút lui |
 
-### 文档更新
+### Cập nhật tài liệu
 
-- `README.md`：Agent 全景表（7/7 完成）· 目录树（含 `scripts/`、`samples/`）· 闭环 mermaid 图（含 01/02）· 路线图 · badge → v0.3 · 合规声明增加差异登记表入口
-- `Agents/README.md`：v0.3 完成清单 + **正向契约表**（谁必须给谁什么、缺失时报什么错）
-- `docs/00`：新增分析簇模块边界 + 各模块"做什么/不做什么"
-- `docs/03`：顶部增加与 `05` 的分工说明（本文给"怎么换"，05 给"为什么不做"）
-- `docs/04` / `Templates/output_qa_checklist.md`：补 01/02 的自检段（待补）
-- `ROADMAP.md`：v0.3 标记完成，关闭技术债 #1、#4，新增 #7–#9
-- `Examples/README.md`：案例索引更新
+- `README.md`: bảng toàn cảnh Agent (hoàn thành 7/7) · cây thư mục (kèm `scripts/`, `samples/`) · sơ đồ mermaid vòng khép kín (kèm 01/02) · lộ trình · badge → v0.3 · tuyên bố tuân thủ thêm đường dẫn tới sổ đăng ký khác biệt
+- `Agents/README.md`: danh sách hoàn thành v0.3 + **bảng hợp đồng xuôi chiều** (ai phải đưa gì cho ai, thiếu thì báo lỗi gì)
+- `docs/00`: thêm ranh giới module của cụm phân tích + "làm gì/không làm gì" của từng module
+- `docs/03`: thêm ở đầu phần giải thích phân công với `05` (tài liệu này nói "thay thế thế nào", 05 nói "vì sao không làm")
+- `docs/04` / `Templates/output_qa_checklist.md`: bổ sung phần tự kiểm tra cho 01/02 (chờ bổ sung)
+- `ROADMAP.md`: đánh dấu v0.3 hoàn thành, đóng nợ kỹ thuật #1, #4, thêm #7–#9
+- `Examples/README.md`: cập nhật mục lục case study
 
 ---
 
 ## [v0.2] — 2026-10-13
 
-完成 **Phase 2 运营簇**：新增 06 广告优化、07 评论分析两个模块，并把整套流程闭合成环。
+Hoàn thành **cụm vận hành Phase 2**: thêm hai module 06 Tối ưu quảng cáo, 07 Phân tích đánh giá, và khép toàn bộ quy trình thành vòng.
 
-### 新增模块
+### Module mới
 
 #### `Agents/06_Advertising_Optimization_Agent`
 
-| 文件 | 内容 |
+| File | Nội dung |
 |---|---|
-| `README.md` | 四类漏斗诊断表 · 健康基准线 · **盈亏线 ROAS 算法** · SOP 两条实战技巧（不暂停广告 / 改主图解 bug） |
-| `prompts/00_system.md` | 角色 + 基准线 + 漏斗判定顺序（硬规则：前段达标前禁止调出价）+ G1–G5 合规守卫 |
-| `prompts/01_funnel_diagnosis.md` | 逐广告组四步判定 → 动作清单（**强制输出"本轮明确不动的部分"**）+ 解 bug 流程 + 复测方案 |
-| `prompts/02_budget_roi_model.md` | 盈亏线核算 + ROAS 敏感性表 + 达标线差距分析 + 预算×ROI 双变量模型 + 分时段节律 |
-| `templates/input_ad_data.md` | 广告数据 + 成本结构（含数据质量门槛） |
-| `templates/output_ad_action_plan.md` | 动作清单（下游：03/04/07） |
-| `examples/powerbank_20000mah_ads.md` | 真实案例：4 个广告组覆盖全部四类症状，整体 ROAS 1,84 亏损 |
+| `README.md` | Bảng chẩn đoán phễu 4 loại · đường chuẩn sức khỏe · **thuật toán ROAS hòa vốn** · hai mẹo thực chiến trong SOP (không tạm dừng quảng cáo / đổi ảnh chính để gỡ bug) |
+| `prompts/00_system.md` | Vai trò + đường chuẩn + thứ tự xét phễu (quy tắc cứng: phần trước chưa đạt thì cấm chỉnh giá thầu) + lớp bảo vệ tuân thủ G1–G5 |
+| `prompts/01_funnel_diagnosis.md` | Xét 4 bước cho từng nhóm quảng cáo → danh sách hành động (**bắt buộc xuất "phần vòng này chắc chắn không đụng tới"**) + quy trình gỡ bug + phương án kiểm tra lại |
+| `prompts/02_budget_roi_model.md` | Tính ngưỡng hòa vốn + bảng độ nhạy ROAS + phân tích khoảng cách tới ngưỡng đạt + mô hình 2 biến ngân sách×ROI + nhịp theo khung giờ |
+| `templates/input_ad_data.md` | Dữ liệu quảng cáo + cấu trúc chi phí (kèm ngưỡng chất lượng dữ liệu) |
+| `templates/output_ad_action_plan.md` | Danh sách hành động (hạ nguồn: 03/04/07) |
+| `examples/powerbank_20000mah_ads.md` | Case study thật: 4 nhóm quảng cáo bao phủ đủ 4 loại triệu chứng, ROAS tổng 1,84 đang lỗ |
 
-**三个核心设计**：
+**Ba thiết kế cốt lõi**:
 
-1. **漏斗判定顺序不可跳**：CTR → 加购率 → 转化率 → ROAS。**只有前段全部达标，才允许建议调整出价。**
-2. **盈亏线优先于基准线**：基准线判断"哪一环不健康"，盈亏线判断"赚不赚钱"。两者都要看——因为**漏斗全达标也可能亏钱**。
-3. **数据质量门槛**：曝光 < 1,000 拒绝分析；成本结构缺失则拒绝输出任何 ROI 结论。
+1. **Không được nhảy cóc thứ tự xét phễu**: CTR → tỷ lệ thêm vào giỏ → tỷ lệ chuyển đổi → ROAS. **Chỉ khi các phần trước đều đạt mới được đề xuất chỉnh giá thầu.**
+2. **Ngưỡng hòa vốn đặt trên đường chuẩn**: đường chuẩn cho biết "khâu nào không khỏe", ngưỡng hòa vốn cho biết "có lãi hay không". Phải xem cả hai —— vì **phễu đạt hết vẫn có thể lỗ**.
+3. **Ngưỡng chất lượng dữ liệu**: lượt hiển thị < 1,000 thì từ chối phân tích; thiếu cấu trúc chi phí thì từ chối xuất bất kỳ kết luận ROI nào.
 
 #### `Agents/07_Review_Analysis_Agent`
 
-| 文件 | 内容 |
+| File | Nội dung |
 |---|---|
-| `README.md` | 八类差评归因 · **误解型为何单独拎出来** · 三类回流（详情页修补 / 参数红线 / 卖点排序）· 合规边界 |
-| `prompts/00_system.md` | 角色 + 八类归因定义 + 误解型判定标准（"描述无误仍不满 = 描述的问题"）+ C1–C5 合规守卫 |
-| `prompts/01_classify_and_attribute.md` | 好评 5 维度 + 差评八类归因 + 卖点频次×情感强度排序 + 竞品对比 + SOP 七问 |
-| `prompts/02_misunderstanding_detector.md` | **误解型判定三分类**（缺失说明 / 说明不醒目 / 买家未阅读）+ 详情页修补文案 + 参数红线 |
-| `templates/input_review_batch.md` | 评论批量导入（含样本量门槛 ≥ 20） |
-| `templates/output_review_insights.md` | 评论洞察报告（下游：03/04） |
-| `examples/electric_scooter_reviews.md` | 真实案例：128 条评论，**可修复差评 84,6%**，误解型占 38,5% |
+| `README.md` | Quy nguyên nhân đánh giá tiêu cực theo 8 nhóm · **vì sao tách riêng loại hiểu lầm** · 3 loại quay vòng về (vá trang chi tiết / lằn ranh đỏ thông số / xếp hạng điểm bán hàng) · ranh giới tuân thủ |
+| `prompts/00_system.md` | Vai trò + định nghĩa quy nguyên nhân 8 nhóm + tiêu chuẩn xác định loại hiểu lầm ("mô tả không sai mà khách vẫn không hài lòng = lỗi của mô tả") + lớp bảo vệ tuân thủ C1–C5 |
+| `prompts/01_classify_and_attribute.md` | 5 chiều đánh giá tích cực + quy nguyên nhân 8 nhóm đánh giá tiêu cực + xếp hạng điểm bán hàng theo tần suất×cường độ cảm xúc + so sánh đối thủ + 7 câu hỏi của SOP |
+| `prompts/02_misunderstanding_detector.md` | **Ba kiểu xác định loại hiểu lầm** (thiếu giải thích / giải thích không nổi bật / người mua không đọc) + copy vá trang chi tiết + lằn ranh đỏ thông số |
+| `templates/input_review_batch.md` | Nhập đánh giá hàng loạt (kèm ngưỡng cỡ mẫu ≥ 20) |
+| `templates/output_review_insights.md` | Báo cáo insight đánh giá (hạ nguồn: 03/04) |
+| `examples/electric_scooter_reviews.md` | Case study thật: 128 đánh giá, **đánh giá tiêu cực sửa được 84,6%**, loại hiểu lầm chiếm 38,5% |
 
-**三个核心设计**：
+**Ba thiết kế cốt lõi**:
 
-1. **误解型差评单独拎出来**：它是唯一一类"改一句话就能消除"的差评——成本接近零、改完立即生效，ROI 最高。
-2. **判定三分类**：缺失说明 → 新增条目；说明不醒目 → 前置；买家未阅读 → **换成图**（文字会被跳过，图不会）。
-3. **配件类误解必须用图**：2 条配件差评都因买家未读参数表——补发配件是错的，正确动作是包装清单图标注"不含什么"。
+1. **Tách riêng đánh giá tiêu cực loại hiểu lầm**: đây là loại duy nhất "sửa một câu là hết" —— chi phí gần bằng 0, sửa xong có hiệu lực ngay, ROI cao nhất.
+2. **Ba kiểu xác định**: thiếu giải thích → thêm mục mới; giải thích không nổi bật → đưa lên đầu; người mua không đọc → **chuyển thành ảnh** (chữ sẽ bị lướt qua, ảnh thì không).
+3. **Hiểu lầm về phụ kiện bắt buộc dùng ảnh**: cả 2 đánh giá tiêu cực về phụ kiện đều do người mua không đọc bảng thông số —— gửi bù phụ kiện là sai, hành động đúng là dùng ảnh danh sách đóng gói ghi rõ "không bao gồm những gì".
 
-### 新增闭环案例
+### Case study vòng khép kín mới
 
 #### `Examples/03_Closed_Loop/`
 
-演示 SOP 第三章"数据复盘 → 反过来优化前面四个环节"的完整机制：
+Demo cơ chế đầy đủ của chương 3 SOP "review dữ liệu → quay lại tối ưu bốn khâu phía trước":
 
-- **广告侧回流**（Power Bank）：06 诊断 → 定位瓶颈是转化率而非点击率 → 干预 → 7 天复测 → **净贡献 −R$ 235,56 → +R$ 83,90**
-- **评论侧回流**（Electric Scooter）：07 诊断 → 84,6% 差评可修 → 回流 03/04 → 14–30 天复测
-- **反直觉的坑**：修 CTR 最差的组 → 亏损扩大到 −R$ 335,26；放大曝光 → 同比例放大亏损
-- **复测指标选择原则**：要选"改动能控制"的指标（广告看 ROAS，文案看误解型占比，都不看总销量）
+- **Quay vòng về từ phía quảng cáo** (Power Bank): 06 chẩn đoán → xác định nút thắt là tỷ lệ chuyển đổi chứ không phải CTR → can thiệp → kiểm tra lại sau 7 ngày → **đóng góp ròng −R$ 235,56 → +R$ 83,90**
+- **Quay vòng về từ phía đánh giá** (Electric Scooter): 07 chẩn đoán → 84,6% đánh giá tiêu cực sửa được → quay về 03/04 → kiểm tra lại sau 14–30 ngày
+- **Cái bẫy ngược trực giác**: sửa nhóm có CTR tệ nhất → lỗ mở rộng tới −R$ 335,26; tăng lượt hiển thị → lỗ tăng theo cùng tỷ lệ
+- **Nguyên tắc chọn chỉ số kiểm tra lại**: phải chọn chỉ số "thay đổi kiểm soát được" (quảng cáo xem ROAS, copy xem tỷ lệ loại hiểu lầm, đều không xem tổng doanh số)
 
-### 新增设计机制
+### Cơ chế thiết kế mới
 
-| 机制 | 说明 |
+| Cơ chế | Mô tả |
 |---|---|
-| **盈亏线 ROAS** | 分母减去佣金/广告/退货/毛利四项百分比；`ROAS < 盈亏线` 即每单亏钱 |
-| **达标线 vs 盈亏线** | 显式指出"定价预留广告成本 7.5% 对应 ROAS 13,33，而实际投放常见 3–8"的差距 |
-| **漏斗判定顺序为硬规则** | 前段未达标就调出价 = 违规建议，Prompt 必须拒绝 |
-| **"本轮明确不动的部分"** | 06 强制输出项——防止修 A 环节时顺手改坏 B 环节 |
-| **误解型三分类** | 把"想消除差评"的诉求，转换成"补说明 / 前置 / 换成图"三个可执行动作 |
-| **复测指标可归因** | 选改动能控制的指标：广告看 ROAS，文案看误解型占比 |
+| **ROAS hòa vốn** | Mẫu số trừ đi bốn tỷ lệ phần trăm phí hoa hồng/quảng cáo/hoàn hàng/lợi nhuận gộp; `ROAS < ngưỡng hòa vốn` tức là mỗi đơn đều lỗ |
+| **Ngưỡng đạt vs ngưỡng hòa vốn** | Chỉ rõ khoảng cách "định giá chừa chi phí quảng cáo 7.5% tương ứng ROAS 13,33, trong khi chạy quảng cáo thực tế thường chỉ 3–8" |
+| **Thứ tự xét phễu là quy tắc cứng** | Phần trước chưa đạt mà đã chỉnh giá thầu = đề xuất vi phạm, Prompt bắt buộc phải từ chối |
+| **"Phần vòng này chắc chắn không đụng tới"** | Mục bắt buộc xuất của 06 —— tránh việc sửa khâu A rồi tiện tay làm hỏng khâu B |
+| **Ba kiểu loại hiểu lầm** | Biến mong muốn "muốn xóa đánh giá tiêu cực" thành ba hành động làm được: "bổ sung giải thích / đưa lên đầu / chuyển thành ảnh" |
+| **Chỉ số kiểm tra lại quy được nguyên nhân** | Chọn chỉ số mà thay đổi kiểm soát được: quảng cáo xem ROAS, copy xem tỷ lệ loại hiểu lầm |
 
-### 文档更新
+### Cập nhật tài liệu
 
-- `README.md`：Agent 全景表更新（5 个已完成）· 目录树 · 闭环 mermaid 图 · 路线图
-- `Agents/README.md`：拆分 v0.1/v0.2 已完成清单 + 新增**回流契约**表
-- `docs/04_Result_Checklist.md`：新增 F（06）/ G（07）/ H（闭环）三段自检
-- `Templates/output_qa_checklist.md`：同步新增 F/G/H 段
-- `Examples/README.md`：新增闭环案例索引 + 五款产品覆盖表（现每款被至少两个模块分析过）
-- `ROADMAP.md`：v0.1/v0.2 标记完成，新增技术债第 5、6 项
+- `README.md`: cập nhật bảng toàn cảnh Agent (5 module đã hoàn thành) · cây thư mục · sơ đồ mermaid vòng khép kín · lộ trình
+- `Agents/README.md`: tách danh sách hoàn thành v0.1/v0.2 + thêm bảng **hợp đồng quay vòng về**
+- `docs/04_Result_Checklist.md`: thêm ba phần tự kiểm tra F (06) / G (07) / H (vòng khép kín)
+- `Templates/output_qa_checklist.md`: đồng bộ thêm các phần F/G/H
+- `Examples/README.md`: thêm mục lục case study vòng khép kín + bảng bao phủ năm sản phẩm (hiện mỗi sản phẩm đã được ít nhất hai module phân tích)
+- `ROADMAP.md`: đánh dấu v0.1/v0.2 hoàn thành, thêm nợ kỹ thuật mục 5, 6
 
-### 合规处理（延续 v0.1 原则）
+### Xử lý tuân thủ (tiếp nối nguyên tắc v0.1)
 
-07 模块涉及 SOP 3.7 的差评处理流程，其中以下动作**未搬运**：
+Module 07 liên quan tới quy trình xử lý đánh giá tiêu cực ở SOP 3.7, trong đó các hành động sau **không được đưa vào**:
 
-| SOP 原始表述 | 处理 |
+| Diễn đạt gốc trong SOP | Xử lý |
 |---|---|
-| 联系客户删差评，说删了会很快退款并给补偿 | ❌ 移除（以利益诱导删评） |
-| 产品有虚标的话可以说是说明书打包错了 | ❌ 移除（以不实理由解释参数不符） |
-| 先给差评点举报，有机会消除差评 | ⚠️ 保留"单条明显违规评论可正常申诉"，移除"组织性举报" |
-| **反向优化详情页、客服话术或产品** | ✅ **保留并强化为 07 的核心输出** |
+| Liên hệ khách xóa đánh giá tiêu cực, nói xóa xong sẽ hoàn tiền nhanh và bồi thường thêm | ❌ Loại bỏ (dùng lợi ích để dụ xóa đánh giá) |
+| Nếu sản phẩm khai khống thông số thì có thể nói là đóng gói nhầm sách hướng dẫn | ❌ Loại bỏ (dùng lý do sai sự thật để giải thích thông số không khớp) |
+| Report đánh giá tiêu cực trước, có cơ hội xóa được | ⚠️ Giữ "từng đánh giá vi phạm rõ ràng có thể khiếu nại bình thường", loại bỏ "report có tổ chức" |
+| **Tối ưu ngược lại trang chi tiết, kịch bản CSKH hoặc sản phẩm** | ✅ **Giữ lại và nâng thành output cốt lõi của 07** |
 
-详见 [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md)。
+Chi tiết xem [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md).
 
-### 已知问题
+### Vấn đề đã biết
 
-| # | 问题 | 状态 |
+| # | Vấn đề | Trạng thái |
 |---|---|---|
-| 7 | 06/07 的输入依赖手工填表（广告数据 / 评论数据需人工导出） | V2 接入 API 后消除 |
-| 8 | 复盘数据无法自动回流，`iterate` 需人工粘贴 | v1.0 串联后消除 |
+| 7 | Đầu vào của 06/07 phụ thuộc điền bảng thủ công (dữ liệu quảng cáo / đánh giá phải xuất thủ công) | Sẽ hết khi V2 kết nối API |
+| 8 | Dữ liệu review chưa tự quay vòng về được, `iterate` cần dán thủ công | Sẽ hết khi v1.0 nối chuỗi |
 
 ---
 
 ## [v0.1] — 2026-10-13
 
-首个版本。完成 **Phase 1** 三个创意簇 Agent。
+Phiên bản đầu tiên. Hoàn thành ba Agent cụm sáng tạo của **Phase 1**.
 
-### 新增
+### Thêm mới
 
-**核心模块（Phase 1）**
+**Module cốt lõi (Phase 1)**
 
-| 模块 | 内容 |
+| Module | Nội dung |
 |---|---|
-| `Agents/03_Listing_Creative_Agent` | 关键词七类分词 · 标题五段公式 · 详情页 7 段 · 卖点分层 · 参数一致性校验 |
-| `Agents/04_Product_Image_Agent` | 9 图内容规划 · 逐图出图 Prompt · 负面 Prompt 库 · 图片合规守卫 |
-| `Agents/05_Product_Video_Agent` | 15s/30s 双版本脚本 · 分镜表 · AI 视频 Prompt · 配音稿 · 字幕 · 静音可读性检查 |
+| `Agents/03_Listing_Creative_Agent` | Tách từ khóa thành 7 loại · công thức tiêu đề 5 đoạn · trang chi tiết 7 phần · phân tầng điểm bán hàng · kiểm tra nhất quán thông số |
+| `Agents/04_Product_Image_Agent` | Lên kế hoạch nội dung 9 ảnh · Prompt tạo ảnh cho từng ảnh · thư viện Negative Prompt · lớp bảo vệ tuân thủ cho ảnh |
+| `Agents/05_Product_Video_Agent` | Kịch bản 2 phiên bản 15s/30s · bảng storyboard · Prompt video AI · bản lồng tiếng · phụ đề · kiểm tra khả năng đọc khi tắt tiếng |
 
-**模块占位说明（Phase 2）**
+**Ghi chú module giữ chỗ (Phase 2)**
 
 `01 Market Research` · `02 Product Strategy` · `06 Advertising Optimization` · `07 Review Analysis`
 
-**方法论文档**
+**Tài liệu phương pháp**
 
-| 文件 | 内容 |
+| File | Nội dung |
 |---|---|
-| `docs/00_Architecture_SOP_to_Agent.md` | SOP 38 页 → 7 个 Agent 的完整拆解表（含三级分级法） |
-| `docs/01_Prompt_Design_Guide.md` | Prompt 五要素规范 + 四条硬规则 + 输出语言策略 |
-| `docs/02_Platform_Output_Spec.md` | Shopee / ML / Amazon / TikTok Shop / Shopify 字段硬指标 |
-| `docs/03_Compliance_Guard.md` | 合规红线 + 灰产动作改写对照表 + 卖点真实化映射表 |
-| `docs/04_Result_Checklist.md` | 六段式交付自检清单 |
+| `docs/00_Architecture_SOP_to_Agent.md` | Bảng tách đầy đủ 38 trang SOP → 7 Agent (kèm phương pháp phân 3 cấp) |
+| `docs/01_Prompt_Design_Guide.md` | Chuẩn 5 thành phần của Prompt + 4 quy tắc cứng + chiến lược ngôn ngữ output |
+| `docs/02_Platform_Output_Spec.md` | Chỉ tiêu cứng về trường của Shopee / ML / Amazon / TikTok Shop / Shopify |
+| `docs/03_Compliance_Guard.md` | Lằn ranh đỏ tuân thủ + bảng đối chiếu viết lại thao tác "xám" + bảng ánh xạ chân thực hóa điểm bán hàng |
+| `docs/04_Result_Checklist.md` | Checklist tự kiểm tra khi bàn giao gồm 6 phần |
 
-**模板库**（顶层 `Templates/`）
+**Thư viện template** (`Templates/` cấp trên cùng)
 
-`product_brief_template.md`（模块间通信契约）· `keyword_analysis_template.md` · `cost_pricing_template.md`（含可验算的定价公式）· `output_qa_checklist.md`（可打印版）
+`product_brief_template.md` (hợp đồng giao tiếp giữa các module) · `keyword_analysis_template.md` · `cost_pricing_template.md` (kèm công thức định giá kiểm tra lại được) · `output_qa_checklist.md` (bản in được)
 
-**案例库**
+**Thư viện case study**
 
-| 案例 | 覆盖模块 | 重点 |
+| Case study | Module bao phủ | Trọng tâm |
 |---|---|---|
-| `Examples/01_Patinete_Eletrico_500W` | 03 → 04 → 05 | 端到端串联 · 跨平台 120→60 字符压缩 · 跨模块一致性校验 |
-| `Examples/02_Thermal_Bag` | 03（iterate） | 广告数据诊断 → 最小改动回改闭环 |
-| `Agents/03.../examples/powerbank_20000mah.md` | 03 | 评论反向修复 Listing |
-| `Agents/04.../examples/pet_carrier.md` | 04 | ML 与 Shopee 主图规范冲突处理 |
-| `Agents/05.../examples/air_fryer.md` | 05 | 钩子从差评来 · 静音可读性 |
+| `Examples/01_Patinete_Eletrico_500W` | 03 → 04 → 05 | Nối chuỗi end-to-end · nén 120→60 ký tự khi chuyển sàn · kiểm tra nhất quán liên module |
+| `Examples/02_Thermal_Bag` | 03 (iterate) | Chẩn đoán dữ liệu quảng cáo → vòng khép kín sửa lại với thay đổi tối thiểu |
+| `Agents/03.../examples/powerbank_20000mah.md` | 03 | Dùng đánh giá để sửa ngược lại Listing |
+| `Agents/04.../examples/pet_carrier.md` | 04 | Xử lý xung đột quy chuẩn ảnh chính giữa ML và Shopee |
+| `Agents/05.../examples/air_fryer.md` | 05 | Hook lấy từ đánh giá tiêu cực · khả năng đọc khi tắt tiếng |
 
-### 结构变更
+### Thay đổi cấu trúc
 
-**Agent 编号重排。** 原始规划（来自制作说明）为：
+**Sắp xếp lại mã số Agent.** Kế hoạch ban đầu (từ bản hướng dẫn thực hiện) là:
 
 ```
 01 Market Research → 02 Product Strategy → 03 Listing Creative
 → 04 Advertising → 05 Review → 06 Product Video
 ```
 
-v0.1 改为按**工作簇**编号：
+v0.1 đổi sang đánh số theo **cụm công việc**:
 
 ```
 03 Listing Creative ─┐
-04 Product Image     ├─ 创意簇（文案 → 图 → 视频，天然串联）
+04 Product Image     ├─ Cụm sáng tạo (copy → ảnh → video, vốn nối tiếp nhau)
 05 Product Video     ┘
 
 06 Advertising ─┐
-07 Review      ─┴─ 运营簇（广告 → 评论）
+07 Review      ─┴─ Cụm vận hành (quảng cáo → đánh giá)
 ```
 
-**调整理由**：让天然串联的模块编号连续，便于引用；创意簇与运营簇在依赖关系上互不交叉。
-**影响**：`Product Video` 从 `06` 变为 `05`；`Advertising` 从 `04` 变为 `06`；`Review` 从 `05` 变为 `07`；新增 `04 Product Image`（原规划中未独立编号）。
+**Lý do điều chỉnh**: để các module vốn nối tiếp nhau có mã số liền mạch, dễ tham chiếu; cụm sáng tạo và cụm vận hành không chồng chéo về quan hệ phụ thuộc.
+**Ảnh hưởng**: `Product Video` từ `06` thành `05`; `Advertising` từ `04` thành `06`; `Review` từ `05` thành `07`; thêm `04 Product Image` (trong kế hoạch ban đầu không có mã số riêng).
 
-### 新增设计机制
+### Cơ chế thiết kế mới
 
-| 机制 | 说明 |
+| Cơ chế | Mô tả |
 |---|---|
-| **模块间通信契约** | 03 → 04/05 通过 `product_brief` 传递结构化字段，防止信息损耗 |
-| **阻塞字段** | `core_selling_point` / `forbidden_words` 等为空时，下游模块必须报错，不得推测 |
-| **中文/母语分离** | 买家可见文本用目标市场母语，内部备注用中文，Prompt 强制区分 |
-| **参数唯一来源** | 所有输出中的数值必须溯源到 `spec_table`，否则删除并记录 `[PARAM_DROPPED]` |
-| **强制输出合规扫描区块** | 无命中时也必须写"无命中"，以确认扫描确实执行 |
-| **负面 Prompt 作为合规工具** | 不防水产品的场景图负面词必含 `rain, water, swimming pool` |
+| **Hợp đồng giao tiếp giữa các module** | 03 → 04/05 truyền các trường có cấu trúc qua `product_brief`, tránh thất thoát thông tin |
+| **Trường chặn** | Khi `core_selling_point` / `forbidden_words`, v.v. để trống, module hạ nguồn bắt buộc báo lỗi, không được suy đoán |
+| **Tách ngôn ngữ nội bộ / tiếng mẹ đẻ** | Văn bản người mua nhìn thấy dùng tiếng mẹ đẻ của thị trường mục tiêu, ghi chú nội bộ dùng tiếng Việt, Prompt bắt buộc phân biệt |
+| **Nguồn thông số duy nhất** | Mọi giá trị số trong output phải truy được nguồn về `spec_table`, nếu không thì xóa và ghi `[PARAM_DROPPED]` |
+| **Bắt buộc xuất khối quét tuân thủ** | Không có kết quả trùng khớp cũng phải ghi "không có kết quả trùng khớp", để xác nhận việc quét đã thực sự được chạy |
+| **Negative Prompt làm công cụ tuân thủ** | Ảnh bối cảnh của sản phẩm không chống nước bắt buộc có từ phủ định `rain, water, swimming pool` |
 
-### 合规处理
+### Xử lý tuân thủ
 
-原始 SOP 中以下内容**未搬运、未实现**，并给出合规替代：
+Các nội dung sau trong SOP gốc **không được đưa vào, không được triển khai**, kèm phương án thay thế tuân thủ:
 
-| SOP 原始表述 | 处理 |
+| Diễn đạt gốc trong SOP | Xử lý |
 |---|---|
-| 刷单 / 测评 / 建虚假 SKU 规避风控 | ❌ 移除 → 真实低价促销 + 非公开优惠券 + 官方邀评 |
-| 组织给竞品上差评 | ❌ 移除 → 竞品差评归因 → 己方防御性说明 |
-| "可控范围内虚假宣传" | ❌ 移除 → 卖点真实化映射表 |
-| 优惠券诱导评价 / 改图片 MD5 | ❌ 移除 → 官方邀评通道 |
-| 参数虚标后解释为"说明书打包错了" | ❌ 移除 → 参数三处一致性校验 |
+| Buff đơn ảo / review ảo / tạo SKU giả để lách kiểm soát rủi ro | ❌ Loại bỏ → khuyến mãi giá thấp thật + voucher không công khai + mời đánh giá qua kênh chính thức |
+| Tổ chức để lại đánh giá tiêu cực cho đối thủ | ❌ Loại bỏ → quy nguyên nhân đánh giá tiêu cực của đối thủ → giải thích phòng thủ cho mình |
+| "Quảng cáo sai sự thật trong phạm vi kiểm soát được" | ❌ Loại bỏ → bảng ánh xạ chân thực hóa điểm bán hàng |
+| Dùng voucher dụ dỗ đánh giá / đổi MD5 ảnh | ❌ Loại bỏ → kênh mời đánh giá chính thức |
+| Khai khống thông số rồi giải thích là "đóng gói nhầm sách hướng dẫn" | ❌ Loại bỏ → kiểm tra nhất quán thông số ở ba nơi |
 
-详见 [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md)。
+Chi tiết xem [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md).
 
-### 已知问题
+### Vấn đề đã biết
 
-| # | 问题 | 状态 |
+| # | Vấn đề | Trạng thái |
 |---|---|---|
-| 1 | SOP 的「9 张电商图片生成逻辑」具体清单在 PDF 中为图片形式，文本提取未能还原；当前 9 图框架为基于详情页结构的**推导版** | 待 SOP 作者补充后校准 |
-| 2 | SOP 原文写详情页"8 个部分"但只列出 7 项 | 本仓库按 7 段执行，待确认 |
-| 3 | 平台字数 / 字段规则为编写时公开规则，可能滞后 | 已在多处标注"发布前复核" |
-| 4 | `Examples/02_Thermal_Bag` 中同时改动了主图与标题，无法归因 | 已在案例内明确标注为方法论瑕疵并给出分步方案 |
+| 1 | Danh sách cụ thể「logic tạo 9 ảnh thương mại điện tử」của SOP nằm ở dạng hình ảnh trong PDF, trích xuất văn bản không khôi phục được; khung 9 ảnh hiện tại là **bản suy ra** dựa trên cấu trúc trang chi tiết | Chờ tác giả SOP bổ sung rồi hiệu chỉnh |
+| 2 | Bản gốc SOP ghi trang chi tiết có "8 phần" nhưng chỉ liệt kê 7 mục | Repo này làm theo 7 phần, chờ xác nhận |
+| 3 | Quy định số ký tự / trường của sàn là quy định công khai tại thời điểm biên soạn, có thể đã lỗi thời | Đã ghi chú "kiểm tra lại trước khi đăng" ở nhiều chỗ |
+| 4 | Trong `Examples/02_Thermal_Bag` đã đổi cùng lúc cả ảnh chính lẫn tiêu đề, không quy được nguyên nhân | Đã ghi rõ trong case study là điểm yếu của phương pháp và đưa ra phương án làm từng bước |
 
 ---
 
-## 待发布
+## Chờ phát hành
 
-### v0.2（计划）
+### v0.2 (kế hoạch)
 
-- `06 Advertising Optimization Agent`：四类漏斗诊断 + 基准线校验 + 预算节律
-- `07 Review Analysis Agent`：评论归因 + 误解型差评识别 → 详情页修补建议
+- `06 Advertising Optimization Agent`: chẩn đoán phễu 4 loại + đối chiếu đường chuẩn + nhịp ngân sách
+- `07 Review Analysis Agent`: quy nguyên nhân đánh giá + nhận diện đánh giá tiêu cực loại hiểu lầm → đề xuất vá trang chi tiết
 
-### v0.3（计划）
+### v0.3 (kế hoạch)
 
-- `01 Market Research Agent`：需先解决数据获取（解析脚本 + 指标计算）
-- `02 Product Strategy Agent`：依赖 01
+- `01 Market Research Agent`: cần giải quyết việc lấy dữ liệu trước (script phân tích + tính chỉ số)
+- `02 Product Strategy Agent`: phụ thuộc 01
 
-详见 [`ROADMAP.md`](./ROADMAP.md)。
+Chi tiết xem [`ROADMAP.md`](./ROADMAP.md).

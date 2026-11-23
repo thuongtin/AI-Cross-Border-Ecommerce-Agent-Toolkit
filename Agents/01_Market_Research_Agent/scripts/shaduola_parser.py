@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-shaduola_parser.py — 把类目导出数据（CSV / XLSX）标准化为 JSON
+shaduola_parser.py — Chuẩn hóa dữ liệu xuất ngành hàng (CSV / XLSX) thành JSON
 
-用途：解决「数据怎么进得来」这一步。Agent 只吃标准化后的 JSON，不吃各平台
-      五花八门的导出格式。
+Mục đích: giải quyết khâu "đưa dữ liệu vào thế nào". Agent chỉ nhận JSON đã chuẩn hóa,
+          không nhận các định dạng xuất đủ kiểu của từng sàn.
 
-依赖：仅标准库。XLSX 支持需要 openpyxl（可选，缺失时会给提示）。
+Phụ thuộc: chỉ thư viện chuẩn. Đọc XLSX cần openpyxl (tùy chọn, thiếu sẽ có thông báo).
 
-用法：
-    python shaduola_parser.py <输入文件> [-o 输出.json] [--mapping 映射.json]
+Cách dùng:
+    python shaduola_parser.py <file_đầu_vào> [-o đầu_ra.json] [--mapping ánh_xạ.json]
     python shaduola_parser.py data.csv -o out.json
-    python shaduola_parser.py data.csv --profile     # 只打印识别到的列，不转换
+    python shaduola_parser.py data.csv --profile     # chỉ in các cột nhận diện được, không chuyển đổi
 """
 
 from __future__ import annotations
@@ -22,52 +22,81 @@ import json
 import os
 import re
 import sys
+import unicodedata
 from typing import Any
 
 # ---------------------------------------------------------------------------
-# 列名映射：键 = 标准字段名，值 = 可能出现的列名（不区分大小写，去空格后匹配）
+# Ánh xạ tên cột: khóa = tên trường chuẩn, giá trị = các tên cột có thể gặp
+# (không phân biệt hoa thường, so khớp sau khi bỏ khoảng trắng).
+# Giữ alias tiếng Trung (file xuất từ Shaduola/công cụ Trung Quốc) và thêm alias tiếng Việt.
 # ---------------------------------------------------------------------------
 DEFAULT_MAPPING: dict[str, list[str]] = {
-    "title":        ["商品名称", "商品名", "标题", "产品名称", "product name", "title", "nome do produto"],
-    "price":        ["价格", "售价", "均价", "商品价格", "price", "preço", "preco"],
-    "monthly_sales": ["月销量", "月销", "30天销量", "近30天销量", "monthly sales", "vendas mensais"],
-    "monthly_revenue": ["月销售额", "月销售额(元)", "销售额", "月gmv", "revenue", "faturamento"],
-    "total_sales":  ["总销量", "累计销量", "total sales", "vendas totais"],
-    "seller":       ["卖家", "店铺", "店铺名称", "卖家名称", "seller", "loja", "vendedor"],
-    "brand":        ["品牌", "品牌名", "brand", "marca"],
-    "rating":       ["评分", "商品评分", "rating", "avaliação", "avaliacao"],
-    "review_count": ["评价数", "评论数", "评价数量", "review count", "avaliações"],
-    "listing_age_days": ["上架天数", "上架时间", "已上架", "listing age"],
-    "url":          ["商品链接", "链接", "url", "link"],
-    "category":     ["类目", "分类", "category", "categoria"],
+    "title":        ["商品名称", "商品名", "标题", "产品名称", "tên sản phẩm", "tên sp", "tiêu đề",
+                     "product name", "title", "nome do produto"],
+    "price":        ["价格", "售价", "均价", "商品价格", "giá", "giá bán", "giá sản phẩm",
+                     "price", "preço", "preco"],
+    "monthly_sales": ["月销量", "月销", "30天销量", "近30天销量", "lượng bán tháng", "lượt bán tháng",
+                      "đã bán tháng", "đã bán 30 ngày", "monthly sales", "vendas mensais"],
+    "monthly_revenue": ["月销售额", "月销售额(元)", "销售额", "月gmv", "doanh thu tháng", "doanh thu",
+                        "gmv tháng", "revenue", "faturamento"],
+    "total_sales":  ["总销量", "累计销量", "tổng lượng bán", "tổng đã bán", "total sales", "vendas totais"],
+    "seller":       ["卖家", "店铺", "店铺名称", "卖家名称", "người bán", "tên shop", "shop",
+                     "seller", "loja", "vendedor"],
+    "brand":        ["品牌", "品牌名", "thương hiệu", "brand", "marca"],
+    "rating":       ["评分", "商品评分", "điểm đánh giá", "rating", "avaliação", "avaliacao"],
+    "review_count": ["评价数", "评论数", "评价数量", "số đánh giá", "lượt đánh giá", "review count", "avaliações"],
+    "listing_age_days": ["上架天数", "上架时间", "已上架", "thời gian đăng bán", "số ngày đăng bán",
+                         "ngày đăng bán", "listing age"],
+    "url":          ["商品链接", "链接", "link sản phẩm", "url", "link"],
+    "category":     ["类目", "分类", "ngành hàng", "danh mục", "category", "categoria"],
 }
 
-# 标准化输出中的数值字段
+# Các trường số trong đầu ra đã chuẩn hóa
 NUMERIC_FIELDS = [
     "price", "monthly_sales", "monthly_revenue", "total_sales",
     "rating", "review_count", "listing_age_days",
 ]
 
-# 中文数量单位
-_CN_UNITS = {"万": 10_000, "亿": 100_000_000, "k": 1_000, "K": 1_000, "m": 1_000_000, "M": 1_000_000}
+# Đơn vị số lượng (tiếng Trung / tiếng Việt / tiếng Anh)
+_CN_UNITS = {
+    "万": 10_000, "亿": 100_000_000,
+    "nghìn": 1_000, "ngàn": 1_000, "triệu": 1_000_000, "tr": 1_000_000, "tỷ": 1_000_000_000,
+    "k": 1_000, "K": 1_000, "m": 1_000_000, "M": 1_000_000,
+}
+
+
+# Từ loại trừ khi khớp mờ: tránh nhận nhầm khoảng giá / phí vận chuyển là giá, số lũy kế là số tháng
+_CUMULATIVE_WORDS = ("累计", "总", "tổng", "total", "lifetime", "acumulad")
+_FUZZY_EXCLUDE: dict[str, tuple[str, ...]] = {
+    "price": ("区间", "范围", "运费", "range", "faixa", "khoảng giá", "shipping", "frete", "vận chuyển", "ship"),
+    "monthly_sales": _CUMULATIVE_WORDS,
+    "monthly_revenue": _CUMULATIVE_WORDS,
+}
+# Cột có ghi rõ phạm vi tháng thì vẫn khớp dù chứa từ lũy kế ("Monthly sales (total)", "月销售额（总计）")
+_MONTHLY_MARKERS = ("月", "30天", "tháng", "30ngày", "month", "mensa", "mês", "30dias")
+_FUZZY_KEEP: dict[str, tuple[str, ...]] = {
+    "monthly_sales": _MONTHLY_MARKERS,
+    "monthly_revenue": _MONTHLY_MARKERS,
+}
 
 
 def _norm_key(s: str) -> str:
-    """归一化列名：去空白、全角转半角、小写。"""
+    """Chuẩn hóa tên cột: chuẩn Unicode NFC, bỏ khoảng trắng và dấu ngoặc, chuyển chữ thường."""
     if s is None:
         return ""
-    s = str(s)
+    s = unicodedata.normalize("NFC", str(s))
     s = s.replace("\u3000", " ").replace("\xa0", " ")
     s = re.sub(r"[\s\(\)（）\[\]【】:：]", "", s)
     return s.strip().lower()
 
 
-def _to_number(raw: Any) -> float | None:
+def _to_number(raw: Any, thousands_sep: bool = True) -> float | None:
     """
-    把脏数据转成数字。
+    Chuyển dữ liệu "bẩn" thành số.
 
-    处理：货币符号（R$ / $ / ¥ / BRL）、千分位（逗号/点/空格）、
-          中文数量单位（万 / 亿）、百分比、空值、'-' / 'N/A'。
+    Xử lý: ký hiệu tiền tệ (R$ / $ / ¥ / BRL / ₫ / VND), dấu phân cách hàng nghìn (phẩy/chấm/khoảng trắng),
+           đơn vị số lượng (万 / 亿 / nghìn / triệu / tỷ / k / M), phần trăm, hậu tố "+",
+           giá trị rỗng, '-' / 'N/A'.
     """
     if raw is None:
         return None
@@ -77,15 +106,16 @@ def _to_number(raw: Any) -> float | None:
         except (TypeError, ValueError):
             return None
 
-    s = str(raw).strip()
-    if s == "" or s.lower() in {"-", "--", "n/a", "na", "não", "nao", "null", "none", "无", "暂无"}:
+    s = unicodedata.normalize("NFC", str(raw)).strip()
+    if s == "" or s.lower() in {"-", "--", "n/a", "na", "não", "nao", "null", "none", "无", "暂无",
+                                "không có", "chưa có"}:
         return None
 
-    # 去掉货币符号与文字
-    s = re.sub(r"(?i)(R\$|BRL|USD|\$|¥|€|£|元|雷亚尔)", "", s)
-    s = s.replace("%", "").strip()
+    # Bỏ ký hiệu và chữ chỉ tiền tệ
+    s = re.sub(r"(?i)(R\$|BRL|USD|VNĐ|VND|\$|¥|€|£|₫|đ|元|雷亚尔)", "", s)
+    s = s.replace("%", "").strip().rstrip("+").strip()
 
-    # 中文/英文数量单位
+    # Đơn vị số lượng tiếng Trung / tiếng Việt / tiếng Anh
     mult = 1.0
     for unit, factor in _CN_UNITS.items():
         if s.endswith(unit):
@@ -93,18 +123,29 @@ def _to_number(raw: Any) -> float | None:
             s = s[: -len(unit)].strip()
             break
 
-    # 去掉千分位分隔（保留最后一个作为小数点的情况交给下面判断）
+    # Bỏ dấu phân cách hàng nghìn (trường hợp dấu cuối cùng là dấu thập phân sẽ xét bên dưới)
     s = s.replace(" ", "")
     if "," in s and "." in s:
-        # 两者都有：最后出现的那个是小数点  1.234,56 → 1234.56 / 1,234.56 → 1234.56
+        # Có cả hai: dấu xuất hiện sau cùng là dấu thập phân  1.234,56 → 1234.56 / 1,234.56 → 1234.56
         if s.rfind(",") > s.rfind("."):
             s = s.replace(".", "").replace(",", ".")
         else:
             s = s.replace(",", "")
     elif "," in s:
-        # 只有逗号：1,234 视为千分位；1,5 视为小数点
+        # Chỉ có dấu phẩy: 1,234 coi là phân cách hàng nghìn; 1,5 coi là dấu thập phân
+        # (có đơn vị số lượng thì luôn là dấu thập phân: 1,25 nghìn → 1250)
         head, _, tail = s.rpartition(",")
-        s = (head.replace(",", "") + "." + tail) if len(tail) == 1 else s.replace(",", "")
+        if len(tail) == 3 and mult == 1.0 and thousands_sep:
+            s = s.replace(",", "")
+        else:
+            s = head.replace(",", "") + "." + tail
+    elif s.count(".") > 1:
+        # Nhiều dấu chấm (kiểu Việt Nam 1.234.567) → đều là phân cách hàng nghìn
+        s = s.replace(".", "")
+    elif "." in s and mult == 1.0 and thousands_sep and len(s.rpartition(".")[2]) == 3:
+        # Một dấu chấm + đúng 3 chữ số, không có đơn vị: 1.234 → 1234 (kiểu Brazil/Việt Nam)
+        # (tắt với trường như điểm đánh giá, nơi 4.750 là số thập phân)
+        s = s.replace(".", "")
 
     try:
         return float(s) * mult
@@ -113,35 +154,35 @@ def _to_number(raw: Any) -> float | None:
 
 
 def _to_days(raw: Any) -> int | None:
-    """上架时间 → 天数。支持 '30天' / '2个月' / '2026-01-15' / '365'。"""
+    """Thời gian đăng bán → số ngày. Hỗ trợ '30 ngày' / '2 tháng' / '1 năm' / '30天' / '2个月' / '2026-01-15' / '365'."""
     if raw is None:
         return None
-    s = str(raw).strip()
-    if not s or s.lower() in {"n/a", "-", "无"}:
+    s = unicodedata.normalize("NFC", str(raw)).strip()
+    if not s or s.lower() in {"n/a", "-", "无", "không có"}:
         return None
 
-    m = re.search(r"(\d+(?:\.\d+)?)\s*(天|日)", s)
+    m = re.search(r"(\d+(?:\.\d+)?)\s*(天|日|ngày)", s, re.IGNORECASE)
     if m:
         return int(float(m.group(1)))
-    m = re.search(r"(\d+(?:\.\d+)?)\s*个?\s*月", s)
+    m = re.search(r"(\d+(?:\.\d+)?)\s*(?:个?\s*月|tháng)", s, re.IGNORECASE)
     if m:
         return int(float(m.group(1)) * 30)
-    m = re.search(r"(\d+(?:\.\d+)?)\s*年", s)
+    m = re.search(r"(\d+(?:\.\d+)?)\s*(?:年|năm)", s, re.IGNORECASE)
     if m:
         return int(float(m.group(1)) * 365)
     m = re.match(r"^\d{4}[-/](\d{1,2})[-/](\d{1,2})", s)
     if m:
-        # 粗算：按当年 1 月 1 日起算，避免引入 datetime 时区问题
+        # Tính gần đúng: đếm từ ngày 1/1 của năm đó, tránh vấn đề múi giờ của datetime
         return int((int(m.group(1)) - 1) * 30 + int(m.group(2)))
     n = _to_number(s)
     return int(n) if n is not None else None
 
 
 # ---------------------------------------------------------------------------
-# 读取层
+# Tầng đọc dữ liệu
 # ---------------------------------------------------------------------------
 def read_rows(path: str) -> list[dict[str, Any]]:
-    """读 CSV / TSV / XLSX 为 list[dict]。自动探测编码与分隔符。"""
+    """Đọc CSV / TSV / XLSX thành list[dict]. Tự dò encoding và dấu phân cách."""
     ext = os.path.splitext(path)[1].lower()
 
     if ext in {".xlsx", ".xlsm", ".xls"}:
@@ -149,9 +190,9 @@ def read_rows(path: str) -> list[dict[str, Any]]:
             import openpyxl  # type: ignore
         except ImportError:
             sys.exit(
-                "[ERROR] 读取 XLSX 需要 openpyxl。请先安装：\n"
+                "[ERROR] Đọc XLSX cần openpyxl. Hãy cài trước:\n"
                 "        pip install openpyxl\n"
-                "        或者把表格另存为 CSV 后重试。"
+                "        hoặc lưu bảng tính thành CSV rồi chạy lại."
             )
         wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
         ws = wb.active
@@ -168,7 +209,7 @@ def read_rows(path: str) -> list[dict[str, Any]]:
         wb.close()
         return out
 
-    # 文本类：探测编码
+    # File văn bản: dò encoding
     text = None
     for enc in ("utf-8-sig", "utf-8", "gbk", "gb18030", "latin-1"):
         try:
@@ -178,7 +219,7 @@ def read_rows(path: str) -> list[dict[str, Any]]:
         except UnicodeDecodeError:
             continue
     if text is None:
-        sys.exit(f"[ERROR] 无法识别文件编码：{path}")
+        sys.exit(f"[ERROR] Không nhận diện được encoding của file: {path}")
 
     sample = text[:4096]
     delim = "\t" if sample.count("\t") > sample.count(",") else ","
@@ -187,7 +228,7 @@ def read_rows(path: str) -> list[dict[str, Any]]:
 
 
 def build_column_map(header: list[str], custom: dict | None = None) -> dict[str, str]:
-    """把标准字段映射到实际列名。返回 {标准字段: 实际列名}。"""
+    """Ánh xạ trường chuẩn sang tên cột thực tế. Trả về {trường_chuẩn: tên_cột_thực_tế}."""
     mapping = dict(DEFAULT_MAPPING)
     if custom:
         for k, v in custom.items():
@@ -195,17 +236,32 @@ def build_column_map(header: list[str], custom: dict | None = None) -> dict[str,
 
     norm_header = {_norm_key(h): h for h in header if h is not None}
     resolved: dict[str, str] = {}
+    # Lượt 1: khớp chính xác cho mọi trường, để cột đã khớp không bị trường khác "giành" ở lượt mờ
     for field, aliases in mapping.items():
         for alias in aliases:
             key = _norm_key(alias)
             if key in norm_header:
                 resolved[field] = norm_header[key]
                 break
-        else:
-            # 模糊匹配：别名是列名的子串
+    # Lượt 2: khớp mờ trên các cột chưa dùng — trước hết theo tiền tố cho mọi trường
+    # ("giá" khớp "Giá (R$)"), sau đó theo chuỗi con ("vendas mensais" khớp "Quantidade de vendas mensais").
+    # Cột chứa từ loại trừ của trường (khoảng giá, phí ship, lũy kế...) không được khớp mờ vào trường đó.
+    for strict in (True, False):
+        for field, aliases in mapping.items():
+            if field in resolved:
+                continue
+            used = set(resolved.values())
+            exclude = [_norm_key(w) for w in _FUZZY_EXCLUDE.get(field, ())]
+            keep = [_norm_key(w) for w in _FUZZY_KEEP.get(field, ())]
             for alias in aliases:
                 key = _norm_key(alias)
-                hit = next((orig for nk, orig in norm_header.items() if key and key in nk), None)
+                if not key:
+                    continue
+                hit = next((orig for nk, orig in norm_header.items()
+                            if orig not in used
+                            and (nk.startswith(key) if strict else key in nk)
+                            and not (any(w in nk for w in exclude)
+                                     and not any(m in nk for m in keep))), None)
                 if hit:
                     resolved[field] = hit
                     break
@@ -213,10 +269,10 @@ def build_column_map(header: list[str], custom: dict | None = None) -> dict[str,
 
 
 # ---------------------------------------------------------------------------
-# 转换层
+# Tầng chuyển đổi
 # ---------------------------------------------------------------------------
 def normalize(rows: list[dict[str, Any]], colmap: dict[str, str]) -> list[dict[str, Any]]:
-    """按映射抽字段 + 清洗数值 + 丢弃无价格无销量的行。"""
+    """Trích trường theo ánh xạ + làm sạch số + bỏ các dòng không có cả giá lẫn lượng bán."""
     out: list[dict[str, Any]] = []
     dropped = 0
 
@@ -226,61 +282,61 @@ def normalize(rows: list[dict[str, Any]], colmap: dict[str, str]) -> list[dict[s
             raw = r.get(src)
             if field in NUMERIC_FIELDS:
                 item[field] = (
-                    _to_days(raw) if field == "listing_age_days" else _to_number(raw)
+                    _to_days(raw) if field == "listing_age_days" else _to_number(raw, thousands_sep=field != "rating")
                 )
             else:
                 item[field] = (str(raw).strip() if raw is not None else None) or None
 
-        # 月销售额缺失时用 价格 × 月销量 补算
+        # Thiếu doanh thu tháng thì tính bù bằng giá × lượng bán tháng
         if item.get("monthly_revenue") is None and item.get("price") and item.get("monthly_sales"):
             item["monthly_revenue"] = round(item["price"] * item["monthly_sales"], 2)
 
-        # 丢掉完全没有价值信号的行
+        # Bỏ các dòng hoàn toàn không có tín hiệu giá trị
         if item.get("price") is None and item.get("monthly_sales") is None:
             dropped += 1
             continue
         out.append(item)
 
     if dropped:
-        print(f"[warn] 丢弃 {dropped} 行（价格与月销量均缺失）", file=sys.stderr)
+        print(f"[warn] Bỏ {dropped} dòng (thiếu cả giá lẫn lượng bán tháng)", file=sys.stderr)
     return out
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="类目导出数据 → 标准化 JSON")
-    ap.add_argument("input", help="输入文件（CSV / TSV / XLSX）")
-    ap.add_argument("-o", "--output", help="输出 JSON 路径（默认 <输入名>.normalized.json）")
-    ap.add_argument("--mapping", help="自定义列名映射 JSON，形如 {\"price\": [\"我的价格列\"]}")
-    ap.add_argument("--profile", action="store_true", help="只打印列识别结果，不转换")
+    ap = argparse.ArgumentParser(description="Dữ liệu xuất ngành hàng → JSON chuẩn hóa")
+    ap.add_argument("input", help="File đầu vào (CSV / TSV / XLSX)")
+    ap.add_argument("-o", "--output", help="Đường dẫn JSON đầu ra (mặc định <tên_đầu_vào>.normalized.json)")
+    ap.add_argument("--mapping", help="JSON ánh xạ tên cột tùy chỉnh, dạng {\"price\": [\"Cột giá của tôi\"]}")
+    ap.add_argument("--profile", action="store_true", help="Chỉ in kết quả nhận diện cột, không chuyển đổi")
     args = ap.parse_args()
 
     rows = read_rows(args.input)
     if not rows:
-        sys.exit("[ERROR] 没读到数据行。请确认文件非空、且第一行是表头。")
+        sys.exit("[ERROR] Không đọc được dòng dữ liệu nào. Hãy kiểm tra file không rỗng và dòng đầu tiên là tiêu đề cột.")
 
     header = list(rows[0].keys())
     custom = json.load(open(args.mapping, encoding="utf-8")) if args.mapping else None
     colmap = build_column_map(header, custom)
 
     if args.profile:
-        print(f"文件：{args.input}\n数据行数：{len(rows)}\n")
-        print("识别到的列：")
+        print(f"File: {args.input}\nSố dòng dữ liệu: {len(rows)}\n")
+        print("Các cột nhận diện được:")
         for h in header:
             print(f"  - {h}")
-        print("\n字段映射结果：")
+        print("\nKết quả ánh xạ trường:")
         for field in DEFAULT_MAPPING:
             src = colmap.get(field)
-            print(f"  {'✅' if src else '❌'}  {field:20} <- {src if src else '（未识别，可用 --mapping 指定）'}")
+            print(f"  {'✅' if src else '❌'}  {field:20} <- {src if src else '(chưa nhận diện, có thể chỉ định bằng --mapping)'}")
         missing = [f for f in ("title", "price", "monthly_sales") if f not in colmap]
         if missing:
-            print(f"\n[提示] 关键字段未识别：{missing}。建议用 --mapping 手动指定。")
+            print(f"\n[Gợi ý] Chưa nhận diện được trường quan trọng: {missing}. Nên chỉ định thủ công bằng --mapping.")
         return
 
     for required in ("price", "monthly_sales"):
         if required not in colmap:
             sys.exit(
-                f"[ERROR] 必需字段 `{required}` 未识别到。\n"
-                f"        用 --profile 看识别结果，或 --mapping 指定列名。"
+                f"[ERROR] Không nhận diện được trường bắt buộc `{required}`.\n"
+                f"        Dùng --profile để xem kết quả nhận diện, hoặc --mapping để chỉ định tên cột."
             )
 
     items = normalize(rows, colmap)
@@ -298,9 +354,9 @@ def main() -> None:
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
-    print(f"✅ 已写出 {out_path}")
-    print(f"   保留 {len(items)} / {len(rows)} 行")
-    print(f"   识别字段 {len(colmap)} 个：{', '.join(sorted(colmap))}")
+    print(f"✅ Đã ghi {out_path}")
+    print(f"   Giữ lại {len(items)} / {len(rows)} dòng")
+    print(f"   Nhận diện {len(colmap)} trường: {', '.join(sorted(colmap))}")
 
 
 if __name__ == "__main__":

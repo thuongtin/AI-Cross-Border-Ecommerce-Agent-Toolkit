@@ -1,127 +1,127 @@
 # CONTRIBUTING
 
-感谢参与。本仓库的目标是**把跨境运营经验变成可复用的东西**——所以对贡献者只有三个要求：**真实、脱敏、可复现**。
+Cảm ơn bạn đã tham gia. Mục tiêu của repo này là **biến kinh nghiệm vận hành xuyên biên giới thành thứ có thể tái sử dụng** —— vì vậy người đóng góp chỉ cần đáp ứng ba yêu cầu: **thật, ẩn danh, tái hiện được**.
 
 ---
 
-## 一、可以贡献什么
+## 1. Có thể đóng góp những gì
 
-| 类型 | 例子 | 优先级 |
+| Loại | Ví dụ | Mức ưu tiên |
 |---|---|---|
-| **新案例** | 某个类目的完整跑通记录 | 🔴 最高 |
-| **类目配置维度表** | 某类目该拆解哪些配置参数（如 SOP 1.5 的滑板车 12 个维度） | 🔴 高 |
-| **新市场平台规则** | 墨西哥 / 智利 / 哥伦比亚站的字段规范 | 🟡 中 |
-| **Prompt 改进** | 现有 Prompt 的输出更稳定 / 更符合平台规则 | 🟡 中 |
-| **新 Agent 模块** | 补齐 Phase 2 的四个模块 | 🟡 中 |
-| **文档修订** | 修正错误、补充说明 | ⚪ 一般 |
-| **Bug 报告** | Prompt 输出异常、字段定义矛盾 | ⚪ 一般 |
+| **Case study mới** | Bản ghi chạy trọn vẹn cho một ngành hàng | 🔴 Cao nhất |
+| **Bảng chiều cấu hình theo ngành hàng** | Ngành hàng đó cần tách những thông số cấu hình nào (như 12 chiều của xe scooter trong SOP 1.5) | 🔴 Cao |
+| **Quy định sàn cho thị trường mới** | Quy chuẩn trường của site Mexico / Chile / Colombia | 🟡 Trung bình |
+| **Cải tiến Prompt** | Prompt hiện có cho output ổn định hơn / khớp quy định sàn hơn | 🟡 Trung bình |
+| **Module Agent mới** | Bổ sung đủ bốn module của Phase 2 | 🟡 Trung bình |
+| **Chỉnh sửa tài liệu** | Sửa lỗi, bổ sung giải thích | ⚪ Bình thường |
+| **Báo lỗi (bug)** | Output Prompt bất thường, định nghĩa trường mâu thuẫn | ⚪ Bình thường |
 
-## 不接受什么
+## Không chấp nhận những gì
 
-| 不接受 | 原因 |
+| Không chấp nhận | Lý do |
 |---|---|
-| 刷单 / 刷评 / 规避风控的操作指引或工具 | 平台明令禁止，且会让整个仓库和使用者承担风险 |
-| 恶意举报竞品的方法 | 不正当竞争 |
-| 含真实店铺名 / 账号 / 买家信息的案例 | 隐私 |
-| 包含未授权品牌词的"示例" | 侵权 |
-| 直接搬运的竞品素材（图 / 视频 / 文案） | 版权 |
-| 承诺收益、保证出单的内容 | 无法负责 |
+| Hướng dẫn thao tác hoặc công cụ buff đơn ảo / buff review / lách hệ thống kiểm soát rủi ro | Sàn cấm rõ ràng, và sẽ khiến cả repo lẫn người dùng gánh rủi ro |
+| Cách report ác ý đối thủ | Cạnh tranh không lành mạnh |
+| Case study chứa tên shop thật / tài khoản / thông tin người mua | Quyền riêng tư |
+| "Ví dụ" chứa từ khóa thương hiệu chưa được cấp phép | Vi phạm quyền sở hữu |
+| Nội dung sáng tạo (creative) bê nguyên của đối thủ (ảnh / video / copy) | Bản quyền |
+| Nội dung cam kết lợi nhuận, đảm bảo ra đơn | Không thể chịu trách nhiệm |
 
-> **如果你不确定某个内容是否合规**，先读 [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md)。那里有完整的改写对照表——**很多灰产动作的业务目标本身是合理的，只是手段需要替换**。
-
----
-
-## 二、提交案例的标准
-
-案例是本仓库最有价值的贡献。要求：
-
-### 必须包含
-
-1. **产品背景** — 什么产品、什么市场、什么定位
-2. **输入端** — 完整的输入（`spec_table` / `forbidden_words` / `usage_scope` 等）
-3. **AI 处理流程** — 跑了哪些 Prompt、什么顺序
-4. **生成结果** — 实际输出（可节选，但要能看出质量）
-5. **交付给下游模块的字段** — 按 [`Templates/product_brief_template.md`](./Templates/product_brief_template.md) 定义
-6. **优化建议** — 下一步该做什么
-7. **这个案例证明了什么** — 显式化结论
-
-### 必须做到
-
-- [ ] **脱敏**：无真实店铺名、账号、买家信息、未授权品牌词
-- [ ] **参数真实**：示例参数能举证，不编
-- [ ] **字符数实测**：标题、字幕等长度必须实测（可以用脚本数），不估算
-- [ ] **数字可复现**：时长、词数、价格等计算过程可被读者验算
-- [ ] **过了自检清单**：[`docs/04_Result_Checklist.md`](./docs/04_Result_Checklist.md)
-- [ ] **图 / 视频案例不含**伪造的认证标志、评价截图、销量角标
-
-### 加分项
-
-- 暴露了自己的错误并说明如何修正（**这比完美案例更有价值**）
-- 标注了已知的方法论瑕疵
-- 提供了反例（什么做法是错的）
+> **Nếu bạn không chắc một nội dung có tuân thủ hay không**, hãy đọc [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md) trước. Ở đó có bảng đối chiếu viết lại đầy đủ —— **mục tiêu kinh doanh của nhiều thao tác "xám" vốn hợp lý, chỉ là cách làm cần được thay thế**.
 
 ---
 
-## 三、提交 Prompt 改进的标准
+## 2. Tiêu chuẩn gửi case study
 
-- [ ] 遵循 [`docs/01_Prompt_Design_Guide.md`](./docs/01_Prompt_Design_Guide.md) 的五要素结构
-- [ ] **保留 COMPLIANCE GUARD 段落**（不可删除、不可弱化）
-- [ ] 输入契约声明完整（缺字段必须报错，不许猜）
-- [ ] 输出契约用固定 Markdown 标题结构
-- [ ] 自检清单是可勾选的**二元判断**，不是"尽量""注意"
-- [ ] 说明改了什么、为什么改、改前改后的对比
+Case study là đóng góp giá trị nhất cho repo này. Yêu cầu:
+
+### Bắt buộc có
+
+1. **Bối cảnh sản phẩm** — sản phẩm gì, thị trường nào, định vị ra sao
+2. **Đầu vào** — toàn bộ đầu vào (`spec_table` / `forbidden_words` / `usage_scope`, v.v.)
+3. **Quy trình xử lý của AI** — đã chạy những Prompt nào, theo thứ tự nào
+4. **Kết quả tạo ra** — output thực tế (có thể trích một phần, nhưng phải thấy được chất lượng)
+5. **Các trường bàn giao cho module phía sau** — theo định nghĩa trong [`Templates/product_brief_template.md`](./Templates/product_brief_template.md)
+6. **Đề xuất tối ưu** — bước tiếp theo nên làm gì
+7. **Case study này chứng minh được điều gì** — nêu rõ kết luận
+
+### Bắt buộc đạt
+
+- [ ] **Ẩn danh**: không có tên shop thật, tài khoản, thông tin người mua, từ khóa thương hiệu chưa được cấp phép
+- [ ] **Thông số thật**: thông số trong ví dụ phải có bằng chứng, không bịa
+- [ ] **Đếm ký tự thực tế**: độ dài tiêu đề, phụ đề, v.v. phải đếm thực tế (có thể dùng script), không ước lượng
+- [ ] **Con số tái hiện được**: quá trình tính thời lượng, số từ, giá, v.v. người đọc phải kiểm tra lại được
+- [ ] **Đã qua checklist tự kiểm tra**: [`docs/04_Result_Checklist.md`](./docs/04_Result_Checklist.md)
+- [ ] **Case study ảnh / video không chứa** logo chứng nhận giả, ảnh chụp đánh giá, badge số lượng đã bán
+
+### Điểm cộng
+
+- Tự chỉ ra lỗi của mình và giải thích cách sửa (**điều này giá trị hơn một case study hoàn hảo**)
+- Ghi chú các điểm yếu đã biết của phương pháp
+- Đưa ra phản ví dụ (cách làm nào là sai)
 
 ---
 
-## 四、目录约定
+## 3. Tiêu chuẩn gửi cải tiến Prompt
+
+- [ ] Tuân theo cấu trúc 5 thành phần trong [`docs/01_Prompt_Design_Guide.md`](./docs/01_Prompt_Design_Guide.md)
+- [ ] **Giữ nguyên đoạn COMPLIANCE GUARD** (không được xóa, không được làm yếu đi)
+- [ ] Khai báo hợp đồng đầu vào đầy đủ (thiếu trường phải báo lỗi, không được đoán)
+- [ ] Hợp đồng đầu ra dùng cấu trúc heading Markdown cố định
+- [ ] Checklist tự kiểm tra là **phán đoán nhị phân** tick được, không phải kiểu "cố gắng", "chú ý"
+- [ ] Giải thích đã sửa gì, vì sao sửa, so sánh trước và sau khi sửa
+
+---
+
+## 4. Quy ước thư mục
 
 ```text
 Agents/<NN>_<Name>_Agent/
-├── README.md          必需：职责 / 输入输出 / 使用方法 / 已知限制
-├── prompts/           必需：00_system.md + 各任务 Prompt
-├── templates/         必需：input_* + output_*
-└── examples/          必需：至少 1 个真实案例
+├── README.md          Bắt buộc: trách nhiệm / đầu vào đầu ra / cách dùng / giới hạn đã biết
+├── prompts/           Bắt buộc: 00_system.md + các Task Prompt
+├── templates/         Bắt buộc: input_* + output_*
+└── examples/          Bắt buộc: ít nhất 1 case study thật
 ```
 
-- **只被一个 Agent 用的模板** → 放该 Agent 的 `templates/`
-- **被两个以上 Agent 用** → 提到顶层 [`Templates/`](./Templates/)
-- **单模块案例** → 放该 Agent 的 `examples/`
-- **跨模块端到端案例** → 放顶层 [`Examples/`](./Examples/)
+- **Template chỉ một Agent dùng** → đặt trong `templates/` của Agent đó
+- **Từ hai Agent trở lên dùng** → đưa lên [`Templates/`](./Templates/) ở cấp trên cùng
+- **Case study một module** → đặt trong `examples/` của Agent đó
+- **Case study end-to-end liên module** → đặt trong [`Examples/`](./Examples/) ở cấp trên cùng
 
 ---
 
-## 五、提交信息规范
+## 5. Quy chuẩn commit message
 
 ```
-<type>: <简短描述>
+<type>: <mô tả ngắn>
 
 type:
-  feat     新增 Agent / 模块 / 案例
-  fix      修正错误
-  docs     文档修订
-  prompt   Prompt 改进
-  chore    杂项（目录、配置）
+  feat     Thêm Agent / module / case study mới
+  fix      Sửa lỗi
+  docs     Chỉnh sửa tài liệu
+  prompt   Cải tiến Prompt
+  chore    Việc lặt vặt (thư mục, cấu hình)
 ```
 
-例：
+Ví dụ:
 ```
-feat: 新增 Drill / 电钻类目的配置维度表
-fix: 修正 Shopee 标题字符数上限说明
-prompt: 03 标题生成 Prompt 增加"主关键词位置校验"
+feat: thêm bảng chiều cấu hình cho ngành hàng Drill / máy khoan điện
+fix: sửa mô tả giới hạn số ký tự tiêu đề Shopee
+prompt: Prompt tạo tiêu đề của 03 thêm bước "kiểm tra vị trí từ khóa chính"
 ```
 
 ---
 
-## 六、提交前最后检查
+## 6. Kiểm tra lần cuối trước khi gửi
 
-- [ ] 我的改动里**没有**刷单 / 刷评 / 恶意举报 / 规避风控的内容
-- [ ] 我的案例**已脱敏**（店铺名、账号、买家信息、未授权品牌）
-- [ ] 我的 Prompt **保留了 COMPLIANCE GUARD**
-- [ ] 我的示例参数**能举证**
-- [ ] 我的数字**可被复现**（尤其是字符数、时长、价格）
-- [ ] 我提供的图 / 视频案例**无伪造认证、评价、销量**
-- [ ] 我已读过 [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md)
+- [ ] Thay đổi của tôi **không có** nội dung buff đơn ảo / buff review / report ác ý / lách hệ thống kiểm soát rủi ro
+- [ ] Case study của tôi **đã ẩn danh** (tên shop, tài khoản, thông tin người mua, thương hiệu chưa được cấp phép)
+- [ ] Prompt của tôi **giữ nguyên COMPLIANCE GUARD**
+- [ ] Thông số trong ví dụ của tôi **có bằng chứng**
+- [ ] Các con số của tôi **tái hiện được** (đặc biệt là số ký tự, thời lượng, giá)
+- [ ] Case study ảnh / video tôi gửi **không có chứng nhận, đánh giá, số lượng đã bán giả mạo**
+- [ ] Tôi đã đọc [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md)
 
 ---
 
-**相关文档**：[架构拆解](./docs/00_Architecture_SOP_to_Agent.md) · [Prompt 规范](./docs/01_Prompt_Design_Guide.md) · [合规红线](./docs/03_Compliance_Guard.md) · [路线图](./ROADMAP.md)
+**Tài liệu liên quan**: [Tách kiến trúc](./docs/00_Architecture_SOP_to_Agent.md) · [Chuẩn Prompt](./docs/01_Prompt_Design_Guide.md) · [Lằn ranh đỏ tuân thủ](./docs/03_Compliance_Guard.md) · [Lộ trình](./ROADMAP.md)

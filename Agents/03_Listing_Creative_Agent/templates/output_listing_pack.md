@@ -1,188 +1,188 @@
-# 输出模板 · Listing 素材包
+# Template đầu ra · Bộ nội dung Listing
 
-> Agent 的标准输出结构。**下游模块（04 Product Image / 05 Product Video）依赖第 5 段的字段**，不可省略。
+> Cấu trúc đầu ra chuẩn của Agent. **Các module phía sau (04 Product Image / 05 Product Video) phụ thuộc vào các trường ở đoạn 5**, không được bỏ.
 
 ---
 
 ```markdown
 # Listing Pack · <product_name> · <platform> / <target_market>
 
-生成时间：<YYYY-MM-DD>
-Prompt 版本：03-Listing-Creative v0.1
-模式：<single | variant | iterate>
+Thời gian tạo: <YYYY-MM-DD>
+Phiên bản Prompt: 03-Listing-Creative v0.1
+Chế độ: <single | variant | iterate>
 
 ---
 
-## 1. 关键词分类表
+## 1. Bảng phân loại từ khóa
 
-### 1.1 高频词提取
+### 1.1 Trích từ tần suất cao
 
-| 词 | 出现榜数 | 出现于哪些榜 | 归属类别 |
+| Từ | Số bảng xuất hiện | Xuất hiện ở bảng nào | Thuộc nhóm |
 |---|---|---|---|
 | | /3 | | |
 
-### 1.2 分类汇总
+### 1.2 Tổng hợp phân loại
 
-| 类别 | 词数 | 词列表 | 用于何处 |
+| Nhóm | Số từ | Danh sách từ | Dùng ở đâu |
 |---|---|---|---|
-| 核心词 | | | 标题前 30 字符 |
-| 参数词 | | | 标题 + 详情参数段 |
-| 人群词 | | | 标题人群段 |
-| 功能词 | | | 标题功能段 + 详情卖点段 |
-| 场景词 | | | 详情场景段 |
-| 配件词 | | | 详情参数段 |
-| 风险词 | | | ⛔ 禁用 |
+| Từ cốt lõi | | | 30 ký tự đầu của tiêu đề |
+| Từ thông số | | | Tiêu đề + đoạn thông số của trang chi tiết |
+| Từ nhóm khách hàng | | | Đoạn nhóm khách hàng của tiêu đề |
+| Từ tính năng | | | Đoạn tính năng của tiêu đề + đoạn điểm bán hàng của trang chi tiết |
+| Từ ngữ cảnh | | | Đoạn ngữ cảnh của trang chi tiết |
+| Từ phụ kiện | | | Đoạn thông số của trang chi tiết |
+| Từ rủi ro | | | ⛔ Cấm dùng |
 
-### 1.3 风险词隔离清单
+### 1.3 Danh sách cách ly từ rủi ro
 
-| 风险词 | 风险类型 | 原因 |
+| Từ rủi ro | Loại rủi ro | Lý do |
 |---|---|---|
-| | 品牌侵权 / 参数不符 / 敏感 | |
+| | Vi phạm thương hiệu / Thông số không khớp / Nhạy cảm | |
 
 ---
 
-## 2. 标题方案
+## 2. Phương án tiêu đề
 
-| # | 标题 | 字符数 | 侧重方向 |
+| # | Tiêu đề | Số ký tự | Hướng trọng tâm |
 |---|---|---|---|
 | A | | /120 | |
 | B | | /120 | |
 | C | | /120 | |
 
-**推荐**：<A/B/C> — <理由>
+**Đề xuất**: <A/B/C> — <lý do>
 
 ---
 
-## 3. 详情页正文
+## 3. Nội dung trang chi tiết
 
-### 段 1 · 欢迎语
-### 段 2 · 核心卖点
-| # | 卖点 | 量化支撑 |
+### Đoạn 1 · Lời chào
+### Đoạn 2 · Điểm bán hàng cốt lõi
+| # | Điểm bán hàng | Số liệu chứng minh |
 |---|---|---|
 
-### 段 3 · 使用场景
-| # | 场景 | 具体用法 |
+### Đoạn 3 · Ngữ cảnh sử dụng
+| # | Ngữ cảnh | Cách dùng cụ thể |
 |---|---|---|
 
-### 段 4 · 详细参数
-| 参数 | 值 |
+### Đoạn 4 · Thông số chi tiết
+| Thông số | Giá trị |
 |---|---|
 
-**包装清单**：
+**Danh sách hàng trong hộp**:
 - 
 
-### 段 5 · 售后与客服承诺
-### 段 6 · 注意事项
-### 段 7 · 关键词标签区
+### Đoạn 5 · Cam kết hậu mãi và CSKH
+### Đoạn 6 · Lưu ý
+### Đoạn 7 · Khu vực tag từ khóa
 `tag1, tag2, ...`
 
 ---
 
-## 4. 卖点分层
+## 4. Phân tầng điểm bán hàng
 
-| 层级 | 卖点 | 支撑依据 | 用于 |
+| Tầng | Điểm bán hàng | Căn cứ chứng minh | Dùng cho |
 |---|---|---|---|
-| **主卖点** | | | 主图核心文案 / 视频钩子 / 标题 |
-| 副卖点 | | | 详情图 / 视频卖点段 |
-| 备用卖点 | | | A/B 测试 |
-| 禁用卖点 | | | ⛔ |
+| **Điểm bán hàng chính** | | | Chữ chính trên ảnh chính / hook video / tiêu đề |
+| Điểm bán hàng phụ | | | Ảnh chi tiết / đoạn điểm bán hàng trong video |
+| Điểm bán hàng dự phòng | | | A/B test |
+| Điểm bán hàng bị cấm | | | ⛔ |
 
 ---
 
-## 5. 交付给下游模块的字段 ★
+## 5. Các trường bàn giao cho module phía sau ★
 
 ```yaml
-core_selling_point: ""          # 一句话主卖点 → 04 主图核心文案 / 05 视频钩子
-secondary_points: []            # 副卖点列表 → 04 详情图文案 / 05 卖点段
-spec_table: {}                  # 参数表 → 04 参数图 / 05 参数标注
-forbidden_words: []             # 禁用词 → 04/05 硬拦截
-keyword_classified: {}          # 关键词分类 → 04 主图卖点 / 05 字幕
-title_final: ""                 # 最终标题 → 05 视频结尾 CTA
-visual_tone_hint: ""            # 视觉调性提示 → 04/05 统一风格
-usage_scope_confirmed: []       # 确认可用的场景
+core_selling_point: ""          # điểm bán hàng chính trong một câu → chữ chính trên ảnh chính của 04 / hook video của 05
+secondary_points: []            # danh sách điểm bán hàng phụ → chữ trên ảnh chi tiết của 04 / đoạn điểm bán hàng của 05
+spec_table: {}                  # bảng thông số → ảnh thông số của 04 / chú thích thông số của 05
+forbidden_words: []             # từ cấm → 04/05 chặn cứng
+keyword_classified: {}          # phân loại từ khóa → điểm bán hàng trên ảnh chính của 04 / phụ đề của 05
+title_final: ""                 # tiêu đề cuối cùng → CTA cuối video của 05
+visual_tone_hint: ""            # gợi ý tông hình ảnh → 04/05 thống nhất phong cách
+usage_scope_confirmed: []       # các ngữ cảnh đã xác nhận được dùng
 ```
 
 ---
 
-## 6. 参数一致性校验
+## 6. Kiểm tra tính nhất quán thông số
 
-| 参数 | spec_table | 详情页 | 标题 | 一致 |
+| Thông số | spec_table | Trang chi tiết | Tiêu đề | Nhất quán |
 |---|---|---|---|---|
 | | | | | ✅ |
 
 ---
 
-## 7. 生成自检
+## 7. Tự kiểm tra khi tạo
 
-### 标题自检
-| 检查项 | 结果 |
+### Tự kiểm tra tiêu đề
+| Mục kiểm tra | Kết quả |
 |---|---|
-| 字符数 ≤ 上限 | |
-| 主关键词在前 30 字符内 | |
-| 无促销词 / 表情 / 特殊字符 / 全大写 | |
-| 无堆砌重复词 | |
-| 无未授权品牌词 | |
-| 所有数值可溯源 | |
+| Số ký tự ≤ giới hạn | |
+| Từ khóa chính nằm trong 30 ký tự đầu | |
+| Không có từ khuyến mãi / emoji / ký tự đặc biệt / viết hoa toàn bộ | |
+| Không nhồi từ lặp lại | |
+| Không có tên thương hiệu chưa ủy quyền | |
+| Mọi giá trị số đều truy được nguồn | |
 
-### 合规扫描
-| 规则 | 命中数 | 处理 |
+### Quét tuân thủ
+| Quy tắc | Số lần dính | Xử lý |
 |---|---|---|
-| R1 绝对化用语 | | |
-| R2 未授权品牌词 | | |
-| R3 参数虚标 | | |
-| R4 促销词入标题 | | |
-| R5 敏感表述 | | |
-| R6 场景超范围 | | |
-| R7 伪造证明 | | |
+| R1 Từ ngữ tuyệt đối hóa | | |
+| R2 Tên thương hiệu chưa được ủy quyền | | |
+| R3 Khai khống thông số | | |
+| R4 Từ khuyến mãi trong tiêu đề | | |
+| R5 Nội dung nhạy cảm | | |
+| R6 Ngữ cảnh vượt phạm vi | | |
+| R7 Chứng cứ giả mạo | | |
 
-**命中明细**：
-| # | 规则 | 原文 | 问题 | 改写后 |
+**Chi tiết các mục dính**:
+| # | Quy tắc | Bản gốc | Vấn đề | Sau khi viết lại |
 |---|---|---|---|---|
 
-（无命中时：`合规扫描：无命中`）
+(Khi không dính: `Quét tuân thủ: không dính`)
 
-### 结构自检
-| 检查项 | 结果 |
+### Tự kiểm tra cấu trúc
+| Mục kiểm tra | Kết quả |
 |---|---|
-| 7 段结构完整 | |
-| 场景全在范围内 | |
-| 包装清单完整 | |
-| 保修信息完整 | |
-| 末尾已附下游字段 | |
+| Cấu trúc 7 đoạn đầy đủ | |
+| Mọi ngữ cảnh đều trong phạm vi | |
+| Danh sách hàng trong hộp đầy đủ | |
+| Thông tin bảo hành đầy đủ | |
+| Cuối đầu ra đã kèm các trường cho module phía sau | |
 
 ---
 
-## 8. 发布前提醒
+## 8. Nhắc nhở trước khi đăng
 
-- [ ] 已到卖家中心复核平台当前规则（字数 / 字段 / 图片）
-- [ ] 已核对参数真实性（Agent 无法验证输入本身）
-- [ ] 多店铺上架时已做差异化
-- [ ] 已记录本次 Prompt 版本号
+- [ ] Đã vào Seller Center kiểm tra lại quy tắc hiện hành của sàn (số ký tự / trường thông tin / hình ảnh)
+- [ ] Đã đối chiếu tính xác thực của thông số (Agent không kiểm chứng được bản thân đầu vào)
+- [ ] Khi đăng bán trên nhiều shop đã làm khác biệt hóa
+- [ ] Đã ghi lại số phiên bản Prompt lần này
 ```
 
 ---
 
-## 下游模块如何消费
+## Module phía sau sử dụng như thế nào
 
-### 04 Product Image Agent 需要
+### 04 Product Image Agent cần
 
-| 字段 | 用途 |
+| Trường | Mục đích |
 |---|---|
-| `core_selling_point` | 主图核心文案 |
-| `secondary_points[]` | 详情图文案 |
-| `spec_table` | 参数图 |
-| `forbidden_words[]` | 图内文字硬拦截 |
-| `visual_tone_hint` | 风格统一 |
+| `core_selling_point` | Chữ chính trên ảnh chính |
+| `secondary_points[]` | Chữ trên ảnh chi tiết |
+| `spec_table` | Ảnh thông số |
+| `forbidden_words[]` | Chặn cứng chữ trong ảnh |
+| `visual_tone_hint` | Thống nhất phong cách |
 
-### 05 Product Video Agent 需要
+### 05 Product Video Agent cần
 
-| 字段 | 用途 |
+| Trường | Mục đích |
 |---|---|
-| `core_selling_point` | 前 3 秒钩子 |
-| `secondary_points[]` | 卖点段脚本 |
-| `spec_table` | 参数标注 |
-| `forbidden_words[]` | 字幕硬拦截 |
-| `title_final` | 结尾 CTA |
-| `usage_scope_confirmed[]` | 场景镜头 |
+| `core_selling_point` | Hook 3 giây đầu |
+| `secondary_points[]` | Kịch bản đoạn điểm bán hàng |
+| `spec_table` | Chú thích thông số |
+| `forbidden_words[]` | Chặn cứng phụ đề |
+| `title_final` | CTA cuối video |
+| `usage_scope_confirmed[]` | Cảnh quay theo ngữ cảnh |
 
-> **阻塞规则**：`core_selling_point` 或 `forbidden_words` 为空时，04/05 必须拒绝执行并报错，而不是自行推测。
+> **Quy tắc chặn**: khi `core_selling_point` hoặc `forbidden_words` trống, 04/05 bắt buộc từ chối thực hiện và báo lỗi, chứ không được tự suy đoán.

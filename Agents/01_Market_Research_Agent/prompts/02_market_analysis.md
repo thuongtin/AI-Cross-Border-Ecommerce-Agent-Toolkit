@@ -1,290 +1,290 @@
-# TASK · 市场容量、集中度、价格带、配置组合与竞品分析
+# TASK · Phân tích quy mô thị trường, mức độ tập trung, dải giá, tổ hợp cấu hình và đối thủ
 
-> 配套使用：`00_system.md` + `01_category_precheck.md` 的输出 + `scripts/market_metrics.py` 的产出
-> 对应 SOP **1.2 – 1.6**
+> Dùng kèm: `00_system.md` + đầu ra của `01_category_precheck.md` + kết quả của `scripts/market_metrics.py`
+> Tương ứng SOP **1.2 – 1.6**
 
-**前置门槛**：`01_category_precheck.md` 的 `precheck_pass = false` 时**不许执行本任务**。
+**Điều kiện tiên quyết**: khi `precheck_pass = false` trong `01_category_precheck.md` thì **không được thực hiện task này**.
 
 ---
 
 # INPUT
 
-| 字段 | 来源 | 说明 |
+| Trường | Nguồn | Mô tả |
 |---|---|---|
-| `platform` / `target_market` / `category` | 人工 | — |
-| `metrics_report` | **`scripts/market_metrics.py`** | **阻塞项**——含容量/集中度/价格带/配置交叉表 |
-| `sample_size` / `data_date` | 同上 | 用于判断数据可信度 |
-| `cost_structure` | 人工 | 判断价格带时"公司有没有利润"的依据 |
-| `company_capabilities` | 人工 | 判断配置组合时"公司能不能做"的依据 |
-| `competitors[]` | 人工 | 2–3 个竞品（价格/配置/人群接近、销量较高、近期仍在出单） |
-| `competitor_reviews[]` | 人工（可选） | 竞品评论原文；深度归因交给 07 |
+| `platform` / `target_market` / `category` | Người dùng | — |
+| `metrics_report` | **`scripts/market_metrics.py`** | **Mục chặn** — gồm quy mô thị trường / mức độ tập trung / dải giá / bảng chéo cấu hình |
+| `sample_size` / `data_date` | Như trên | Dùng để đánh giá độ tin cậy của dữ liệu |
+| `cost_structure` | Người dùng | Căn cứ để đánh giá "công ty có lãi không" khi chọn dải giá |
+| `company_capabilities` | Người dùng | Căn cứ để đánh giá "công ty làm được không" khi chọn tổ hợp cấu hình |
+| `competitors[]` | Người dùng | 2–3 đối thủ (giá/cấu hình/tệp khách gần giống, lượng bán khá cao, gần đây vẫn ra đơn) |
+| `competitor_reviews[]` | Người dùng (tùy chọn) | Nguyên văn đánh giá (review) của đối thủ; quy nguyên nhân chuyên sâu giao cho 07 |
 
-> ⚠️ **不要自己重算指标。** metrics_report 里的数字是脚本算的确定性结果，你的任务是**解读**。若怀疑数字有问题，输出 `[METRIC_SUSPECT]` 并说明理由，让使用回去检查脚本参数，而不要自行改成"估计值"。
+> ⚠️ **Không tự tính lại chỉ số.** Các con số trong metrics_report là kết quả tất định do script tính, nhiệm vụ của bạn là **diễn giải**. Nếu nghi ngờ con số có vấn đề, xuất `[METRIC_SUSPECT]` kèm lý do để người dùng quay lại kiểm tra tham số script, chứ không tự sửa thành "giá trị ước tính".
 
 ---
 
-# STEP 1 · 数据可信度声明
+# STEP 1 · Tuyên bố độ tin cậy của dữ liệu
 
 ```markdown
-## 1. 数据可信度
+## 1. Độ tin cậy của dữ liệu
 
-| 项 | 值 | 判定 |
+| Hạng mục | Giá trị | Kết luận |
 |---|---|---|
-| 样本量 | <n> | 充足(≥50) / 偏小(30–49) / 不足(<30) |
-| 数据日期 | | 是否足够新 |
-| 配置维度抽取失败数 | <n> | 占比 > 30% 时标注 |
-| 数据来源 | | — |
+| Cỡ mẫu | <n> | Đủ (≥50) / Hơi nhỏ (30–49) / Không đủ (<30) |
+| Ngày dữ liệu | | Có đủ mới không |
+| Số sản phẩm không trích được chiều cấu hình | <n> | Ghi chú khi tỷ lệ > 30% |
+| Nguồn dữ liệu | | — |
 
-**结论**：<本次分析的结论可信度等级，以及哪些区块因数据不足而受限>
-```
-
----
-
-# STEP 2 · 市场容量与销量（SOP 1.2）
-
-```markdown
-## 2. 市场容量
-
-### 2.1 规模判断
-
-| 指标 | 数值 | 判断 |
-|---|---|---|
-| 月总销量 | | |
-| 月总销售额 | | |
-| 均价 / 中位价 | | 两者差距大 → 分布偏斜，需看隐含均价 |
-| 隐含均价（GMV÷销量） | | 反映真实成交价位 |
-| 单商品平均月销量 | | |
-
-【判断】市场容量是否足够支撑投入？
-
-### 2.2 销售趋势（SOP：通过月销量与月销售额判断）
-
-| 问题 | 结论 | 依据 |
-|---|---|---|
-| 产品是否持续出单 | | |
-| 是否处于增长期 / 下滑期 | | ⚠️ **单期快照数据无法判断趋势**，需 ≥2 期数据 |
-| 是否只是短期爆发 | | |
-| 是否可能是季节性产品 | | |
-
-⚠️ **若只有单期数据**：明确写"单期快照无法判断趋势，需要 2 期以上数据（建议间隔 30 天）对比"，不要凭空推断增长或下滑。
-
-### 2.3 新品表现
-
-| 问题 | 结论 | 依据 |
-|---|---|---|
-| 新上架商品是否能出单 | | |
-| 新品月销量是否能进入前列 | | |
-| 新品是否有增长率 | | |
-| 新品是否依靠低价、广告或活动起量 | | |
-
-**判断逻辑**（SOP 原文）：
-
-```
-如果新品也能卖      → 说明新链接有机会
-如果销量集中在老链接 → 新链接很难起量
-如果新品只能靠极低价 → 说明市场可能已经很卷
-```
-
-⚠️ **SOP 特别注明"这一部分虾多拉数据不准确"**。若 `listing_age_days` 缺失或精度差，直接写"该区块数据不可靠，需人工核对"，不要硬给结论。
+**Kết luận**: <mức độ tin cậy của kết luận lần phân tích này, và những phần nào bị hạn chế do thiếu dữ liệu>
 ```
 
 ---
 
-# STEP 3 · 品牌与卖家集中度（SOP 1.3）
+# STEP 2 · Quy mô thị trường và lượng bán (SOP 1.2)
 
 ```markdown
-## 3. 集中度分析
+## 2. Quy mô thị trường
 
-### 3.1 品牌集中度
+### 2.1 Đánh giá quy mô
 
-| 指标 | 数值 | 阈值 | 判定 |
+| Chỉ số | Giá trị | Nhận định |
+|---|---|---|
+| Tổng lượng bán tháng | | |
+| Tổng doanh thu tháng | | |
+| Giá trung bình / giá trung vị | | Hai giá trị chênh nhiều → phân bố lệch, cần xem giá trung bình ngầm định |
+| Giá trung bình ngầm định (GMV÷lượng bán) | | Phản ánh mức giá chốt đơn thực tế |
+| Lượng bán tháng trung bình mỗi sản phẩm | | |
+
+【Nhận định】Quy mô thị trường có đủ để bỏ vốn đầu tư không?
+
+### 2.2 Xu hướng bán hàng (SOP: đánh giá qua lượng bán tháng và doanh thu tháng)
+
+| Câu hỏi | Kết luận | Căn cứ |
+|---|---|---|
+| Sản phẩm có ra đơn đều đặn không | | |
+| Đang trong giai đoạn tăng trưởng / suy giảm | | ⚠️ **Dữ liệu chụp nhanh một kỳ không đánh giá được xu hướng**, cần ≥2 kỳ dữ liệu |
+| Có phải chỉ bùng nổ ngắn hạn không | | |
+| Có khả năng là sản phẩm theo mùa không | | |
+
+⚠️ **Nếu chỉ có dữ liệu một kỳ**: ghi rõ "dữ liệu chụp nhanh một kỳ không đánh giá được xu hướng, cần so sánh từ 2 kỳ trở lên (nên cách nhau 30 ngày)", không suy đoán tăng hay giảm.
+
+### 2.3 Hiệu quả sản phẩm mới
+
+| Câu hỏi | Kết luận | Căn cứ |
+|---|---|---|
+| Sản phẩm mới đăng bán có ra đơn không | | |
+| Lượng bán tháng của sản phẩm mới có lọt nhóm đầu không | | |
+| Sản phẩm mới có tốc độ tăng trưởng không | | |
+| Sản phẩm mới có phải dựa vào giá thấp, quảng cáo hay chương trình để lên đơn không | | |
+
+**Logic đánh giá** (nguyên văn SOP):
+
+```
+Nếu sản phẩm mới cũng bán được          → link mới còn cơ hội
+Nếu lượng bán tập trung ở link cũ       → link mới rất khó lên đơn
+Nếu sản phẩm mới chỉ sống nhờ giá cực thấp → thị trường có thể đã rất cạnh tranh
+```
+
+⚠️ **SOP ghi chú riêng "phần dữ liệu này của Shaduola không chính xác"**. Nếu thiếu `listing_age_days` hoặc độ chính xác kém, ghi thẳng "dữ liệu phần này không đáng tin, cần kiểm tra thủ công", không cố đưa kết luận.
+```
+
+---
+
+# STEP 3 · Mức độ tập trung thương hiệu và người bán (SOP 1.3)
+
+```markdown
+## 3. Phân tích mức độ tập trung
+
+### 3.1 Mức độ tập trung thương hiệu
+
+| Chỉ số | Giá trị | Ngưỡng | Kết luận |
 |---|---|---|---|
-| 品牌数 | | — | — |
-| CR3（销售额） | | — | — |
-| CR10（销售额） | | — | ⚠️ 主体数 ≤10 时无意义 |
+| Số thương hiệu | | — | — |
+| CR3 (doanh thu) | | — | — |
+| CR10 (doanh thu) | | — | ⚠️ Vô nghĩa khi số chủ thể ≤10 |
 | HHI | | — | — |
 
-**阈值判断**（SOP 1.3）：品牌集中度 < 50% → 白牌仍有机会；> 50% → 需谨慎。
+**Đánh giá theo ngưỡng** (SOP 1.3): mức độ tập trung thương hiệu < 50% → hàng no-brand vẫn còn cơ hội; > 50% → cần thận trọng.
 
-【判断】是否存在品牌垄断？白牌进入难度？
+【Nhận định】Có thương hiệu độc chiếm không? Hàng no-brand vào khó đến đâu?
 
-**头部品牌商品数占比**（关键补充判断）：
-- 若某一大品牌占据大量销量**且商品数占比也高** → 它在用铺品策略占位，新店空间被压缩
-- 若某品牌销量高但**商品数少** → 靠单品效率取胜，说明产品力是可复制的，新店仍有机会
+**Tỷ trọng số sản phẩm của thương hiệu top đầu** (nhận định bổ sung then chốt):
+- Nếu một thương hiệu lớn chiếm phần lớn lượng bán **và tỷ trọng số sản phẩm cũng cao** → họ đang dùng chiến lược phủ sản phẩm để chiếm chỗ, dư địa của shop mới bị thu hẹp
+- Nếu một thương hiệu bán nhiều nhưng **ít sản phẩm** → thắng nhờ hiệu suất mỗi SKU, nghĩa là sức mạnh sản phẩm có thể sao chép được, shop mới vẫn còn cơ hội
 
-### 3.2 卖家集中度
+### 3.2 Mức độ tập trung người bán
 
-| 指标 | 数值 | 判定 |
+| Chỉ số | Giá trị | Kết luận |
 |---|---|---|
-| 卖家数 | | |
-| CR3 / CR10（销售额） | | |
-| CR10（销量） | | |
+| Số người bán | | |
+| CR3 / CR10 (doanh thu) | | |
+| CR10 (lượng bán) | | |
 | HHI | | |
 
-**头部卖家名单**（前 10，按销售额）
+**Danh sách người bán top đầu** (top 10, theo doanh thu)
 
-【判断】是否存在卖家垄断？新店进入难度？
+【Nhận định】Có người bán độc chiếm không? Shop mới vào khó đến đâu?
 ```
 
-> **一个容易误读的点**：CR 是"销售额占比"，但**卖家可能靠铺品数堆出高 CR**。判断垄断程度要看 **CR 与 Item Share 的对比** —— 脚本已在 Top 榜里同时给出 `revenue_share`、`sales_share`、`item_share`。若某卖家 `item_share` 远高于 `revenue_share`，说明它是**数量占位**而非**效率优势**。
+> **Một điểm dễ hiểu sai**: CR là "tỷ trọng doanh thu", nhưng **người bán có thể dựa vào số lượng sản phẩm phủ ra để đẩy CR lên cao**. Đánh giá mức độ độc chiếm phải xem **so sánh giữa CR và Item Share** — script đã đưa đồng thời `revenue_share`, `sales_share`, `item_share` trong bảng Top. Nếu `item_share` của một người bán cao hơn hẳn `revenue_share`, nghĩa là họ **chiếm chỗ bằng số lượng** chứ không phải **lợi thế hiệu suất**.
 
 ---
 
-# STEP 4 · 价格带分析（SOP 1.4）
+# STEP 4 · Phân tích dải giá (SOP 1.4)
 
 ```markdown
-## 4. 价格带分析
+## 4. Phân tích dải giá
 
-### 4.1 销量曲线读数
+### 4.1 Đọc đường cong lượng bán
 
-（引用 metrics_report 的分箱表）
+(trích bảng chia bin trong metrics_report)
 
-**曲线形态**：<单调上升 / 单峰 / 双峰 / 长尾>
+**Hình dạng đường cong**: <tăng đơn điệu / một đỉnh / hai đỉnh / đuôi dài>
 
-**峰值区间**：R$ <n> – R$ <n>，占总销量 <n>%
+**Khoảng đỉnh**: R$ <n> – R$ <n>, chiếm <n>% tổng lượng bán
 
-### 4.2 建议价格带（按波谷切分）
+### 4.2 Dải giá đề xuất (cắt theo vùng trũng)
 
-（引用 metrics_report 的 suggested_bands）
+(trích suggested_bands trong metrics_report)
 
-| 价格带 | 区间 | 商品数 | 总销量 | 单商品均销 | 竞争强度 | 判断 |
+| Dải giá | Khoảng giá | Số sản phẩm | Tổng lượng bán | Lượng bán TB/sản phẩm | Mức cạnh tranh | Nhận định |
 |---|---|---|---|---|---|---|
-| #1 | | | | | 商品数多/少 | |
+| #1 | | | | | Nhiều/ít sản phẩm | |
 | #2 | | | | | | |
 | #3 | | | | | | |
 
-**竞争强度参考**：单商品均销高且商品数少 → 竞争不强；商品数多且单商品均销低 → 红海
+**Tham khảo mức cạnh tranh**: lượng bán TB/sản phẩm cao và ít sản phẩm → cạnh tranh không gắt; nhiều sản phẩm và lượng bán TB/sản phẩm thấp → biển đỏ (red ocean)
 
-### 4.3 ⭐ 目标价格带的四项交叉判断
+### 4.3 ⭐ Đánh giá chéo bốn điều kiện cho dải giá mục tiêu
 
-SOP 明确要求最终选的条件是四项**同时**满足：
+SOP yêu cầu rõ dải giá được chọn cuối cùng phải **đồng thời** thỏa bốn điều kiện:
 
-| 条件 | 判断 | 依据 |
+| Điều kiện | Nhận định | Căn cứ |
 |---|---|---|
-| ① 销量高 | | 该带总销量占比 |
-| ② 平均销量高 | | 该带单商品均销 vs 整体均值 |
-| ③ 公司产品有利润 | | 用 `cost_structure` 反算：该价位下毛利率是否达类目目标 |
-| ④ 竞品不是特别强 | | 该带商品数与头部卖家占比 |
+| ① Lượng bán cao | | Tỷ trọng tổng lượng bán của dải đó |
+| ② Lượng bán trung bình cao | | Lượng bán TB/sản phẩm của dải đó vs mức TB chung |
+| ③ Sản phẩm của công ty có lãi | | Tính ngược từ `cost_structure`: ở mức giá này biên lợi nhuận gộp có đạt mục tiêu ngành hàng không |
+| ④ Đối thủ không quá mạnh | | Số sản phẩm của dải đó và tỷ trọng của người bán top đầu |
 
-【判断】**推荐进入的目标价格区间**：R$ <n> – R$ <n>
-【理由】<逐条对应上面四项>
+【Nhận định】**Khoảng giá mục tiêu khuyến nghị**: R$ <n> – R$ <n>
+【Lý do】<đối chiếu từng điều kiện trong bốn điều kiện trên>
 
-⚠️ **若 ③ 或 ④ 无法判断**（缺成本结构或竞品数据）→ 标注 `【待确认】`，不要用"应该没问题"带过。
+⚠️ **Nếu không đánh giá được ③ hoặc ④** (thiếu cấu trúc chi phí hoặc dữ liệu đối thủ) → ghi `【Cần xác nhận】`, không lướt qua bằng câu "chắc không vấn đề gì".
 
-### 4.4 初步定价建议
+### 4.4 Gợi ý định giá ban đầu
 
-| 项 | 建议 |
+| Hạng mục | Gợi ý |
 |---|---|
-| 日常售价 | |
-| 活动价 | |
-| 优惠券后价格 | |
-| 目标利润率 | |
-| 是否需要低价 SKU 引流 | |
+| Giá bán thường ngày | |
+| Giá chương trình | |
+| Giá sau voucher | |
+| Biên lợi nhuận mục tiêu | |
+| Có cần SKU giá thấp để kéo traffic không | |
 ```
 
-> **常见错误**：只看"销量最高的价格带"就选它。SOP 明确要求四项同时满足——销量最高的带往往也是竞争最激烈的带。
+> **Lỗi thường gặp**: chỉ nhìn "dải giá bán nhiều nhất" là chọn luôn. SOP yêu cầu rõ phải thỏa đồng thời bốn điều kiện — dải bán nhiều nhất thường cũng là dải cạnh tranh gắt nhất.
 
 ---
 
-# STEP 5 · 配置组合分析（SOP 1.5）
+# STEP 5 · Phân tích tổ hợp cấu hình (SOP 1.5)
 
 ```markdown
-## 5. 配置组合
+## 5. Tổ hợp cấu hình
 
-（逐维度引用 metrics_report 的 config_matrix）
+(trích config_matrix trong metrics_report theo từng chiều)
 
-### 维度：<X>
+### Chiều: <X>
 
-| 配置值 | 商品数 | 数量占比 | 总销量 | 销量占比 | 平均销量 | 判断 |
+| Giá trị cấu hình | Số sản phẩm | Tỷ trọng số lượng | Tổng lượng bán | Tỷ trọng lượng bán | Lượng bán TB | Đánh giá |
 |---|---|---|---|---|---|---|
 
-**主流配置**：<取值> — 数量占比 <n>%，销量占比 <n>%
-**高机会配置**：<取值> — 商品仅 <n> 个但平均销量 <n>（整体均值 <n>）
+**Cấu hình phổ biến**: <giá trị> — tỷ trọng số lượng <n>%, tỷ trọng lượng bán <n>%
+**Cấu hình nhiều cơ hội**: <giá trị> — chỉ <n> sản phẩm nhưng lượng bán TB <n> (mức TB chung <n>)
 
-**机会配置是否被头部占据？**
-<用卖家集中度的 Top 榜交叉核对：占该配置的卖家是否集中在头部>
+**Cấu hình cơ hội có bị nhóm top đầu chiếm không?**
+<đối chiếu chéo với bảng Top của mức độ tập trung người bán: người bán nắm cấu hình này có tập trung ở nhóm top đầu không>
 
-### 5.1 推荐配置组合
+### 5.1 Tổ hợp cấu hình khuyến nghị
 
-| 维度 | 推荐取值 | 依据 |
+| Chiều | Giá trị khuyến nghị | Căn cứ |
 |---|---|---|
 
-**五项条件核对**（SOP 最终标准）：
+**Đối chiếu năm điều kiện** (tiêu chuẩn cuối cùng của SOP):
 
-| 条件 | 是否满足 | 说明 |
+| Điều kiện | Có thỏa không | Giải thích |
 |---|---|---|
-| 总销量高 | | |
-| 平均销量高 | | |
-| 公司能做 | | 结合 `company_capabilities` |
-| 利润可接受 | | 结合 `cost_structure` |
-| 售后可控 | | |
+| Tổng lượng bán cao | | |
+| Lượng bán trung bình cao | | |
+| Công ty làm được | | Dựa trên `company_capabilities` |
+| Lợi nhuận chấp nhận được | | Dựa trên `cost_structure` |
+| Hậu mãi kiểm soát được | | |
 ```
 
-> **关键提醒**：`数量少但平均销量高` 只说明"可能是机会配置"，**必须再查是否被少数头部卖家占据**（SOP 原文）。若这个高机会配置正好是头部卖家的地盘，那它不是机会，是陷阱。
+> **Lưu ý then chốt**: `Ít sản phẩm nhưng lượng bán trung bình cao` chỉ cho thấy "có thể là cấu hình cơ hội", **bắt buộc kiểm tra thêm có bị một số ít người bán top đầu chiếm không** (nguyên văn SOP). Nếu cấu hình nhiều cơ hội này lại đúng là địa bàn của người bán top đầu thì đó không phải cơ hội mà là cái bẫy.
 
 ---
 
-# STEP 6 · 竞品与评论（SOP 1.6）
+# STEP 6 · Đối thủ và đánh giá (SOP 1.6)
 
 ```markdown
-## 6. 竞品分析
+## 6. Phân tích đối thủ
 
-### 6.1 竞品选择
+### 6.1 Chọn đối thủ
 
-SOP 的筛选标准：价格区间接近 / 配置接近 / 目标用户接近 / 销量较高 / 评价较多 / 近期仍有销量 / 与我方计划做的产品存在**直接竞争关系**。
+Tiêu chí lọc của SOP: khoảng giá gần / cấu hình gần / người dùng mục tiêu gần / lượng bán khá cao / nhiều đánh giá / gần đây vẫn có lượng bán / có **quan hệ cạnh tranh trực tiếp** với sản phẩm bên mình định làm.
 
-| 竞品 | 价格 | 月销量 | 月销额 | 销量增长率 | 上架时间 | 核心配置 | 评分/评价数 |
+| Đối thủ | Giá | Lượng bán tháng | Doanh thu tháng | Tốc độ tăng lượng bán | Thời gian đăng bán | Cấu hình chính | Điểm/số đánh giá |
 |---|---|---|---|---|---|---|---|
 | A | | | | | | | |
 | B | | | | | | | |
 | C | | | | | | | |
 
-### 6.2 竞品核心卖点
+### 6.2 Điểm bán hàng (selling point) cốt lõi của đối thủ
 
-| 竞品 | 标题结构 | 主图卖点 | 详情页特点 | 核心卖点 |
+| Đối thủ | Cấu trúc tiêu đề | Điểm bán hàng trên ảnh chính | Đặc điểm trang chi tiết | Điểm bán hàng cốt lõi |
 |---|---|---|---|---|
 
-### 6.3 好评与差评（浅层）
+### 6.3 Đánh giá tích cực và đánh giá tiêu cực (mức sơ bộ)
 
-| 竞品 | 好评集中点 | 差评集中点 | 差评高发类型 |
+| Đối thủ | Điểm khen tập trung | Điểm chê tập trung | Loại đánh giá tiêu cực hay gặp |
 |---|---|---|---|
-| | | | 误解型 / 参数不符 / 配件缺失 / 质量 / 物流 / 使用困难 |
+| | | | Loại hiểu lầm / sai thông số / thiếu phụ kiện / chất lượng / vận chuyển / khó sử dụng |
 
-> **深度评论归因交给 [`07 Review Analysis Agent`](../../07_Review_Analysis_Agent/)。** 本步只做"竞品靠什么卖"的粗判断。
+> **Quy nguyên nhân đánh giá chuyên sâu giao cho [`07 Review Analysis Agent`](../../07_Review_Analysis_Agent/).** Bước này chỉ đánh giá sơ bộ "đối thủ bán được nhờ đâu".
 
-### 6.4 我方机会点与风险点
+### 6.4 Điểm cơ hội và điểm rủi ro của bên mình
 
-| 类型 | 内容 | 依据 |
+| Loại | Nội dung | Căn cứ |
 |---|---|---|
-| 机会点 | | 竞品普遍差评但买家在意的点 / 竞品普遍不写但买家常问的点 |
-| 风险点 | | 竞品差评高发且我方可能同样存在的点 |
+| Điểm cơ hội | | Điểm đối thủ bị chê nhiều mà người mua quan tâm / điểm đối thủ thường không ghi mà người mua hay hỏi |
+| Điểm rủi ro | | Điểm đối thủ hay bị chê và bên mình cũng có thể gặp |
 
-### 6.5 竞品推广节奏
+### 6.5 Nhịp độ đẩy sản phẩm của đối thủ
 
-| 项 | 竞品 A | 竞品 B | 反推结论 |
+| Hạng mục | Đối thủ A | Đối thủ B | Kết luận suy ngược |
 |---|---|---|---|
-| 上架时间 | | | 新链接大概多久起量 |
-| 月销量 / 近 30 日销量 | | | 起量前需要多少销量支撑 |
-| 评价数 / 带图评价数 | | | **起量前需要多少基础评价** |
-| 是否在广告位 | | | 是否靠广告放量 |
+| Thời gian đăng bán | | | Link mới mất khoảng bao lâu để lên đơn |
+| Lượng bán tháng / lượng bán 30 ngày gần nhất | | | Cần bao nhiêu lượng bán làm nền trước khi lên đơn |
+| Số đánh giá / số đánh giá có ảnh | | | **Cần bao nhiêu đánh giá nền trước khi lên đơn** |
+| Có nằm ở vị trí quảng cáo không | | | Có dựa vào quảng cáo để scale không |
 ```
 
-> **6.5 的输出会直接喂给 [`06 Advertising`](../../06_Advertising_Optimization_Agent/) 的推广计划。** 特别是"起量前需要多少基础评价"——SOP 明确说新链接初期一定要联系客户留带图买家秀，这个数字决定了要建多少评价。
+> **Đầu ra của 6.5 sẽ được đưa thẳng vào kế hoạch đẩy sản phẩm của [`06 Advertising`](../../06_Advertising_Optimization_Agent/).** Đặc biệt là "cần bao nhiêu đánh giá nền trước khi lên đơn" — SOP nói rõ giai đoạn đầu của link mới nhất định phải liên hệ khách để xin đánh giá kèm ảnh thực tế, con số này quyết định cần xây bao nhiêu đánh giá.
 
 ---
 
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 数据可信度
-## 2. 市场容量
-## 3. 集中度分析
-## 4. 价格带分析
-## 5. 配置组合
-## 6. 竞品分析
-## 7. 分析合规扫描
-   （按 00_system.md 的 M1–M5；无命中必须写"无命中"）
-## 8. 交付给 02 Product Strategy 的字段
+## 1. Độ tin cậy của dữ liệu
+## 2. Quy mô thị trường
+## 3. Phân tích mức độ tập trung
+## 4. Phân tích dải giá
+## 5. Tổ hợp cấu hình
+## 6. Phân tích đối thủ
+## 7. Quét tuân thủ phân tích
+   (theo M1–M5 trong 00_system.md; không vi phạm thì bắt buộc ghi "không vi phạm")
+## 8. Các trường bàn giao cho 02 Product Strategy
    - target_price_range: [min, max]
    - price_band_analysis: {}
    - recommended_config: {}
@@ -294,7 +294,7 @@ SOP 的筛选标准：价格区间接近 / 配置接近 / 目标用户接近 / �
    - seller_barrier: low/medium/high
    - competitor_weakness: []
    - competitor_review_insights: []
-   - benchmark_for_launch: {          # → 06 推广计划用
+   - benchmark_for_launch: {          # → dùng cho kế hoạch đẩy sản phẩm của 06
        days_to_ramp: null,
        reviews_needed_before_ramp: null,
        sales_needed_before_ramp: null,
@@ -307,15 +307,15 @@ SOP 的筛选标准：价格区间接近 / 配置接近 / 目标用户接近 / �
 
 # SELF-CHECK
 
-- [ ] 所有数值来自 `metrics_report`，无编造
-- [ ] 单期数据时已明确说明"无法判断趋势"，未推断增长/下滑
-- [ ] "新品表现"在数据不可靠时已标注，未硬给结论
-- [ ] 品牌集中度判断同时看了 CR 与**商品数占比**（区分占位 vs 效率）
-- [ ] 卖家集中度判断同时看了 `revenue_share` 与 `item_share`
-- [ ] 主体数 ≤10 时未用 CR10 作依据
-- [ ] 目标价格带做了**四项交叉判断**（销量/均销/利润/竞品强度）
-- [ ] 机会配置已交叉核对是否被头部占据
-- [ ] 配置推荐的"公司能做 / 利润可接受 / 售后可控"三项已结合业务输入判断
-- [ ] 竞品选择了 2–3 个符合 SOP 筛选标准的
-- [ ] 已输出推广节奏反推字段
-- [ ] 末尾已附分析合规扫描 + 下游字段
+- [ ] Mọi con số lấy từ `metrics_report`, không bịa
+- [ ] Khi chỉ có dữ liệu một kỳ đã nói rõ "không đánh giá được xu hướng", không suy đoán tăng/giảm
+- [ ] "Hiệu quả sản phẩm mới" đã ghi chú khi dữ liệu không đáng tin, không cố đưa kết luận
+- [ ] Đánh giá mức độ tập trung thương hiệu đã xem cả CR và **tỷ trọng số sản phẩm** (phân biệt chiếm chỗ vs hiệu suất)
+- [ ] Đánh giá mức độ tập trung người bán đã xem cả `revenue_share` và `item_share`
+- [ ] Khi số chủ thể ≤10 không dùng CR10 làm căn cứ
+- [ ] Dải giá mục tiêu đã qua **đánh giá chéo bốn điều kiện** (lượng bán/lượng bán TB/lợi nhuận/mức mạnh của đối thủ)
+- [ ] Cấu hình cơ hội đã được đối chiếu chéo xem có bị nhóm top đầu chiếm không
+- [ ] Ba điều kiện "công ty làm được / lợi nhuận chấp nhận được / hậu mãi kiểm soát được" của cấu hình khuyến nghị đã được đánh giá dựa trên đầu vào nghiệp vụ
+- [ ] Đã chọn 2–3 đối thủ thỏa tiêu chí lọc của SOP
+- [ ] Đã xuất các trường suy ngược nhịp độ đẩy sản phẩm
+- [ ] Cuối đầu ra đã kèm quét tuân thủ phân tích + các trường bàn giao

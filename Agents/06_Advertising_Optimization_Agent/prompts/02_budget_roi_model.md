@@ -1,316 +1,316 @@
-# TASK · 盈亏线核算与预算 / ROI 模型
+# TASK · Tính ngưỡng hòa vốn và mô hình ngân sách / ROI
 
-> 配套使用：`00_system.md` + `01_funnel_diagnosis.md` 的输出
-> 对应 SOP **3.5 广告投放底层逻辑** + **3.6 开关广告方法** + **1.10 推广计划**
+> Dùng kèm: `00_system.md` + đầu ra của `01_funnel_diagnosis.md`
+> Tương ứng SOP **3.5 Logic nền của chạy quảng cáo** + **3.6 Cách bật/tắt quảng cáo** + **1.10 Kế hoạch đẩy sản phẩm**
 
 ---
 
 # INPUT
 
-| 字段 | 说明 | 缺失影响 |
+| Trường | Giải thích | Ảnh hưởng khi thiếu |
 |---|---|---|
-| `platform` | 目标平台 | 无法应用预算节律规则 |
-| `price` | 售价 | 无法算盈亏线 |
-| `cost_structure` | 成本结构 | **阻塞项**——缺此项拒绝执行 |
-| `cost_structure.unit_cost` | 产品成本 | 阻塞 |
-| `cost_structure.shipping` | 尾程物流 | 阻塞 |
-| `cost_structure.warehouse` | 仓储/操作费 | 阻塞 |
-| `cost_structure.commission_rate` | 平台佣金率 | 阻塞 |
-| `cost_structure.return_rate` | 退货损耗率 | 阻塞 |
-| `target_margin_rate` | 目标毛利率（可选，默认按 SOP：大件 30–35% / 小件 25–30%） | 影响达标线 |
-| `current_roas` | 当前 ROAS（可选） | 无法给改进幅度 |
-| `daily_budget_current` | 当前日预算（可选） | 无法给预算建议 |
-| `competitor_benchmark` | 竞品推广数据（可选，来自 SOP 1.10） | 无法给阶段目标 |
-| `target_market_timezone` | 目标市场时区（可选） | 无法给分时段节律 |
+| `platform` | Sàn mục tiêu | Không áp dụng được quy tắc nhịp ngân sách |
+| `price` | Giá bán | Không tính được ngưỡng hòa vốn |
+| `cost_structure` | Cấu trúc chi phí | **Hạng mục chặn** — thiếu thì từ chối thực hiện |
+| `cost_structure.unit_cost` | Giá vốn | Chặn |
+| `cost_structure.shipping` | Vận chuyển chặng cuối | Chặn |
+| `cost_structure.warehouse` | Phí kho/phí xử lý | Chặn |
+| `cost_structure.commission_rate` | Tỷ lệ hoa hồng sàn | Chặn |
+| `cost_structure.return_rate` | Tỷ lệ hao hụt hoàn hàng | Chặn |
+| `target_margin_rate` | Biên lợi nhuận gộp mục tiêu (tùy chọn, mặc định theo SOP: hàng lớn 30–35% / hàng nhỏ 25–30%) | Ảnh hưởng đường đạt chuẩn |
+| `current_roas` | ROAS hiện tại (tùy chọn) | Không đưa ra được biên độ cải thiện |
+| `daily_budget_current` | Ngân sách ngày hiện tại (tùy chọn) | Không đưa ra được đề xuất ngân sách |
+| `competitor_benchmark` | Dữ liệu quảng bá của đối thủ (tùy chọn, từ SOP 1.10) | Không đưa ra được mục tiêu theo giai đoạn |
+| `target_market_timezone` | Múi giờ thị trường mục tiêu (tùy chọn) | Không đưa ra được nhịp theo khung giờ |
 
 ---
 
-# PART A · 盈亏线核算
+# PART A · Tính ngưỡng hòa vốn
 
-## A1 · 计算广告前可支配毛利
+## A1 · Tính lợi nhuận gộp khả dụng trước quảng cáo
 
 ```markdown
-## 1. 盈亏线核算
+## 1. Tính ngưỡng hòa vốn
 
-### 1.1 广告前可支配毛利
+### 1.1 Lợi nhuận gộp khả dụng trước quảng cáo
 
-| 项 | 金额 | 占售价 |
+| Hạng mục | Số tiền | % giá bán |
 |---|---|---|
-| 售价 | R$ <P> | 100% |
-| − 产品成本 | R$ <c> | <%> |
-| − 尾程物流 | R$ <s> | <%> |
-| − 仓储/操作费 | R$ <w> | <%> |
-| − 平台佣金（<r>%） | R$ <P×r> | <r>% |
-| − 退货损耗（<rr>%） | R$ <P×rr> | <rr>% |
-| **= 广告前可支配毛利** | **R$ <M>** | **<M/P>%** |
+| Giá bán | R$ <P> | 100% |
+| − Giá vốn | R$ <c> | <%> |
+| − Vận chuyển chặng cuối | R$ <s> | <%> |
+| − Phí kho/phí xử lý | R$ <w> | <%> |
+| − Hoa hồng sàn (<r>%) | R$ <P×r> | <r>% |
+| − Hao hụt hoàn hàng (<rr>%) | R$ <P×rr> | <rr>% |
+| **= Lợi nhuận gộp khả dụng trước quảng cáo** | **R$ <M>** | **<M/P>%** |
 
-计算过程：
+Quá trình tính:
 M = <P> − <c> − <s> − <w> − <P>×<r> − <P>×<rr>
   = <P> − <c> − <s> − <w> − <P×r> − <P×rr>
   = **R$ <M>**
 ```
 
-> ⚠️ **佣金与退货损耗必须按售价的百分比计算**。当成固定金额是最常见的算错方式。
+> ⚠️ **Hoa hồng và hao hụt hoàn hàng bắt buộc tính theo % giá bán**. Coi chúng là số tiền cố định là kiểu tính sai phổ biến nhất.
 
-## A2 · 计算盈亏线 ROAS
-
-```markdown
-### 1.2 盈亏线 ROAS
-
-盈亏线 ROAS = 售价 ÷ 广告前可支配毛利
-            = <P> ÷ <M>
-            = **<值>**
-
-含义：ROAS 低于 <值> 时，该广告组每卖一单亏钱，无论漏斗指标多漂亮。
-```
-
-## A3 · 达标线 ROAS
+## A2 · Tính ROAS hòa vốn
 
 ```markdown
-### 1.3 达标线 ROAS（达到目标毛利率所需）
+### 1.2 ROAS hòa vốn
 
-定价时预留的广告成本 = 售价 × 广告成本率
-                     = <P> × <ad_rate>
-                     = R$ <值>
+ROAS hòa vốn = Giá bán ÷ Lợi nhuận gộp khả dụng trước quảng cáo
+             = <P> ÷ <M>
+             = **<giá trị>**
 
-达标线 ROAS = 售价 ÷ 预留广告成本 = <值>
+Ý nghĩa: khi ROAS thấp hơn <giá trị>, nhóm quảng cáo này bán mỗi đơn là lỗ một đơn, dù chỉ số phễu đẹp tới đâu.
 ```
 
-> **这里通常会出现一个让人不适的差距**：
-> 定价时按 SOP 假设的广告成本率（小件 5–10%）算出的达标线 ROAS 往往在 **10 倍以上**，
-> 而实际投放常见的 ROAS 区间是 **3–8 倍**。
+## A3 · ROAS đạt chuẩn
+
+```markdown
+### 1.3 ROAS đạt chuẩn (cần để đạt biên lợi nhuận gộp mục tiêu)
+
+Chi phí quảng cáo dự trù khi định giá = Giá bán × Tỷ lệ chi phí quảng cáo
+                                     = <P> × <ad_rate>
+                                     = R$ <giá trị>
+
+ROAS đạt chuẩn = Giá bán ÷ Chi phí quảng cáo dự trù = <giá trị>
+```
+
+> **Chỗ này thường xuất hiện một khoảng chênh khó chịu**:
+> ROAS đạt chuẩn tính theo tỷ lệ chi phí quảng cáo SOP giả định khi định giá (hàng nhỏ 5–10%) thường ở mức **trên 10 lần**,
+> trong khi khoảng ROAS thường gặp khi chạy thực tế là **3–8 lần**.
 >
-> **这不是算错了，这是真实的利润结构。** 必须显式指出这个差距，并给出应对路径（见 A4）。
+> **Đây không phải tính sai, đây là cấu trúc lợi nhuận thật.** Bắt buộc chỉ rõ khoảng chênh này và đưa ra hướng xử lý (xem A4).
 
-## A4 · ROAS 敏感性表（必输出）
+## A4 · Bảng độ nhạy ROAS (bắt buộc xuất)
 
 ```markdown
-### 1.4 ROAS 敏感性分析
+### 1.4 Phân tích độ nhạy ROAS
 
-| ROAS | 广告费/单 | 剩余毛利/单 | 占售价 | 判定 |
+| ROAS | Phí QC/đơn | Lợi nhuận gộp còn lại/đơn | % giá bán | Đánh giá |
 |---|---|---|---|---|
-| <盈亏线−0.5> | | **负数** | | ❌ 亏损 |
-| **<盈亏线>** | | ~0 | ~0% | ⚠️ 盈亏平衡 |
-| <盈亏线+0.7> | | | | ✅ 微利 |
+| <hòa vốn−0.5> | | **Số âm** | | ❌ Lỗ |
+| **<hòa vốn>** | | ~0 | ~0% | ⚠️ Hòa vốn |
+| <hòa vốn+0.7> | | | | ✅ Lãi mỏng |
 | 5,0 | | | | ✅ |
 | 8,0 | | | | ✅ |
-| <达标线> | | | <目标%> | 🎯 达到定价目标 |
+| <đạt chuẩn> | | | <mục tiêu%> | 🎯 Đạt mục tiêu định giá |
 
-**关键结论**：<当前 ROAS 处于哪一档，要盈利至少需要达到多少>
+**Kết luận then chốt**: <ROAS hiện tại đang ở nấc nào, muốn có lãi tối thiểu cần đạt bao nhiêu>
 ```
 
-## A5 · 应对路径（必输出）
+## A5 · Hướng xử lý (bắt buộc xuất)
 
 ```markdown
-### 1.5 若「定价预留广告成本」与「实际 ROAS」差距过大，可选路径
+### 1.5 Nếu「chi phí quảng cáo dự trù khi định giá」và「ROAS thực tế」chênh nhau quá lớn, các hướng có thể chọn
 
-| # | 路径 | 做法 | 代价 |
+| # | Hướng | Cách làm | Cái giá |
 |---|---|---|---|
-| 1 | **调高定价时的广告成本预留** | 把预留比例从 <%> 提到 **12–15%**，重新核算售价 | 售价上升，可能影响点击与转化 |
-| 2 | **接受低毛利、靠自然流量** | 广告只做冷启动推力，跑出自然流量后逐步降预算 | 起量周期变长，需要更多耐心 |
-| 3 | **优化成本结构** | 换供应商 / 换物流 / 谈更优费率 | 需要上游配合，周期长 |
-| 4 | **提高客单价** | 加高配 SKU、套装 SKU（对应 SOP 3.2） | 需要产品支持 |
-| 5 | **放弃该品** | 若以上都不可行，说明利润结构不成立 | 前期投入沉没 |
+| 1 | **Nâng mức dự trù chi phí quảng cáo khi định giá** | Nâng tỷ lệ dự trù từ <%> lên **12–15%**, tính lại giá bán | Giá bán tăng, có thể ảnh hưởng click và chuyển đổi |
+| 2 | **Chấp nhận biên lợi nhuận thấp, dựa vào traffic tự nhiên** | Quảng cáo chỉ làm lực đẩy khởi động lạnh, có traffic tự nhiên rồi thì giảm dần ngân sách | Chu kỳ lên đơn dài hơn, cần kiên nhẫn hơn |
+| 3 | **Tối ưu cấu trúc chi phí** | Đổi nhà cung cấp / đổi đơn vị vận chuyển / đàm phán phí tốt hơn | Cần thượng nguồn phối hợp, chu kỳ dài |
+| 4 | **Tăng giá trị đơn hàng** | Thêm SKU cấu hình cao, SKU combo (tương ứng SOP 3.2) | Cần sản phẩm hỗ trợ |
+| 5 | **Bỏ sản phẩm này** | Nếu các hướng trên đều không khả thi, nghĩa là cấu trúc lợi nhuận không đứng được | Khoản đầu tư ban đầu thành chi phí chìm |
 
-**本案例建议**：<选哪条，为什么>
+**Đề xuất cho case này**: <chọn hướng nào, vì sao>
 ```
 
 ---
 
-# PART B · 预算 × ROI 双变量模型
+# PART B · Mô hình hai biến ngân sách × ROI
 
-SOP 3.5 的核心判断：
+Phán đoán cốt lõi của SOP 3.5:
 
-> 每个产品都有一个相对适合自己的广告模型。这个模型主要由两个关键变量决定：**最大预算** 和 **目标 ROI**。
+> Mỗi sản phẩm đều có một mô hình quảng cáo tương đối phù hợp với chính nó. Mô hình này chủ yếu do hai biến then chốt quyết định: **ngân sách tối đa** và **ROI mục tiêu**.
 
-## B1 · 最大预算的确定
+## B1 · Xác định ngân sách tối đa
 
 ```markdown
-## 2. 预算模型
+## 2. Mô hình ngân sách
 
-### 2.1 最大预算上限
+### 2.1 Mức trần ngân sách tối đa
 
-最大预算取决于**市场流量规模**与**生态位容量**，不是越高越好。
+Ngân sách tối đa phụ thuộc vào **quy mô traffic của thị trường** và **sức chứa của phân khúc**, không phải càng cao càng tốt.
 
-| 判断依据 | 本案例情况 | 对预算的影响 |
+| Căn cứ phán đoán | Tình hình case này | Ảnh hưởng tới ngân sách |
 |---|---|---|
-| 类目市场容量 | <大 / 中 / 小> | |
-| 搜索需求量 | | |
-| 竞品销量水平 | | |
-| 我方链接当前权重 | | |
+| Quy mô thị trường của ngành hàng | <lớn / vừa / nhỏ> | |
+| Lượng nhu cầu tìm kiếm | | |
+| Mức doanh số của đối thủ | | |
+| Điểm uy tín hiện tại của link bên mình | | |
 
-**预算上限判断**：
-- 若市场容量大 + 搜索需求强 + 竞品销量高 → 可承接更大预算
-- 若市场本身容量小 → **继续加预算只是提高花费，不能稳定带来更多订单**
+**Phán đoán mức trần ngân sách**:
+- Nếu quy mô thị trường lớn + nhu cầu tìm kiếm mạnh + doanh số đối thủ cao → có thể gánh ngân sách lớn hơn
+- Nếu bản thân thị trường nhỏ → **tiếp tục tăng ngân sách chỉ làm tăng chi phí, không mang lại thêm đơn một cách ổn định**
 
-**建议最大日预算**：R$ <值> — <理由>
+**Ngân sách ngày tối đa đề xuất**: R$ <giá trị> — <lý do>
 ```
 
-## B2 · 目标 ROI 的确定
+## B2 · Xác định ROI mục tiêu
 
 ```markdown
-### 2.2 目标 ROI 区间
+### 2.2 Khoảng ROI mục tiêu
 
-ROI 上限取决于**产品竞争力**（主图 / 价格 / 评价 / 详情页 / 售后承诺）。
+Mức trần ROI phụ thuộc vào **sức cạnh tranh của sản phẩm** (ảnh chính / giá / đánh giá / trang chi tiết / cam kết hậu mãi).
 
-| 竞争力维度 | 现状 | 对 ROI 上限的影响 |
+| Chiều cạnh tranh | Hiện trạng | Ảnh hưởng tới mức trần ROI |
 |---|---|---|
-| 主图 | | |
-| 价格 | | |
-| 评价数量与质量 | | |
-| 详情页 | | |
-| 售后承诺 | | |
+| Ảnh chính | | |
+| Giá | | |
+| Số lượng và chất lượng đánh giá | | |
+| Trang chi tiết | | |
+| Cam kết hậu mãi | | |
 
-**判断**：
-- 竞争力强 → 可在较高 ROI 下获得有效转化
-- 竞争力不足 → **ROI 拉得过高会导致广告烧不出去，拿不到足够曝光和样本**
+**Phán đoán**:
+- Sức cạnh tranh mạnh → có thể có chuyển đổi hiệu quả ở mức ROI tương đối cao
+- Sức cạnh tranh yếu → **đẩy ROI quá cao sẽ khiến quảng cáo không tiêu được tiền, không có đủ lượt hiển thị và mẫu**
 
-**建议目标 ROI 区间**：`<下限>` – `<上限>`（下限 = 盈亏线 + 安全垫）
+**Khoảng ROI mục tiêu đề xuất**: `<mức sàn>` – `<mức trần>` (mức sàn = ngưỡng hòa vốn + biên an toàn)
 
-⚠️ **不要一开始就把 ROI 设到盈亏线附近**。ROI 设得越接近盈亏线，广告越难跑出去，样本越少，越无法判断真实模型。正确做法：**先跑出样本，再逐步收紧 ROI**。
+⚠️ **Đừng ngay từ đầu đặt ROI sát ngưỡng hòa vốn**. ROI đặt càng sát ngưỡng hòa vốn, quảng cáo càng khó chạy, mẫu càng ít, càng không xác định được mô hình thật. Cách làm đúng: **chạy ra mẫu trước, rồi siết ROI dần**.
 ```
 
-## B3 · 测试周期与阶段目标
+## B3 · Chu kỳ test và mục tiêu theo giai đoạn
 
 ```markdown
-### 2.3 测试周期
+### 2.3 Chu kỳ test
 
-| 项 | 值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 平台官方稳定模型周期 | 14 天 |
-| **实操建议测试区间** | **7 天** |
-| 亏损投放时可缩短至 | 3–5 天（止损优先） |
-| 本轮测试区间 | <n> 天 |
+| Chu kỳ ổn định mô hình theo sàn chính thức | 14 ngày |
+| **Khoảng test khuyến nghị khi thực chiến** | **7 ngày** |
+| Khi chạy đang lỗ có thể rút xuống | 3–5 ngày (ưu tiên cắt lỗ) |
+| Khoảng test vòng này | <n> ngày |
 
-### 2.4 阶段目标（每 7 天为一个阶段）
+### 2.4 Mục tiêu theo giai đoạn (mỗi 7 ngày là một giai đoạn)
 
-| 阶段 | 天数 | 目标 | 通过条件 | 未通过处理 |
+| Giai đoạn | Ngày | Mục tiêu | Điều kiện đạt | Xử lý khi không đạt |
 |---|---|---|---|---|
-| 第 1 周 | 1–7 | 跑出样本 | 曝光 ≥ <n> / 点击 ≥ <n> / 订单 ≥ <n> | 检查预算是否过低、词是否太窄 |
-| 第 2 周 | 8–14 | 判定漏斗 | 各环指标回到基准线 | 回 `01_funnel_diagnosis.md` 重新定位 |
-| 第 3 周 | 15–21 | 收敛 ROI | ROAS ≥ 盈亏线 | 砍掉长期不达标的组，集中预算到健康组 |
-| 第 4 周 | 22–28 | 放量 | 保持 ROAS 的同时提高预算 | 逐步放量，每次加 20–30% 观察 |
+| Tuần 1 | 1–7 | Chạy ra mẫu | Hiển thị ≥ <n> / click ≥ <n> / đơn ≥ <n> | Kiểm tra ngân sách có quá thấp, từ khóa có quá hẹp không |
+| Tuần 2 | 8–14 | Xét phễu | Chỉ số các khâu về lại đường chuẩn | Quay về `01_funnel_diagnosis.md` xác định lại |
+| Tuần 3 | 15–21 | Hội tụ ROI | ROAS ≥ ngưỡng hòa vốn | Cắt các nhóm lâu ngày không đạt, dồn ngân sách vào nhóm khỏe |
+| Tuần 4 | 22–28 | Scale | Tăng ngân sách trong khi giữ được ROAS | Scale dần, mỗi lần tăng 20–30% rồi theo dõi |
 ```
 
-> **"每阶段只推进一项"**：不要在同一个阶段既想跑样本又想收敛 ROI。样本和效率是冲突目标，必须分阶段。
+> **"Mỗi giai đoạn chỉ đẩy một việc"**: đừng trong cùng một giai đoạn vừa muốn chạy ra mẫu vừa muốn hội tụ ROI. Mẫu và hiệu suất là hai mục tiêu xung đột, bắt buộc tách giai đoạn.
 
-## B4 · 竞品反推（SOP 1.10）
+## B4 · Suy ngược từ đối thủ (SOP 1.10)
 
-**当输入含 `competitor_benchmark` 时输出。**
+**Xuất khi đầu vào có `competitor_benchmark`.**
 
 ```markdown
-### 2.5 竞品推广节奏反推
+### 2.5 Suy ngược nhịp quảng bá của đối thủ
 
-| 竞品 | 上架时间 | 月销量 | 近 30 日销量 | 评价数 | 带图评价数 | 广告位 |
+| Đối thủ | Thời gian đăng bán | Doanh số tháng | Doanh số 30 ngày gần nhất | Số đánh giá | Số đánh giá có ảnh | Vị trí quảng cáo |
 |---|---|---|---|---|---|---|
 | | | | | | | |
 
-**反推结论**
+**Kết luận suy ngược**
 
-| 问题 | 从竞品数据得到的答案 |
+| Câu hỏi | Câu trả lời rút ra từ dữ liệu đối thủ |
 |---|---|
-| 这个类目新链接大概多久能起量 | |
-| 起量前需要多少基础评价 | |
-| 前期需要多少销量支撑 | |
-| 主要靠低价 / 广告 / 活动 / 评价哪种推动 | |
-| 竞品是否通过广告快速放量 | |
+| Link mới trong ngành hàng này mất khoảng bao lâu thì lên đơn | |
+| Trước khi lên đơn cần bao nhiêu đánh giá nền | |
+| Giai đoạn đầu cần bao nhiêu doanh số làm nền | |
+| Chủ yếu được đẩy bằng giá rẻ / quảng cáo / chương trình / đánh giá | |
+| Đối thủ có scale nhanh bằng quảng cáo không | |
 
-**我方目标对齐**
+**Căn chỉnh mục tiêu của bên mình**
 
-| 阶段指标 | 目标值 | 依据 |
+| Chỉ số giai đoạn | Giá trị mục tiêu | Căn cứ |
 |---|---|---|
-| 点击率 | ≥ 3% | SOP 基准 |
-| 访客数 | | 竞品反推 |
-| 订单转化率 | ≥ 1% | SOP 基准 |
-| 真实 ROI | ≥ <盈亏线> | 盈亏线核算 |
-| 广告消耗 | | 竞品反推 |
-| 总带图评价数 | | 竞品反推（**SOP：新链接初期一定要联系客户留带照片的买家秀**） |
+| CTR | ≥ 3% | Chuẩn SOP |
+| Lượt truy cập | | Suy ngược từ đối thủ |
+| Tỷ lệ chuyển đổi đơn | ≥ 1% | Chuẩn SOP |
+| ROI thực | ≥ <ngưỡng hòa vốn> | Tính ngưỡng hòa vốn |
+| Chi tiêu quảng cáo | | Suy ngược từ đối thủ |
+| Tổng số đánh giá có ảnh | | Suy ngược từ đối thủ (**SOP: giai đoạn đầu của link mới nhất định phải liên hệ khách để có ảnh review của người mua**) |
 ```
 
-> **SOP 明确提到**：新链接初期一定要主动联系客户，想办法留下带照片的买家秀，这能降低后续投入的风险。这条应转化为一条**具体的运营动作**，而不是留在文档里。
+> **SOP nói rõ**: giai đoạn đầu của link mới nhất định phải chủ động liên hệ khách, tìm cách có được ảnh review của người mua, việc này giảm rủi ro cho các khoản đầu tư sau. Điều này nên được chuyển thành một **hành động vận hành cụ thể**, chứ không chỉ nằm trên tài liệu.
 
 ---
 
-# PART C · 分时段预算节律
+# PART C · Nhịp ngân sách theo khung giờ
 
-SOP 3.6 明确：
+SOP 3.6 nói rõ:
 
-> 虾皮广告的调整不要经常去暂停，会浪费免费的额度，最好的方式是非黄金时间段调整为 10 块左右，到黄金时间段再调整为正常预算。
+> Khi điều chỉnh quảng cáo Shopee đừng thường xuyên tạm dừng, sẽ lãng phí hạn mức miễn phí, cách tốt nhất là ngoài khung giờ vàng thì chỉnh về khoảng 10, tới khung giờ vàng lại chỉnh về ngân sách bình thường.
 
-## C1 · 为什么是"调低"而不是"暂停"
+## C1 · Vì sao là "hạ thấp" chứ không phải "tạm dừng"
 
-| 做法 | 后果 |
+| Cách làm | Hậu quả |
 |---|---|
-| 暂停广告 | **损失平台给新链接的流量扶持额度** |
-| 把预算压到最低可跑量 | 只减少花费，不触发额度损失 |
+| Tạm dừng quảng cáo | **Mất hạn mức traffic hỗ trợ mà sàn cấp cho link mới** |
+| Ép ngân sách về mức tối thiểu vẫn chạy được | Chỉ giảm chi tiêu, không kích hoạt việc mất hạn mức |
 
-## C2 · 节律方案模板
+## C2 · Template phương án nhịp
 
 ```markdown
-## 3. 分时段预算节律
+## 3. Nhịp ngân sách theo khung giờ
 
-| 时段（目标市场当地时间） | 北京对应时间 | 预算设置 | 理由 |
+| Khung giờ (giờ địa phương thị trường mục tiêu) | Giờ Bắc Kinh tương ứng | Cài đặt ngân sách | Lý do |
 |---|---|---|---|
-| <黄金时段> | | 目标预算 R$ <值> | <转化高峰> |
-| <非黄金时段> | | 最低可跑量 R$ 10 | <压花费、保住额度> |
+| <khung giờ vàng> | | Ngân sách mục tiêu R$ <giá trị> | <đỉnh chuyển đổi> |
+| <ngoài khung giờ vàng> | | Mức tối thiểu vẫn chạy được R$ 10 | <ép chi phí, giữ hạn mức> |
 
-**目标市场时区**：<UTC−3 巴西 / 其他>
-**黄金时段判断依据**：<平台数据 / 经验值 / 竞品观察>
+**Múi giờ thị trường mục tiêu**: <UTC−3 Brazil / khác>
+**Căn cứ xác định khung giờ vàng**: <dữ liệu sàn / kinh nghiệm / quan sát đối thủ>
 ```
 
-## C3 · 参考配置（巴西站）
+## C3 · Cấu hình tham khảo (Shopee Brazil)
 
 ```markdown
-### 参考配置 · Shopee 巴西站
+### Cấu hình tham khảo · Shopee Brazil
 
-| 时段（巴西时间 BRT） | 北京对应时间 | 预算 |
+| Khung giờ (giờ Brazil BRT) | Giờ Bắc Kinh tương ứng | Ngân sách |
 |---|---|---|
-| 00:00 – 09:00（巴西深夜至清晨） | 11:00 – 20:00 | R$ 10（休眠） |
-| 09:00 – 24:00（巴西白天至深夜） | 20:00 – 次日 11:00 | 目标预算 R$ <值> |
+| 00:00 – 09:00 (Brazil từ khuya tới sáng sớm) | 11:00 – 20:00 | R$ 10 (ngủ đông) |
+| 09:00 – 24:00 (Brazil từ ban ngày tới khuya) | 20:00 – 11:00 hôm sau | Ngân sách mục tiêu R$ <giá trị> |
 ```
 
-> ⚠️ **时区换算必须确认，不要凭印象。** 巴西时间比北京时间**晚 11 小时**（巴西夏令时期间为 10 小时——巴西已在 2019 年取消夏令时，但仍建议按实际核实）。
-> 换算逻辑：北京 11:00 = 巴西 00:00。所以"巴西 0 点开始休眠"对应"北京 11:00 开始调低预算"。
+> ⚠️ **Quy đổi múi giờ bắt buộc phải xác nhận, đừng dựa vào ấn tượng.** Giờ Brazil **chậm hơn giờ Bắc Kinh 11 tiếng** (trong thời gian giờ mùa hè của Brazil là 10 tiếng — Brazil đã bỏ giờ mùa hè từ năm 2019, nhưng vẫn khuyến nghị kiểm tra thực tế).
+> Logic quy đổi: 11:00 Bắc Kinh = 00:00 Brazil. Vì vậy "Brazil bắt đầu ngủ đông lúc 0 giờ" tương ứng với "bắt đầu hạ ngân sách lúc 11:00 giờ Bắc Kinh".
 
-## C4 · Mercado Livre 的额外规则
+## C4 · Quy tắc bổ sung của Mercado Livre
 
-SOP 未覆盖 ML，但 ML 的 Mercado Ads 有平台特性需要注意：
+SOP không bao phủ ML, nhưng Mercado Ads của ML có những đặc tính của sàn cần lưu ý:
 
-| 特性 | 应对 |
+| Đặc tính | Cách xử lý |
 |---|---|
-| 最低日预算 R$ 10 起 | 休眠值不能低于 R$ 10 |
-| 前 7 天算法倾向超额花费泛词 | 前 7 天必须人工盯，**不要设"自动"** |
-| 无活动层级否定词 | 否定词在**广告组层级**管理 |
-| 支持投放位出价倍数 | 搜索结果页 vs 详情页可分别设倍数 |
-| 支持 dayparting | 直接在平台内设时段竞价，不必手动改预算 |
+| Ngân sách ngày tối thiểu từ R$ 10 | Mức ngủ đông không được thấp hơn R$ 10 |
+| 7 ngày đầu thuật toán có xu hướng tiêu quá tay vào từ khóa rộng | 7 ngày đầu bắt buộc theo dõi thủ công, **đừng đặt "tự động"** |
+| Không có từ khóa phủ định ở cấp chiến dịch | Từ khóa phủ định quản lý ở **cấp nhóm quảng cáo** |
+| Hỗ trợ hệ số giá thầu theo vị trí hiển thị | Trang kết quả tìm kiếm vs trang chi tiết có thể đặt hệ số riêng |
+| Hỗ trợ dayparting | Đặt giá thầu theo khung giờ ngay trên sàn, không cần sửa ngân sách thủ công |
 
-> **对 ML 而言，用平台的 dayparting 比手动改预算更稳**——手动改容易忘记恢复。
+> **Với ML, dùng dayparting của sàn ổn định hơn sửa ngân sách thủ công** — sửa thủ công dễ quên khôi phục.
 
 ---
 
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 盈亏线核算
-### 1.1 广告前可支配毛利
-### 1.2 盈亏线 ROAS
-### 1.3 达标线 ROAS
-### 1.4 ROAS 敏感性分析
-### 1.5 应对路径
+## 1. Tính ngưỡng hòa vốn
+### 1.1 Lợi nhuận gộp khả dụng trước quảng cáo
+### 1.2 ROAS hòa vốn
+### 1.3 ROAS đạt chuẩn
+### 1.4 Phân tích độ nhạy ROAS
+### 1.5 Hướng xử lý
 
-## 2. 预算模型
-### 2.1 最大预算上限
-### 2.2 目标 ROI 区间
-### 2.3 测试周期
-### 2.4 阶段目标
-### 2.5 竞品推广节奏反推        （条件输出）
+## 2. Mô hình ngân sách
+### 2.1 Mức trần ngân sách tối đa
+### 2.2 Khoảng ROI mục tiêu
+### 2.3 Chu kỳ test
+### 2.4 Mục tiêu theo giai đoạn
+### 2.5 Suy ngược nhịp quảng bá của đối thủ        (xuất có điều kiện)
 
-## 3. 分时段预算节律
+## 3. Nhịp ngân sách theo khung giờ
 
-## 4. 建议合规扫描
-（按 00_system.md 的 G1–G5；无命中写"无命中"）
+## 4. Quét tuân thủ đề xuất
+(theo G1–G5 của 00_system.md; không vi phạm thì ghi "không vi phạm")
 
-## 5. 交付字段
+## 5. Các trường bàn giao
 - breakeven_roas:
 - target_roas_range: []
 - max_daily_budget:
@@ -323,16 +323,16 @@ SOP 未覆盖 ML，但 ML 的 Mercado Ads 有平台特性需要注意：
 
 # SELF-CHECK
 
-- [ ] 佣金与退货损耗按售价百分比计算，未当固定值
-- [ ] 计算过程完整展示，可被复核
-- [ ] 盈亏线 ROAS 已算出并标明含义
-- [ ] 达标线 ROAS 已算出，且**显式指出与盈亏线的差距**
-- [ ] 已输出 ROAS 敏感性表
-- [ ] 已给出应对路径建议
-- [ ] 最大预算的判断依据是市场容量而非直觉
-- [ ] 目标 ROI 未一开始就设到盈亏线附近
-- [ ] 测试周期为 7 天（或说明了为何缩短）
-- [ ] 阶段目标分阶段设置，未把样本与效率混在同一阶段
-- [ ] 分时段节律的时区换算已核实
-- [ ] ML 场景下已提示使用平台 dayparting
-- [ ] 末尾已附建议合规扫描 + 交付字段
+- [ ] Hoa hồng và hao hụt hoàn hàng tính theo % giá bán, không coi là giá trị cố định
+- [ ] Quá trình tính được trình bày đầy đủ, có thể kiểm tra lại
+- [ ] Đã tính ROAS hòa vốn và nêu rõ ý nghĩa
+- [ ] Đã tính ROAS đạt chuẩn, và **chỉ rõ khoảng chênh so với ngưỡng hòa vốn**
+- [ ] Đã xuất bảng độ nhạy ROAS
+- [ ] Đã đưa ra đề xuất hướng xử lý
+- [ ] Căn cứ phán đoán ngân sách tối đa là quy mô thị trường chứ không phải trực giác
+- [ ] ROI mục tiêu không bị đặt sát ngưỡng hòa vốn ngay từ đầu
+- [ ] Chu kỳ test là 7 ngày (hoặc đã giải thích vì sao rút ngắn)
+- [ ] Mục tiêu theo giai đoạn được đặt tách giai đoạn, không trộn mẫu và hiệu suất vào cùng một giai đoạn
+- [ ] Đã kiểm tra quy đổi múi giờ của nhịp theo khung giờ
+- [ ] Với tình huống ML đã nhắc dùng dayparting của sàn
+- [ ] Cuối đầu ra đã kèm quét tuân thủ đề xuất + các trường bàn giao

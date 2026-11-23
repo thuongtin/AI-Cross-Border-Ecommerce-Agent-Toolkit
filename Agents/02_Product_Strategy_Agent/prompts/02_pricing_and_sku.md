@@ -1,257 +1,257 @@
-# TASK · 定价模型与 SKU 结构
+# TASK · Mô hình định giá và cấu trúc SKU
 
-> 配套使用：`00_system.md` + `01_product_decision.md` 的输出
-> 对应 SOP **1.9 定价** + **3.2 定价与 SKU 策略**
+> Dùng kèm: `00_system.md` + đầu ra của `01_product_decision.md`
+> Tương ứng SOP **1.9 Định giá** + **3.2 Chiến lược định giá và SKU**
 
 ---
 
 # INPUT
 
-| 字段 | 说明 | 缺失影响 |
+| Trường | Giải thích | Ảnh hưởng khi thiếu |
 |---|---|---|
-| `decision_approved` | **阻塞项** | 未确认则停止 |
-| `cost_structure` | 成本结构（含各 SKU 的成本差异） | **阻塞**——无法定价 |
-| `target_price_range` | 01 的价格带分析 | 无市场锚点 |
-| `main_price_zone` | 01 的主推价位 | 无法定主推价 |
-| `cost_floor_price` | 01 反算的成本可行价（若有） | 无法交叉验证 |
-| `target_margin_rate` | 目标毛利率（大件 30–35% / 小件 25–30%） | 无法反算 |
-| `final_config` | 01_product_decision 的输出 | 无法设计 SKU 差异 |
-| `competitor_price_points[]` | 竞品价位（可选） | 无法做价格锚定 |
-| `cash_flow_constraint` | 现金流约束（可选） | 无法判断能否长期养权重 |
-| `inventory_level` | 库存水平 | 无法判断活动库存风险 |
+| `decision_approved` | **Mục chặn** | Chưa xác nhận thì dừng |
+| `cost_structure` | Cấu trúc chi phí (gồm chênh lệch giá vốn giữa các SKU) | **Chặn**——không định giá được |
+| `target_price_range` | Phân tích dải giá của 01 | Không có điểm neo thị trường |
+| `main_price_zone` | Mức giá chủ lực của 01 | Không chốt được giá SKU chủ lực |
+| `cost_floor_price` | Giá khả thi theo giá vốn do 01 tính ngược (nếu có) | Không kiểm chứng chéo được |
+| `target_margin_rate` | Biên lợi nhuận mục tiêu (hàng cồng kềnh 30–35% / hàng nhỏ 25–30%) | Không tính ngược được |
+| `final_config` | Đầu ra của 01_product_decision | Không thiết kế được khác biệt giữa các SKU |
+| `competitor_price_points[]` | Mức giá của đối thủ (tùy chọn) | Không neo giá được |
+| `cash_flow_constraint` | Ràng buộc dòng tiền (tùy chọn) | Không đánh giá được có nuôi trọng số lâu dài được không |
+| `inventory_level` | Mức tồn kho | Không đánh giá được rủi ro tồn kho khi chạy chương trình |
 
 ---
 
-# STEP 1 · 逐 SKU 成本结构
+# STEP 1 · Cấu trúc chi phí từng SKU
 
-**不同配置的成本不同，必须逐 SKU 列。** 用同一个成本算所有 SKU 是最常见的错误。
+**Cấu hình khác nhau thì giá vốn khác nhau, bắt buộc liệt kê từng SKU.** Dùng một giá vốn để tính cho mọi SKU là lỗi phổ biến nhất.
 
 ```markdown
-## 1. 成本结构
+## 1. Cấu trúc chi phí
 
-| SKU | 产品成本 | 尾程物流 | 仓储费 | 合计成本 | 说明 |
+| SKU | Giá vốn sản phẩm | Vận chuyển chặng cuối | Phí lưu kho | Tổng giá vốn | Giải thích |
 |---|---|---|---|---|---|
-| 引流款 | | | | | |
-| 主推款 | | | | | |
-| 高配款 | | | | | |
-| 套装款 | | | | | |
+| SKU kéo traffic | | | | | |
+| SKU chủ lực | | | | | |
+| SKU cấu hình cao | | | | | |
+| SKU combo | | | | | |
 
-**费率假设**
+**Giả định về mức phí**
 
-| 项 | 值 | 来源 |
+| Hạng mục | Giá trị | Nguồn |
 |---|---|---|
-| 平台佣金率 | | 按实际类目查 |
-| 广告率 | | 大件 ~5% / 小件 5–10%（SOP） |
-| 退货损耗率 | | 2%（SOP） |
-| **目标毛利率** | | 大件 30–35% / 小件 25–30%（SOP） |
-| 税费 | | ⚠️ 巴西税费需自行计入；未计入时必须在报告里标注 |
+| % hoa hồng sàn | | Tra theo ngành hàng thực tế |
+| % quảng cáo | | Hàng cồng kềnh ~5% / hàng nhỏ 5–10% (SOP) |
+| % hao hụt hoàn hàng | | 2% (SOP) |
+| **% biên lợi nhuận mục tiêu** | | Hàng cồng kềnh 30–35% / hàng nhỏ 25–30% (SOP) |
+| Thuế | | ⚠️ Thuế Brazil cần tự tính vào; nếu chưa tính phải ghi chú trong báo cáo |
 ```
 
 ---
 
-# STEP 2 · 定价公式与反算
+# STEP 2 · Công thức định giá và tính ngược
 
 ```markdown
-## 2. 定价计算
+## 2. Tính giá
 
-### 2.1 售价公式
+### 2.1 Công thức giá bán
 
-    目标售价 = (产品成本 + 尾程物流 + 仓储费) ÷ (1 − 佣金率 − 广告率 − 退货率 − 目标毛利率)
+    Giá bán mục tiêu = (giá vốn sản phẩm + vận chuyển chặng cuối + phí lưu kho) ÷ (1 − % hoa hồng − % quảng cáo − % hoàn hàng − % biên lợi nhuận mục tiêu)
 
-**以主推款为例（必须展示完整代入过程）**：
+**Lấy SKU chủ lực làm ví dụ (bắt buộc trình bày đầy đủ bước thay số)**:
 
-    分子 = <成本> + <物流> + <仓储> = <合计>
-    分母 = 1 − <佣金率> − <广告率> − <退货率> − <目标毛利率> = <值>
+    Tử số = <giá vốn> + <vận chuyển> + <lưu kho> = <tổng>
+    Mẫu số = 1 − <% hoa hồng> − <% quảng cáo> − <% hoàn hàng> − <% biên lợi nhuận mục tiêu> = <giá trị>
 
-    目标售价 = <分子> ÷ <分母> = R$ <结果>
+    Giá bán mục tiêu = <tử số> ÷ <mẫu số> = R$ <kết quả>
 
-### 2.2 逐 SKU 反算结果
+### 2.2 Kết quả tính ngược từng SKU
 
-| SKU | 合计成本 | 分母 | **反算目标售价** | 市场锚点 | 差异 |
+| SKU | Tổng giá vốn | Mẫu số | **Giá bán mục tiêu tính ngược** | Điểm neo thị trường | Chênh lệch |
 |---|---|---|---|---|---|
-| 引流款 | | | | | |
-| 主推款 | | | | | |
-| 高配款 | | | | | |
-| 套装款 | | | | | |
+| SKU kéo traffic | | | | | |
+| SKU chủ lực | | | | | |
+| SKU cấu hình cao | | | | | |
+| SKU combo | | | | | |
 ```
 
-### 2.3 关键交叉验证（必做）
+### 2.3 Kiểm chứng chéo then chốt (bắt buộc)
 
 ```markdown
-### 2.3 与市场分析的交叉验证
+### 2.3 Kiểm chứng chéo với phân tích thị trường
 
-| 项 | 值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 市场分析推荐的**成本可行价**（01 反算） | |
-| 本步骤反算的目标售价 | |
-| 差异 | |
+| **Giá khả thi theo giá vốn** do phân tích thị trường đề xuất (01 tính ngược) | |
+| Giá bán mục tiêu tính ngược ở bước này | |
+| Chênh lệch | |
 
-**结论**：<一致 / 有差距，差距意味着什么>
+**Kết luận**: <khớp / có chênh lệch, chênh lệch có nghĩa là gì>
 ```
 
-**这一步为什么必须做**：
+**Vì sao bước này bắt buộc**:
 
-| 情况 | 含义 | 应对 |
+| Tình huống | Ý nghĩa | Cách xử lý |
 |---|---|---|
-| 两者接近 | ✅ 市场结构最优带与成本可行区间吻合 | 按计划定价 |
-| 市场最优带**低于**成本可行价 | ⚠️ 好卖的价格段做不出利润 | 必须降成本、改配置，或放弃该价位 |
-| 市场最优带**高于**成本可行价 | ✅ 有毛利余量 | 余量可用于优惠券/活动 |
+| Hai giá trị gần nhau | ✅ Dải tối ưu của cấu trúc thị trường khớp với vùng khả thi theo giá vốn | Định giá theo kế hoạch |
+| Dải tối ưu của thị trường **thấp hơn** giá khả thi theo giá vốn | ⚠️ Phân khúc giá dễ bán lại không ra lợi nhuận | Bắt buộc giảm giá vốn, đổi cấu hình, hoặc bỏ mức giá đó |
+| Dải tối ưu của thị trường **cao hơn** giá khả thi theo giá vốn | ✅ Có dư địa lợi nhuận gộp | Phần dư dùng cho voucher/chương trình khuyến mãi |
 
 ---
 
-# STEP 3 · 定价落地与毛利验算
+# STEP 3 · Chốt giá và kiểm tra biên lợi nhuận
 
 ```markdown
-## 3. 定价方案与验算
+## 3. Phương án giá và kiểm tra
 
-| SKU | 定价 | 广告前可支配毛利 | 占比 | 扣广告后毛利 | 净利率 | 达标(≥目标) | 盈亏线 ROAS |
+| SKU | Giá bán | LN gộp khả dụng trước QC | Tỷ trọng | LN sau QC | Biên LN ròng | Đạt (≥ mục tiêu) | ROAS hòa vốn |
 |---|---|---|---|---|---|---|---|
-| 引流款 | | | | | | | |
-| 主推款 | | | | | | | |
-| 高配款 | | | | | | | |
-| 套装款 | | | | | | | |
+| SKU kéo traffic | | | | | | | |
+| SKU chủ lực | | | | | | | |
+| SKU cấu hình cao | | | | | | | |
+| SKU combo | | | | | | | |
 
-**验算公式（每行都要能复核）**
+**Công thức kiểm tra (mỗi dòng đều phải kiểm lại được)**
 
-    广告前可支配毛利 = 定价 − 合计成本 − 定价×佣金率 − 定价×退货率
-    扣广告后毛利     = 广告前可支配毛利 − 定价×广告率
-    净利率           = 扣广告后毛利 ÷ 定价
-    盈亏线 ROAS      = 定价 ÷ 广告前可支配毛利
+    LN gộp khả dụng trước QC = giá bán − tổng giá vốn − giá bán×% hoa hồng − giá bán×% hoàn hàng
+    LN sau QC                = LN gộp khả dụng trước QC − giá bán×% quảng cáo
+    Biên LN ròng             = LN sau QC ÷ giá bán
+    ROAS hòa vốn             = giá bán ÷ LN gộp khả dụng trước QC
 ```
 
-### 3.1 毛利余量分析
+### 3.1 Phân tích dư địa lợi nhuận
 
 ```markdown
-### 3.1 毛利余量
+### 3.1 Dư địa lợi nhuận
 
-| SKU | 实际净利率 | 目标毛利率 | 余量 | 余量可支撑的优惠券力度 |
+| SKU | Biên LN ròng thực tế | Biên LN mục tiêu | Dư địa | Mức voucher dư địa gánh được |
 |---|---|---|---|---|
-| 主推款 | | 32% | | R$ <n> |
+| SKU chủ lực | | 32% | | R$ <n> |
 
-**含义**：余量 > 0 的 SKU 有能力发券；余量 ≤ 0 的 SKU 发券即亏损。
+**Ý nghĩa**: SKU có dư địa > 0 mới đủ sức phát voucher; SKU có dư địa ≤ 0 phát voucher là lỗ.
 ```
 
-> **余量的用法**：SOP 说优惠券的作用是"**缩小价格差距**"。
-> 所以余量应该优先用在**主推款或高配款**上（把它们的实际成交价拉近引流款），而不是给引流款发券（它毛利最薄）。
+> **Cách dùng dư địa**: SOP nói tác dụng của voucher là "**thu hẹp chênh lệch giá**".
+> Vì vậy dư địa nên ưu tiên dùng cho **SKU chủ lực hoặc SKU cấu hình cao** (kéo giá chốt thực tế của chúng lại gần SKU kéo traffic), chứ không phát voucher cho SKU kéo traffic (biên lợi nhuận của nó mỏng nhất).
 
-### 3.2 引流款的特殊处理
+### 3.2 Xử lý đặc biệt cho SKU kéo traffic
 
 ```markdown
-### 3.2 引流款战略角色说明
+### 3.2 Giải thích vai trò chiến lược của SKU kéo traffic
 
-| 项 | 值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 引流款定价 | |
-| 目标毛利率 | |
-| 实际净利率 | |
-| 盈亏线 ROAS | |
-| **是否在盈亏线之上** | ✅ / ⚠️ |
-| **战略角色标注** | |
+| Giá SKU kéo traffic | |
+| Biên LN mục tiêu | |
+| Biên LN ròng thực tế | |
+| ROAS hòa vốn | |
+| **Có nằm trên ngưỡng hòa vốn không** | ✅ / ⚠️ |
+| **Ghi chú vai trò chiến lược** | |
 ```
 
-⚠️ **若引流款低于盈亏线（每单亏钱）**：必须显式标注其战略角色与可承受量：
+⚠️ **Nếu SKU kéo traffic thấp hơn ngưỡng hòa vốn (lỗ mỗi đơn)**: bắt buộc ghi rõ vai trò chiến lược và khối lượng chịu được:
 
 ```
-[引流款战略亏损]
-- 每单亏 R$ <n>
-- 目的：<拉点击 / 加快广告效率 / 破零>
-- 可承受量：<每月最多 n 单，或占总量 ≤ n%>
-- 退出条件：<主推款月销达到 n 单后下架或提价>
+[SKU kéo traffic lỗ chiến lược]
+- Lỗ mỗi đơn R$ <n>
+- Mục đích: <kéo click / tăng hiệu quả quảng cáo / có đơn đầu tiên>
+- Khối lượng chịu được: <tối đa n đơn mỗi tháng, hoặc ≤ n% tổng lượng>
+- Điều kiện thoát: <sau khi SKU chủ lực đạt n đơn/tháng thì gỡ xuống hoặc tăng giá>
 ```
 
-**不允许**在没有这个标注的情况下给出低于成本的定价建议。
+**Không được phép** đưa ra đề xuất giá dưới giá vốn khi chưa có ghi chú này.
 
 ---
 
-# STEP 4 · SKU 四角色结构设计
+# STEP 4 · Thiết kế cấu trúc SKU bốn vai trò
 
 ```markdown
-## 4. SKU 结构
+## 4. Cấu trúc SKU
 
-| 角色 | 内容 | 配置差异 | 定价 | 净利率 | 职责 |
+| Vai trò | Nội dung | Khác biệt cấu hình | Giá bán | Biên LN ròng | Nhiệm vụ |
 |---|---|---|---|---|---|
-| **低价引流** | | 低配 | | | 拉点击、加快广告效率 |
-| **主推** | | **差异化配置** | | | **负责成交** |
-| **高配** | | 高配 | | | 提高客单价 |
-| **套装** | | 主机 + 配件 | | | **提高利润** |
+| **Kéo traffic giá thấp** | | Cấu hình thấp | | | Kéo click, tăng hiệu quả quảng cáo |
+| **Chủ lực** | | **Cấu hình khác biệt hóa** | | | **Chịu trách nhiệm chốt đơn** |
+| **Cấu hình cao** | | Cấu hình cao | | | Tăng AOV |
+| **Combo** | | Máy chính + phụ kiện | | | **Tăng lợi nhuận** |
 
-### 4.1 价格阶梯检查
+### 4.1 Kiểm tra bậc giá
 
-| 相邻档位 | 价差 | 价差幅度 | 是否合理 |
+| Hai bậc liền kề | Chênh giá | Biên độ chênh | Có hợp lý không |
 |---|---|---|---|
-| 引流 → 主推 | | | 差距不宜过大（否则买家不会升级） |
-| 主推 → 高配 | | | |
-| 主推 → 套装 | | | |
+| Kéo traffic → chủ lực | | | Chênh không nên quá lớn (nếu không người mua sẽ không nâng cấp) |
+| Chủ lực → cấu hình cao | | | |
+| Chủ lực → combo | | | |
 
-⚠️ **价差过大的问题**：如果引流款与主推款差 40% 以上，买家会停在引流款，主推款拿不到成交。
-⚠️ **价差过小的问题**：如果只差 5%，买家会全部选高配，引流款失去意义。
+⚠️ **Vấn đề khi chênh giá quá lớn**: nếu SKU kéo traffic và SKU chủ lực chênh hơn 40%, người mua sẽ dừng ở SKU kéo traffic, SKU chủ lực không có đơn.
+⚠️ **Vấn đề khi chênh giá quá nhỏ**: nếu chỉ chênh 5%, người mua sẽ chọn hết bản cấu hình cao, SKU kéo traffic mất ý nghĩa.
 
-### 4.2 优惠券设计（SOP：缩小价格差距）
+### 4.2 Thiết kế voucher (SOP: thu hẹp chênh lệch giá)
 
-| 券 | 适用 SKU | 面额 | 券后价 | 缩小的差距 | 成本来源 |
+| Voucher | SKU áp dụng | Mệnh giá | Giá sau voucher | Chênh lệch được thu hẹp | Nguồn chi phí |
 |---|---|---|---|---|---|
-| | 主推款 | | | 引流 ↔ 主推 从 R$ <a> 缩到 R$ <b> | 主推款毛利余量 R$ <n> |
+| | SKU chủ lực | | | Kéo traffic ↔ chủ lực từ R$ <a> xuống R$ <b> | Dư địa lợi nhuận của SKU chủ lực R$ <n> |
 
-**校验**：券后价必须仍在盈亏线之上。
+**Kiểm tra**: giá sau voucher vẫn phải nằm trên ngưỡng hòa vốn.
 
-| SKU | 券后价 | 券后净利率 | 是否 > 0 |
+| SKU | Giá sau voucher | Biên LN ròng sau voucher | Có > 0 không |
 |---|---|---|---|
 | | | | ✅ / ❌ |
 ```
 
-### 4.3 四角色的设计逻辑（用来检查你的结构对不对）
+### 4.3 Logic thiết kế bốn vai trò (dùng để kiểm tra cấu trúc của bạn có đúng không)
 
 ```
-低配款负责吸引点击  →  所以它要足够便宜，能引发对比
-主推款负责成交      →  所以它要是"加一点钱就明显升级"的那一档
-高配款负责提客单    →  所以它要有真实的价值差，不是虚高
-套装款负责提利润    →  所以它的成本增幅要小于售价增幅
-优惠券负责缩差距    →  所以它应该发在主推/高配，不是引流
+SKU cấu hình thấp hút click  →  nên nó phải đủ rẻ để tạo ra sự so sánh
+SKU chủ lực chốt đơn         →  nên nó phải là bậc "thêm chút tiền là nâng cấp rõ rệt"
+SKU cấu hình cao kéo AOV     →  nên nó phải có chênh lệch giá trị thật, không phải đội giá
+SKU combo tăng lợi nhuận     →  nên mức tăng giá vốn của nó phải nhỏ hơn mức tăng giá bán
+Voucher thu hẹp chênh lệch   →  nên nó phải phát cho SKU chủ lực/cấu hình cao, không phải SKU kéo traffic
 ```
 
-> **自查方法**：把这五句话当成问句逐条问自己。答不上来的那一档，就是设计有问题的那一档。
+> **Cách tự kiểm tra**: biến năm câu trên thành câu hỏi và lần lượt tự hỏi. Bậc nào trả lời không được, bậc đó là chỗ thiết kế có vấn đề.
 
 ---
 
-# STEP 5 · 前期养权重策略（SOP 1.9）
+# STEP 5 · Chiến lược nuôi trọng số giai đoạn đầu (SOP 1.9)
 
 ```markdown
-## 5. 前期定价策略
+## 5. Chiến lược giá giai đoạn đầu
 
-| 阶段 | 定价 | 毛利率 | 目的 | 触发回提的条件 |
+| Giai đoạn | Giá bán | Biên LN | Mục đích | Điều kiện kích hoạt nâng giá lại |
 |---|---|---|---|---|
-| 冷启动（第 1–4 周） | | | 养权重 | |
-| 回提期（第 5–8 周） | | | 恢复目标毛利 | |
-| 稳定期 | 目标定价 | 目标毛利 | — | — |
+| Cold start (tuần 1–4) | | | Nuôi trọng số | |
+| Giai đoạn nâng giá lại (tuần 5–8) | | | Khôi phục biên LN mục tiêu | |
+| Giai đoạn ổn định | Giá mục tiêu | Biên LN mục tiêu | — | — |
 
-**约束检查**
+**Kiểm tra ràng buộc**
 
-| 项 | 说明 |
+| Hạng mục | Giải thích |
 |---|---|
-| 现金流能否承受前期降毛利 | `【待确认】` 需人工判断 |
-| 前期价是否低于盈亏线 | ✅ / ⚠️ |
-| 回提时点的判断指标 | 建议用 SOP 的 7 天测试区间观察 |
+| Dòng tiền có chịu được việc hạ biên lợi nhuận giai đoạn đầu không | `【Cần xác nhận】` cần người đánh giá |
+| Giá giai đoạn đầu có thấp hơn ngưỡng hòa vốn không | ✅ / ⚠️ |
+| Chỉ số xác định thời điểm nâng giá lại | Khuyến nghị quan sát theo khung test 7 ngày của SOP |
 ```
 
-> ⚠️ **前期降毛利不等于亏本卖。** SOP 说"前期利润率可以稍微低一点"——降几个点可以，**跌破盈亏线就是另一回事了**（那是引流款的战略亏损，需要单独标注）。
-> **判断标准**：降到目标毛利以下但仍在盈亏线之上 → 正常的养权重；低于盈亏线 → 战略亏损，需显式标注与退出条件。
+> ⚠️ **Hạ biên lợi nhuận giai đoạn đầu không có nghĩa là bán lỗ.** SOP nói "giai đoạn đầu tỷ suất lợi nhuận có thể thấp hơn một chút"——hạ vài điểm thì được, **thủng ngưỡng hòa vốn lại là chuyện khác** (đó là lỗ chiến lược của SKU kéo traffic, cần ghi chú riêng).
+> **Tiêu chí phán đoán**: hạ xuống dưới biên lợi nhuận mục tiêu nhưng vẫn trên ngưỡng hòa vốn → nuôi trọng số bình thường; thấp hơn ngưỡng hòa vốn → lỗ chiến lược, cần ghi rõ cùng điều kiện thoát.
 
 ---
 
-# STEP 6 · 交 06 的传播指标
+# STEP 6 · Chỉ số giao cho 06
 
 ```markdown
-## 6. 交 06 Advertising 的字段
+## 6. Các trường giao cho 06 Advertising
 
-| SKU | 定价 | 广告前可支配毛利 | **盈亏线 ROAS** | 目标毛利率 | 建议广告率 | 是否可投标 |
+| SKU | Giá bán | LN gộp khả dụng trước QC | **ROAS hòa vốn** | Biên LN mục tiêu | % quảng cáo đề xuất | Có chạy quảng cáo được không |
 |---|---|---|---|---|---|---|
-| 主推款 | | | | | | ✅ |
-| 高配款 | | | | | | |
-| 引流款 | | | | | | ⚠️ 见战略亏损标注 |
+| SKU chủ lực | | | | | | ✅ |
+| SKU cấu hình cao | | | | | | |
+| SKU kéo traffic | | | | | | ⚠️ xem ghi chú lỗ chiến lược |
 
-**说明**：
-- `盈亏线 ROAS` 是 06 判断"广告是否赚钱"的基准线
-- 若某 SKU 的盈亏线 ROAS 高于该品类的常见 ROI 区间（通常 3–8），**说明它的广告模型不成立**，应在定价阶段就看清，而不是等投放后才发现
+**Giải thích**:
+- `ROAS hòa vốn` là đường chuẩn để 06 đánh giá "quảng cáo có lãi không"
+- Nếu ROAS hòa vốn của một SKU cao hơn khoảng ROI thường gặp của ngành hàng đó (thường 3–8), **tức là mô hình quảng cáo của nó không đứng vững**, phải nhìn ra ngay từ giai đoạn định giá chứ không đợi chạy quảng cáo rồi mới phát hiện
 ```
 
 ---
@@ -259,45 +259,45 @@
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 成本结构
-## 2. 定价计算
-   ### 2.1 售价公式
-   ### 2.2 逐 SKU 反算结果
-   ### 2.3 与市场分析的交叉验证
-## 3. 定价方案与验算
-   ### 3.1 毛利余量分析
-   ### 3.2 引流款的特殊处理
-## 4. SKU 结构
-   ### 4.1 价格阶梯检查
-   ### 4.2 优惠券设计
-## 5. 前期定价策略
-## 6. 交 06 的传播指标
-## 7. 建议合规扫描
-   （按 00_system.md 的 S1–S5；无命中必须写"无命中"）
-## 8. 交付字段
+## 1. Cấu trúc chi phí
+## 2. Tính giá
+   ### 2.1 Công thức giá bán
+   ### 2.2 Kết quả tính ngược từng SKU
+   ### 2.3 Kiểm chứng chéo với phân tích thị trường
+## 3. Phương án giá và kiểm tra
+   ### 3.1 Phân tích dư địa lợi nhuận
+   ### 3.2 Xử lý đặc biệt cho SKU kéo traffic
+## 4. Cấu trúc SKU
+   ### 4.1 Kiểm tra bậc giá
+   ### 4.2 Thiết kế voucher
+## 5. Chiến lược giá giai đoạn đầu
+## 6. Chỉ số giao cho 06
+## 7. Quét tuân thủ đề xuất
+   (theo S1–S5 trong 00_system.md; không có vi phạm phải ghi "không có vi phạm")
+## 8. Các trường bàn giao
    - sku_structure: []
    - main_sku: ""
    - pricing_table: {}
    - breakeven_roas_by_sku: {}       # → 06
    - coupon_plan: []
    - ramp_up_plan: {}
-   - strategic_loss_sku: null        # 引流款低于盈亏线时必填并说明退出条件
+   - strategic_loss_sku: null        # bắt buộc điền khi SKU kéo traffic thấp hơn ngưỡng hòa vốn, kèm điều kiện thoát
 ```
 
 ---
 
 # SELF-CHECK
 
-- [ ] 逐 SKU 成本分别列出，未用一个成本套所有 SKU
-- [ ] 定价公式的佣金/广告/退货按**售价百分比**放在分母
-- [ ] 完整展示了代入计算过程（可复核）
-- [ ] 已与 01 的 `cost_floor_price` 做交叉验证并说明差异含义
-- [ ] 每个 SKU 都算了广告前毛利 / 扣广告后毛利 / 净利率 / 盈亏线 ROAS
-- [ ] 已计算毛利余量，并说明余量可支撑的券力度
-- [ ] 优惠券发在主推/高配（不是引流款），且券后仍在盈亏线之上
-- [ ] 价格阶梯做了"过大/过小"双向检查
-- [ ] 引流款低于盈亏线时已标注战略角色、可承受量、退出条件
-- [ ] 前期定价未跌破盈亏线；已跌破的已按战略亏损标注
-- [ ] 已输出各 SKU 的盈亏线 ROAS 给 06
-- [ ] 未虚标参数、未建议规避认证、未承诺效果、未替代采购决策
-- [ ] 末尾已附建议合规扫描 + 交付字段
+- [ ] Giá vốn từng SKU được liệt kê riêng, không dùng một giá vốn cho mọi SKU
+- [ ] Hoa hồng/quảng cáo/hoàn hàng trong công thức định giá được tính theo **phần trăm giá bán** và đặt ở mẫu số
+- [ ] Đã trình bày đầy đủ quá trình thay số (kiểm lại được)
+- [ ] Đã kiểm chứng chéo với `cost_floor_price` của 01 và giải thích ý nghĩa của chênh lệch
+- [ ] Mỗi SKU đều đã tính LN gộp trước QC / LN sau QC / biên LN ròng / ROAS hòa vốn
+- [ ] Đã tính dư địa lợi nhuận và giải thích mức voucher mà dư địa gánh được
+- [ ] Voucher phát cho SKU chủ lực/cấu hình cao (không phải SKU kéo traffic), và giá sau voucher vẫn trên ngưỡng hòa vốn
+- [ ] Bậc giá đã được kiểm tra cả hai chiều "quá lớn/quá nhỏ"
+- [ ] Khi SKU kéo traffic thấp hơn ngưỡng hòa vốn đã ghi rõ vai trò chiến lược, khối lượng chịu được, điều kiện thoát
+- [ ] Giá giai đoạn đầu không thủng ngưỡng hòa vốn; nếu đã thủng thì đã ghi chú là lỗ chiến lược
+- [ ] Đã xuất ROAS hòa vốn của từng SKU cho 06
+- [ ] Không khai khống thông số, không đề xuất lách chứng nhận, không cam kết hiệu quả, không ra quyết định thu mua thay con người
+- [ ] Cuối đầu ra đã kèm quét tuân thủ đề xuất + các trường bàn giao
