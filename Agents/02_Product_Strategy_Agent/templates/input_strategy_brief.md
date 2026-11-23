@@ -1,43 +1,43 @@
-# 输入模板 · 产品策略简报
+# Template đầu vào · Brief chiến lược sản phẩm
 
-> **前置要求**：
-> 1. 已跑完 [01 Market Research](../../01_Market_Research_Agent/)（提供市场结论）
-> 2. 已由人确认"这个产品决定做"（`decision_approved`）
+> **Điều kiện tiên quyết**:
+> 1. Đã chạy xong [01 Market Research](../../01_Market_Research_Agent/) (cung cấp kết luận thị trường)
+> 2. Đã có người xác nhận "sản phẩm này đã quyết định làm" (`decision_approved`)
 
 ---
 
-## 0. 决策确认 ★ 阻塞项
+## 0. Xác nhận quyết định ★ Mục chặn
 
 ```yaml
-decision_approved*: false      # ⚠️ 必须由人改为 true
-approved_by: ""                # 决策人
+decision_approved*: false      # ⚠️ bắt buộc do người đổi thành true
+approved_by: ""                # người ra quyết định
 approved_date: ""              # YYYY-MM-DD
-decision_notes: ""             # 决策依据备注
+decision_notes: ""             # ghi chú căn cứ quyết định
 ```
 
-> **为什么这是阻塞项**：本模块**不做选品决策**，只做"把已决策的产品规格化"。
-> 未确认就往下跑，等于让 Agent 替你做商业决策 —— 这涉及公司战略、资金与风险偏好，Agent 无法代劳。
+> **Vì sao đây là mục chặn**: module này **không ra quyết định chọn sản phẩm**, chỉ làm "chuẩn hóa thông số cho sản phẩm đã được quyết định".
+> Chưa xác nhận mà vẫn chạy tiếp, tức là để Agent ra quyết định kinh doanh thay bạn —— việc này liên quan đến chiến lược công ty, vốn và khẩu vị rủi ro, Agent không làm thay được.
 
 ---
 
-## 1. 任务配置
+## 1. Cấu hình tác vụ
 
 ```yaml
 platform*: shopee
-target_market*: 巴西
+target_market*: Brazil
 category*: ""
 ```
 
 ---
 
-## 2. 上游字段 · 01 的交付 ★ 阻塞项
+## 2. Trường upstream · bàn giao từ 01 ★ Mục chặn
 
 ```yaml
-# ── 从 01 输出的「交付给 02 Product Strategy 的字段」区块直接粘贴 ──
+# ── Dán thẳng từ khối «Các trường giao cho 02 Product Strategy» trong đầu ra của 01 ──
 
 target_price_range*: [0, 0]
 main_price_zone: [0, 0]
-cost_floor_price: 0.00         # 01 反算的成本可行价（无则填 null）
+cost_floor_price: 0.00         # giá khả thi theo giá vốn do 01 tính ngược (không có thì điền null)
 
 recommended_config*: {}
 mainstream_config: {}
@@ -59,49 +59,49 @@ pending_confirmations: []
 
 ---
 
-## 3. 成本结构 ★ 阻塞项
+## 3. Cấu trúc chi phí ★ Mục chặn
 
-> **不同配置的成本不同，请逐 SKU 填。** 用一个成本套所有 SKU 会算错毛利。
+> **Cấu hình khác nhau thì giá vốn khác nhau, hãy điền từng SKU.** Dùng một giá vốn cho mọi SKU sẽ tính sai biên lợi nhuận.
 
 ```yaml
 cost_structure*:
-  commission_rate: 0.14        # ⚠️ 按实际类目查
-  return_rate: 0.02            # SOP 规定 2%
-  ad_rate: 0.05                # 大件 ~5% / 小件 5–10%
-  target_margin_rate: 0.32     # 大件 30–35% / 小件 25–30%
-  tax_rate: 0.00               # ⚠️ 巴西税费；填 0 时报告会标注"未含税费"
+  commission_rate: 0.14        # ⚠️ tra theo ngành hàng thực tế
+  return_rate: 0.02            # SOP quy định 2%
+  ad_rate: 0.05                # hàng cồng kềnh ~5% / hàng nhỏ 5–10%
+  target_margin_rate: 0.32     # hàng cồng kềnh 30–35% / hàng nhỏ 25–30%
+  tax_rate: 0.00               # ⚠️ thuế Brazil; điền 0 thì báo cáo sẽ ghi chú "chưa gồm thuế"
 
 sku_costs*:
-  - sku_role: "引流款"
+  - sku_role: "SKU kéo traffic"
     product_cost: 0.00
     shipping: 0.00
     warehouse: 0.00
-  - sku_role: "主推款"
+  - sku_role: "SKU chủ lực"
     product_cost: 0.00
     shipping: 0.00
     warehouse: 0.00
-  - sku_role: "高配款"
+  - sku_role: "SKU cấu hình cao"
     product_cost: 0.00
     shipping: 0.00
     warehouse: 0.00
-  - sku_role: "套装款"
-    product_cost: 0.00          # 含配件包
+  - sku_role: "SKU combo"
+    product_cost: 0.00          # gồm bộ phụ kiện
     shipping: 0.00
     warehouse: 0.00
 ```
 
 ---
 
-## 4. 公司能力与约束
+## 4. Năng lực và ràng buộc của công ty
 
 ```yaml
 company_capabilities:
-  can_do_config: true           # 能否实现市场推荐的配置
-  config_limitations: ""        # 做不到的配置，如"承重件供应商最高支持 150kg"
+  can_do_config: true           # có làm được cấu hình thị trường đề xuất không
+  config_limitations: ""        # cấu hình không làm được, vd. "nhà cung cấp khung chịu lực chỉ hỗ trợ tối đa 150kg"
   supply_lead_time_days: 0
-  moq: 0                        # 最小起订量
+  moq: 0                        # số lượng đặt hàng tối thiểu
 
-after_sales_capacity*:          # 决定能写什么售后承诺
+after_sales_capacity*:          # quyết định được ghi cam kết hậu mãi gì
   can_repair: false
   can_replace: true
   has_local_warranty_point: false
@@ -110,23 +110,23 @@ after_sales_capacity*:          # 决定能写什么售后承诺
   notes: ""
 ```
 
-> ⚠️ `after_sales_capacity` 直接决定详情页段 5（售后承诺）能写什么。
-> **能力之外的一律不能写** —— 写了就是给自己制造差评。
+> ⚠️ `after_sales_capacity` quyết định trực tiếp đoạn 5 (cam kết hậu mãi) trên trang chi tiết được ghi gì.
+> **Ngoài năng lực thì tuyệt đối không ghi** —— ghi vào là tự rước đánh giá tiêu cực.
 
 ---
 
-## 5. 运营约束（影响定价策略）
+## 5. Ràng buộc vận hành (ảnh hưởng chiến lược giá)
 
 ```yaml
-cash_flow_constraint: ""        # 现金流约束，如"前期最多承受 4 周低毛利"
-inventory_level: 0              # 当前库存
-can_stock_for_promo: true       # 能否为活动备货
-# ⚠️ 虾皮活动一旦参加无法退出，报名时必须核对库存
+cash_flow_constraint: ""        # ràng buộc dòng tiền, vd. "giai đoạn đầu chịu được tối đa 4 tuần biên lợi nhuận thấp"
+inventory_level: 0              # tồn kho hiện tại
+can_stock_for_promo: true       # có chuẩn bị hàng cho chương trình khuyến mãi được không
+# ⚠️ Chương trình Shopee đã đăng ký thì không rút ra được, khi đăng ký phải đối chiếu tồn kho
 ```
 
 ---
 
-## 6. 竞品价格锚点（可选）
+## 6. Điểm neo giá đối thủ (tùy chọn)
 
 ```yaml
 competitor_price_points:
@@ -140,12 +140,12 @@ competitor_price_points:
 
 ---
 
-## 填写自检
+## Tự kiểm tra khi điền
 
-- [ ] `decision_approved` 已由人确认改为 true
-- [ ] 01 的交付字段已粘贴完整（尤其 `opportunity_config` 与 `cost_floor_price`）
-- [ ] `sku_costs` **逐 SKU** 填了，不是用同一个成本
-- [ ] `commission_rate` 按实际类目查的，不是套用 14%
-- [ ] 税费已计入（未计入时接受报告里的"未含税费"标注）
-- [ ] `after_sales_capacity` 如实填写（这决定售后承诺能写什么）
-- [ ] 我理解：**采购决策由我做**，Agent 只输出规格与依据
+- [ ] `decision_approved` đã được người xác nhận và đổi thành true
+- [ ] Các trường bàn giao của 01 đã dán đầy đủ (nhất là `opportunity_config` và `cost_floor_price`)
+- [ ] `sku_costs` đã điền **từng SKU**, không dùng chung một giá vốn
+- [ ] `commission_rate` tra theo ngành hàng thực tế, không áp mặc định 14%
+- [ ] Thuế đã được tính vào (nếu chưa thì chấp nhận ghi chú "chưa gồm thuế" trong báo cáo)
+- [ ] `after_sales_capacity` điền đúng thực tế (cái này quyết định cam kết hậu mãi được ghi gì)
+- [ ] Tôi hiểu: **quyết định thu mua do tôi làm**, Agent chỉ xuất thông số và căn cứ

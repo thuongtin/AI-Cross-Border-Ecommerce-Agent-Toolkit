@@ -1,216 +1,216 @@
-# 输出模板 · 产品需求表
+# Template đầu ra · Bảng yêu cầu sản phẩm
 
-> 02 Product Strategy Agent 的标准输出。SOP 1.7 要求的最终交付物。
-> **下游消费者**：03 Listing / 04 Image / 05 Video（卖点与参数）、06 Advertising（盈亏线）、采购（规格）。
+> Đầu ra chuẩn của 02 Product Strategy Agent. Là sản phẩm bàn giao cuối cùng mà SOP 1.7 yêu cầu.
+> **Bên sử dụng downstream**: 03 Listing / 04 Image / 05 Video (điểm bán hàng và thông số), 06 Advertising (ngưỡng hòa vốn), bộ phận thu mua (quy cách).
 
 ---
 
 ```markdown
 # Product Requirement · <product_name> · <platform> / <market>
 
-生成时间：<YYYY-MM-DD>
-Prompt 版本：02-Product-Strategy v0.3
-决策确认：<决策人 / 日期>
-上游：01-Market-Research
+Thời gian tạo: <YYYY-MM-DD>
+Phiên bản Prompt: 02-Product-Strategy v0.3
+Xác nhận quyết định: <người ra quyết định / ngày>
+Upstream: 01-Market-Research
 
 ---
 
-## 0. 一句话结论（SOP 1.7 要求）
+## 0. Kết luận một câu (SOP 1.7 yêu cầu)
 
-> **我们这个产品，卖给 <谁>，主打 <什么卖点>，用 <什么配置>，
-> 在 <什么价格>，避开 <什么风险>。**
+> **Sản phẩm này của chúng ta bán cho <ai>, đánh vào <điểm bán hàng nào>, dùng <cấu hình nào>,
+> ở mức <giá nào>, né <rủi ro nào>.**
 
 ---
 
-## 1. 产品类型
+## 1. Loại sản phẩm
 
-| 维度 | 定位 | 依据 |
+| Khía cạnh | Định vị | Căn cứ |
 |---|---|---|
-| 店铺角色 | 引流款 / 利润款 / 测试款 / 长尾款 | |
-| 差异程度 | 普通款 / 差异化款 | |
-| 推广角色 | 主推款 / 测试款 | |
+| Vai trò trong shop | SKU kéo traffic / SKU lợi nhuận / SKU test / SKU long-tail | |
+| Mức độ khác biệt | SKU phổ thông / SKU khác biệt hóa | |
+| Vai trò quảng bá | SKU chủ lực / SKU test | |
 
 ---
 
-## 2. 核心配置
+## 2. Cấu hình cốt lõi
 
-| 配置维度 | 市场推荐值 | 我方确定值 | 是否一致 | 公司能否做 |
+| Khía cạnh cấu hình | Giá trị thị trường đề xuất | Giá trị bên ta chốt | Có khớp không | Công ty làm được không |
 |---|---|---|---|---|
 | | | | | |
 
-**配置说明**：
+**Giải thích cấu hình**:
 
-⚠️ **公司做不到的配置**：
+⚠️ **Cấu hình công ty không làm được**:
 
 ---
 
-## 3. 主推卖点
+## 3. Điểm bán hàng chủ lực
 
-### 3.1 卖点分层
+### 3.1 Phân tầng điểm bán hàng
 
-| 层级 | 卖点 | 支撑依据 | 用于 |
+| Tầng | Điểm bán hàng | Căn cứ hỗ trợ | Dùng cho |
 |---|---|---|---|
-| **主卖点（唯一）** | | | 主图 / 视频钩子 / 标题 |
-| 副卖点 | | | 详情页 / 五点 / 视频 |
-| 保底卖点 | | | 详情页 |
-| **禁用表述** | | | ⛔ |
+| **Điểm bán hàng chính (duy nhất)** | | | Ảnh chính / hook video / tiêu đề |
+| Điểm bán hàng phụ | | | Trang chi tiết / 5 gạch đầu dòng / video |
+| Điểm bán hàng nền | | | Trang chi tiết |
+| **Cách diễn đạt bị cấm** | | | ⛔ |
 
 ---
 
-## 4. 风险规避
+## 4. Phòng tránh rủi ro
 
-| # | 风险类型 | 具体风险 | 规避方式 | 落在哪 |
+| # | Loại rủi ro | Rủi ro cụ thể | Cách phòng tránh | Đặt ở đâu |
 |---|---|---|---|---|
-| 1 | 参数不能虚标 | | | 03 段 4 |
-| 2 | 品牌词不能写 | | | 03/04/05 |
-| 3 | 售后问题提前说明 | | | 03 段 6 |
-| 4 | 功能边界写清 | | | 03 段 6 |
-| 5 | 承诺不能乱写 | | | 03 段 5 |
+| 1 | Không khai khống thông số | | | 03 đoạn 4 |
+| 2 | Không ghi từ thương hiệu | | | 03/04/05 |
+| 3 | Nói trước vấn đề hậu mãi | | | 03 đoạn 6 |
+| 4 | Ghi rõ giới hạn chức năng | | | 03 đoạn 6 |
+| 5 | Không cam kết bừa | | | 03 đoạn 5 |
 
-**售后承诺边界**（受实际能力约束）
+**Giới hạn cam kết hậu mãi** (bị ràng buộc bởi năng lực thực tế)
 
-| 售后能力 | 不能写的承诺 |
+| Năng lực hậu mãi | Cam kết không được ghi |
 |---|---|
 | | |
 
 ---
 
-## 5. 上架前 8 问
+## 5. 8 câu hỏi trước khi đăng bán
 
-| # | 问题 | 答案 | 状态 |
+| # | Câu hỏi | Trả lời | Trạng thái |
 |---|---|---|---|
-| 1 | 卖给谁 | | |
-| 2 | 核心卖点 | | |
-| 3 | 主要竞品 | | |
-| 4 | 价格区间 | | |
-| 5 | 主推 SKU | | |
-| 6 | 利润底线 | | |
-| 7 | 是否适合广告测试 | | |
-| 8 | 售后风险 | | |
+| 1 | Bán cho ai | | |
+| 2 | Điểm bán hàng cốt lõi | | |
+| 3 | Đối thủ chính | | |
+| 4 | Khoảng giá | | |
+| 5 | SKU chủ lực | | |
+| 6 | Mức lợi nhuận sàn | | |
+| 7 | Có phù hợp test quảng cáo không | | |
+| 8 | Rủi ro hậu mãi | | |
 
 ---
 
-## 6. 成本结构
+## 6. Cấu trúc chi phí
 
-| SKU | 产品成本 | 尾程物流 | 仓储费 | 合计 |
+| SKU | Giá vốn sản phẩm | Vận chuyển chặng cuối | Phí lưu kho | Tổng |
 |---|---|---|---|---|
 | | | | | |
 
-**费率**：佣金 <n>% ｜ 广告 <n>% ｜ 退货 <n>% ｜ 目标毛利 <n>% ｜ 税费 <n>%
+**Mức phí**: hoa hồng <n>% ｜ quảng cáo <n>% ｜ hoàn hàng <n>% ｜ biên LN mục tiêu <n>% ｜ thuế <n>%
 
-⚠️ 税费说明：<是否已计入>
+⚠️ Ghi chú thuế: <đã tính vào chưa>
 
 ---
 
-## 7. 定价计算
+## 7. Tính giá
 
-### 7.1 公式
+### 7.1 Công thức
 
 ```
-目标售价 = 合计成本 ÷ (1 − 佣金率 − 广告率 − 退货率 − 目标毛利率)
+Giá bán mục tiêu = tổng giá vốn ÷ (1 − % hoa hồng − % quảng cáo − % hoàn hàng − % biên lợi nhuận mục tiêu)
 ```
 
-### 7.2 逐 SKU 反算
+### 7.2 Tính ngược từng SKU
 
-| SKU | 合计成本 | 分母 | 反算目标售价 | 市场锚点 | 差异 |
+| SKU | Tổng giá vốn | Mẫu số | Giá bán mục tiêu tính ngược | Điểm neo thị trường | Chênh lệch |
 |---|---|---|---|---|---|
 | | | | | | |
 
-### 7.3 交叉验证
+### 7.3 Kiểm chứng chéo
 
-| 项 | 值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 01 反算的成本可行价 | |
-| 本步反算的目标售价 | |
-| 差异 | |
+| Giá khả thi theo giá vốn do 01 tính ngược | |
+| Giá bán mục tiêu tính ngược ở bước này | |
+| Chênh lệch | |
 
-**结论**：
+**Kết luận**:
 
 ---
 
-## 8. 定价方案与验算
+## 8. Phương án giá và kiểm tra
 
-| SKU | 定价 | 广告前可支配毛利 | 占比 | 扣广告后毛利 | 净利率 | 达标 | 盈亏线 ROAS |
+| SKU | Giá bán | LN gộp khả dụng trước QC | Tỷ trọng | LN sau QC | Biên LN ròng | Đạt | ROAS hòa vốn |
 |---|---|---|---|---|---|---|---|
 | | | | | | | | |
 
-### 8.1 毛利余量
+### 8.1 Dư địa lợi nhuận
 
-| SKU | 实际净利率 | 目标 | 余量 | 可支撑券力度 |
+| SKU | Biên LN ròng thực tế | Mục tiêu | Dư địa | Mức voucher gánh được |
 |---|---|---|---|---|
 
-### 8.2 引流款战略角色
+### 8.2 Vai trò chiến lược của SKU kéo traffic
 
-| 项 | 值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 是否在盈亏线之上 | |
-| 战略角色 | |
-| 可承受量 | |
-| 退出条件 | |
+| Có nằm trên ngưỡng hòa vốn không | |
+| Vai trò chiến lược | |
+| Khối lượng chịu được | |
+| Điều kiện thoát | |
 
 ---
 
-## 9. SKU 结构
+## 9. Cấu trúc SKU
 
-| 角色 | 内容 | 配置差异 | 定价 | 净利率 | 职责 |
+| Vai trò | Nội dung | Khác biệt cấu hình | Giá bán | Biên LN ròng | Nhiệm vụ |
 |---|---|---|---|---|---|
-| 引流 | | | | | |
-| **主推** | | | | | **成交** |
-| 高配 | | | | | 提客单 |
-| 套装 | | | | | **提利润** |
+| Kéo traffic | | | | | |
+| **Chủ lực** | | | | | **Chốt đơn** |
+| Cấu hình cao | | | | | Tăng AOV |
+| Combo | | | | | **Tăng lợi nhuận** |
 
-### 9.1 价格阶梯
+### 9.1 Bậc giá
 
-| 相邻档位 | 价差 | 幅度 | 检查 |
+| Hai bậc liền kề | Chênh giá | Biên độ | Kiểm tra |
 |---|---|---|---|
-| 引流 → 主推 | | | |
-| 主推 → 高配 | | | |
-| 主推 → 套装 | | | |
+| Kéo traffic → chủ lực | | | |
+| Chủ lực → cấu hình cao | | | |
+| Chủ lực → combo | | | |
 
-### 9.2 优惠券
+### 9.2 Voucher
 
-| 券 | 适用 SKU | 面额 | 券后价 | 缩小的差距 | 成本来源 |
+| Voucher | SKU áp dụng | Mệnh giá | Giá sau voucher | Chênh lệch được thu hẹp | Nguồn chi phí |
 |---|---|---|---|---|---|
 
-**券后盈亏线校验**：✅ / ❌
+**Kiểm tra ngưỡng hòa vốn sau voucher**: ✅ / ❌
 
 ---
 
-## 10. 前期定价策略
+## 10. Chiến lược giá giai đoạn đầu
 
-| 阶段 | 定价 | 毛利率 | 目的 | 回提条件 |
+| Giai đoạn | Giá bán | Biên LN | Mục đích | Điều kiện nâng giá lại |
 |---|---|---|---|---|
-| 冷启动 | | | | |
-| 回提期 | | | | |
-| 稳定期 | | | | |
+| Cold start | | | | |
+| Giai đoạn nâng giá lại | | | | |
+| Giai đoạn ổn định | | | | |
 
 ---
 
-## 11. 交 06 Advertising 的字段
+## 11. Các trường giao cho 06 Advertising
 
-| SKU | 定价 | 广告前可支配毛利 | **盈亏线 ROAS** | 建议广告率 | 可投标 |
+| SKU | Giá bán | LN gộp khả dụng trước QC | **ROAS hòa vốn** | % quảng cáo đề xuất | Chạy quảng cáo được |
 |---|---|---|---|---|---|
 | | | | | | |
 
-**说明**：
+**Giải thích**:
 
 ---
 
-## 12. 建议合规扫描
+## 12. Quét tuân thủ đề xuất
 
-| 规则 | 命中 | 处理 |
+| Quy tắc | Vi phạm | Xử lý |
 |---|---|---|
-| S1 虚标参数 | | |
-| S2 规避认证 | | |
-| S3 不实价格策略 | | |
-| S4 效果承诺 | | |
-| S5 替代采购决策 | | |
+| S1 Khai khống thông số | | |
+| S2 Lách chứng nhận | | |
+| S3 Chiến lược giá sai sự thật | | |
+| S4 Cam kết hiệu quả | | |
+| S5 Ra quyết định thu mua thay con người | | |
 
-（无命中时：`建议合规扫描：无命中`）
+(Khi không có vi phạm: `Quét tuân thủ đề xuất: không có vi phạm`)
 
 ---
 
-## 13. 交付字段
+## 13. Các trường bàn giao
 
 ```yaml
 product_type: {role: "", differentiation: "", promo_role: ""}
@@ -232,28 +232,28 @@ prelaunch_checklist: {}
 
 ---
 
-## 14. 执行前提醒
+## 14. Nhắc nhở trước khi triển khai
 
-- [ ] 采购已确认配置可生产（尤其差异化配置）
-- [ ] 已核对税费是否计入定价
-- [ ] 售后承诺与售后能力一致（不写做不到的）
-- [ ] 活动报名前已核对库存（⚠️ 虾皮活动一旦参加无法退出）
-- [ ] 已记录本次 Prompt 版本号
+- [ ] Thu mua đã xác nhận cấu hình sản xuất được (nhất là cấu hình khác biệt hóa)
+- [ ] Đã kiểm tra thuế có được tính vào giá bán chưa
+- [ ] Cam kết hậu mãi khớp với năng lực hậu mãi (không ghi điều làm không được)
+- [ ] Đã đối chiếu tồn kho trước khi đăng ký chương trình (⚠️ chương trình Shopee đã đăng ký thì không rút ra được)
+- [ ] Đã ghi lại số phiên bản Prompt của lần chạy này
 ```
 
 ---
 
-## 下游如何消费
+## Downstream sử dụng thế nào
 
-| 字段 | 消费者 | 用途 |
+| Trường | Bên sử dụng | Mục đích |
 |---|---|---|
-| `core_selling_point`（唯一主卖点） | **03 / 04 / 05** | 主图核心文案、视频钩子、标题关键词 |
-| `secondary_points[]` | 03 / 04 / 05 | 详情页、五点、视频卖点段 |
-| `forbidden_words_seed[]` | 03 / 04 / 05 | 硬拦截清单 |
-| `after_sales_commitment` | 03 段 5 | 售后承诺（受能力约束） |
-| `risk_mitigation[]` | 03 段 6 | 注意事项段 |
-| `breakeven_roas_by_sku` | **06** | 判断广告是否赚钱的基准线 |
-| `strategic_loss_sku` | 06 / 运营 | 若存在战略亏损 SKU，广告投放需限制其权重 |
+| `core_selling_point` (điểm bán hàng chính duy nhất) | **03 / 04 / 05** | Copy chính trên ảnh chính, hook video, từ khóa tiêu đề |
+| `secondary_points[]` | 03 / 04 / 05 | Trang chi tiết, 5 gạch đầu dòng, đoạn điểm bán hàng trong video |
+| `forbidden_words_seed[]` | 03 / 04 / 05 | Danh sách chặn cứng |
+| `after_sales_commitment` | 03 đoạn 5 | Cam kết hậu mãi (bị ràng buộc bởi năng lực) |
+| `risk_mitigation[]` | 03 đoạn 6 | Đoạn lưu ý |
+| `breakeven_roas_by_sku` | **06** | Đường chuẩn để đánh giá quảng cáo có lãi không |
+| `strategic_loss_sku` | 06 / vận hành | Nếu có SKU lỗ chiến lược, khi chạy quảng cáo cần giới hạn trọng số của nó |
 
-> **注意 `core_selling_point` 的唯一性**：03 的整个下游链路都依赖"主卖点只有一个"这个前提。
-> 两个并列的主卖点，会导致主图打两行字、视频开头讲两件事 —— 两个都记不住。
+> **Chú ý tính duy nhất của `core_selling_point`**: toàn bộ chuỗi downstream của 03 đều dựa trên tiền đề "chỉ có một điểm bán hàng chính".
+> Hai điểm bán hàng chính ngang hàng sẽ khiến ảnh chính có hai dòng chữ, đầu video nói hai chuyện —— cuối cùng người mua không nhớ được cái nào.

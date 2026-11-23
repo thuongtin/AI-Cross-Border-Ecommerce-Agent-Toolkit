@@ -1,10 +1,12 @@
 ---
 name: sop-ecom-pricing
 description: >-
-  SKU 定价算术 Skill，Shopee 巴西 / Mercado Livre。到岸成本 → 净利率 / 盈亏平衡价 /
-  目标价反算 / 价格阶梯 / 优惠券余量（含巴西税费项）。当用户要算毛利、定价、
-  盈亏价、该发多少券、SKU 结构是否合理时使用。中文「算毛利 / 定价 / 盈亏价 / 发券」同样触发。
-  NOT for 竞品定价调研、市场价格带分析（那是 01 的活）。
+  Skill tính toán định giá SKU cho Shopee Brazil / Mercado Livre. Từ giá vốn về kho (landed cost) →
+  biên lợi nhuận ròng / giá hòa vốn / tính ngược giá mục tiêu / bậc giá / dư địa voucher (có tính
+  các khoản thuế Brazil). Dùng khi người dùng cần tính lợi nhuận gộp, định giá, giá hòa vốn, nên
+  phát voucher bao nhiêu, cấu trúc SKU có hợp lý không. Các cụm «tính lãi / định giá / giá hòa vốn /
+  phát voucher» (và tiếng Trung «算毛利 / 定价 / 盈亏价 / 发券») cũng kích hoạt Skill này.
+  NOT for khảo sát giá đối thủ, phân tích dải giá thị trường (đó là việc của 01).
 allowed-tools:
   - Bash(python *)
   - Read
@@ -14,54 +16,54 @@ metadata:
   license: MIT
 ---
 
-# 02 · Product Strategy Skill（定价算术层）
+# 02 · Product Strategy Skill (tầng tính toán định giá)
 
-> **定位**：把「到岸成本 + 费率 + 目标毛利」变成**可验算的数字**。
-> 定价**决策**由人做，本 Skill 只保证算得准。
+> **Định vị**: biến «giá vốn về kho + các mức phí + biên lợi nhuận mục tiêu» thành **những con số kiểm chứng được**.
+> **Quyết định** định giá do người làm; Skill này chỉ đảm bảo tính đúng.
 
 ---
 
-## 快速开始
+## Bắt đầu nhanh
 
 ```bash
-# 平台预设（推荐）：费率来自 scripts/platform_fees.json，含价格分档佣金/固定费
-# 可用平台：shopee_br / mercadolivre_br / mercadolivre_br_premium / amazon_br / tiktok_br
+# Preset theo sàn (khuyên dùng): mức phí lấy từ scripts/platform_fees.json, có hoa hồng/phí cố định chia bậc theo giá
+# Các sàn có sẵn: shopee_br / mercadolivre_br / mercadolivre_br_premium / amazon_br / tiktok_br
 python scripts/sku_pricing.py calc --platform shopee_br --cost 935 --price 2199
-python scripts/sku_pricing.py --list-platforms          # 查看全部预设与费率来源
+python scripts/sku_pricing.py --list-platforms          # xem toàn bộ preset và nguồn mức phí
 
-# 多 SKU 矩阵 + 价格阶梯 + 券余量（读 CSV）
+# Ma trận nhiều SKU + bậc giá + dư địa voucher (đọc CSV)
 python scripts/sku_pricing.py matrix --file examples/sample-skus.csv --platform mercadolivre_br
 
-# 手工口径（兼容旧用法，显式参数永远优先于预设）
+# Nhập tay (tương thích cách dùng cũ, tham số truyền rõ luôn được ưu tiên hơn preset)
 python scripts/sku_pricing.py calc --cost 935 --price 2199 \
     --commission 14 --return 2 --ad 5 --tax 0 --target-margin 32
 
-# 多 SKU 矩阵：净利率表 + 价格阶梯 + 券余量 + 结构提醒
+# Ma trận nhiều SKU: bảng biên lợi nhuận ròng + bậc giá + dư địa voucher + cảnh báo cấu trúc
 python scripts/sku_pricing.py matrix --file examples/sample-skus.csv \
     --commission 14 --return 2 --ad 5 --tax 0 --target-margin 32
 ```
 
 ---
 
-## 输出解读（五件事）
+## Đọc kết quả (năm chỉ số)
 
-| 输出 | 怎么用 |
+| Đầu ra | Dùng thế nào |
 |---|---|
-| `net_rate` 净利率 | 与 `target_margin` 比：低于 = 破目标（引流款可刻意低于，但须在盈亏价之上） |
-| `break_even_price` 盈亏平衡价 | **售价底线** —— 促销/券后价跌破它就是真亏 |
-| `target_price` 目标价 | 由目标毛利反算的定价参考（成本 ÷ 0.47 这类） |
-| `coupon_headroom` 优惠券余量 | 净利率超出目标的部分 × 售价 = **发券不破目标的额度** |
-| `price_ladder` 价格阶梯 | 相邻 SKU 价差：差太少互相蚕食，差太大留出空位给竞品 |
+| `net_rate` biên lợi nhuận ròng | So với `target_margin`: thấp hơn = trượt mục tiêu (SKU kéo traffic có thể cố ý thấp hơn, nhưng phải trên giá hòa vốn) |
+| `break_even_price` giá hòa vốn | **Giá sàn tuyệt đối** —— giá sau khuyến mãi/voucher mà thủng mức này là lỗ thật |
+| `target_price` giá mục tiêu | Giá tham chiếu tính ngược từ biên lợi nhuận mục tiêu (kiểu giá vốn ÷ 0.47) |
+| `coupon_headroom` dư địa voucher | Phần biên lợi nhuận ròng vượt mục tiêu × giá bán = **hạn mức voucher phát ra mà không thủng mục tiêu** |
+| `price_ladder` bậc giá | Chênh giá giữa các SKU liền kề: chênh quá ít thì tự ăn thịt lẫn nhau, chênh quá nhiều thì chừa khoảng trống cho đối thủ |
 
 ---
 
-## 规则与口径
+## Quy tắc và cách tính
 
-- 公式、税费口径（综合有效税率）、参数说明 → [references/pricing-rules.md](references/pricing-rules.md)
-- 案例数据（电动滑板车四 SKU）→ [examples/sample-skus.csv](examples/sample-skus.csv)
+- Công thức, cách tính thuế (thuế suất hiệu dụng tổng hợp), giải thích tham số → [references/pricing-rules.md](references/pricing-rules.md)
+- Dữ liệu case study (xe scooter điện, bốn SKU) → [examples/sample-skus.csv](examples/sample-skus.csv)
 
-## 三条提醒
+## Ba lưu ý
 
-1. **引流款净利率低于目标是策略不是事故** —— 但脚本会提醒你确认，且它必须高于盈亏平衡价
-2. **高配款净利率常常低于主推款**（成本涨得比售价快）—— 脚本会提示检查
-3. **税费别漏** —— `--tax 8` 就能把盈亏价抬高近三成，按自己的巴西税制折算填入
+1. **SKU kéo traffic có biên lợi nhuận ròng thấp hơn mục tiêu là chiến lược chứ không phải sự cố** —— nhưng script sẽ nhắc bạn xác nhận, và giá của nó bắt buộc phải cao hơn giá hòa vốn
+2. **SKU cấu hình cao thường có biên lợi nhuận ròng thấp hơn SKU chủ lực** (giá vốn tăng nhanh hơn giá bán) —— script sẽ nhắc kiểm tra
+3. **Đừng quên thuế** —— chỉ cần `--tax 8` là giá hòa vốn đã bị đẩy lên gần 30%; hãy quy đổi theo chế độ thuế Brazil của bạn rồi điền vào
