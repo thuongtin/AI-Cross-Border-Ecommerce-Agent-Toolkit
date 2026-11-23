@@ -1,11 +1,11 @@
 ---
 name: sop-ecom-image
 description: >-
-  跨境电商商品图生成 Skill，Shopee 巴西站与 Mercado Livre 专精。9 图框架规划、产品身份锁定、
-  平台规则内置（ML 新规：白底/纯色/实景按类目）、像素级合规校验与自动修复。
-  当用户要做商品主图、场景图、详情图、白底图、9 张图、图合规检查、换背景、SKU 换色时使用。
-  中文「做图 / 主图 / 场景图 / 详情图 / 合规检查」同样触发。
-  NOT for 视频剪辑、纯格式转换、批量压缩。
+  Skill tạo ảnh sản phẩm cho thương mại điện tử xuyên biên giới, chuyên Shopee Brazil và Mercado Livre. Lên kế hoạch theo khung 9 ảnh, khóa nhận diện sản phẩm,
+  tích hợp sẵn quy tắc sàn (quy định mới của ML: nền trắng/màu trơn/bối cảnh thật theo ngành hàng), kiểm tra tuân thủ cấp pixel và tự động sửa lỗi.
+  Dùng khi người dùng cần làm ảnh chính, ảnh bối cảnh, ảnh chi tiết, ảnh nền trắng, bộ 9 ảnh, kiểm tra tuân thủ ảnh, đổi nền, đổi màu theo SKU.
+  Các câu tiếng Việt "làm ảnh / ảnh chính / ảnh bối cảnh / ảnh chi tiết / kiểm tra tuân thủ" cũng kích hoạt (tiếng Trung 「做图 / 主图 / 场景图 / 详情图 / 合规检查」 cũng vậy).
+  NOT for dựng/cắt video, chuyển đổi định dạng thuần túy, nén hàng loạt.
 allowed-tools:
   - Bash(python *)
   - Read
@@ -16,151 +16,151 @@ metadata:
   license: MIT
 ---
 
-# 04 · Product Image Skill（Shopee BR / Mercado Livre 专精）
+# 04 · Product Image Skill (chuyên Shopee BR / Mercado Livre)
 
-把一张产品照 + 一份参数表，变成**一整套符合平台规范、可直接上架**的商品图。
+Biến một ảnh sản phẩm + một bảng thông số thành **trọn bộ ảnh sản phẩm đúng quy chuẩn sàn, có thể đăng bán ngay**.
 
-**与 GitHub 上其它电商生图 Skill 的区别**：它们全部面向 Amazon / 淘宝 / 小红书 / TikTok Shop。
-本 Skill 专精两个平台 —— **Mercado Livre（规则最特殊：按类目区分背景、首图禁无关文字）**
-和 **Shopee 巴西（首图推荐叠字、饱和度高的葡语大字报风格）**，并保留 9 图规划框架。
-
----
-
-## 三不红线（先读，不可协商）
-
-1. **不剥离 C2PA / SynthID 等隐形水印标记**
-2. **不教唆规避平台 AI 标注**（例如「用 PS 改一下就不用披露 AI 图」）
-3. **不造假实拍** —— AI 生成图不得冒充「100% 实拍」
-
-复刻可识别真人的请求 → 拒绝（涉及 right-of-publicity，与水印无关）。
+**Khác biệt so với các Skill tạo ảnh thương mại điện tử khác trên GitHub**: tất cả chúng đều nhắm tới Amazon / Taobao / Xiaohongshu / TikTok Shop.
+Skill này chuyên về hai sàn —— **Mercado Livre (quy tắc đặc thù nhất: phân biệt nền theo ngành hàng, ảnh đầu cấm chữ không liên quan)**
+và **Shopee Brazil (ảnh đầu khuyến nghị chèn chữ, phong cách poster chữ to tiếng Bồ Đào Nha với độ bão hòa cao)**, đồng thời giữ khung kế hoạch 9 ảnh.
 
 ---
 
-## 产品身份锁定（Product Identity Lock）—— 每次出图前必做
+## Ba lằn ranh đỏ (đọc trước, không thương lượng)
 
-生图最大的事故不是"图不好看"，是**产品被画得不像了**（Logo 拼错、颜色跑偏、形状改变）。
-所以在任何出图之前，先把产品身份固定下来，并**原样带进每一条 prompt**。
+1. **Không gỡ bỏ watermark ẩn như C2PA / SynthID**
+2. **Không xúi giục lách quy định gắn nhãn AI của sàn** (ví dụ "sửa qua bằng PS là khỏi phải khai ảnh AI")
+3. **Không giả mạo ảnh chụp thật** —— ảnh do AI tạo không được mạo danh "100% ảnh chụp thật"
 
-| 字段 | 说明 | 示例 |
+Yêu cầu tái tạo người thật có thể nhận diện → từ chối (liên quan right-of-publicity, không liên quan đến watermark).
+
+---
+
+## Khóa nhận diện sản phẩm (Product Identity Lock) —— bắt buộc trước mỗi lần ra ảnh
+
+Sự cố lớn nhất khi tạo ảnh không phải "ảnh xấu", mà là **sản phẩm bị vẽ không còn giống nữa** (Logo sai chính tả, lệch màu, biến dạng hình dáng).
+Vì vậy trước khi ra bất kỳ ảnh nào, phải cố định nhận diện sản phẩm và **đưa nguyên văn vào mọi prompt**.
+
+| Trường | Mô tả | Ví dụ |
 |---|---|---|
-| `product_type` | 品类 + 形态 | 充电宝（圆角长方体） |
-| `shape` | 形状描述，越具体越好 | 圆角矩形机身，四角半径约 8mm |
-| `color` | **hex 色值**，不用形容词 | 机身 `#1C1C1E`，按键 `#3A3A3C` |
-| `logo_text` | 产品上的文字，逐字符给出 | `HX-20000`（屏幕显示） |
-| `materials` | 材质与表面处理 | 磨砂塑料 + 阳极氧化铝片 |
-| `ports_layout` | 接口/部件位置 | 顶部：USB-C×1 + USB-A×2 |
-| `must_not_change` | 绝不能变的点 | 屏幕数字、Logo 位置、按键数量 |
+| `product_type` | Loại sản phẩm + hình dạng | Sạc dự phòng (khối chữ nhật bo góc) |
+| `shape` | Mô tả hình dạng, càng cụ thể càng tốt | Thân hình chữ nhật bo góc, bán kính bốn góc khoảng 8mm |
+| `color` | **Mã màu hex**, không dùng tính từ | Thân `#1C1C1E`, nút bấm `#3A3A3C` |
+| `logo_text` | Chữ trên sản phẩm, ghi đúng từng ký tự | `HX-20000` (hiển thị trên màn hình) |
+| `materials` | Chất liệu và xử lý bề mặt | Nhựa nhám + tấm nhôm anod hóa |
+| `ports_layout` | Vị trí cổng/bộ phận | Mặt trên: USB-C×1 + USB-A×2 |
+| `must_not_change` | Những điểm tuyệt đối không được đổi | Số trên màn hình, vị trí Logo, số lượng nút bấm |
 
-> **规则**：`must_not_change` 里的每一项，在后续**每一条** prompt 的否定清单里重复出现。
-> 这是防止「越画越不像」的唯一有效手段。
+> **Quy tắc**: mỗi mục trong `must_not_change` phải được lặp lại trong danh sách phủ định của **mọi** prompt về sau.
+> Đây là cách hiệu quả duy nhất để tránh tình trạng "càng vẽ càng không giống".
 
 ---
 
-## 最小输入
+## Đầu vào tối thiểu
 
 ```text
-1. 产品图 1 张（手机随手拍也行，白底/实景都可）
-2. 参数表 spec_table（尺寸/容量/材质，来自 03 Listing Agent 的输出）
-3. 目标平台：shopee | mercadolivre | amazon
-4. 品类（决定 ML 的背景规则，见平台路由表）
+1. 1 ảnh sản phẩm (chụp vội bằng điện thoại cũng được, nền trắng/bối cảnh thật đều được)
+2. Bảng thông số spec_table (kích thước/dung lượng/chất liệu, lấy từ đầu ra của 03 Listing Agent)
+3. Sàn mục tiêu: shopee | mercadolivre | amazon
+4. Ngành hàng (quyết định quy tắc nền của ML, xem bảng định tuyến sàn)
 ```
 
 ---
 
-## 工作流总览
+## Tổng quan quy trình
 
 ```text
-① 身份锁定 → ② 平台规则路由 → ③ 图序列规划 → ④ 逐图组装 Prompt
-→ ⑤ 出图（三通道任选） → ⑥ 像素级合规校验（--fix 自动修复） → ⑦ 交付
+① Khóa nhận diện → ② Định tuyến quy tắc sàn → ③ Lên kế hoạch chuỗi ảnh → ④ Lắp Prompt cho từng ảnh
+→ ⑤ Ra ảnh (chọn một trong ba kênh) → ⑥ Kiểm tra tuân thủ cấp pixel (--fix tự sửa) → ⑦ Giao
 ```
 
 ---
 
-## ① 平台规则路由（读对应规则卡，不要凭记忆）
+## ① Định tuyến quy tắc sàn (đọc thẻ quy tắc tương ứng, đừng dựa vào trí nhớ)
 
-| platform | 规则卡 | 关键差异 |
+| platform | Thẻ quy tắc | Khác biệt chính |
 |---|---|---|
-| `shopee` | [references/platform-shopee.md](references/platform-shopee.md) | 首图**推荐叠字**（PT-BR 大字报）、饱和度高、9 图上限、单图 ≤2MB |
-| `mercadolivre` | [references/platform-mercadolivre.md](references/platform-mercadolivre.md) | **背景不再强制纯白**（白/纯色/实景按类目），但首图禁促销文字；占比要求最高（~95%） |
-| `amazon` | [references/platform-amazon.md](references/platform-amazon.md) | 最严：纯白 RGB(255,255,255) 必须 + 主体 ≥85% + 禁一切文字 |
+| `shopee` | [references/platform-shopee.md](references/platform-shopee.md) | Ảnh đầu **khuyến nghị chèn chữ** (poster chữ to PT-BR), độ bão hòa cao, tối đa 9 ảnh, mỗi ảnh ≤2MB |
+| `mercadolivre` | [references/platform-mercadolivre.md](references/platform-mercadolivre.md) | **Nền không còn bắt buộc trắng tinh** (trắng/màu trơn/bối cảnh thật theo ngành hàng), nhưng ảnh đầu cấm chữ khuyến mãi; yêu cầu tỷ lệ chiếm khung cao nhất (~95%) |
+| `amazon` | [references/platform-amazon.md](references/platform-amazon.md) | Khắt khe nhất: bắt buộc trắng tinh RGB(255,255,255) + chủ thể ≥85% + cấm mọi loại chữ |
 
-**注意**：三个平台对「首图能不能有字」的答案**互相矛盾**，一套图不能直接复用 ——
-这正是本 Skill 按平台出规则卡的原因。
-
----
-
-## ② 图序列规划
-
-规划走的是本仓库的 **9 图框架**（Shopee 上限 9 张，正好逐格规划）。
-
-每个图位（目的 / 构图 / prompt 骨架 / 平台差异）见
-[references/scenarios-9grid.md](references/scenarios-9grid.md)。
-
-ML 没有张数上限（建议 6–8 张），前 5 张按 ML 首图规则执行，其余可用场景图。
+**Lưu ý**: câu trả lời của ba sàn cho câu hỏi "ảnh đầu có được có chữ không" **mâu thuẫn nhau**, một bộ ảnh không thể dùng lại trực tiếp ——
+đây chính là lý do Skill này làm thẻ quy tắc riêng cho từng sàn.
 
 ---
 
-## ③ Prompt 组装：五槽位 + 七条铁律
+## ② Lên kế hoạch chuỗi ảnh
 
-每条出图 prompt 按五个槽位组装：
+Việc lên kế hoạch đi theo **khung 9 ảnh** của repo này (Shopee tối đa 9 ảnh, vừa đúng để lên kế hoạch từng ô).
+
+Từng vị trí ảnh (mục đích / bố cục / khung prompt / khác biệt sàn) xem
+[references/scenarios-9grid.md](references/scenarios-9grid.md).
+
+ML không giới hạn số ảnh (khuyến nghị 6–8 ảnh), 5 ảnh đầu tuân theo quy tắc ảnh đầu của ML, các ảnh còn lại có thể dùng ảnh bối cảnh.
+
+---
+
+## ③ Lắp Prompt: năm slot + bảy nguyên tắc sắt
+
+Mỗi prompt ra ảnh được lắp theo năm slot:
 
 ```text
-[产品身份] + [场景与构图] + [光影] + [平台技术参数] + [否定清单]
+[Nhận diện sản phẩm] + [Bối cảnh và bố cục] + [Ánh sáng] + [Thông số kỹ thuật của sàn] + [Danh sách phủ định]
 ```
 
-七条铁律（来自一线实战，逐条硬性执行）：
+Bảy nguyên tắc sắt (đúc kết từ thực chiến, thực hiện bắt buộc từng điều):
 
-1. **颜色用 hex 码**，不用形容词 —— `#1C1C1E`，不写"深灰色"
-2. **产品占比必须数字化** —— `product occupies 82% of frame height`
-3. **留白必须显式声明** —— `even 9% margin on all sides`
-4. **否定清单不能省** —— 且必须包含 `must_not_change` 全部条目
-5. **平台预留空间** —— Shopee 首图右上留 12% 给价格角标；ML 首图四边留白
-6. **图内文字三层架构** —— 主标语 ≤4 词 / 卖点 ≤7 词 / 角标仅数字（**仅 Shopee**；ML 首图禁）
-7. **批量出图优于反复调参** —— 一次出 5 版选 1，不要逐张精修
+1. **Màu dùng mã hex**, không dùng tính từ —— `#1C1C1E`, không viết "xám đậm"
+2. **Tỷ lệ chiếm khung của sản phẩm phải là con số** —— `product occupies 82% of frame height`
+3. **Khoảng trắng phải khai báo rõ** —— `even 9% margin on all sides`
+4. **Không được bỏ danh sách phủ định** —— và phải chứa toàn bộ mục trong `must_not_change`
+5. **Chừa chỗ theo sàn** —— ảnh đầu Shopee chừa 12% góc trên bên phải cho nhãn giá; ảnh đầu ML chừa khoảng trắng bốn cạnh
+6. **Chữ trong ảnh theo kiến trúc ba lớp** —— slogan chính ≤4 từ / điểm bán hàng ≤7 từ / nhãn góc chỉ có số (**chỉ Shopee**; ảnh đầu ML cấm)
+7. **Ra ảnh hàng loạt tốt hơn chỉnh thông số liên tục** —— một lần ra 5 bản chọn 1, đừng chỉnh tỉ mỉ từng ảnh
 
 ---
 
-## ④ 出图通道（三选一，按环境自动降级）
+## ④ Kênh ra ảnh (chọn một trong ba, tự hạ cấp theo môi trường)
 
-| 通道 | 条件 | 用法 |
+| Kênh | Điều kiện | Cách dùng |
 |---|---|---|
-| **A. Agent 内置生图** | 你所在的 AI 环境自带画图工具 | 直接把组装好的 prompt 交给生图工具 |
-| **B. OpenAI 兼容 API** | 有 `$IMAGE_API_BASE` + `$IMAGE_API_KEY` | 调 `/v1/images/edits`，参考图走 `image_urls` |
-| **C. 仅输出 prompt 包** | 什么都没有 | 输出 `prompt.txt` + 在线工具链接，人工粘贴 |
+| **A. Tạo ảnh tích hợp trong Agent** | Môi trường AI của bạn có sẵn công cụ vẽ | Giao thẳng prompt đã lắp cho công cụ tạo ảnh |
+| **B. API tương thích OpenAI** | Có `$IMAGE_API_BASE` + `$IMAGE_API_KEY` | Gọi `/v1/images/edits`, ảnh tham chiếu truyền qua `image_urls` |
+| **C. Chỉ xuất gói prompt** | Không có gì cả | Xuất `prompt.txt` + link công cụ online, dán thủ công |
 
-**模型路由**（如可用）：
-- 场景图 / 生活图 / 多版本尝试 → 快模型（Flare 类）
-- 需要保留 Logo / 屏幕文字 / 局部编辑 → 强模型（Sunburst 类）
+**Định tuyến model** (nếu có):
+- Ảnh bối cảnh / ảnh đời sống / thử nhiều phiên bản → model nhanh (loại Flare)
+- Cần giữ Logo / chữ trên màn hình / chỉnh sửa cục bộ → model mạnh (loại Sunburst)
 
 ---
 
-## ⑤ 出图后必须过像素校验（不是"看一眼"）
+## ⑤ Sau khi ra ảnh bắt buộc qua kiểm tra pixel (không phải "nhìn qua")
 
 ```bash
-python scripts/check_main_image.py 出图.png --platform mercadolivre
-python scripts/check_main_image.py 出图.png --platform shopee --fix 修复后.png
+python scripts/check_main_image.py anh_da_tao.png --platform mercadolivre
+python scripts/check_main_image.py anh_da_tao.png --platform shopee --fix anh_da_sua.png
 ```
 
-脚本会**逐像素**检查：尺寸、正方形、主体占比、背景纯净度/均匀度、文件大小，
-失败项会直接列出；`--fix` 能自动修的（白底不纯、留白过多、非正方形）会直接修。
+Script sẽ kiểm tra **từng pixel**: kích thước, hình vuông, tỷ lệ chiếm khung của chủ thể, độ sạch/độ đồng đều của nền, dung lượng file;
+các mục lỗi được liệt kê trực tiếp; những lỗi `--fix` tự sửa được (nền trắng không tinh, khoảng trắng quá nhiều, không vuông) sẽ được sửa luôn.
 
-**校验标准来自平台规则卡，不是拍脑袋。** 校验不过的图不许交付。
+**Tiêu chuẩn kiểm tra lấy từ thẻ quy tắc sàn, không phải tự nghĩ ra.** Ảnh không qua kiểm tra không được giao.
 
-**自测**：[`tests/`](tests/README.md) 内置 5 张合成夹具（含故意违规项）与预期结果，
-clone 后跑一遍即可验证脚本是否正常。
+**Tự test**: [`tests/`](tests/README.md) có sẵn 5 ảnh mẫu tổng hợp (gồm cả lỗi cố ý cài vào) và kết quả mong đợi,
+clone về chạy một lượt là kiểm chứng được script có hoạt động bình thường không.
 
 ---
 
-## 已知限制
+## Hạn chế đã biết
 
-| 限制 | 说明 |
+| Hạn chế | Mô tả |
 |---|---|
-| **不做实际渲染** | 本 Skill 输出的是「规划 + Prompt + 校验」，画图交给生图模型（通道 A/B/C） |
-| **图内文字检测不自动** | 有没有违规叠字需要人工确认（OCR 依赖重，暂未内置） |
-| **ML 类目背景规则会变** | 白底/实景按类目划分，出大目录前先去 ML 卖家中心核对当前类目 |
-| **平台规则为编写时公开值** | 发布前必须到卖家中心复核 |
-| **不替代修图** | 复杂的产品瑕疵修图仍需人工 |
+| **Không render thực tế** | Skill này xuất ra "kế hoạch + Prompt + kiểm tra", việc vẽ giao cho model tạo ảnh (kênh A/B/C) |
+| **Không tự động phát hiện chữ trong ảnh** | Có chèn chữ vi phạm hay không cần người xác nhận (OCR phụ thuộc nặng, tạm chưa tích hợp) |
+| **Quy tắc nền theo ngành hàng của ML sẽ thay đổi** | Nền trắng/bối cảnh thật chia theo ngành hàng, trước khi làm catalog lớn hãy vào Seller Center của ML đối chiếu ngành hàng hiện tại |
+| **Quy tắc sàn là giá trị công khai tại thời điểm viết** | Bắt buộc kiểm tra lại trên Seller Center trước khi đăng |
+| **Không thay thế retouch** | Retouch các khuyết điểm phức tạp của sản phẩm vẫn cần người làm |
 
 ---
 
-**返回**：[04 模块 README](README.md) · **规则卡**：[Shopee](references/platform-shopee.md) · [Mercado Livre](references/platform-mercadolivre.md) · [9 图场景库](references/scenarios-9grid.md)
+**Quay lại**: [README module 04](README.md) · **Thẻ quy tắc**: [Shopee](references/platform-shopee.md) · [Mercado Livre](references/platform-mercadolivre.md) · [Thư viện bối cảnh 9 ảnh](references/scenarios-9grid.md)

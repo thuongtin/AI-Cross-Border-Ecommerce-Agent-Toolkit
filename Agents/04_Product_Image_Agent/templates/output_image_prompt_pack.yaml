@@ -1,6 +1,6 @@
-# 输出模板 · 图片 Prompt 包
-# 04 Product Image Agent 的标准输出结构
-# 可直接被出图脚本读取（YAML 格式，字段名固定）
+# Template đầu ra · Gói Prompt hình ảnh
+# Cấu trúc đầu ra chuẩn của 04 Product Image Agent
+# Script ra ảnh có thể đọc trực tiếp (định dạng YAML, tên trường cố định)
 
 meta:
   product_name: ""
@@ -9,185 +9,185 @@ meta:
   mode: ""                     # standard | variant | iterate
   generated_at: ""             # YYYY-MM-DD
   prompt_version: "04-Product-Image v0.1"
-  upstream: "03-Listing-Creative"   # 上游模块，必须为 03
+  upstream: "03-Listing-Creative"   # Module upstream, bắt buộc là 03
 
 # ─────────────────────────────────────────────
-# 1. 9 图内容规划
+# 1. Kế hoạch nội dung 9 ảnh
 # ─────────────────────────────────────────────
 image_plan:
   - slot: 1
-    role: "主图"
-    message: ""                # 这张图承载的唯一信息
-    info_type: "识别"           # 识别 | 说服 | 信息 | 代入 | 消除疑虑 | 信任
-    composition: ""            # 画面构成描述
-    copy: null                 # 文案，无文字则 null
+    role: "Ảnh chính"
+    message: ""                # Thông tin duy nhất mà ảnh này truyền tải
+    info_type: "Nhận diện"      # Nhận diện | Thuyết phục | Thông tin | Nhập vai | Xóa nghi ngờ | Niềm tin
+    composition: ""            # Mô tả thành phần khung hình
+    copy: null                 # Text, không có chữ thì null
     copy_chars: 0
 
   - slot: 2
-    role: "核心卖点图"
+    role: "Ảnh điểm bán hàng chủ lực"
     message: ""                # = core_selling_point
-    info_type: "说服"
+    info_type: "Thuyết phục"
     composition: ""
     copy: ""
     copy_chars: 0
 
   - slot: 3
-    role: "参数规格图"
+    role: "Ảnh thông số kỹ thuật"
     message: ""
-    info_type: "信息"
-    type: "layout"             # ← layout = 设计排版图，非 AI 出图
+    info_type: "Thông tin"
+    type: "layout"             # ← layout = ảnh dàn trang thiết kế, không phải ảnh AI
     composition: ""
     copy: ""
     copy_chars: 0
 
   - slot: 4
-    role: "使用场景图 A"
+    role: "Ảnh bối cảnh sử dụng A"
     message: ""                # = usage_scope_confirmed[0]
-    info_type: "代入"
+    info_type: "Nhập vai"
     composition: ""
     copy: ""
     copy_chars: 0
 
   - slot: 5
-    role: "使用场景图 B"
+    role: "Ảnh bối cảnh sử dụng B"
     message: ""                # = usage_scope_confirmed[1]
-    info_type: "代入"
+    info_type: "Nhập vai"
     composition: ""
     copy: ""
     copy_chars: 0
 
   - slot: 6
-    role: "细节特写图"
+    role: "Ảnh cận cảnh chi tiết"
     message: ""
-    info_type: "说服"
+    info_type: "Thuyết phục"
     composition: ""
     copy: ""
     copy_chars: 0
 
   - slot: 7
-    role: "尺寸/对比图"
+    role: "Ảnh kích thước/so sánh"
     message: ""
-    info_type: "消除疑虑"
-    type: "layout"             # 含参照物，通常实拍 + 标注
+    info_type: "Xóa nghi ngờ"
+    type: "layout"             # Có vật tham chiếu, thường là chụp thật + chú thích
     composition: ""
     copy: ""
     copy_chars: 0
 
   - slot: 8
-    role: "包装清单图"
+    role: "Ảnh danh sách đóng gói"
     message: ""
-    info_type: "消除纠纷"
-    type: "photo_required"     # ← 必须实拍，禁止 AI 生成
+    info_type: "Ngăn tranh chấp"
+    type: "photo_required"     # ← Bắt buộc chụp thật, cấm dùng AI tạo
     composition: ""
     copy: ""
     copy_chars: 0
 
   - slot: 9
-    role: "售后/保修图"
+    role: "Ảnh hậu mãi/bảo hành"
     message: ""
-    info_type: "信任"
+    info_type: "Niềm tin"
     type: "layout"
     composition: ""
     copy: ""
     copy_chars: 0
 
 # ─────────────────────────────────────────────
-# 2. 平台差异方案（ML / Amazon 必有）
+# 2. Phương án theo khác biệt sàn (ML / Amazon bắt buộc có)
 # ─────────────────────────────────────────────
 platform_variant:
-  conflict: false              # 是否存在平台冲突
+  conflict: false              # Có xung đột giữa các sàn hay không
   variants:
     - name: "A"
       platforms: ["mercadolivre", "amazon"]
-      main_image_rule: "纯白底，无任何文字 / 水印 / 边框 / 道具"
+      main_image_rule: "Nền trắng tinh, không có bất kỳ chữ / watermark / khung viền / đạo cụ nào"
     - name: "B"
       platforms: ["shopee", "tiktokshop"]
-      main_image_rule: "白底 + 卖点文字（≤2 行，每行 ≤20 字符）"
-  note: "同一套主图素材不能跨平台复用"
+      main_image_rule: "Nền trắng + chữ điểm bán hàng (≤2 dòng, mỗi dòng ≤20 ký tự)"
+  note: "Cùng một bộ creative ảnh chính không được dùng lại giữa các sàn"
 
 # ─────────────────────────────────────────────
-# 3. 出图 Prompt
+# 3. Prompt ra ảnh
 # ─────────────────────────────────────────────
 prompts:
   - slot: 1
-    role: "主图"
-    prompt: ""                 # 含七槽位：SUBJECT / MATERIAL / COMPOSITION / LIGHTING / BACKGROUND / STYLE / PARAMETERS
+    role: "Ảnh chính"
+    prompt: ""                 # Gồm bảy slot: SUBJECT / MATERIAL / COMPOSITION / LIGHTING / BACKGROUND / STYLE / PARAMETERS
     negative_prompt: ""
     aspect_ratio: "1:1"
     recommended_size: "1024x1024"
     reference_image_needed: true
 
   - slot: 2
-    role: "核心卖点图"
+    role: "Ảnh điểm bán hàng chủ lực"
     prompt: ""
     negative_prompt: ""
     aspect_ratio: "1:1"
     recommended_size: "1024x1024"
     reference_image_needed: true
 
-  # slot 3 为 layout，无出图 Prompt，改用 layout_spec
+  # slot 3 là layout, không có Prompt ra ảnh, dùng layout_spec thay thế
   - slot: 3
-    role: "参数规格图"
+    role: "Ảnh thông số kỹ thuật"
     type: "layout"
     layout_spec:
       size: "1024x1024"
       background: "#FFFFFF"
       title: ""
-      rows: []                 # 参数行，如 ["Capacidade: 20000 mAh", ...]
-      font_hint: "无衬线，主文案高度 ≥ 图高 4%"
+      rows: []                 # Các dòng thông số, ví dụ ["Capacidade: 20000 mAh", ...]
+      font_hint: "Không chân (sans-serif), chiều cao text chính ≥ 4% chiều cao ảnh"
       color_palette: []
 
   - slot: 4
-    role: "使用场景图 A"
+    role: "Ảnh bối cảnh sử dụng A"
     prompt: ""
     negative_prompt: ""
     aspect_ratio: "1:1"
     recommended_size: "1024x1024"
-    portrait_constraint: "不露可识别面孔（手部 / 背影 / 远景）"
+    portrait_constraint: "Không lộ khuôn mặt có thể nhận diện (bàn tay / bóng lưng / cảnh xa)"
 
   - slot: 5
-    role: "使用场景图 B"
+    role: "Ảnh bối cảnh sử dụng B"
     prompt: ""
     negative_prompt: ""
     aspect_ratio: "1:1"
     recommended_size: "1024x1024"
-    portrait_constraint: "不露可识别面孔"
+    portrait_constraint: "Không lộ khuôn mặt có thể nhận diện"
 
   - slot: 6
-    role: "细节特写图"
+    role: "Ảnh cận cảnh chi tiết"
     prompt: ""
     negative_prompt: ""
     aspect_ratio: "1:1"
     recommended_size: "1024x1024"
 
   - slot: 7
-    role: "尺寸/对比图"
+    role: "Ảnh kích thước/so sánh"
     type: "layout"
     layout_spec:
       size: "1024x1024"
-      reference_object: ""     # 参照物，如 "mão humana adulta"
-      dimensions_label: ""     # 来自 spec_table，逐字符一致
-      comparison_rule: "对比对象必须为通用形态，不得特指竞品外观"
+      reference_object: ""     # Vật tham chiếu, ví dụ "mão humana adulta"
+      dimensions_label: ""     # Lấy từ spec_table, khớp từng ký tự
+      comparison_rule: "Đối tượng so sánh phải là hình dạng chung, không được chỉ đích danh ngoại hình của đối thủ"
 
   - slot: 8
-    role: "包装清单图"
-    type: "photo_required"     # ⚠️ 必须实拍
-    note: "AI 生成会导致买家收到实物不符 → 配件缺失差评"
+    role: "Ảnh danh sách đóng gói"
+    type: "photo_required"     # ⚠️ Bắt buộc chụp thật
+    note: "AI tạo sẽ khiến người mua nhận hàng không đúng mô tả → đánh giá tiêu cực về thiếu phụ kiện"
     shoot_spec:
-      layout: "平铺俯拍"
-      items: []                # = package_content，一件不落
-      must_show_exclusion: true  # 必须标注"不含什么"
+      layout: "Bày phẳng chụp từ trên xuống"
+      items: []                # = package_content, không sót món nào
+      must_show_exclusion: true  # Bắt buộc ghi rõ "không có gì"
 
   - slot: 9
-    role: "售后/保修图"
+    role: "Ảnh hậu mãi/bảo hành"
     type: "layout"
     layout_spec:
       size: "1024x1024"
-      content: []              # 保修时长 / 范围 / 客服通道
-      forbidden: "不得生成仿平台官方标识的图形"
+      content: []              # Thời hạn bảo hành / phạm vi / kênh CSKH
+      forbidden: "Không được tạo đồ họa nhái biểu tượng chính thức của sàn"
 
 # ─────────────────────────────────────────────
-# 4. 图内文案（后期叠字用，不进出图 Prompt）
+# 4. Text trong ảnh (dùng để chèn chữ hậu kỳ, không đưa vào Prompt ra ảnh)
 # ─────────────────────────────────────────────
 overlay_copy:
   - slot: 1
@@ -195,13 +195,13 @@ overlay_copy:
     sub_copy: ""
     chars: 0
     chars_limit: 20
-    position: "居中偏上"
-    font_size_hint: "主文案高度 ≥ 图高 4%"
-  # ... 逐图
-overlay_note: "图内文字由设计工具后期叠字，不用图像模型渲染（葡语变音符号极易出错）"
+    position: "Giữa lệch lên trên"
+    font_size_hint: "Chiều cao text chính ≥ 4% chiều cao ảnh"
+  # ... từng ảnh
+overlay_note: "Chữ trong ảnh do công cụ thiết kế chèn ở hậu kỳ, không dùng model tạo ảnh để render (dấu tiếng Bồ Đào Nha rất dễ sai)"
 
 # ─────────────────────────────────────────────
-# 5. 图片合规扫描
+# 5. Quét tuân thủ hình ảnh
 # ─────────────────────────────────────────────
 compliance_scan:
   I1_fake_certification: {hits: 0, actions: []}
@@ -212,23 +212,23 @@ compliance_scan:
   I6_real_person_portrait: {hits: 0, actions: []}
   I7_absolute_terms: {hits: 0, actions: []}
   I8_comparison_genericized: {hits: 0, actions: []}
-  conclusion: ""               # 全部为 0 时写 "图片合规扫描：无命中"
+  conclusion: ""               # Khi tất cả bằng 0 thì ghi "Quét tuân thủ hình ảnh: không vi phạm"
 
 # ─────────────────────────────────────────────
-# 6. 交付给 05 Product Video Agent
+# 6. Giao cho 05 Product Video Agent
 # ─────────────────────────────────────────────
 handoff_to_video:
   visual_tone_confirmed: ""
-  hero_visual: ""              # 主图画面描述 → 视频首帧参考
-  key_visual_moments: []       # 2–3 个最有冲击力的画面 → 视频分镜优先项
-  forbidden_words: []          # 透传，供 05 做字幕拦截
+  hero_visual: ""              # Mô tả khung hình ảnh chính → tham chiếu khung hình đầu của video
+  key_visual_moments: []       # 2–3 khung hình có sức hút nhất → mục ưu tiên cho storyboard video
+  forbidden_words: []          # Chuyển tiếp nguyên trạng, để 05 chặn từ cấm trong phụ đề
 
 # ─────────────────────────────────────────────
-# 7. 发布前提醒
+# 7. Nhắc nhở trước khi đăng
 # ─────────────────────────────────────────────
 pre_publish:
-  - "已复核目标平台当前图片规范（规则会变）"
-  - "图 8 已实拍，包装清单与实际一致"
-  - "图内文案已人工校对变音符号"
-  - "主图已按平台分别制作（ML 无文字 / Shopee 带卖点）"
-  - "已记录本次 Prompt 版本号"
+  - "Đã kiểm tra lại quy chuẩn ảnh hiện hành của sàn mục tiêu (quy tắc sẽ thay đổi)"
+  - "Ảnh 8 đã chụp thật, danh sách đóng gói khớp với thực tế"
+  - "Text trong ảnh đã được người soát lại dấu"
+  - "Ảnh chính đã làm riêng cho từng sàn (ML không có chữ / Shopee có điểm bán hàng)"
+  - "Đã ghi lại số phiên bản Prompt lần này"

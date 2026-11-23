@@ -1,131 +1,131 @@
-# 输入模板 · 图片生成简报
+# Template đầu vào · Brief tạo ảnh
 
-> **前置要求**：本模块**依赖 03 Listing Creative Agent 的输出**。
-> 没跑过 03 就去跑 04，Agent 会直接报错——这是设计如此，不是 bug。
+> **Điều kiện tiên quyết**: module này **phụ thuộc vào đầu ra của 03 Listing Creative Agent**.
+> Chưa chạy 03 mà chạy 04 thì Agent sẽ báo lỗi ngay —— thiết kế vốn như vậy, không phải bug.
 
 ---
 
-## 0. 任务配置
+## 0. Cấu hình task
 
 ```yaml
 platform*: shopee              # shopee | mercadolivre | amazon | tiktokshop | shopify
-target_market*: 巴西
+target_market*: Brazil
 mode*: standard                # standard | variant | iterate
-prompt_language: en            # en（通用模型）| zh（即梦/通义万相等中文模型）
-has_product_photo*: true       # 是否有实拍图作为参考
+prompt_language: en            # en (model phổ thông) | zh (model tiếng Trung như Jimeng/Tongyi Wanxiang)
+has_product_photo*: true       # Có ảnh chụp thật làm tham chiếu hay không
 ```
 
 ---
 
-## 1. 上游字段（从 03 的输出粘贴）
+## 1. Các trường từ upstream (dán từ đầu ra của 03)
 
-> ⚠️ **这五个字段为阻塞项，缺失则 Agent 拒绝执行。**
+> ⚠️ **Năm trường này là mục chặn, thiếu thì Agent từ chối thực thi.**
 
 ```yaml
-# ── 关键：从 03 输出的「交付给下游模块的字段」区块直接粘贴 ──
+# ── Quan trọng: dán thẳng từ khối "Các trường giao cho module downstream" trong đầu ra của 03 ──
 
-core_selling_point*: ""        # 例："20000mAh com saída de 45W — recarga completa em cerca de 40 minutos"
+core_selling_point*: ""        # Ví dụ: "20000mAh com saída de 45W — recarga completa em cerca de 40 minutos"
 
-secondary_points*: []          # 例：
+secondary_points*: []          # Ví dụ:
   # - "Display digital de bateria"
   # - "3 saídas (2× USB-A + 1× USB-C)"
 
-spec_table*: {}                # 直接贴 03 的 spec_table
+spec_table*: {}                # Dán thẳng spec_table của 03
 
-forbidden_words*: []           # 例：["iPhone", "100% Original", "À Prova de Água"]
+forbidden_words*: []           # Ví dụ: ["iPhone", "100% Original", "À Prova de Água"]
 
-usage_scope_confirmed*: []     # 例：
+usage_scope_confirmed*: []     # Ví dụ:
   # - "Viagem e deslocamentos diários"
   # - "Trabalho remoto / home office"
 ```
 
 ---
 
-## 2. 产品与视觉信息
+## 2. Thông tin sản phẩm và hình ảnh
 
 ```yaml
-product_name*: ""              # 例："Carregador Portátil"
-category*: ""                  # 例："电池 / 充电类"
-visual_tone_hint: ""           # 从 03 继承，例："Tecnológico e limpo — fundo claro, tons de cinza e azul"
+product_name*: ""              # Ví dụ: "Carregador Portátil"
+category*: ""                  # Ví dụ: "Pin / sạc"
+visual_tone_hint: ""           # Kế thừa từ 03, ví dụ: "Tecnológico e limpo — fundo claro, tons de cinza e azul"
 ```
 
-### 外观描述（帮助出图更准确）
+### Mô tả ngoại hình (giúp ra ảnh chính xác hơn)
 
 ```yaml
 appearance:
-  color: ""                    # 例："Preto fosco com detalhes em cinza"
-  material: ""                 # 例："ABS + PC com acabamento antichamas"
-  shape: ""                    # 例："Retangular com cantos arredondados"
-  key_features: []             # 例：["Display LED frontal", "3 portas na face superior"]
+  color: ""                    # Ví dụ: "Preto fosco com detalhes em cinza"
+  material: ""                 # Ví dụ: "ABS + PC com acabamento antichamas"
+  shape: ""                    # Ví dụ: "Retangular com cantos arredondados"
+  key_features: []             # Ví dụ: ["Display LED frontal", "3 portas na face superior"]
 ```
 
 ---
 
-## 3. 认证声明 ★ 合规关键
+## 3. Khai báo chứng nhận ★ Then chốt về tuân thủ
 
 ```yaml
-certifications: []             # ⚠️ 只填【实际持有】的认证，无则留空 []
-                               # 例：["ANATEL"]  ← 只有真的拿到才填
-                               # 留空 = Agent 不会生成任何认证图
+certifications: []             # ⚠️ Chỉ điền chứng nhận [thực sự có], không có thì để trống []
+                               # Ví dụ: ["ANATEL"]  ← chỉ điền khi thật sự đã có
+                               # Để trống = Agent sẽ không tạo bất kỳ ảnh chứng nhận nào
 ```
 
-> **这一栏留空没有任何问题，填错才是问题。** 虚构认证标志属平台高危违规。
+> **Để trống mục này hoàn toàn không sao, điền sai mới là vấn đề.** Làm giả dấu chứng nhận là vi phạm nguy cơ cao trên sàn.
 
 ---
 
-## 4. 包装与保修（用于图 8 / 图 9）
+## 4. Đóng gói và bảo hành (dùng cho ảnh 8 / ảnh 9)
 
 ```yaml
-package_content*: []           # 从 03 继承，完整列出
+package_content*: []           # Kế thừa từ 03, liệt kê đầy đủ
   # - "1× Carregador Portátil 20000mAh 45W"
   # - "1× Cabo USB-C 30 cm"
-  # - "（Não incluso: adaptador de tomada）"   ← 明确"不含什么"
+  # - "(Não incluso: adaptador de tomada)"   ← ghi rõ "không có gì"
 
-warranty*: ""                  # 例："6 meses contra defeito de fabricação"
-warranty_scope: ""             # 例："Não cobre danos por mau uso ou queda"
-support_channel: ""            # 例："Atendimento pelo chat do Shopee"
+warranty*: ""                  # Ví dụ: "6 meses contra defeito de fabricação"
+warranty_scope: ""             # Ví dụ: "Não cobre danos por mau uso ou queda"
+support_channel: ""            # Ví dụ: "Atendimento pelo chat do Shopee"
 ```
 
 ---
 
-## 5. 视觉参考（可选）
+## 5. Tham chiếu hình ảnh (tùy chọn)
 
 ```yaml
 reference:
-  competitor_image_notes: ""   # 竞品图片的观察（不要直接搬用素材！）
-  style_reference: ""          # 例："类似 Anker 官网的极简产品摄影风格"
-  avoid: []                    # 例：["花哨背景", "卡通元素", "过多英文标语"]
+  competitor_image_notes: ""   # Nhận xét về ảnh của đối thủ (đừng bê nguyên creative về dùng!)
+  style_reference: ""          # Ví dụ: "Phong cách chụp sản phẩm tối giản giống website chính thức của Anker"
+  avoid: []                    # Ví dụ: ["Nền lòe loẹt", "Yếu tố hoạt hình", "Quá nhiều slogan tiếng Anh"]
 ```
 
-> ⚠️ **不要粘贴竞品图片链接作为图生图输入**——涉及版权，且可能被判定为盗图。
+> ⚠️ **Đừng dán link ảnh của đối thủ làm đầu vào image-to-image** —— liên quan đến bản quyền, và có thể bị coi là ăn cắp ảnh.
 
 ---
 
-## 6. mode 专属字段
+## 6. Các trường riêng theo mode
 
 ### mode = variant
 
 ```yaml
 variant_directions: []
-  # 例：["主图卖点为功率", "主图卖点为容量"]
-  # 留空则由 Agent 自动分配两种差异化方向
+  # Ví dụ: ["Điểm bán hàng của ảnh chính là công suất", "Điểm bán hàng của ảnh chính là dung lượng"]
+  # Để trống thì Agent tự phân bổ hai hướng khác biệt hóa
 ```
 
-### mode = iterate（对应 SOP 3.6 广告没点击 → 换主图）
+### mode = iterate (tương ứng SOP 3.6 quảng cáo không có click → đổi ảnh chính)
 
 ```yaml
-existing_main_image_desc: ""   # 现有主图的画面描述
-symptom: ""                    # 例："有曝光没点击，CTR 1.2%（低于 3–5% 基准）"
-change_scope: "main_image_only"  # 只改主图，其余 8 张不动
+existing_main_image_desc: ""   # Mô tả khung hình của ảnh chính hiện tại
+symptom: ""                    # Ví dụ: "Có lượt hiển thị nhưng không có click, CTR 1.2% (thấp hơn mức chuẩn 3–5%)"
+change_scope: "main_image_only"  # Chỉ sửa ảnh chính, 8 ảnh còn lại giữ nguyên
 ```
 
 ---
 
-## 填写自检
+## Tự kiểm tra khi điền
 
-- [ ] 五个阻塞字段（`core_selling_point` / `secondary_points` / `spec_table` / `forbidden_words` / `usage_scope_confirmed`）已从 03 粘贴
-- [ ] `certifications` 留空或只填实际持有的
-- [ ] `package_content` 包含"不含什么"
-- [ ] 没有粘贴竞品图片作为图生图素材
-- [ ] 我理解：**图 8（包装清单）必须实拍**，AI 生成会引发配件缺失差评
-- [ ] 我理解：**图内文字由设计工具后期叠字**，不靠图像模型渲染
+- [ ] Năm trường chặn (`core_selling_point` / `secondary_points` / `spec_table` / `forbidden_words` / `usage_scope_confirmed`) đã được dán từ 03
+- [ ] `certifications` để trống hoặc chỉ điền chứng nhận thực sự có
+- [ ] `package_content` có ghi "không có gì"
+- [ ] Không dán ảnh của đối thủ làm creative cho image-to-image
+- [ ] Tôi hiểu: **ảnh 8 (danh sách đóng gói) bắt buộc chụp thật**, AI tạo ra sẽ gây đánh giá tiêu cực về thiếu phụ kiện
+- [ ] Tôi hiểu: **chữ trong ảnh do công cụ thiết kế chèn ở hậu kỳ**, không dựa vào model tạo ảnh để render
