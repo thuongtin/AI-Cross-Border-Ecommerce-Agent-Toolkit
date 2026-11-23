@@ -1,85 +1,85 @@
-# Examples · 真实案例库
+# Examples · Thư viện case study thực tế
 
-这里的案例**跨模块串联**，一个产品从头跑到尾，展示 03 → 04 → 05 的完整链路。
+Các case study ở đây **xâu chuỗi nhiều module**: một sản phẩm đi trọn từ đầu đến cuối, minh họa toàn bộ luồng 03 → 04 → 05.
 
-单模块的聚焦案例在各 Agent 目录下的 `examples/`，本目录只放**端到端**案例。
+Case study tập trung vào từng module riêng lẻ nằm trong thư mục `examples/` của từng Agent; thư mục này chỉ chứa case study **end-to-end**.
 
 ---
 
-## 案例索引
+## Danh mục case study
 
-| # | 产品 | 市场 | 覆盖模块 | 重点演示 |
+| # | Sản phẩm | Thị trường | Module bao phủ | Điểm minh họa chính |
 |---|---|---|---|---|
-| **01** | [Patinete Elétrico 500W](./01_Patinete_Eletrico_500W/)（电动滑板车） | Shopee BR + Mercado Livre | 03 → 04 → 05 | **全链路串联** · 跨平台标题压缩（120→60 字符）· 跨模块参数一致性 |
-| **02** | [Bolsa Térmica](./02_Thermal_Bag/)（保温包） | Shopee BR | 03（iterate） | **iterate 模式**：广告跑不动时的回改闭环 |
-| **03** | [Closed Loop](./03_Closed_Loop/)（闭环案例） | Shopee BR | 03 → 06 → 03 → 04 → 07 → 复测 | **诊断 → 回流 → 复测** 完整闭环 · 反直觉的坑 · 复测指标选择 |
+| **01** | [Patinete Elétrico 500W](./01_Patinete_Eletrico_500W/) (xe scooter điện) | Shopee BR + Mercado Livre | 03 → 04 → 05 | **Xâu chuỗi toàn luồng** · Rút gọn tiêu đề giữa các sàn (120→60 ký tự) · Nhất quán thông số giữa các module |
+| **02** | [Bolsa Térmica](./02_Thermal_Bag/) (túi giữ nhiệt) | Shopee BR | 03 (iterate) | **Chế độ iterate**: vòng khép kín chỉnh sửa lại khi quảng cáo không chạy được |
+| **03** | [Closed Loop](./03_Closed_Loop/) (case study vòng khép kín) | Shopee BR | 03 → 06 → 03 → 04 → 07 → kiểm tra lại | Vòng khép kín đầy đủ **chẩn đoán → quay vòng về → kiểm tra lại** · Những cái bẫy ngược trực giác · Chọn chỉ số khi retest |
 
 ---
 
-## 前置链路（位于各模块的 examples/ 下）
+## Luồng tiền đề (nằm trong examples/ của từng module)
 
-01 → 02 → 03 的完整前置链路，分散在三个模块里、互相衔接：
+Luồng tiền đề đầy đủ 01 → 02 → 03 nằm rải rác ở ba module và nối tiếp nhau:
 
-| 环节 | 位置 | 产出 |
+| Khâu | Vị trí | Đầu ra |
 |---|---|---|
-| **01 市场分析** | [`01/examples/patinete_eletrico_market.md`](../Agents/01_Market_Research_Agent/examples/patinete_eletrico_market.md) | 价格带 R$ 1.989–2.966 · 机会配置 200kg · 成本可行价 R$ 1.989,36 |
-| **02 产品策略** | [`02/examples/patinete_eletrico_strategy.md`](../Agents/02_Product_Strategy_Agent/examples/patinete_eletrico_strategy.md) | 主卖点「500W + 200kg」· SKU 四档 · 主推价 R$ 2.199 · 盈亏线 ROAS 2,41 |
-| **03–05 素材** | [`01_Patinete_Eletrico_500W/`](./01_Patinete_Eletrico_500W/) | 标题（Shopee 89 字符 / ML 54 字符）· 9 图 · 30s 视频 |
+| **01 Phân tích thị trường** | [`01/examples/patinete_eletrico_market.md`](../Agents/01_Market_Research_Agent/examples/patinete_eletrico_market.md) | Dải giá R$ 1.989–2.966 · Cấu hình cơ hội 200kg · Giá khả thi theo giá vốn R$ 1.989,36 |
+| **02 Chiến lược sản phẩm** | [`02/examples/patinete_eletrico_strategy.md`](../Agents/02_Product_Strategy_Agent/examples/patinete_eletrico_strategy.md) | Điểm bán hàng chủ lực「500W + 200kg」· SKU 4 bậc · Giá SKU chủ lực R$ 2.199 · Ngưỡng hòa vốn ROAS 2,41 |
+| **03–05 Nội dung sáng tạo** | [`01_Patinete_Eletrico_500W/`](./01_Patinete_Eletrico_500W/) | Tiêu đề (Shopee 89 ký tự / ML 54 ký tự) · 9 ảnh · Video 30s |
 
-**这条链路特别值得看的地方**：两个"独立推导指向同一结果"的验证点 ——
+**Điểm đặc biệt đáng xem của luồng này**: hai điểm kiểm chứng mà "hai cách suy luận độc lập cùng dẫn đến một kết quả" ——
 
-1. 波谷检测出的价格带下界 **R$ 1.989,13** 与定价公式反算的成本可行价 **R$ 1.989,36** 相差 **R$ 0,23**
-2. 主推款毛利余量 **R$ 98,95** 与拟发券面额 **R$ 100** 相差 **R$ 1,05**
+1. Cận dưới dải giá do phát hiện vùng trũng (valley) tìm ra là **R$ 1.989,13**, còn giá khả thi theo giá vốn tính ngược từ công thức định giá là **R$ 1.989,36**, chênh nhau **R$ 0,23**
+2. Biên lãi gộp còn dư của SKU chủ lực **R$ 98,95** so với mệnh giá voucher dự kiến phát **R$ 100**, chênh nhau **R$ 1,05**
 
-> 一条是纯数学（销量曲线），一条是纯财务（成本结构）。**它们吻合，说明这套方法论内部是自洽的。**
+> Một bên là toán thuần túy (đường cong doanh số), một bên là tài chính thuần túy (cơ cấu chi phí). **Hai bên khớp nhau, chứng tỏ bộ phương pháp luận này nhất quán từ bên trong.**
 
 ---
 
-## Toolkit 规划的五款案例产品覆盖情况
+## Mức độ bao phủ 5 sản phẩm case study mà Toolkit đã lên kế hoạch
 
-`AI_Cross_Border_Ecommerce_Agent_Toolkit_制作说明` 指定的五款案例产品：
+5 sản phẩm case study được chỉ định trong `AI_Cross_Border_Ecommerce_Agent_Toolkit_制作说明` (tài liệu hướng dẫn xây dựng):
 
-| 产品 | 落在哪 | 模块 |
+| Sản phẩm | Nằm ở đâu | Module |
 |---|---|---|
-| **Electric Scooter** | [`01_Patinete_Eletrico_500W/`](./01_Patinete_Eletrico_500W/) + [`01/examples`](../Agents/01_Market_Research_Agent/examples/patinete_eletrico_market.md) + [`02/examples`](../Agents/02_Product_Strategy_Agent/examples/patinete_eletrico_strategy.md) + [`07/examples`](../Agents/07_Review_Analysis_Agent/examples/electric_scooter_reviews.md) | **01 + 02 + 03 + 04 + 05 + 07 全链路** |
-| **Power Bank** | [`03/examples`](../Agents/03_Listing_Creative_Agent/examples/powerbank_20000mah.md) + [`06/examples`](../Agents/06_Advertising_Optimization_Agent/examples/powerbank_20000mah_ads.md) | 03 · 06 广告诊断 |
+| **Electric Scooter** | [`01_Patinete_Eletrico_500W/`](./01_Patinete_Eletrico_500W/) + [`01/examples`](../Agents/01_Market_Research_Agent/examples/patinete_eletrico_market.md) + [`02/examples`](../Agents/02_Product_Strategy_Agent/examples/patinete_eletrico_strategy.md) + [`07/examples`](../Agents/07_Review_Analysis_Agent/examples/electric_scooter_reviews.md) | **Toàn luồng 01 + 02 + 03 + 04 + 05 + 07** |
+| **Power Bank** | [`03/examples`](../Agents/03_Listing_Creative_Agent/examples/powerbank_20000mah.md) + [`06/examples`](../Agents/06_Advertising_Optimization_Agent/examples/powerbank_20000mah_ads.md) | 03 · 06 Chẩn đoán quảng cáo |
 | **Pet Carrier** | [`04/examples`](../Agents/04_Product_Image_Agent/examples/pet_carrier.md) | 04 |
 | **Air Fryer** | [`05/examples`](../Agents/05_Product_Video_Agent/examples/air_fryer.md) | 05 |
-| **Thermal Bag** | [`02_Thermal_Bag/`](./02_Thermal_Bag/) | 03 iterate · 06 预演 |
+| **Thermal Bag** | [`02_Thermal_Bag/`](./02_Thermal_Bag/) | 03 iterate · 06 chạy thử |
 
-✅ 五款全部覆盖，其中 **Electric Scooter 走完了全部 7 个模块**（01→02→03→04→05→上架→07）。
+✅ Đã bao phủ đủ cả 5 sản phẩm, trong đó **Electric Scooter đi hết toàn bộ 7 module** (01→02→03→04→05→đăng bán→07).
 
 ---
 
-## 案例结构（对照制作说明的要求）
+## Cấu trúc case study (đối chiếu yêu cầu của tài liệu hướng dẫn xây dựng)
 
-制作说明规定案例结构为：**产品背景 → 市场分析 → AI 处理流程 → 生成结果 → 优化建议**。
+Tài liệu hướng dẫn quy định cấu trúc case study là: **Bối cảnh sản phẩm → Phân tích thị trường → Quy trình xử lý bằng AI → Kết quả tạo ra → Đề xuất tối ưu**.
 
-本仓库的案例在此基础上增加两项：
+Các case study trong repo này bổ sung thêm hai phần:
 
-| 区块 | 来源 | 为什么要加 |
+| Phần | Nguồn | Vì sao cần thêm |
 |---|---|---|
-| 产品背景 | 制作说明 | — |
-| 市场分析 | 制作说明 | — |
-| AI 处理流程 | 制作说明 | — |
-| 生成结果 | 制作说明 | — |
-| **交付给下游模块的字段** | 本仓库新增 | 让案例能**真的被复现**，而不只是被阅读 |
-| **这个案例证明了什么** | 本仓库新增 | 把案例的结论显式化，方便横向对比不同案例 |
+| Bối cảnh sản phẩm | Tài liệu hướng dẫn | — |
+| Phân tích thị trường | Tài liệu hướng dẫn | — |
+| Quy trình xử lý bằng AI | Tài liệu hướng dẫn | — |
+| Kết quả tạo ra | Tài liệu hướng dẫn | — |
+| **Các trường bàn giao cho module hạ nguồn** | Repo này bổ sung | Để case study **thực sự tái lập được**, chứ không chỉ để đọc |
+| **Case study này chứng minh điều gì** | Repo này bổ sung | Nêu rõ kết luận của case study, tiện so sánh chéo giữa các case study |
 
 ---
 
-## 提交新案例
+## Đóng góp case study mới
 
-欢迎提交！要求：
+Rất hoan nghênh! Yêu cầu:
 
-1. **必须脱敏**：无真实店铺名、账号、买家信息、未授权品牌词
-2. **参数必须真实**：示例参数要能举证，不要编
-3. **必须含"交付给下游模块的字段"区块**（见 [`Templates/product_brief_template.md`](../Templates/product_brief_template.md)）
-4. **必须过一遍** [`docs/04_Result_Checklist.md`](../docs/04_Result_Checklist.md)
-5. 如涉及图片/视频案例，**不得包含伪造的认证标志、评价截图、销量角标**
+1. **Bắt buộc ẩn danh hóa**: không có tên shop thật, tài khoản, thông tin người mua, từ khóa thương hiệu chưa được cấp phép
+2. **Thông số phải là thật**: thông số ví dụ phải có bằng chứng, không được bịa
+3. **Bắt buộc có phần "Các trường bàn giao cho module hạ nguồn"** (xem [`Templates/product_brief_template.md`](../Templates/product_brief_template.md))
+4. **Bắt buộc rà qua** [`docs/04_Result_Checklist.md`](../docs/04_Result_Checklist.md)
+5. Nếu có case study về ảnh/video, **không được chứa logo chứng nhận giả, ảnh chụp đánh giá giả, nhãn số lượng đã bán giả**
 
-格式参考现有案例。详见 [`CONTRIBUTING.md`](../CONTRIBUTING.md)。
+Định dạng tham khảo các case study hiện có. Chi tiết xem [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 
 ---
 
-**返回**：[项目首页](../README.md) · [架构拆解](../docs/00_Architecture_SOP_to_Agent.md)
+**Quay lại**: [Trang chủ dự án](../README.md) · [Phân rã kiến trúc](../docs/00_Architecture_SOP_to_Agent.md)

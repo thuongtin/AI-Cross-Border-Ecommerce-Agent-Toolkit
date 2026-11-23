@@ -1,99 +1,99 @@
-# 案例 02 · Bolsa Térmica 20L（保温包）· iterate 模式的回改闭环
+# Case study 02 · Bolsa Térmica 20L (túi giữ nhiệt) · Vòng khép kín chỉnh sửa lại ở chế độ iterate
 
-> ⚠️ **规则更新说明（2026-10）**：案例中「ML 主图纯白底」为旧规。
-> 现行：白/纯色/实景**按类目**，但背景必须干净、首图禁促销文字。
-> 见 [`../Agents/04_Product_Image_Agent/references/platform-mercadolivre.md`](../../Agents/04_Product_Image_Agent/references/platform-mercadolivre.md)。
+> ⚠️ **Cập nhật quy định (2026-10)**: 「ảnh chính ML nền trắng tinh」trong case study là quy định cũ.
+> Hiện hành: nền trắng/màu trơn/bối cảnh thật **tùy theo ngành hàng**, nhưng nền phải sạch, ảnh đầu tiên cấm chữ khuyến mãi.
+> Xem [`../Agents/04_Product_Image_Agent/references/platform-mercadolivre.md`](../../Agents/04_Product_Image_Agent/references/platform-mercadolivre.md).
 
-> **案例类型**：真实产品 · 已脱敏
-> **覆盖模块**：03 Listing Creative（`mode = iterate`）+ 06 Advertising（预演）
-> **市场**：Shopee 巴西站
-> **对应 SOP**：3.6 广告调整逻辑 · 3.5 广告与评价节奏
+> **Loại case study**: Sản phẩm thật · Đã ẩn danh hóa
+> **Module bao phủ**: 03 Listing Creative (`mode = iterate`) + 06 Advertising (chạy thử)
+> **Thị trường**: Shopee Brazil
+> **SOP tương ứng**: 3.6 Logic điều chỉnh quảng cáo · 3.5 Nhịp độ quảng cáo và đánh giá
 
 ---
 
-## 一、这个案例和案例 01 有什么不同
+## I. Case study này khác gì case study 01
 
-案例 01 演示的是**从零到一**（`mode = single`）。本案例演示的是**跑起来之后发现问题、回头改**（`mode = iterate`）。
+Case study 01 minh họa **từ 0 đến 1** (`mode = single`). Case study này minh họa **chạy rồi mới phát hiện vấn đề, quay lại sửa** (`mode = iterate`).
 
-| | 案例 01 | 案例 02 |
+| | Case study 01 | Case study 02 |
 |---|---|---|
-| 触发场景 | 新品上架 | 已上架，广告数据不健康 |
-| 输入 | 空 | **现有 Listing + 症状描述** |
-| 输出 | 完整素材包 | **只改必要部分**，其余不动 |
-| 核心能力 | 生成 | **诊断 + 最小改动** |
+| Tình huống kích hoạt | Đăng bán sản phẩm mới | Đã đăng bán, số liệu quảng cáo không khỏe |
+| Đầu vào | Trống | **Listing hiện có + mô tả triệu chứng** |
+| Đầu ra | Gói nội dung sáng tạo đầy đủ | **Chỉ sửa phần cần thiết**, phần còn lại giữ nguyên |
+| Năng lực cốt lõi | Tạo mới | **Chẩn đoán + thay đổi tối thiểu** |
 
-> **为什么会需要 iterate 模式**：SOP 3.6 把"有曝光没点击""有点击没加购"等现象写成了可判定的规则。这意味着**回改不该靠感觉**——症状是可诊断的，改动是可定位的。
+> **Vì sao cần chế độ iterate**: SOP 3.6 đã viết các hiện tượng như "có hiển thị mà không có click", "có click mà không thêm vào giỏ" thành quy tắc có thể phán định. Nghĩa là **sửa lại không nên dựa vào cảm tính** — triệu chứng chẩn đoán được, chỗ cần sửa xác định được.
 
 ---
 
-## 二、产品背景
+## II. Bối cảnh sản phẩm
 
-| 项 | 内容 |
+| Mục | Nội dung |
 |---|---|
-| 产品 | 20L 保温包，防水面料，加厚铝箔内衬，可折叠，带加宽加固提手 |
-| 市场 | 巴西（Shopee BR） |
-| 类目 | 箱包 |
-| 定位 | 引流款 |
-| 上架时长 | 3 周 |
+| Sản phẩm | Túi giữ nhiệt 20L, vải chống nước, lót giấy bạc nhôm dày, gấp gọn được, quai xách bản rộng gia cố |
+| Thị trường | Brazil (Shopee BR) |
+| Ngành hàng | Túi xách & vali |
+| Định vị | SKU kéo traffic |
+| Thời gian đã đăng bán | 3 tuần |
 
-**为什么选它**：SOP 3.6 给的健康基准线是「点击率 3–5%」。保温包这类**主图差异度低**的类目，最容易出现的问题就是"有曝光没点击"——主图看起来都差不多，买家为什么点你？这是最典型、也最好验证的 iterate 场景。
+**Vì sao chọn sản phẩm này**: ngưỡng chuẩn khỏe mạnh mà SOP 3.6 đưa ra là「CTR 3–5%」. Với ngành hàng **ảnh chính ít khác biệt** như túi giữ nhiệt, vấn đề dễ gặp nhất chính là "có hiển thị mà không có click" — ảnh chính nhìn na ná nhau, người mua lấy lý do gì để click vào bạn? Đây là tình huống iterate điển hình nhất và cũng dễ kiểm chứng nhất.
 
 ---
 
-## 三、SOP 3.6 的健康基准线
+## III. Ngưỡng chuẩn khỏe mạnh của SOP 3.6
 
-先把基准线摆出来，因为**诊断需要基准**：
+Đặt ngưỡng chuẩn ra trước, vì **chẩn đoán cần có chuẩn**:
 
-| 指标 | 基准（SOP） | 本案例实际 | 判定 |
+| Chỉ số | Chuẩn (SOP) | Thực tế case study | Đánh giá |
 |---|---|---|---|
-| 点击率（CTR） | **3–5%** | **1,4%** | ❌ 低于下限一半以上 |
-| 转化率 | 稳定 **1% 以上** | 2,1% | ✅ 达标 |
-| 加购率 | **> 8%** | 11,3% | ✅ 达标 |
+| CTR | **3–5%** | **1,4%** | ❌ Thấp hơn mức dưới quá một nửa |
+| Tỷ lệ chuyển đổi (CVR) | Ổn định **trên 1%** | 2,1% | ✅ Đạt |
+| Tỷ lệ thêm vào giỏ | **> 8%** | 11,3% | ✅ Đạt |
 
-**症状定位**：**有曝光没点击**（曝光量正常、CTR 严重偏低、但转化与加购都健康）。
+**Xác định triệu chứng**: **có hiển thị mà không có click** (lượt hiển thị bình thường, CTR thấp nghiêm trọng, nhưng chuyển đổi và thêm vào giỏ đều khỏe).
 
-> 这个组合非常关键：**转化率正常说明产品本身没问题、价格也没问题**——问题出在"买家点进来之前的环节"，也就是**主图和标题**。如果转化率也低，那才要考虑详情页和价格。
+> Tổ hợp này cực kỳ quan trọng: **tỷ lệ chuyển đổi bình thường chứng tỏ bản thân sản phẩm không có vấn đề, giá cũng không có vấn đề** — vấn đề nằm ở "khâu trước khi người mua click vào", tức là **ảnh chính và tiêu đề**. Nếu tỷ lệ chuyển đổi cũng thấp, lúc đó mới phải xem xét trang chi tiết và giá.
 
 ---
 
-## 四、SOP 3.6 的诊断规则
+## IV. Quy tắc chẩn đoán của SOP 3.6
 
-SOP 对"有曝光没点击"给出的优先检查清单：
+Danh sách ưu tiên kiểm tra mà SOP đưa ra cho trường hợp "có hiển thị mà không có click":
 
-| 优先检查项 | 本案例现状 | 诊断 |
+| Mục ưu tiên kiểm tra | Hiện trạng case study | Chẩn đoán |
 |---|---|---|
-| 主图 | 一张白底产品图，无任何文字，与其他竞品主图**几乎无法区分** | 🔴 **主因** |
-| 标题 | 参数齐备但缺少"点进来的理由" | 🟡 次因 |
-| 价格展示 | 与同类持平 | ✅ 无问题 |
-| 核心卖点 | 详情页有，但**主图上完全没有** | 🔴 **主因** |
-| 是否有明显优惠 | 无 | 🟡 可选优化 |
+| Ảnh chính | Một ảnh sản phẩm nền trắng, không có chữ, **gần như không phân biệt được** với ảnh chính của đối thủ | 🔴 **Nguyên nhân chính** |
+| Tiêu đề | Đủ thông số nhưng thiếu "lý do để click vào" | 🟡 Nguyên nhân phụ |
+| Cách hiển thị giá | Ngang với sản phẩm cùng loại | ✅ Không vấn đề |
+| Điểm bán hàng lõi | Trang chi tiết có, nhưng **ảnh chính hoàn toàn không có** | 🔴 **Nguyên nhân chính** |
+| Có ưu đãi rõ ràng không | Không | 🟡 Tối ưu tùy chọn |
 
-**SOP 给出的优化方向**：换主图 → 优化标题关键词 → 强化价格优势 → 主图加卖点 → 调整广告词
+**Hướng tối ưu SOP đưa ra**: đổi ảnh chính → tối ưu từ khóa tiêu đề → làm nổi bật lợi thế giá → thêm điểm bán hàng lên ảnh chính → điều chỉnh từ khóa quảng cáo
 
 ---
 
-## 五、iterate 模式的输入
+## V. Đầu vào của chế độ iterate
 
 ```yaml
 platform: shopee
-target_market: 巴西
-mode: iterate                  # ← 关键：只改必要部分
+target_market: Brazil
+mode: iterate                  # ← Then chốt: chỉ sửa phần cần thiết
 
-# ── 现状 ──
+# ── Hiện trạng ──
 existing_title: "Bolsa Térmica 20L Impermeável para Delivery e Supermercado com Alça Reforçada"
-                                    # 77 字符
+                                    # 77 ký tự
 
 existing_main_image_desc: "Bolsa térmica em fundo branco puro, vista frontal 3/4,
                            sem texto, sem elementos gráficos, produto centralizado"
 
-symptom: "有曝光没点击。CTR 1,4%（SOP 基准 3–5%）。曝光量正常 12.400/周，
-          转化率 2,1% 与加购率 11,3% 均达标。"
+symptom: "Có hiển thị mà không có click. CTR 1,4% (chuẩn SOP 3–5%). Lượt hiển thị bình thường 12.400/tuần,
+          tỷ lệ chuyển đổi 2,1% và tỷ lệ thêm vào giỏ 11,3% đều đạt."
 
-# ── 约束 ──
-constraints: "不改变产品定位和价格。主图需要改动，标题允许小幅优化。
-              详情页与视频保持不动（转化率已达标，不需动）。"
+# ── Ràng buộc ──
+constraints: "Không thay đổi định vị sản phẩm và giá. Ảnh chính cần sửa, tiêu đề được phép tối ưu nhẹ.
+              Trang chi tiết và video giữ nguyên (tỷ lệ chuyển đổi đã đạt, không cần động vào)."
 
-# ── 从 03 的原始输出继承（保持一致性）──
+# ── Kế thừa từ đầu ra gốc của 03 (giữ tính nhất quán) ──
 core_selling_point: "Conserva a temperatura por até 8 horas com forro de alumínio duplo"
 spec_table:
   capacidade: "20 L"
@@ -110,32 +110,32 @@ usage_scope_confirmed: ["Transporte de compras do supermercado", "Entrega de com
 
 ---
 
-## 六、回改方案
+## VI. Phương án chỉnh sửa lại
 
-### 6.1 主图迭代（核心改动）
+### 6.1 Iterate ảnh chính (thay đổi cốt lõi)
 
-**诊断**：原主图的问题不是"拍得不好"，而是**"看不出和别的保温包有什么不同"**。搜索列表里 20 张几乎一样的白底保温包，买家没有任何理由点你这一张。
+**Chẩn đoán**: vấn đề của ảnh chính gốc không phải "chụp xấu", mà là **"không thấy khác gì so với các túi giữ nhiệt khác"**. Trong danh sách tìm kiếm có 20 tấm túi giữ nhiệt nền trắng gần như y hệt nhau, người mua không có lý do gì để click vào tấm của bạn.
 
 ```markdown
-## 主图迭代方案
+## Phương án iterate ảnh chính
 
-- 现状：纯白底 + 无文字 + 正面 3/4 角度
-- 症状：CTR 1,4%（基准 3–5%），曝光正常
-- 诊断：主图在搜索结果中「无差异度」。转化率与加购率均达标 → 产品与价格无问题，
-        问题在点击环节。对应 SOP 3.6「有曝光没点击 → 优先检查主图」。
-- 修改点（最小化）：
-    1. 保留白底与产品角度（不推翻重拍）
-    2. 增加**视觉差异元素**：把产品置于「半打开状态」，露出内部铝箔层 + 一瓶冰饮
-    3. 增加**一行卖点文字**：`8h de conservação`（不超过 20 字符，Shopee 允许图内文字）
-- 不改动：产品本身、拍摄角度、背景色、价格展示
-- 预期效果：搜索列表中出现「能看懂的差异点」，目标 CTR 提升至 3% 以上
+- Hiện trạng: nền trắng tinh + không chữ + góc chính diện 3/4
+- Triệu chứng: CTR 1,4% (chuẩn 3–5%), lượt hiển thị bình thường
+- Chẩn đoán: ảnh chính「không có độ khác biệt」trong kết quả tìm kiếm. Tỷ lệ chuyển đổi và thêm vào giỏ đều đạt → sản phẩm và giá không có vấn đề,
+        vấn đề ở khâu click. Tương ứng SOP 3.6「có hiển thị mà không có click → ưu tiên kiểm tra ảnh chính」.
+- Điểm sửa (tối thiểu hóa):
+    1. Giữ nền trắng và góc chụp sản phẩm (không chụp lại từ đầu)
+    2. Thêm **yếu tố khác biệt thị giác**: đặt sản phẩm ở「trạng thái mở hé」, lộ lớp giấy bạc nhôm bên trong + một chai nước lạnh
+    3. Thêm **một dòng chữ điểm bán hàng**: `8h de conservação` (không quá 20 ký tự, Shopee cho phép chữ trên ảnh)
+- Không thay đổi: bản thân sản phẩm, góc chụp, màu nền, cách hiển thị giá
+- Hiệu quả kỳ vọng: trong danh sách tìm kiếm xuất hiện「điểm khác biệt nhìn là hiểu」, mục tiêu CTR tăng lên trên 3%
 ```
 
-**为什么这样改**：
-- **露出内衬 + 冰饮** = 一张图同时回答了"这是什么"和"它能干什么"，这是原主图没做到的
-- **`8h de conservação`** 直接来自 `core_selling_point`，且是竞品详情页才讲、主图没讲的信息——**把详情页的差异化搬到主图上，是提升点击率最直接的办法**
+**Vì sao sửa như vậy**:
+- **Lộ lớp lót + chai nước lạnh** = một tấm ảnh trả lời cùng lúc "đây là gì" và "nó làm được gì", điều mà ảnh chính gốc không làm được
+- **`8h de conservação`** lấy trực tiếp từ `core_selling_point`, và là thông tin đối thủ chỉ nói trong trang chi tiết, không nói trên ảnh chính — **đưa điểm khác biệt từ trang chi tiết lên ảnh chính là cách trực tiếp nhất để tăng CTR**
 
-### 6.2 迭代后主图 Prompt（Shopee 版）
+### 6.2 Prompt ảnh chính sau iterate (bản Shopee)
 
 ```text
 [SUBJECT] A grey and navy thermal delivery bag, 20L, partially unzipped and open
@@ -163,7 +163,7 @@ crisp focus across bag and bottle, category-leading clarity.
 [PARAMETERS] 1:1 square aspect ratio, 1024x1024, reserve top-right 30% for text overlay.
 ```
 
-**负面 Prompt**
+**Negative Prompt**
 
 ```text
 text rendered by the model, watermark, logo, brand names, melted ice, water puddle,
@@ -171,101 +171,101 @@ wet fabric, visible human hands, food items other than the bottle,
 cluttered background, low resolution, distorted proportions, dark or moody lighting
 ```
 
-> **`melted ice, water puddle, wet fabric` 必加**：产品是"防泼水"不是"完全防水"（`forbidden_words` 里明确禁了 `100% Impermeável`）。画面出现水渍或融冰，等于暗示防水能力超出实际。
+> **Bắt buộc thêm `melted ice, water puddle, wet fabric`**: sản phẩm là "chống nước bắn" chứ không phải "chống nước hoàn toàn" (`forbidden_words` đã cấm rõ `100% Impermeável`). Trong ảnh mà có vệt nước hay đá tan là ngầm ý khả năng chống nước vượt quá thực tế.
 
-### 6.3 标题微调
+### 6.3 Tinh chỉnh tiêu đề
 
-**原则**：`mode = iterate` 下标题只做**小幅优化**，不重写。因为转化率已达标，说明标题带来的流量质量没问题，问题在点击率——**标题的作用是"让对的人搜到你"，不是"让人想点你"**。
+**Nguyên tắc**: ở `mode = iterate`, tiêu đề chỉ **tối ưu nhẹ**, không viết lại. Vì tỷ lệ chuyển đổi đã đạt, chứng tỏ chất lượng traffic do tiêu đề mang lại không có vấn đề, vấn đề nằm ở CTR — **vai trò của tiêu đề là "để đúng người tìm thấy bạn", chứ không phải "khiến người ta muốn click vào bạn"**.
 
-| | 标题 | 字符数 |
+| | Tiêu đề | Số ký tự |
 |---|---|---|
-| 现状 | `Bolsa Térmica 20L Impermeável para Delivery e Supermercado com Alça Reforçada` | **77/120** |
-| 迭代后 | `Bolsa Térmica 20L Impermeável 8 Horas de Conservação para Delivery e Supermercado` | **81/120** |
+| Hiện trạng | `Bolsa Térmica 20L Impermeável para Delivery e Supermercado com Alça Reforçada` | **77/120** |
+| Sau iterate | `Bolsa Térmica 20L Impermeável 8 Horas de Conservação para Delivery e Supermercado` | **81/120** |
 
-**改动说明**：
-- **加入** `8 Horas de Conservação`（核心差异化卖点，且是买家的真实搜索意图）
-- **移除** `com Alça Reforçada`（次要功能，已在详情页说明）
-- 主关键词 `Bolsa Térmica` 位置不变，仍在最前
-- 改动幅度：4 个字符的净增，**结构未变**
+**Giải thích thay đổi**:
+- **Thêm** `8 Horas de Conservação` (điểm bán hàng tạo khác biệt cốt lõi, đồng thời là ý định tìm kiếm thật của người mua)
+- **Bỏ** `com Alça Reforçada` (tính năng phụ, đã nói trong trang chi tiết)
+- Vị trí từ khóa chính `Bolsa Térmica` giữ nguyên, vẫn ở đầu
+- Mức thay đổi: tăng ròng 4 ký tự, **cấu trúc không đổi**
 
-### 6.4 明确不改动的部分
+### 6.4 Những phần chắc chắn không thay đổi
 
-| 项 | 不动 | 理由 |
+| Mục | Không động vào | Lý do |
 |---|---|---|
-| 详情页 | ❌ 不动 | 转化率 2,1% 已达标 → 详情页是有效的 |
-| 价格 | ❌ 不动 | 转化与加购达标 → 价格不是瓶颈 |
-| 视频 | ❌ 不动 | 同上 |
-| 其余 8 张图 | ❌ 不动 | 点击率只与主图有关 |
-| SKU 结构 | ❌ 不动 | 加购率 11,3% 达标 → SKU 设计有效 |
+| Trang chi tiết | ❌ Không động | Tỷ lệ chuyển đổi 2,1% đã đạt → trang chi tiết đang hiệu quả |
+| Giá | ❌ Không động | Chuyển đổi và thêm vào giỏ đạt → giá không phải điểm nghẽn |
+| Video | ❌ Không động | Như trên |
+| 8 ảnh còn lại | ❌ Không động | CTR chỉ liên quan đến ảnh chính |
+| Cấu trúc SKU | ❌ Không động | Tỷ lệ thêm vào giỏ 11,3% đạt → thiết kế SKU hiệu quả |
 
-> **`mode = iterate` 最大的价值就在这里：明确地"不改什么"。** 很多运营在点击率低的时候会顺手改价格、改详情页、加优惠券——把本来没问题的环节改坏，反而看不出是哪个动作起了作用。
+> **Giá trị lớn nhất của `mode = iterate` nằm ở đây: nói rõ "không sửa gì".** Nhiều người vận hành khi CTR thấp hay tiện tay sửa giá, sửa trang chi tiết, thêm voucher — làm hỏng những khâu vốn không có vấn đề, rồi lại không biết thao tác nào mới thực sự có tác dụng.
 
 ---
 
-## 七、SOP 3.6 的另一条建议
+## VII. Một đề xuất khác của SOP 3.6
 
-SOP 还提到一个解除广告 bug 的技巧：
+SOP còn nhắc đến một mẹo gỡ "bug" quảng cáo:
 
-> 当广告出现跑不动的情况，不只是单单调整 ROI 和预算，这个时候把主图、标题、详情页稍微改一下，一般改一下主图即可，解除广告的 bug，广告就能跑起来了。
+> Khi quảng cáo không chạy được, đừng chỉ điều chỉnh ROI và ngân sách, lúc này hãy sửa nhẹ ảnh chính, tiêu đề, trang chi tiết, thường chỉ cần sửa ảnh chính là gỡ được bug quảng cáo, quảng cáo sẽ chạy lại được.
 
-**本案例的适用性判断**：
+**Đánh giá mức độ áp dụng cho case study này**:
 
-| 情况 | 是否适用 |
+| Tình huống | Có áp dụng không |
 |---|---|
-| 广告**跑不动**（花不出钱、拿不到曝光） | ✅ 适用——改主图常能解除 |
-| 广告**跑得动但不点击**（本案例） | ✅ 同样适用——改主图是首要动作 |
-| 广告**跑得动、有点击、没转化** | ❌ 不适用——问题在详情页与价格 |
+| Quảng cáo **không chạy được** (không tiêu được tiền, không có hiển thị) | ✅ Áp dụng — sửa ảnh chính thường gỡ được |
+| Quảng cáo **chạy được nhưng không có click** (case study này) | ✅ Cũng áp dụng — sửa ảnh chính là thao tác đầu tiên |
+| Quảng cáo **chạy được, có click, không có chuyển đổi** | ❌ Không áp dụng — vấn đề ở trang chi tiết và giá |
 
-**本案例的额外观察**：改主图这个动作，在 SOP 里被同时用于两个目的——**解除广告 bug** 和 **提升点击率**。这说明主图在这套方法论里的权重极高：**它既是流量入口，也是技术层面的"触发开关"**。
+**Quan sát thêm từ case study này**: thao tác sửa ảnh chính được SOP dùng cùng lúc cho hai mục đích — **gỡ bug quảng cáo** và **tăng CTR**. Điều này cho thấy ảnh chính có trọng số cực cao trong bộ phương pháp luận này: **nó vừa là cửa ngõ traffic, vừa là "công tắc kích hoạt" ở tầng kỹ thuật**.
 
 ---
 
-## 八、验证方法
+## VIII. Cách kiểm chứng
 
-改完之后必须有验证，否则不知道改动是否有效。
+Sửa xong bắt buộc phải kiểm chứng, nếu không sẽ không biết thay đổi có hiệu quả không.
 
-| 验证项 | 方法 | 观察周期 |
+| Mục kiểm chứng | Cách làm | Chu kỳ quan sát |
 |---|---|---|
-| CTR 是否提升 | 改主图后对比同期 CTR | **7 天**（SOP 的测试区间） |
-| 曝光是否变化 | 确认曝光量未因改动而下降 | 7 天 |
-| 转化率是否保持 | 确认 2,1% 未下滑（防止点击来的流量变差） | 7 天 |
-| 广告是否能正常花费 | 确认预算消耗正常 | 3 天 |
+| CTR có tăng không | So sánh CTR cùng kỳ sau khi đổi ảnh chính | **7 ngày** (khoảng thời gian test của SOP) |
+| Lượt hiển thị có thay đổi không | Xác nhận lượt hiển thị không giảm do thay đổi | 7 ngày |
+| Tỷ lệ chuyển đổi có giữ được không | Xác nhận 2,1% không tụt (tránh traffic từ click mới bị kém đi) | 7 ngày |
+| Quảng cáo có tiêu tiền bình thường không | Xác nhận ngân sách tiêu bình thường | 3 ngày |
 
-**对照原则**：**一次只改一个变量**。本案例同时改了主图和标题，如果 CTR 提升，无法确定是哪个起的作用。
+**Nguyên tắc đối chứng**: **mỗi lần chỉ thay đổi một biến**. Case study này sửa cùng lúc ảnh chính và tiêu đề, nếu CTR tăng thì không xác định được cái nào có tác dụng.
 
-> ⚠️ **这是一个已知的方法论瑕疵**，也是本案例的诚实说明：为了压缩案例篇幅，这里把主图和标题一起改了。
-> **实操中应该分两步**：先改主图（7 天）→ 有提升就停手；无提升再加标题优化（再 7 天）。这样每一步的效果都可归因。
-> 这个原则和 SOP 里"广告模型要跑 7 天测试区间"是同一个逻辑——**改动需要测试区间，不能同时动多个变量**。
+> ⚠️ **Đây là một khiếm khuyết phương pháp luận đã biết**, cũng là lời thú nhận thẳng thắn của case study này: để rút gọn độ dài, ở đây sửa ảnh chính và tiêu đề cùng lúc.
+> **Khi làm thực tế nên chia hai bước**: sửa ảnh chính trước (7 ngày) → có cải thiện thì dừng; không cải thiện thì mới tối ưu thêm tiêu đề (thêm 7 ngày). Như vậy hiệu quả của mỗi bước đều quy nguyên nhân được.
+> Nguyên tắc này cùng logic với câu "mô hình quảng cáo phải chạy đủ 7 ngày test" trong SOP — **thay đổi cần có khoảng thời gian test, không được động vào nhiều biến cùng lúc**.
 
 ---
 
-## 九、优化建议
+## IX. Đề xuất tối ưu
 
-| # | 建议 | 依据 |
+| # | Đề xuất | Căn cứ |
 |---|---|---|
-| 1 | **本次实操应分两步**：先改主图 → 观察 7 天 → 再决定是否改标题 | 同时改两个变量无法归因 |
-| 2 | 主图的冰饮道具要**真实拍摄或真实合成**，不要画一个 | 画出来的冰饮会削弱可信度 |
-| 3 | 若 7 天后 CTR 仍未达 3%，考虑 **B 方案**：把保温包放进真实使用场景（外卖骑手背着） | 白底主图在箱包类目同质化严重，场景化主图是另一条路 |
-| 4 | 补一个**打开状态的对照主图做 A/B 测试** | 验证"露出内衬"是否是提升点击的关键 |
-| 5 | 详情页保持不动，但要**记录改动前的时间点** | 便于日后回溯是哪次改动带来了提升 |
-| 6 | 若 CTR 提升但转化率下滑，说明新主图吸引错了人 | 需要重新校准卖点表达 |
+| 1 | **Lần làm thực tế này nên chia hai bước**: sửa ảnh chính trước → quan sát 7 ngày → rồi mới quyết định có sửa tiêu đề không | Sửa hai biến cùng lúc thì không quy nguyên nhân được |
+| 2 | Đạo cụ chai nước lạnh trên ảnh chính phải **chụp thật hoặc ghép từ ảnh thật**, đừng vẽ ra | Chai nước vẽ ra sẽ làm giảm độ tin cậy |
+| 3 | Nếu sau 7 ngày CTR vẫn chưa đạt 3%, cân nhắc **phương án B**: đặt túi giữ nhiệt vào bối cảnh sử dụng thật (shipper giao đồ ăn đeo trên lưng) | Ảnh chính nền trắng ở ngành hàng túi xách bị đồng nhất nghiêm trọng, ảnh chính theo bối cảnh là một hướng khác |
+| 4 | Bổ sung **một ảnh chính đối chứng ở trạng thái mở để A/B test** | Kiểm chứng "lộ lớp lót" có phải yếu tố then chốt giúp tăng click không |
+| 5 | Trang chi tiết giữ nguyên, nhưng phải **ghi lại mốc thời gian trước khi thay đổi** | Tiện truy ngược sau này xem lần thay đổi nào mang lại cải thiện |
+| 6 | Nếu CTR tăng mà tỷ lệ chuyển đổi tụt, nghĩa là ảnh chính mới đã hút nhầm người | Cần hiệu chỉnh lại cách thể hiện điểm bán hàng |
 
 ---
 
-## 十、这个案例证明了什么
+## X. Case study này chứng minh điều gì
 
-| 结论 | 证据 |
+| Kết luận | Bằng chứng |
 |---|---|
-| **诊断需要基准线** | 没有 SOP 的「CTR 3–5%」基准，1,4% 这个数字没有任何意义 |
-| **指标组合能定位环节** | CTR 低但转化/加购达标 → 问题在点击环节，不在产品与价格 |
-| **iterate 的核心是"不改什么"** | 明确列出详情页/价格/视频/SKU 四项不动，避免改坏没问题的环节 |
-| **`mode = iterate` 输出的是最小改动集** | 主图改 3 处、标题改 2 个词，其余全部保留 |
-| **改动必须可归因** | 同时改两个变量的做法被明确标注为瑕疵，并给出分步方案 |
-| **禁用词会反向约束视觉** | `100% Impermeável` 被禁 → 主图负面词必须加 `water puddle, wet fabric` |
-| **同一动作服务两个目的** | 改主图既提升 CTR，也是 SOP 里解除广告 bug 的手段 |
+| **Chẩn đoán cần có ngưỡng chuẩn** | Không có chuẩn「CTR 3–5%」của SOP thì con số 1,4% chẳng có ý nghĩa gì |
+| **Tổ hợp chỉ số khoanh vùng được khâu có vấn đề** | CTR thấp nhưng chuyển đổi/thêm vào giỏ đạt → vấn đề ở khâu click, không phải sản phẩm và giá |
+| **Cốt lõi của iterate là "không sửa gì"** | Liệt kê rõ 4 mục trang chi tiết/giá/video/SKU không động vào, tránh làm hỏng khâu không có vấn đề |
+| **Đầu ra của `mode = iterate` là tập thay đổi tối thiểu** | Ảnh chính sửa 3 chỗ, tiêu đề sửa 2 cụm từ, còn lại giữ nguyên toàn bộ |
+| **Thay đổi bắt buộc phải quy nguyên nhân được** | Việc sửa hai biến cùng lúc được ghi rõ là khiếm khuyết, kèm phương án chia bước |
+| **Từ cấm sẽ ràng buộc ngược lại hình ảnh** | Cấm `100% Impermeável` → Negative Prompt của ảnh chính bắt buộc thêm `water puddle, wet fabric` |
+| **Một thao tác phục vụ hai mục đích** | Sửa ảnh chính vừa tăng CTR, vừa là cách gỡ bug quảng cáo trong SOP |
 
 ---
 
-**关联案例**：[案例 01 · Patinete Elétrico 端到端](../01_Patinete_Eletrico_500W/) · [Power Bank](../../Agents/03_Listing_Creative_Agent/examples/powerbank_20000mah.md) · [Pet Carrier](../../Agents/04_Product_Image_Agent/examples/pet_carrier.md) · [Air Fryer](../../Agents/05_Product_Video_Agent/examples/air_fryer.md)
+**Case study liên quan**: [Case study 01 · Patinete Elétrico end-to-end](../01_Patinete_Eletrico_500W/) · [Power Bank](../../Agents/03_Listing_Creative_Agent/examples/powerbank_20000mah.md) · [Pet Carrier](../../Agents/04_Product_Image_Agent/examples/pet_carrier.md) · [Air Fryer](../../Agents/05_Product_Video_Agent/examples/air_fryer.md)
 
-**相关文档**：[架构拆解](../../docs/00_Architecture_SOP_to_Agent.md) · [06 Advertising Agent](../../Agents/06_Advertising_Optimization_Agent/)（Phase 2） · [自检清单](../../docs/04_Result_Checklist.md)
+**Tài liệu liên quan**: [Phân rã kiến trúc](../../docs/00_Architecture_SOP_to_Agent.md) · [06 Advertising Agent](../../Agents/06_Advertising_Optimization_Agent/) (Phase 2) · [Checklist tự kiểm tra](../../docs/04_Result_Checklist.md)

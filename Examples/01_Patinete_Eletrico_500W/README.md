@@ -1,59 +1,59 @@
-# 案例 01 · Patinete Elétrico 500W（电动滑板车）· 端到端全链路
+# Case study 01 · Patinete Elétrico 500W (xe scooter điện) · Toàn luồng end-to-end
 
-> **案例类型**：旗舰案例 · 真实产品 · 已脱敏
-> **覆盖模块**：03 Listing Creative → 04 Product Image → 05 Product Video
-> **市场**：Shopee 巴西站（主）+ Mercado Livre（对照）
-> **对应 SOP**：1.8 关键词表 · 3.3 Listing + 9 图 + 详情页结构 · 3.4 多链接启动
+> **Loại case study**: Case study chủ lực · Sản phẩm thật · Đã ẩn danh hóa
+> **Module bao phủ**: 03 Listing Creative → 04 Product Image → 05 Product Video
+> **Thị trường**: Shopee Brazil (chính) + Mercado Livre (đối chiếu)
+> **SOP tương ứng**: 1.8 Bảng từ khóa · 3.3 Listing + 9 ảnh + cấu trúc trang chi tiết · 3.4 Khởi chạy nhiều link
 
-**为什么这是旗舰案例**：SOP 1.8 拿它当标题公式的示例产品（原文：`Patinete Elétrico Adulto 500W 150kg com Banco Dobrável para Mobilidade Urbana`），制作说明把它列在五款案例产品里（Electric Scooter），而且它**天然横跨三个模块**——参数多（适合做参数图）、有强场景（适合做场景视频）、有明确安全风险（适合演示合规守卫）。
-
----
-
-## 一、产品背景
-
-| 项 | 内容 |
-|---|---|
-| 产品 | 500W 电动滑板车，成人款，带座椅、可折叠、前后双减震 |
-| 市场 | 巴西（Shopee BR 主力，ML 对照） |
-| 类目 | 电动出行 |
-| 定位 | 主推款 |
-| 视觉调性 | 力量感、城市动感、冷色调 |
-
-**类目特性**（决定了整个内容策略）：
-
-| 特性 | 影响 |
-|---|---|
-| 参数多（功率/续航/承重/轮胎/减震…） | 参数图必须做，且不能堆一起 |
-| 买家最怕"承重虚标""续航虚标" | 详情页必须解释测试条件 |
-| 涉及安全（刹车、灯光、夜间骑行） | **合规红线最密集的类目** |
-| 巴西对电动滑板车有地方性上路规定 | 场景表述不能承诺"合法上路" |
+**Vì sao đây là case study chủ lực**: SOP 1.8 dùng nó làm sản phẩm ví dụ cho công thức tiêu đề (nguyên văn: `Patinete Elétrico Adulto 500W 150kg com Banco Dobrável para Mobilidade Urbana`), tài liệu hướng dẫn xây dựng xếp nó vào 5 sản phẩm case study (Electric Scooter), và nó **tự nhiên trải dài qua cả ba module** — nhiều thông số (hợp làm ảnh thông số), có bối cảnh sử dụng mạnh (hợp làm video bối cảnh), có rủi ro an toàn rõ ràng (hợp để minh họa lớp bảo vệ tuân thủ).
 
 ---
 
-## 二、市场分析（简版）
+## I. Bối cảnh sản phẩm
 
-详细版由 01 Market Research Agent 承担（Phase 2）。此处只给案例所需的结论：
+| Mục | Nội dung |
+|---|---|
+| Sản phẩm | Xe scooter điện 500W, dòng cho người lớn, có yên, gấp gọn được, giảm xóc trước sau |
+| Thị trường | Brazil (Shopee BR là chủ lực, ML để đối chiếu) |
+| Ngành hàng | Phương tiện di chuyển điện |
+| Định vị | SKU chủ lực |
+| Tông hình ảnh | Mạnh mẽ, năng động kiểu đô thị, tông lạnh |
 
-| 维度 | 结论 | 对内容的影响 |
+**Đặc thù ngành hàng** (quyết định toàn bộ chiến lược nội dung):
+
+| Đặc thù | Ảnh hưởng |
+|---|---|
+| Nhiều thông số (công suất/quãng đường/tải trọng/lốp/giảm xóc…) | Bắt buộc làm ảnh thông số, và không được dồn hết vào một chỗ |
+| Người mua sợ nhất "khai khống tải trọng", "khai khống quãng đường" | Trang chi tiết bắt buộc giải thích điều kiện thử nghiệm |
+| Liên quan an toàn (phanh, đèn, đi đêm) | **Ngành hàng dày đặc lằn ranh đỏ về tuân thủ nhất** |
+| Brazil có quy định địa phương về việc xe scooter điện lưu thông trên đường | Mô tả bối cảnh không được cam kết "được phép lưu thông hợp pháp" |
+
+---
+
+## II. Phân tích thị trường (bản rút gọn)
+
+Bản chi tiết do 01 Market Research Agent đảm nhận (Phase 2). Ở đây chỉ đưa kết luận cần cho case study:
+
+| Khía cạnh | Kết luận | Ảnh hưởng đến nội dung |
 |---|---|---|
-| 价格带 | 目标区间 `R$ 1.800 – R$ 2.600` | 标题参数词按此价位段配置 |
-| 主流配置 | 350–500W、10–15Ah、8–10 寸轮胎、承重 100–150kg | 标题必须含 `500W` `150kg`（差异化于 350W 竞品） |
-| 竞品短板 | 多数竞品**不写续航测试条件**、不写减震细节 | 我方详情页把这两点讲透 |
-| 高退货原因 | 承重/续航不符预期、组装困难 | 详情页注意事项段必须覆盖 |
-| 关键词 | 高频词集中在 `Patinete Elétrico` + `Adulto` + 功率 + `Dobrável` + `Mobilidade Urbana` | 标题结构直接对齐 SOP 公式 |
+| Dải giá | Khoảng mục tiêu `R$ 1.800 – R$ 2.600` | Từ khóa thông số trong tiêu đề được cấu hình theo phân khúc giá này |
+| Cấu hình phổ biến | 350–500W, 10–15Ah, lốp 8–10 inch, tải trọng 100–150kg | Tiêu đề bắt buộc chứa `500W` `150kg` (tạo khác biệt với đối thủ 350W) |
+| Điểm yếu của đối thủ | Đa số đối thủ **không ghi điều kiện thử quãng đường**, không ghi chi tiết giảm xóc | Trang chi tiết của mình nói thật kỹ hai điểm này |
+| Nguyên nhân hoàn hàng cao | Tải trọng/quãng đường không như kỳ vọng, khó lắp ráp | Đoạn lưu ý trên trang chi tiết bắt buộc phải bao quát |
+| Từ khóa | Từ khóa tần suất cao tập trung ở `Patinete Elétrico` + `Adulto` + công suất + `Dobrável` + `Mobilidade Urbana` | Cấu trúc tiêu đề bám thẳng theo công thức SOP |
 
 ---
 
-## 三、模块 03 · Listing Creative
+## III. Module 03 · Listing Creative
 
-### 3.1 输入（节选）
+### 3.1 Đầu vào (trích)
 
 ```yaml
 platform: shopee
-target_market: 巴西
+target_market: Brazil
 mode: single
 product_name: "Patinete Elétrico"
-category: "电动出行"
+category: "Phương tiện di chuyển điện"
 
 spec_table:
   potencia: "500 W"
@@ -77,56 +77,56 @@ usage_scope_confirmed:
   - "Lazer em parques e ciclovias"
   - "Trajeto casa-trabalho em distâncias curtas"
 
-forbidden_words:            # 由合规扫描产出
-  - "Anda a 60 km/h"        # 参数不符（实际 30 km/h）
-  - "Autonomia de 60 km"    # 参数不符（实际 35 km）
-  - "Pode Andar em Qualquer Via"  # 合规风险：上路规定因地区而异，不可承诺
-  - "O Melhor Patinete do Brasil" # 绝对化
-  - "Xiaomi"                # 未授权品牌
+forbidden_words:            # Do bước quét tuân thủ tạo ra
+  - "Anda a 60 km/h"        # Sai thông số (thực tế 30 km/h)
+  - "Autonomia de 60 km"    # Sai thông số (thực tế 35 km)
+  - "Pode Andar em Qualquer Via"  # Rủi ro tuân thủ: quy định lưu thông khác nhau theo địa phương, không được cam kết
+  - "O Melhor Patinete do Brasil" # Từ ngữ tuyệt đối hóa
+  - "Xiaomi"                # Thương hiệu chưa được cấp phép
 ```
 
-### 3.2 关键词七类分词（节选）
+### 3.2 Phân loại từ khóa thành 7 nhóm (trích)
 
-| 类别 | 词数 | 代表词 |
+| Nhóm | Số từ | Từ tiêu biểu |
 |---|---|---|
-| 核心词 | 4 | `Patinete Elétrico`、`Scooter Elétrico`、`Patinete Adulto` |
-| 参数词 | 12 | `500W`、`150kg`、`12Ah`、`8 Polegadas`、`30 km/h` |
-| 人群词 | 4 | `Adulto`、`Unissex`、`Iniciante` |
-| 功能词 | 10 | `Dobrável`、`com Banco`、`com Suspensão`、`Freio a Disco` |
-| 场景词 | 6 | `Mobilidade Urbana`、`Ciclovia`、`Parque`、`Casa-Trabalho` |
-| 配件词 | 5 | `Bateria`、`Carregador`、`Banco Removível` |
-| **风险词** | **5** | ⛔ 见 `forbidden_words` |
+| Từ khóa lõi | 4 | `Patinete Elétrico`, `Scooter Elétrico`, `Patinete Adulto` |
+| Từ khóa thông số | 12 | `500W`, `150kg`, `12Ah`, `8 Polegadas`, `30 km/h` |
+| Từ khóa nhóm khách hàng | 4 | `Adulto`, `Unissex`, `Iniciante` |
+| Từ khóa tính năng | 10 | `Dobrável`, `com Banco`, `com Suspensão`, `Freio a Disco` |
+| Từ khóa bối cảnh | 6 | `Mobilidade Urbana`, `Ciclovia`, `Parque`, `Casa-Trabalho` |
+| Từ khóa phụ kiện | 5 | `Bateria`, `Carregador`, `Banco Removível` |
+| **Từ khóa rủi ro** | **5** | ⛔ Xem `forbidden_words` |
 
-### 3.3 标题（实测字符数）
+### 3.3 Tiêu đề (số ký tự đo thực tế)
 
-| # | 标题 | 字符数 | 侧重 |
+| # | Tiêu đề | Số ký tự | Trọng tâm |
 |---|---|---|---|
-| **A** | `Patinete Elétrico Adulto 500W 150kg com Banco Dobrável e Suspensão para Mobilidade Urbana` | **89/120** | 参数驱动 ✅ 推荐 |
-| B | `Patinete Elétrico Adulto 500W 150kg Dobrável com Banco para Mobilidade Urbana e Lazer` | **85/120** | 场景驱动 |
-| C | `Patinete Elétrico Adulto 500W 150kg com Banco Dobrável Pneus 8 Polegadas Mobilidade Urbana` | **90/120** | 功能驱动 |
+| **A** | `Patinete Elétrico Adulto 500W 150kg com Banco Dobrável e Suspensão para Mobilidade Urbana` | **89/120** | Dẫn dắt bằng thông số ✅ Đề xuất |
+| B | `Patinete Elétrico Adulto 500W 150kg Dobrável com Banco para Mobilidade Urbana e Lazer` | **85/120** | Dẫn dắt bằng bối cảnh |
+| C | `Patinete Elétrico Adulto 500W 150kg com Banco Dobrável Pneus 8 Polegadas Mobilidade Urbana` | **90/120** | Dẫn dắt bằng tính năng |
 
-**与 SOP 原例的差异**：
+**Khác biệt so với ví dụ gốc trong SOP**:
 
-| | 标题 | 字符数 |
+| | Tiêu đề | Số ký tự |
 |---|---|---|
-| SOP 原例 | `Patinete Elétrico Adulto 500W 150kg com Banco Dobrável para Mobilidade Urbana` | **77** |
-| 本案例 A | 在原例基础上加 `e Suspensão`（SOP 原例未含的差异化卖点） | **89** |
+| Ví dụ gốc SOP | `Patinete Elétrico Adulto 500W 150kg com Banco Dobrável para Mobilidade Urbana` | **77** |
+| Phương án A của case study | Thêm `e Suspensão` vào ví dụ gốc (điểm bán hàng tạo khác biệt mà ví dụ gốc SOP chưa có) | **89** |
 
-> SOP 原例只用了 77/120 字符，**还有 43 字符空间没用**。本案例的 A 方案把「双减震」这个竞品普遍不强调的点补进标题——**在不堆砌的前提下补真实卖点，是标题优化的正确做法；为凑字数加 `Novo` `Promoção` 才是堆砌。**
+> Ví dụ gốc SOP chỉ dùng 77/120 ký tự, **còn 43 ký tự chưa dùng**. Phương án A của case study này bổ sung điểm「giảm xóc kép」— điểm mà đối thủ thường không nhấn mạnh — vào tiêu đề. **Bổ sung điểm bán hàng thật mà không nhồi nhét mới là cách tối ưu tiêu đề đúng; thêm `Novo` `Promoção` cho đủ ký tự mới là nhồi từ khóa.**
 
-### 3.4 详情页 7 段（结构示意）
+### 3.4 Trang chi tiết 7 đoạn (sơ đồ cấu trúc)
 
-| 段 | 内容要点 | 本案例的特殊处理 |
+| Đoạn | Nội dung chính | Xử lý đặc thù của case study |
 |---|---|---|
-| 1 · 欢迎语 | 产品一句话定位 | — |
-| 2 · 核心卖点 | 5 条，每条含量化支撑 | 核心：`500W 电机 + 150kg 承重` |
-| 3 · 使用场景 | 3 个场景 | ⚠️ **只写"vias planas e pavimentadas"**，不承诺任何路况都能骑 |
-| 4 · 详细参数 | 表格，14 项 | 续航必须写测试条件 |
-| 5 · 售后 | 6 个月（电机+电池） | 明确范围 |
-| 6 · 注意事项 | 由 `review_insights` 驱动 | 见下方 |
-| 7 · 关键词标签 | 10–15 个 | 风险词零命中 |
+| 1 · Lời chào | Định vị sản phẩm trong một câu | — |
+| 2 · Điểm bán hàng lõi | 5 điểm, mỗi điểm có số liệu chứng minh | Lõi: `động cơ 500W + tải trọng 150kg` |
+| 3 · Bối cảnh sử dụng | 3 bối cảnh | ⚠️ **Chỉ ghi "vias planas e pavimentadas"**, không cam kết đi được mọi loại đường |
+| 4 · Thông số chi tiết | Bảng, 14 mục | Quãng đường bắt buộc ghi điều kiện thử nghiệm |
+| 5 · Hậu mãi | 6 tháng (động cơ + pin) | Ghi rõ phạm vi |
+| 6 · Lưu ý | Dựa trên `review_insights` | Xem bên dưới |
+| 7 · Thẻ từ khóa | 10–15 thẻ | Không dính từ khóa rủi ro nào |
 
-**段 6 注意事项的内容来源**（关键段落）：
+**Nguồn nội dung của đoạn 6 · Lưu ý** (đoạn then chốt):
 
 ```text
 - A autonomia de até 35 km foi medida com piloto de 70 kg, em piso plano,
@@ -140,14 +140,14 @@ forbidden_words:            # 由合规扫描产出
 - O produto vem parcialmente montado; a montagem final leva cerca de 15 minutos.
 ```
 
-> **最后三条是本案例最有价值的部分**：
-> - 「上路规定因地区而异，请自行核查」——**既规避了合规风险，又显得专业**。直接写"可以合法上路"是危险的。
-> - 「必须戴头盔」——安全提示，也降低售后纠纷。
-> - 「需自行完成部分组装」——**组装困难是这类产品的高频退货原因**，前置说明能直接减少退货。
+> **Ba mục cuối là phần giá trị nhất của case study này**:
+> -「Quy định lưu thông khác nhau theo địa phương, vui lòng tự kiểm tra」— **vừa né được rủi ro tuân thủ, vừa trông chuyên nghiệp**. Ghi thẳng "được phép lưu thông hợp pháp" là nguy hiểm.
+> -「Bắt buộc đội mũ bảo hiểm」— nhắc nhở an toàn, đồng thời giảm tranh chấp hậu mãi.
+> -「Cần tự lắp ráp một phần」— **khó lắp ráp là nguyên nhân hoàn hàng tần suất cao của loại sản phẩm này**, nói trước giúp giảm hoàn hàng trực tiếp.
 >
-> 前两条则直接对冲"续航虚标""承重虚标"这两类高发差评。
+> Hai mục đầu thì trực tiếp chặn trước hai loại đánh giá tiêu cực hay gặp là "khai khống quãng đường" và "khai khống tải trọng".
 
-### 3.5 卖点分层与交付字段
+### 3.5 Phân tầng điểm bán hàng và các trường bàn giao
 
 ```yaml
 core_selling_point: "Motor de 500W com capacidade para 150 kg — sobe ladeiras leves com estabilidade"
@@ -160,7 +160,7 @@ secondary_points:
   - "Farol LED dianteiro e lanterna traseira"
   - "Autonomia de até 35 km (condições de teste no item 6 da descrição)"
 
-forbidden_words: [同 spec_table 上方的 5 条]
+forbidden_words: [giống 5 mục phía trên trong spec_table]
 
 visual_tone_hint: "Urbano e dinâmico — luz natural de fim de tarde, asfalto e ciclovia, tons frios com destaque no produto"
 
@@ -172,50 +172,50 @@ usage_scope_confirmed:
 title_final: "Patinete Elétrico Adulto 500W 150kg com Banco Dobrável e Suspensão para Mobilidade Urbana"
 ```
 
-### 3.6 合规扫描结果
+### 3.6 Kết quả quét tuân thủ
 
-| 规则 | 命中 | 处理 |
+| Quy tắc | Số lần dính | Xử lý |
 |---|---|---|
-| R1 绝对化用语 | 1 | `O Melhor Patinete do Brasil` → 删除 |
-| R2 未授权品牌词 | 1 | `Xiaomi` → 删除 |
-| R3 参数虚标 | **3** | `60 km/h` `60 km 续航` `350W 型号混入` → 全部删除并记录 `[PARAM_DROPPED]` |
-| R4 促销词入标题 | 1 | 标题初稿含 `Promoção` → 移入详情页段 1 |
-| R5 敏感表述 | 1 | `Pode Andar em Qualquer Via` → 改为"请核查当地法规" |
-| R6 场景超范围 | 1 | 输入的 `Trilhas e Off-Road` 不在 `usage_scope` 内 → 删除并记录 `[SCENE_DROPPED]` |
-| R7 伪造证明 | 0 | — |
+| R1 Từ ngữ tuyệt đối hóa | 1 | `O Melhor Patinete do Brasil` → xóa |
+| R2 Từ khóa thương hiệu chưa cấp phép | 1 | `Xiaomi` → xóa |
+| R3 Khai khống thông số | **3** | `60 km/h` `quãng đường 60 km` `lẫn model 350W` → xóa hết và ghi `[PARAM_DROPPED]` |
+| R4 Từ khuyến mãi trong tiêu đề | 1 | Bản nháp tiêu đề có `Promoção` → chuyển xuống đoạn 1 của trang chi tiết |
+| R5 Diễn đạt nhạy cảm | 1 | `Pode Andar em Qualquer Via` → đổi thành "vui lòng kiểm tra quy định địa phương" |
+| R6 Bối cảnh vượt phạm vi | 1 | Đầu vào có `Trilhas e Off-Road` không nằm trong `usage_scope` → xóa và ghi `[SCENE_DROPPED]` |
+| R7 Bằng chứng giả | 0 | — |
 
-**结论**：命中 8 条，其中 R3 有 3 条高危。全部处理，二次扫描零命中。
+**Kết luận**: dính 8 mục, trong đó R3 có 3 mục rủi ro cao. Đã xử lý hết, quét lần hai không dính mục nào.
 
-> **R3 命中 3 次是本案例最值得注意的地方。** 参数虚标往往不是故意编造，而是**关键词表里带着竞品的参数词**（竞品是 60km/h、60km 续航），如果直接拿来用就变成虚标。这证明了 `spec_table` 作为唯一数值来源的必要性。
+> **R3 dính 3 lần là điểm đáng chú ý nhất của case study này.** Khai khống thông số thường không phải cố tình bịa, mà là do **bảng từ khóa lẫn từ khóa thông số của đối thủ** (đối thủ ghi 60km/h, quãng đường 60km); nếu lấy dùng thẳng thì thành khai khống. Điều này chứng minh `spec_table` cần thiết phải là nguồn số liệu duy nhất.
 
 ---
 
-## 四、模块 04 · Product Image
+## IV. Module 04 · Product Image
 
-### 4.1 9 图内容规划
+### 4.1 Kế hoạch nội dung 9 ảnh
 
-| # | 图位 | 承载信息 | 图内文案 | 字数 |
+| # | Vị trí ảnh | Thông tin truyền tải | Chữ trên ảnh | Số ký tự |
 |---|---|---|---|---|
-| 1 | **主图** | 车体完整 3/4 侧前角度 | **无文字**（ML 版）/ `500W · 150kg`（Shopee 版） | 0 / 14 |
-| 2 | 核心卖点图 | 500W 电机 + 150kg 承重 | `Motor 500W · Suporta 150 kg` | 28 |
-| 3 | 参数规格图 | 关键参数可视化 | 功率/电池/续航/速度/承重 | — |
-| 4 | 场景图 A | 城市通勤 | `Mobilidade urbana` | 17 |
-| 5 | 场景图 B | 折叠后放入后备箱 | `Dobra em 3 segundos` | 19 |
-| 6 | 细节图 | 减震器 + 碟刹特写 | `Suspensão + freio a disco` | 25 |
-| 7 | 尺寸/对比图 | 整车尺寸 + 折叠尺寸 | 数值标注 | — |
-| 8 | 包装清单图 | **实拍**平铺 | `Não incluso: capacete` | 21 |
-| 9 | 售后/保修图 | 6 个月电机与电池 | `6 meses · motor e bateria` | 26 |
+| 1 | **Ảnh chính** | Toàn thân xe, góc 3/4 chếch trước | **Không chữ** (bản ML) / `500W · 150kg` (bản Shopee) | 0 / 14 |
+| 2 | Ảnh điểm bán hàng lõi | Động cơ 500W + tải trọng 150kg | `Motor 500W · Suporta 150 kg` | 28 |
+| 3 | Ảnh thông số | Trực quan hóa thông số chính | Công suất/pin/quãng đường/tốc độ/tải trọng | — |
+| 4 | Ảnh bối cảnh A | Đi lại trong thành phố | `Mobilidade urbana` | 17 |
+| 5 | Ảnh bối cảnh B | Gấp gọn cho vào cốp xe | `Dobra em 3 segundos` | 19 |
+| 6 | Ảnh chi tiết | Cận cảnh giảm xóc + phanh đĩa | `Suspensão + freio a disco` | 25 |
+| 7 | Ảnh kích thước/so sánh | Kích thước cả xe + kích thước khi gấp | Ghi chú số đo | — |
+| 8 | Ảnh danh sách đóng gói | **Chụp thật** bày phẳng | `Não incluso: capacete` | 21 |
+| 9 | Ảnh hậu mãi/bảo hành | 6 tháng động cơ và pin | `6 meses · motor e bateria` | 26 |
 
-### 4.2 平台冲突处理
+### 4.2 Xử lý xung đột giữa các sàn
 
-| 方案 | 平台 | 主图 |
+| Phương án | Sàn | Ảnh chính |
 |---|---|---|
-| **A** | Mercado Livre / Amazon | 纯白底 + **零文字**（ML 禁止主图出现文字） |
-| **B** | Shopee / TikTok Shop | 白底 + `500W · 150kg`（站内提升点击率） |
+| **A** | Mercado Livre / Amazon | Nền trắng tinh + **không chữ** (ML cấm chữ trên ảnh chính) |
+| **B** | Shopee / TikTok Shop | Nền trắng + `500W · 150kg` (tăng CTR trong sàn) |
 
-⚠️ **不可复用**。ML 主图带文字会被判违规。
+⚠️ **Không dùng chung được**. Ảnh chính ML có chữ sẽ bị tính là vi phạm.
 
-### 4.3 出图 Prompt（图 2 · 核心卖点图）
+### 4.3 Prompt tạo ảnh (ảnh 2 · ảnh điểm bán hàng lõi)
 
 ```text
 [SUBJECT] A black and dark-grey adult electric scooter with a removable padded
@@ -241,7 +241,7 @@ on the scooter, dynamic but stable mood.
 [PARAMETERS] 1:1 square aspect ratio, 1024x1024, reserve right 35% for text overlay.
 ```
 
-**负面 Prompt**
+**Negative Prompt**
 
 ```text
 text rendered by the model, watermark, logo, brand names, rider, human figure,
@@ -250,73 +250,73 @@ damaged scooter, broken parts, low resolution, distorted proportions,
 cluttered background, traffic, visible license plate
 ```
 
-> **`rider, human figure` 是必加的**：主图如果出现人物，注意力会从产品上移开，且在 ML 上可能被判定为"展示不出售的内容"。
+> **`rider, human figure` là bắt buộc phải thêm**: nếu ảnh chính có người, sự chú ý sẽ bị kéo khỏi sản phẩm, và trên ML có thể bị coi là "hiển thị thứ không được bán".
 
-### 4.4 图片合规扫描（本案例命中项）
+### 4.4 Quét tuân thủ hình ảnh (các mục dính trong case study này)
 
-| 规则 | 命中 | 处理 |
+| Quy tắc | Số lần dính | Xử lý |
 |---|---|---|
-| I1 伪造认证标志 | **1** | 图 9 初稿拟加 `INMETRO` 标志 → 商品未持证，**删除**，改为纯文字保修说明 |
-| I2 伪造评价 / 销量 | 0 | — |
-| I3 未授权品牌 | 1 | 负面 Prompt 加入 `logo, brand names`，拦截 `Xiaomi` |
-| I4 参数不一致 | **2** | 图 3 初稿写 `35km` / `30km/h`（无空格）→ 统一为 `35 km` / `30 km/h` |
-| I5 场景超范围 | **1** | 图 4 原方案为"山地越野场景"→ 不在 `usage_scope` 内，改为城市通勤场景 |
-| I6 真人肖像 | 0 | 场景图采用骑行者剪影/背影，不露可识别面部 |
-| I7 绝对化用语 | 0 | — |
-| I8 对比图约束 | **1** | 图 7 初稿拟与某竞品同框对比 → 改为与**通用车身尺寸轮廓**对比 |
+| I1 Logo chứng nhận giả | **1** | Bản nháp ảnh 9 định thêm logo `INMETRO` → sản phẩm chưa có chứng nhận, **xóa**, đổi thành chữ mô tả bảo hành |
+| I2 Đánh giá / số lượng đã bán giả | 0 | — |
+| I3 Thương hiệu chưa cấp phép | 1 | Thêm `logo, brand names` vào Negative Prompt để chặn `Xiaomi` |
+| I4 Thông số không nhất quán | **2** | Bản nháp ảnh 3 ghi `35km` / `30km/h` (không có dấu cách) → thống nhất thành `35 km` / `30 km/h` |
+| I5 Bối cảnh vượt phạm vi | **1** | Phương án gốc ảnh 4 là "bối cảnh đường núi off-road" → không nằm trong `usage_scope`, đổi thành bối cảnh đi lại trong thành phố |
+| I6 Chân dung người thật | 0 | Ảnh bối cảnh dùng bóng/lưng người lái, không lộ khuôn mặt nhận diện được |
+| I7 Từ ngữ tuyệt đối hóa | 0 | — |
+| I8 Ràng buộc ảnh so sánh | **1** | Bản nháp ảnh 7 định so sánh chung khung với một đối thủ → đổi thành so sánh với **đường viền kích thước thân xe chung chung** |
 
-**结论**：命中 6 条，全部处理。
+**Kết luận**: dính 6 mục, đã xử lý hết.
 
-> **I1 和 I5 这两条最能说明合规守卫的价值**：一个差点生成虚假认证标志，一个差点用"越野场景"暗示产品能做它做不到的事。**这两类问题在电动出行类目里极其常见，且都属于高危。**
+> **I1 và I5 là hai mục thể hiện rõ nhất giá trị của lớp bảo vệ tuân thủ**: một mục suýt tạo ra logo chứng nhận giả, một mục suýt dùng "bối cảnh off-road" để ngầm ý sản phẩm làm được điều nó không làm được. **Hai loại vấn đề này cực kỳ phổ biến ở ngành hàng phương tiện di chuyển điện, và đều thuộc nhóm rủi ro cao.**
 
 ---
 
-## 五、模块 05 · Product Video
+## V. Module 05 · Product Video
 
-### 5.1 钩子选择
+### 5.1 Chọn hook
 
-| # | 类型 | 钩子 | 选择 |
+| # | Loại | Hook | Lựa chọn |
 |---|---|---|---|
-| A | 痛点直击 | `Trânsito parado e você ainda de ônibus?` | ✅ 选定 |
-| B | 反常识 | `Chega ao trabalho sem suar.` | |
-| C | 场景代入 | `Seis quilômetros. Doze minutos.` | |
+| A | Đánh thẳng vào nỗi đau | `Trânsito parado e você ainda de ônibus?` | ✅ Chọn |
+| B | Ngược thường thức | `Chega ao trabalho sem suar.` | |
+| C | Nhập vai bối cảnh | `Seis quilômetros. Doze minutos.` | |
 
-### 5.2 分镜（30s 版，节选）
+### 5.2 Storyboard (bản 30s, trích)
 
-| 镜号 | 时长 | 画面 | 运镜 | 静音字幕 |
+| Cảnh | Thời lượng | Hình ảnh | Chuyển động máy | Phụ đề (xem không tiếng) |
 |---|---|---|---|---|
-| 1 | 0–3s | 拥堵车道，镜头从车流摇到旁边空着的自行车道 | 横摇 | `Trânsito parado?` |
-| 2 | 3–7s | 滑板车从画面右侧滑入自行车道，匀速前行 | 侧向跟随 | `Patinete Elétrico 500W` |
-| 3 | 7–12s | 上坡路段，车体稳定爬升，电机声平稳 | 低角度跟随 | `Sobe ladeiras leves` |
-| 4 | 12–17s | 承重展示：骑行者（背影/剪影）+ 字幕标注 `150 kg` | 固定中景 | `Suporta 150 kg` |
-| 5 | 17–22s | 折叠动作：3 秒内完成，放入汽车后备箱 | 固定俯拍 | `Dobra em 3 segundos` |
-| 6 | 22–26s | 减震器与碟刹特写 | 微距固定 | `Suspensão + freio a disco` |
-| 7 | 26–30s | 商品定格 + 参数卡 | 静态 | `Confira o link` |
+| 1 | 0–3s | Làn xe kẹt cứng, máy quay lia từ dòng xe sang làn xe đạp trống bên cạnh | Lia ngang | `Trânsito parado?` |
+| 2 | 3–7s | Scooter lướt vào làn xe đạp từ bên phải khung hình, chạy đều | Bám theo bên hông | `Patinete Elétrico 500W` |
+| 3 | 7–12s | Đoạn lên dốc, xe leo ổn định, tiếng động cơ êm | Bám theo góc thấp | `Sobe ladeiras leves` |
+| 4 | 12–17s | Minh họa tải trọng: người lái (lưng/bóng) + phụ đề ghi `150 kg` | Trung cảnh cố định | `Suporta 150 kg` |
+| 5 | 17–22s | Thao tác gấp: xong trong 3 giây, cho vào cốp ô tô | Cố định từ trên xuống | `Dobra em 3 segundos` |
+| 6 | 22–26s | Cận cảnh giảm xóc và phanh đĩa | Macro cố định | `Suspensão + freio a disco` |
+| 7 | 26–30s | Dừng hình sản phẩm + thẻ thông số | Tĩnh | `Confira o link` |
 
-**7 个镜头 / 30s** ✅
+**7 cảnh / 30s** ✅
 
-### 5.3 真人镜头处理（镜头 4）
+### 5.3 Xử lý cảnh quay người thật (cảnh 4)
 
 ```markdown
-### 镜头 4 · 12–17s · [真人镜头 — 不生成 AI Prompt]
+### Cảnh 4 · 12–17s · [Cảnh quay người thật — không tạo AI Prompt]
 
-**拍摄指令**
-- 机位：低角度，中景，略仰视
-- 构图：**骑行者背影或剪影，不出现面部**
-- 动作：匀速直线骑行，上身挺直
-- 注意事项：**必须戴头盔**（安全合规 + 内容真实），需签署肖像授权或采用剪影
-- 时长：5s
+**Chỉ dẫn quay**
+- Vị trí máy: góc thấp, trung cảnh, hơi ngước lên
+- Bố cục: **lưng hoặc bóng người lái, không lộ mặt**
+- Động tác: chạy thẳng đều, thân trên thẳng
+- Lưu ý: **bắt buộc đội mũ bảo hiểm** (tuân thủ an toàn + nội dung chân thực), cần ký giấy cho phép sử dụng hình ảnh hoặc dùng bóng người
+- Thời lượng: 5s
 
-**替代 AI 方案**
-- 采用逆光剪影构图
-- Prompt：Silhouette of an adult riding an electric scooter from behind at dusk,
+**Phương án AI thay thế**
+- Dùng bố cục bóng người ngược sáng
+- Prompt: Silhouette of an adult riding an electric scooter from behind at dusk,
   wearing a helmet, riding on a flat asphalt bike lane, low camera angle,
   warm golden backlight, no facial features visible, photorealistic, gentle forward motion
 ```
 
-### 5.4 配音稿（实测时长）
+### 5.4 Kịch bản lồng tiếng (thời lượng đo thực tế)
 
-| 镜号 | 配音文案 | 词数 | 累计 | 预估时长 |
+| Cảnh | Lời lồng tiếng | Số từ | Lũy kế | Thời lượng ước tính |
 |---|---|---|---|---|
 | 1 | `Trânsito parado e você ainda de ônibus?` | 7 | 7 | 2,8s |
 | 2 | `Este patinete tem motor de quinhentos watts.` | 7 | 14 | 5,6s |
@@ -326,104 +326,104 @@ cluttered background, traffic, visible license plate
 | 6 | `Suspensão nas duas rodas e freio a disco na frente.` | 9 | 42 | 16,8s |
 | 7 | `Patinete Elétrico 500W. Confira o link.` | 6 | **48** | **19,2s** |
 
-> 30s 版只用了 48 词（19,2s）→ **留有大量留白**。对电动出行类目这是合适的：**激烈口播会削弱"稳定可靠"的观感**，慢节奏 + 留白更契合产品调性。
-> 若平台要求填满时长，应补**画面**而不是补**文案**。
+> Bản 30s chỉ dùng 48 từ (19,2s) → **để lại nhiều khoảng lặng**. Với ngành hàng phương tiện di chuyển điện thì điều này phù hợp: **lời thoại dồn dập sẽ làm giảm cảm giác "ổn định, đáng tin cậy"**, nhịp chậm + khoảng lặng hợp với tông sản phẩm hơn.
+> Nếu sàn yêu cầu lấp đầy thời lượng, hãy bổ sung **hình ảnh** chứ đừng bổ sung **lời thoại**.
 
-### 5.5 视频合规扫描（本案例命中项）
+### 5.5 Quét tuân thủ video (các mục dính trong case study này)
 
-| 规则 | 命中 | 处理 |
+| Quy tắc | Số lần dính | Xử lý |
 |---|---|---|
-| V1 伪造证明 | 0 | — |
-| V2 参数不一致 | **1** | 字幕初稿 `500W` 无空格 → 改为 `500 W` |
-| V3 场景超范围 | **1** | 镜头 3 原为"越野爬坡"→ 不在 `usage_scope`，改为"缓坡 urban 路况" |
-| V4 绝对化用语 | 0 | — |
-| V5 未授权品牌 | 0 | — |
-| V6 真人肖像 | **1** | 镜头 4 从正面出镜 → 改为背影/剪影 |
-| V7 危险演示 | **1** | 初稿含"双手离把展示平衡"→ **删除**（危险操作） |
-| V8 音效版权 | 0 | 已标注可商用要求 |
+| V1 Bằng chứng giả | 0 | — |
+| V2 Thông số không nhất quán | **1** | Bản nháp phụ đề ghi `500W` không có dấu cách → đổi thành `500 W` |
+| V3 Bối cảnh vượt phạm vi | **1** | Cảnh 3 ban đầu là "leo dốc off-road" → không nằm trong `usage_scope`, đổi thành "dốc thoải đường đô thị (urban)" |
+| V4 Từ ngữ tuyệt đối hóa | 0 | — |
+| V5 Thương hiệu chưa cấp phép | 0 | — |
+| V6 Chân dung người thật | **1** | Cảnh 4 quay chính diện → đổi thành lưng/bóng người |
+| V7 Minh họa hành vi nguy hiểm | **1** | Bản nháp có "buông hai tay để khoe thăng bằng" → **xóa** (thao tác nguy hiểm) |
+| V8 Bản quyền âm thanh | 0 | Đã ghi chú yêu cầu được phép dùng thương mại |
 
-> **V7 值得特别注意**：危险操作镜头是这类内容里最容易"顺手加"的——做视频的人会觉得"双手离把"很酷、有传播力。但这既违规也传递了危险示范。**这条规则必须硬拦。**
+> **V7 cần đặc biệt chú ý**: cảnh thao tác nguy hiểm là thứ dễ bị "tiện tay thêm vào" nhất trong loại nội dung này — người làm video sẽ thấy "buông hai tay" rất ngầu, dễ viral. Nhưng nó vừa vi phạm vừa truyền đi hình mẫu nguy hiểm. **Quy tắc này bắt buộc phải chặn cứng.**
 
 ---
 
-## 六、跨平台对照：标题从 120 字符压到 60 字符
+## VI. Đối chiếu giữa các sàn: rút tiêu đề từ 120 ký tự xuống 60 ký tự
 
-| 平台 | 标题 | 字符数 |
+| Sàn | Tiêu đề | Số ký tự |
 |---|---|---|
 | Shopee | `Patinete Elétrico Adulto 500W 150kg com Banco Dobrável e Suspensão para Mobilidade Urbana` | **89/120** |
 | **Mercado Livre** | `Patinete Elétrico Adulto 500W 150kg com Banco Dobrável` | **54/60** |
 
-**ML 的砍词过程**（按 ML 的砍词优先级：场景词 → 人群词 → 主关键词与核心参数永不砍）：
+**Quá trình cắt từ cho ML** (theo thứ tự ưu tiên cắt từ của ML: từ khóa bối cảnh → từ khóa nhóm khách hàng → từ khóa chính và thông số lõi không bao giờ cắt):
 
-| 步骤 | 动作 | 被砍成分 | 剩余字符 |
+| Bước | Thao tác | Thành phần bị cắt | Số ký tự còn lại |
 |---|---|---|---|
-| 1 | 起点 | — | 89 |
-| 2 | 砍场景词 | `Mobilidade Urbana`、`para` | 69 |
-| 3 | 砍并列功能词 | `e Suspensão` | 57 |
-| 4 | 加回必要连接词 | `com` 保留 | **54** |
+| 1 | Điểm xuất phát | — | 89 |
+| 2 | Cắt từ khóa bối cảnh | `Mobilidade Urbana`, `para` | 69 |
+| 3 | Cắt từ khóa tính năng đi kèm | `e Suspensão` | 57 |
+| 4 | Thêm lại từ nối cần thiết | Giữ `com` | **54** |
 
-**保留的**：`Patinete Elétrico`（核心词）+ `Adulto`（人群词，ML 上必要）+ `500W` `150kg`（核心参数）+ `com Banco Dobrável`（核心功能）。
-**一个核心参数都没砍**——这正符合 SOP 的砍词原则。
+**Được giữ lại**: `Patinete Elétrico` (từ khóa lõi) + `Adulto` (từ khóa nhóm khách hàng, cần thiết trên ML) + `500W` `150kg` (thông số lõi) + `com Banco Dobrável` (tính năng lõi).
+**Không cắt bất kỳ thông số lõi nào** — đúng với nguyên tắc cắt từ của SOP.
 
 ---
 
-## 七、跨模块一致性校验
+## VII. Kiểm tra tính nhất quán giữa các module
 
-这是本案例最该被复制的一步。
+Đây là bước đáng sao chép nhất của case study này.
 
-| 字段 | 03 Listing | 04 Image | 05 Video | 一致 |
+| Trường | 03 Listing | 04 Image | 05 Video | Nhất quán |
 |---|---|---|---|---|
-| 功率 | `500 W` | `500 W` | `500 W` | ✅ |
-| 承重 | `150 kg` | `150 kg` | `150 kg` | ✅ |
-| 续航 | `até 35 km` | `35 km` | 未提及 | ✅ |
-| 折叠时间 | `3 segundos` | `3 segundos` | `3 segundos` | ✅ |
-| 保修 | `6 meses (motor e bateria)` | `6 meses · motor e bateria` | 未提及 | ✅ |
-| 核心卖点 | `Motor de 500W … 150 kg` | 图 2 文案同源 | 镜头 2/4 同源 | ✅ |
-| 视觉调性 | `Urbano e dinâmico` | 4.3 的 Prompt 用词一致 | 分镜画面一致 | ✅ |
-| 禁用词命中 | 5 条 | 5 条通用 + 1 条场景 | 同 | ✅ |
+| Công suất | `500 W` | `500 W` | `500 W` | ✅ |
+| Tải trọng | `150 kg` | `150 kg` | `150 kg` | ✅ |
+| Quãng đường | `até 35 km` | `35 km` | Không nhắc đến | ✅ |
+| Thời gian gấp | `3 segundos` | `3 segundos` | `3 segundos` | ✅ |
+| Bảo hành | `6 meses (motor e bateria)` | `6 meses · motor e bateria` | Không nhắc đến | ✅ |
+| Điểm bán hàng lõi | `Motor de 500W … 150 kg` | Chữ trên ảnh 2 cùng nguồn | Cảnh 2/4 cùng nguồn | ✅ |
+| Tông hình ảnh | `Urbano e dinâmico` | Từ ngữ trong Prompt ở 4.3 nhất quán | Hình ảnh storyboard nhất quán | ✅ |
+| Từ cấm bị dính | 5 mục | 5 mục chung + 1 mục bối cảnh | Như trên | ✅ |
 
-**发现的 4 处不一致（已修正）**：
+**Phát hiện 4 chỗ không nhất quán (đã sửa)**:
 
-| # | 问题 | 位置 | 修正 |
+| # | Vấn đề | Vị trí | Sửa |
 |---|---|---|---|
-| 1 | `35km` 无空格 | 图 3 初稿 | → `35 km` |
-| 2 | `500W` 无空格 | 视频字幕初稿 | → `500 W` |
-| 3 | 保修表述不统一 | 图 9 vs 详情页 | 统一为 `6 meses · motor e bateria` |
-| 4 | 视觉调性描述不一致 | 04 写"暖色"、05 分镜写"冷色" | 统一为 03 的 `Urbano e dinâmico`（冷调 + 暖光） |
+| 1 | `35km` không có dấu cách | Bản nháp ảnh 3 | → `35 km` |
+| 2 | `500W` không có dấu cách | Bản nháp phụ đề video | → `500 W` |
+| 3 | Cách diễn đạt bảo hành không thống nhất | Ảnh 9 so với trang chi tiết | Thống nhất thành `6 meses · motor e bateria` |
+| 4 | Mô tả tông hình ảnh không nhất quán | 04 ghi "tông ấm", storyboard 05 ghi "tông lạnh" | Thống nhất theo `Urbano e dinâmico` của 03 (tông lạnh + ánh sáng ấm) |
 
-> **第 4 条最能说明问题**：同一个产品，图片用暖色、视频用冷色，单看都好看，放一起就是拼凑感。**视觉调性必须由 03 定义，04 和 05 共同服从。**
+> **Mục 4 nói lên vấn đề rõ nhất**: cùng một sản phẩm, ảnh dùng tông ấm, video dùng tông lạnh, nhìn riêng thì đều đẹp, đặt cạnh nhau thì thấy chắp vá. **Tông hình ảnh bắt buộc do 03 định nghĩa, 04 và 05 cùng tuân theo.**
 
 ---
 
-## 八、优化建议
+## VIII. Đề xuất tối ưu
 
-| # | 建议 | 依据 |
+| # | Đề xuất | Căn cứ |
 |---|---|---|
-| 1 | 用 A/B/C 三个标题做**多链接测试**（SOP 3.4 方式二） | 三个标题侧重方向不同，可快速判断哪种方向点击率更高 |
-| 2 | 优先拍**上坡镜头**作为视频主力素材 | "能爬坡"是这类产品最难被竞品模仿的直观证据 |
-| 3 | 补拍**折叠全过程 3 秒完整长镜头** | 可剪出多版本、可做竖版、也是详情页补图素材 |
-| 4 | 图 3 参数图把「续航测试条件」也画进去 | 直接对冲"续航虚标"类差评 |
-| 5 | 上线后监测「承重」「续航」「组装」三类差评 | 验证段 6 前置说明是否真的降低了退货 |
-| 6 | ML 的 `Ficha Técnica` **逐项填满**（14 项参数全部录入） | 完整填写的 listing 有排名倾斜 |
-| 7 | 拿到 INMETRO 认证后再补认证图 | 目前不生成是对的——虚构认证是高危违规 |
+| 1 | Dùng 3 tiêu đề A/B/C để **test nhiều link** (SOP 3.4 cách 2) | Ba tiêu đề có trọng tâm khác nhau, nhanh chóng biết hướng nào có CTR cao hơn |
+| 2 | Ưu tiên quay **cảnh lên dốc** làm nội dung sáng tạo chủ lực cho video | "Leo được dốc" là bằng chứng trực quan khó bị đối thủ bắt chước nhất của loại sản phẩm này |
+| 3 | Quay bổ sung **một cảnh dài trọn vẹn 3 giây quá trình gấp xe** | Dựng được nhiều phiên bản, làm được bản dọc, và cũng là ảnh bổ sung cho trang chi tiết |
+| 4 | Đưa cả「điều kiện thử quãng đường」vào ảnh thông số số 3 | Chặn trước trực tiếp loại đánh giá tiêu cực "khai khống quãng đường" |
+| 5 | Sau khi lên sàn, theo dõi 3 loại đánh giá tiêu cực「tải trọng」「quãng đường」「lắp ráp」 | Kiểm chứng phần nói trước ở đoạn 6 có thực sự giảm hoàn hàng không |
+| 6 | **Điền đầy đủ từng mục** `Ficha Técnica` trên ML (nhập hết 14 thông số) | Listing điền đầy đủ được ưu tiên xếp hạng |
+| 7 | Có chứng nhận INMETRO rồi mới bổ sung ảnh chứng nhận | Hiện tại không tạo là đúng — chứng nhận bịa đặt là vi phạm rủi ro cao |
 
 ---
 
-## 九、这个案例证明了什么
+## IX. Case study này chứng minh điều gì
 
-| 结论 | 证据 |
+| Kết luận | Bằng chứng |
 |---|---|
-| **端到端串联是可行的** | 03 的 `core_selling_point` 被 04 和 05 直接消费，零信息损耗 |
-| **`spec_table` 作为唯一数值来源是必要的** | R3 命中 3 次——关键词表里混着竞品的 60km/h、60km 参数，没有 `spec_table` 就会变成虚标 |
-| **合规守卫在电动出行类目里命中率最高** | 03 命中 8 条、04 命中 6 条、05 命中 4 条，其中多条高危 |
-| **SOP 标题公式直接可用** | SOP 原例 77 字符，本案例在其基础上补真实卖点扩到 89 字符，未堆砌 |
-| **跨平台必须重新压缩** | 89 → 54 字符，砍词有明确优先级，核心参数一个没丢 |
-| **视觉调性必须由上游定义** | 发现的第 4 处不一致就是 04 和 05 各自定调性导致的 |
-| **危险镜头会被顺手加进来** | V7 拦截的"双手离把"是内容吸引力与合规冲突的典型 |
-| **事项段是最高收益的产出** | 续航测试条件、承重说明、组装说明、头盔提示——四条全部直接对冲高退货原因 |
+| **Xâu chuỗi end-to-end là khả thi** | `core_selling_point` của 03 được 04 và 05 dùng trực tiếp, không thất thoát thông tin |
+| **`spec_table` là nguồn số liệu duy nhất là cần thiết** | R3 dính 3 lần — bảng từ khóa lẫn thông số 60km/h, 60km của đối thủ, không có `spec_table` sẽ thành khai khống |
+| **Lớp bảo vệ tuân thủ dính nhiều nhất ở ngành hàng phương tiện di chuyển điện** | 03 dính 8 mục, 04 dính 6 mục, 05 dính 4 mục, trong đó nhiều mục rủi ro cao |
+| **Công thức tiêu đề SOP dùng được ngay** | Ví dụ gốc SOP 77 ký tự, case study này bổ sung điểm bán hàng thật nâng lên 89 ký tự, không nhồi nhét |
+| **Sang sàn khác bắt buộc rút gọn lại** | 89 → 54 ký tự, cắt từ có thứ tự ưu tiên rõ ràng, không mất thông số lõi nào |
+| **Tông hình ảnh bắt buộc do thượng nguồn định nghĩa** | Chỗ không nhất quán thứ 4 phát hiện được chính là do 04 và 05 tự đặt tông riêng |
+| **Cảnh nguy hiểm sẽ bị tiện tay thêm vào** | "Buông hai tay" bị V7 chặn là ví dụ điển hình về xung đột giữa sức hút nội dung và tuân thủ |
+| **Đoạn lưu ý là đầu ra có lợi nhất** | Điều kiện thử quãng đường, giải thích tải trọng, hướng dẫn lắp ráp, nhắc đội mũ bảo hiểm — cả bốn đều trực tiếp chặn trước các nguyên nhân hoàn hàng cao |
 
 ---
 
-**关联案例**：[案例 02 · Thermal Bag](../02_Thermal_Bag/)（iterate 模式回改闭环） · [Power Bank](../../Agents/03_Listing_Creative_Agent/examples/powerbank_20000mah.md) · [Pet Carrier](../../Agents/04_Product_Image_Agent/examples/pet_carrier.md) · [Air Fryer](../../Agents/05_Product_Video_Agent/examples/air_fryer.md)
+**Case study liên quan**: [Case study 02 · Thermal Bag](../02_Thermal_Bag/) (vòng khép kín chỉnh sửa lại ở chế độ iterate) · [Power Bank](../../Agents/03_Listing_Creative_Agent/examples/powerbank_20000mah.md) · [Pet Carrier](../../Agents/04_Product_Image_Agent/examples/pet_carrier.md) · [Air Fryer](../../Agents/05_Product_Video_Agent/examples/air_fryer.md)
 
-**相关文档**：[架构拆解](../../docs/00_Architecture_SOP_to_Agent.md) · [平台字段规范](../../docs/02_Platform_Output_Spec.md) · [合规红线](../../docs/03_Compliance_Guard.md) · [自检清单](../../docs/04_Result_Checklist.md)
+**Tài liệu liên quan**: [Phân rã kiến trúc](../../docs/00_Architecture_SOP_to_Agent.md) · [Quy chuẩn trường theo sàn](../../docs/02_Platform_Output_Spec.md) · [Lằn ranh đỏ tuân thủ](../../docs/03_Compliance_Guard.md) · [Checklist tự kiểm tra](../../docs/04_Result_Checklist.md)

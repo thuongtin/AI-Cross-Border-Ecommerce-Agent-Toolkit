@@ -1,345 +1,345 @@
-# 闭环案例 · 从广告数据到 Listing 修改，再回测
+# Case study vòng khép kín · Từ dữ liệu quảng cáo đến sửa Listing, rồi kiểm tra lại
 
-> **案例类型**：跨模块闭环 · 两个真实实例 · 已脱敏
-> **覆盖模块**：03 → 06 → 03（iterate）→ 04（iterate）→ 07 → 03（iterate）→ 复测
-> **对应 SOP**：第三章开头讲的"数据复盘：把每天的动作沉淀成经验，**反过来优化前面四个环节**"
+> **Loại case study**: Vòng khép kín liên module · Hai ví dụ thực tế · Đã ẩn danh hóa
+> **Module bao phủ**: 03 → 06 → 03 (iterate) → 04 (iterate) → 07 → 03 (iterate) → kiểm tra lại
+> **SOP tương ứng**: phần mở đầu chương 3 nói về "Rà soát dữ liệu: biến hành động hằng ngày thành kinh nghiệm, **quay lại tối ưu bốn khâu phía trước**"
 
 ---
 
-## 一、这个案例要演示什么
+## I. Case study này muốn minh họa điều gì
 
-前面的案例都在解决"**怎么做**"。这个案例解决"**做完之后怎么办**"。
+Các case study trước đều giải quyết "**làm thế nào**". Case study này giải quyết "**làm xong rồi thì sao**".
 
-SOP 在讲完整运营链路时，把数据复盘放在最后一步：
+Khi trình bày luồng vận hành hoàn chỉnh, SOP đặt bước rà soát dữ liệu ở cuối cùng:
 
-> 5. 数据复盘：把每天的动作沉淀成经验，**反过来优化前面四个环节**
+> 5. Rà soát dữ liệu: biến hành động hằng ngày thành kinh nghiệm, **quay lại tối ưu bốn khâu phía trước**
 
-**这句话是整个工具箱存在的理由。** 如果没有这个回流，前面所有的 Agent 都只是"效率更高的内容生成器"——产出更快的 Listing，但不会变得更准。
+**Câu này chính là lý do bộ công cụ tồn tại.** Nếu không có vòng quay về này, mọi Agent phía trước chỉ là "máy tạo nội dung hiệu suất cao hơn" — ra Listing nhanh hơn, nhưng không chính xác hơn.
 
-这个案例演示回流的两个方向：
+Case study này minh họa hai hướng quay vòng về:
 
-| 方向 | 数据源 | 回流目标 | 实例 |
+| Hướng | Nguồn dữ liệu | Đích quay về | Ví dụ |
 |---|---|---|---|
-| **A · 广告侧回流** | 广告数据（06） | 03 详情页 / 04 主图 / 出价 | Power Bank 20000mAh |
-| **B · 评论侧回流** | 评论数据（07） | 03 注意事项段 / 04 包装清单图 | Electric Scooter |
+| **A · Quay vòng từ phía quảng cáo** | Dữ liệu quảng cáo (06) | Trang chi tiết 03 / ảnh chính 04 / giá thầu | Power Bank 20000mAh |
+| **B · Quay vòng từ phía đánh giá** | Dữ liệu đánh giá (07) | Đoạn lưu ý 03 / ảnh danh sách đóng gói 04 | Electric Scooter |
 
 ---
 
-## 二、回流机制图
+## II. Sơ đồ cơ chế quay vòng về
 
 ```text
                     ┌──────────────────────────────┐
                     │  03 Listing Creative         │
-                    │  产出 Listing                │
+                    │  Tạo Listing                 │
                     └──────────────┬───────────────┘
-                                   │ 上架
+                                   │ đăng bán
                                    ▼
-        ┌──────────────────────────────────────────────────┐
-        │                    平台运行                       │
-        └───────┬──────────────────────────────┬───────────┘
-                │                              │
-        广告数据 │                              │ 评论数据
-                ▼                              ▼
-        ┌───────────────┐              ┌───────────────┐
-        │ 06 Advertising │              │ 07 Review     │
-        │ 四类漏斗诊断    │              │ 八类归因       │
-        │ 盈亏线核算      │              │ 误解型识别     │
-        └───────┬───────┘              └───────┬───────┘
-                │                              │
-                │ 症状 → 环节 → 具体对象        │ 差评 → 字段 → 文案
-                ▼                              ▼
-        ┌──────────────────────────────────────────────┐
-        │  03（iterate）：只改症状指向的部分             │
-        │  04（iterate）：只改症状指向的图               │
-        └───────────────────┬──────────────────────────┘
-                            │ 改动
+        ┌──────────────────────────────────────────────────────────┐
+        │                    Vận hành trên sàn                     │
+        └───────┬───────────────────────────────────┬──────────────┘
+                │                                   │
+                │ dữ liệu quảng cáo                 │ dữ liệu đánh giá
+                ▼                                   ▼
+        ┌─────────────────────────┐      ┌─────────────────────────┐
+        │ 06 Advertising          │      │ 07 Review               │
+        │ Chẩn đoán phễu 4 loại   │      │ Quy nguyên nhân 8 loại  │
+        │ Tính ngưỡng hòa vốn     │      │ Nhận diện loại hiểu lầm │
+        └───────┬─────────────────┘      └──────────┬──────────────┘
+                │                                   │
+                │ triệu chứng → khâu → đối tượng    │ đánh giá tiêu cực → trường → nội dung
+                ▼                                   ▼
+        ┌──────────────────────────────────────────────────────────┐
+        │  03 (iterate): chỉ sửa phần mà triệu chứng chỉ ra        │
+        │  04 (iterate): chỉ sửa ảnh mà triệu chứng chỉ ra         │
+        └───────────────────┬──────────────────────────────────────┘
+                            │ thay đổi
                             ▼
-                    ┌───────────────┐
-                    │   复测        │  7 天（广告）/ 14–30 天（评论）
-                    └───────┬───────┘
+                    ┌────────────────┐
+                    │  Kiểm tra lại  │  7 ngày (quảng cáo) / 14–30 ngày (đánh giá)
+                    └───────┬────────┘
                             │
                 ┌───────────┴───────────┐
                 ▼                       ▼
-            达标 → 放量            未达标 → 回诊断
-                                    （不加码同一动作）
+        Đạt → scale               Chưa đạt → quay lại chẩn đoán
+                                  (không dồn thêm cùng một thao tác)
 ```
 
-**闭环的三条纪律**（前文各模块反复强调，这里集中列出）：
+**Ba kỷ luật của vòng khép kín** (các module trước đã nhấn mạnh nhiều lần, ở đây gom lại):
 
-| # | 纪律 | 违反的后果 |
+| # | Kỷ luật | Hậu quả nếu vi phạm |
 |---|---|---|
-| 1 | **一次只改一个病因** | 同时改多个变量，无法归因，不知道哪个动作起了作用 |
-| 2 | **不属于症状的环节不许动** | 把本来有效的环节改坏，指标下滑且找不到原因 |
-| 3 | **未达标不加码同一动作** | 改主图没效果就再换一张主图 —— 说明问题不在主图 |
+| 1 | **Mỗi lần chỉ sửa một nguyên nhân** | Sửa nhiều biến cùng lúc thì không quy nguyên nhân được, không biết thao tác nào có tác dụng |
+| 2 | **Khâu không thuộc triệu chứng thì không được động vào** | Làm hỏng khâu vốn đang hiệu quả, chỉ số tụt mà không tìm ra nguyên nhân |
+| 3 | **Chưa đạt thì không dồn thêm vào cùng một thao tác** | Đổi ảnh chính không hiệu quả lại đổi tiếp ảnh chính khác — chứng tỏ vấn đề không nằm ở ảnh chính |
 
 ---
 
-## 三、实例 A · 广告侧回流（Power Bank 20000mAh）
+## III. Ví dụ A · Quay vòng từ phía quảng cáo (Power Bank 20000mAh)
 
-### A1 · 起点
+### A1 · Điểm xuất phát
 
-| 项 | 值 |
+| Mục | Giá trị |
 |---|---|
-| 产品 | Carregador Portátil 20000mAh 45W |
-| 售价 | `R$ 113,40` |
-| 广告前可支配毛利 | `R$ 40,26` |
-| 盈亏线 ROAS | `2,82` |
+| Sản phẩm | Carregador Portátil 20000mAh 45W |
+| Giá bán | `R$ 113,40` |
+| Lãi gộp khả dụng trước quảng cáo | `R$ 40,26` |
+| Ngưỡng hòa vốn ROAS | `2,82` |
 
-03 产出 Listing（见 [03 案例](../../Agents/03_Listing_Creative_Agent/examples/powerbank_20000mah.md)）→ 上架 → 投放 7 天。
+03 tạo Listing (xem [case study 03](../../Agents/03_Listing_Creative_Agent/examples/powerbank_20000mah.md)) → đăng bán → chạy quảng cáo 7 ngày.
 
-### A2 · 第 1 圈诊断（06）
+### A2 · Chẩn đoán vòng 1 (06)
 
-| 指标 | 数值 | 基准 | 判定 |
+| Chỉ số | Giá trị | Chuẩn | Đánh giá |
 |---|---|---|---|
-| 整体 CTR | 2,55% | 3–5% | ❌ 略低 |
-| 整体加购率 | 6,99% | > 8% | ❌ 略低 |
-| **整体转化率** | **0,55%** | **> 1%** | ❌ **仅基准一半** |
-| 整体 ROAS | 1,84 | ≥ 2,82 | ❌ |
-| **净贡献** | **−R$ 235,56** | > 0 | ❌ |
+| CTR tổng | 2,55% | 3–5% | ❌ Hơi thấp |
+| Tỷ lệ thêm vào giỏ tổng | 6,99% | > 8% | ❌ Hơi thấp |
+| **Tỷ lệ chuyển đổi tổng** | **0,55%** | **> 1%** | ❌ **Chỉ bằng một nửa chuẩn** |
+| ROAS tổng | 1,84 | ≥ 2,82 | ❌ |
+| **Đóng góp ròng** | **−R$ 235,56** | > 0 | ❌ |
 
-**06 的核心判断**：
+**Nhận định cốt lõi của 06**:
 
-> **瓶颈是转化率，不是点击率。**
-> 在转化率修复到基准之前，任何加大曝光或提升 CTR 的动作都会放大亏损。
+> **Điểm nghẽn là tỷ lệ chuyển đổi, không phải CTR.**
+> Trước khi tỷ lệ chuyển đổi được sửa về chuẩn, mọi thao tác tăng hiển thị hay tăng CTR đều sẽ khuếch đại khoản lỗ.
 
-**这个判断的反直觉之处**（详见 [06 案例](../../Agents/06_Advertising_Optimization_Agent/examples/powerbank_20000mah_ads.md) 第四章）：
+**Điểm ngược trực giác của nhận định này** (chi tiết xem chương 4 của [case study 06](../../Agents/06_Advertising_Optimization_Agent/examples/powerbank_20000mah_ads.md)):
 
-| 情景 | 动作 | 净贡献变化 |
+| Kịch bản | Thao tác | Thay đổi đóng góp ròng |
 |---|---|---|
-| 1 | 把 CTR 最差的 A 组从 1,40% 修到 3,0% | −235,56 → **−335,26** ❌ 恶化 |
-| 2 | 把整体转化率从 0,55% 修到 1,0% | −235,56 → **+133,62** ✅ 转盈 |
+| 1 | Sửa nhóm A có CTR tệ nhất từ 1,40% lên 3,0% | −235,56 → **−335,26** ❌ Xấu đi |
+| 2 | Sửa tỷ lệ chuyển đổi tổng từ 0,55% lên 1,0% | −235,56 → **+133,62** ✅ Chuyển sang lãi |
 
-**如果按"哪个组 CTR 最差"的直觉排序，最先被修的一定是 A 组——然后把亏损扩大 42%。**
+**Nếu sắp xếp theo trực giác "nhóm nào CTR tệ nhất", nhóm A chắc chắn bị sửa đầu tiên — và khoản lỗ phình thêm 42%.**
 
-### A3 · 第 1 圈干预
+### A3 · Can thiệp vòng 1
 
-06 输出的 P0 动作（三项，指向不同病因，可同批执行）：
+Các thao tác P0 do 06 xuất ra (ba mục, nhắm vào các nguyên nhân khác nhau, có thể làm cùng đợt):
 
-| # | 动作 | 病因 | 回流目标 |
+| # | Thao tác | Nguyên nhân | Đích quay về |
 |---|---|---|---|
-| 1 | **评价建设**：联系已购客户索取带图评价 | 决策阻力 | 运营执行（07 的方法论） |
-| 2 | **D 组下调出价**：CPC 0,60 → 0,45 | 成本 | 广告后台 |
-| 3 | **A 组收窄匹配**：广泛 → 精准 + 加否词 | 流量质量 | 广告后台 |
+| 1 | **Xây dựng đánh giá**: liên hệ khách đã mua xin đánh giá kèm ảnh | Rào cản ra quyết định | Vận hành thực thi (phương pháp luận của 07) |
+| 2 | **Nhóm D hạ giá thầu**: CPC 0,60 → 0,45 | Chi phí | Trang quản lý quảng cáo |
+| 3 | **Nhóm A thu hẹp đối sánh**: mở rộng → chính xác + thêm từ khóa phủ định | Chất lượng traffic | Trang quản lý quảng cáo |
 
-同时下发两项 P1（回流到内容模块）：
+Đồng thời giao thêm hai mục P1 (quay về các module nội dung):
 
-| # | 动作 | 回流模块 |
+| # | Thao tác | Module quay về |
 |---|---|---|
-| 4 | 优化详情页段 2（核心卖点）与段 4（参数）：把 45W 讲成**实际效果**（"40 分钟充满"）而非参数 | **03（iterate）** |
-| 5 | 检查发货承诺与保修信息的展示位置 | **03（iterate）** |
+| 4 | Tối ưu đoạn 2 (điểm bán hàng lõi) và đoạn 4 (thông số) của trang chi tiết: nói 45W thành **hiệu quả thực tế** ("sạc đầy trong 40 phút") thay vì thông số | **03 (iterate)** |
+| 5 | Kiểm tra vị trí hiển thị cam kết giao hàng và thông tin bảo hành | **03 (iterate)** |
 
-> **注意动作 3 的一个陷阱**：A 组收窄匹配后**点击量必然下降**。
-> 06 在输出里明确写了："不要把这个误判为动作失败——要看的指标是 CPA 和 ROAS，不是点击量。"
-> 如果运营盯着点击量看，会以为动作没用，然后把匹配方式改回广泛——把刚修好的问题又改回去。**这类"改了又改回去"是闭环最常见的内耗。**
+> **Lưu ý một cái bẫy của thao tác 3**: sau khi nhóm A thu hẹp đối sánh, **lượt click chắc chắn sẽ giảm**.
+> 06 đã ghi rõ trong đầu ra: "Đừng đánh giá nhầm đây là thao tác thất bại — chỉ số cần xem là CPA và ROAS, không phải lượt click."
+> Nếu người vận hành chỉ dán mắt vào lượt click, sẽ tưởng thao tác vô dụng rồi đổi kiểu đối sánh về mở rộng — sửa ngược lại đúng vấn đề vừa sửa xong. **Kiểu "sửa rồi lại sửa ngược" này là kiểu hao tổn nội bộ phổ biến nhất của vòng khép kín.**
 
-### A4 · 第 2 圈复测（7 天后）
+### A4 · Kiểm tra lại vòng 2 (sau 7 ngày)
 
-| 指标 | 第 1 圈 | 第 2 圈 | 变化 |
+| Chỉ số | Vòng 1 | Vòng 2 | Thay đổi |
 |---|---|---|---|
-| 点击 | 2.017 | **1.780** | ⬇️ −11,8%（预期内） |
-| 花费 | R$ 678,42 | **R$ 520,00** | ⬇️ −23,4% |
-| 订单 | 11 | **15** | ⬆️ +36,4% |
-| **转化率** | **0,55%** | **0,843%** | ⬆️ **+53%** |
+| Click | 2.017 | **1.780** | ⬇️ −11,8% (trong dự kiến) |
+| Chi tiêu | R$ 678,42 | **R$ 520,00** | ⬇️ −23,4% |
+| Đơn hàng | 11 | **15** | ⬆️ +36,4% |
+| **Tỷ lệ chuyển đổi** | **0,55%** | **0,843%** | ⬆️ **+53%** |
 | CPC | R$ 0,34 | **R$ 0,29** | ⬇️ |
 | GMV | R$ 1.247,40 | **R$ 1.701,00** | ⬆️ |
-| **ROAS** | **1,84** | **3,27** | ⬆️ **跨过盈亏线 2,82** |
-| **净贡献** | **−R$ 235,56** | **+R$ 83,90** | ✅ **由亏转盈** |
+| **ROAS** | **1,84** | **3,27** | ⬆️ **Vượt ngưỡng hòa vốn 2,82** |
+| **Đóng góp ròng** | **−R$ 235,56** | **+R$ 83,90** | ✅ **Từ lỗ chuyển sang lãi** |
 
 ```
-第 2 圈转化率 0,843% > 盈亏线临界值 0,83%  →  刚好跨过盈亏线
-第 2 圈净贡献 = R$ 40,26 × 15 − R$ 520,00 = R$ 603,90 − R$ 520,00 = +R$ 83,90
+Tỷ lệ chuyển đổi vòng 2 0,843% > giá trị tới hạn của ngưỡng hòa vốn 0,83%  →  vừa đủ vượt ngưỡng hòa vốn
+Đóng góp ròng vòng 2 = R$ 40,26 × 15 − R$ 520,00 = R$ 603,90 − R$ 520,00 = +R$ 83,90
 ```
 
-**三个关键变化同时发生**：
-1. **花费下降 23%**（关掉低效流量 + 降出价）
-2. **订单上升 36%**（转化率提升）
-3. **点击下降 12%**（收窄匹配——这是好事，说明砍掉了不精准流量）
+**Ba thay đổi then chốt xảy ra cùng lúc**:
+1. **Chi tiêu giảm 23%** (tắt traffic kém hiệu quả + hạ giá thầu)
+2. **Đơn hàng tăng 36%** (tỷ lệ chuyển đổi tăng)
+3. **Click giảm 12%** (thu hẹp đối sánh — đây là chuyện tốt, chứng tỏ đã cắt được traffic không chính xác)
 
-> **这是一个典型的"少花钱多办事"结果。** 花费降了、点击降了，但订单涨了、利润转正了。
-> 如果只盯着"点击量下降"这一个数字，会误判为失败。
+> **Đây là kết quả điển hình của "tiêu ít tiền mà làm được nhiều việc".** Chi tiêu giảm, click giảm, nhưng đơn hàng tăng, lợi nhuận chuyển sang dương.
+> Nếu chỉ nhìn vào một con số "lượt click giảm", sẽ đánh giá nhầm là thất bại.
 
-### A5 · 对照：如果只放大曝光会怎样
+### A5 · Đối chứng: nếu chỉ tăng hiển thị thì sao
 
-| 情景 | 点击 | 花费 | 订单 | ROAS | 净贡献 |
+| Kịch bản | Click | Chi tiêu | Đơn hàng | ROAS | Đóng góp ròng |
 |---|---|---|---|---|---|
-| 第 2 圈（修了转化率） | 1.780 | R$ 520,00 | 15 | **3,27** | **+R$ 83,90** |
-| 假设双倍曝光（未修转化率） | 3.000 | R$ 876,40 | 16,4 | 2,12 | −R$ 217,71 |
-| 假设三倍曝光（未修转化率） | 4.000 | R$ 1.168,54 | 21,8 | 2,12 | −R$ 290,28 |
+| Vòng 2 (đã sửa tỷ lệ chuyển đổi) | 1.780 | R$ 520,00 | 15 | **3,27** | **+R$ 83,90** |
+| Giả sử gấp đôi hiển thị (chưa sửa tỷ lệ chuyển đổi) | 3.000 | R$ 876,40 | 16,4 | 2,12 | −R$ 217,71 |
+| Giả sử gấp ba hiển thị (chưa sửa tỷ lệ chuyển đổi) | 4.000 | R$ 1.168,54 | 21,8 | 2,12 | −R$ 290,28 |
 
-> **转化率不变时，放大曝光 = 同比例放大亏损。**
-> 这两行数字是"先修转化再加量"这个原则的完整证明。
+> **Khi tỷ lệ chuyển đổi không đổi, tăng hiển thị = khuếch đại khoản lỗ theo cùng tỷ lệ.**
+> Hai dòng số này là bằng chứng đầy đủ cho nguyên tắc "sửa chuyển đổi trước rồi mới tăng lượng".
 
 ---
 
-## 四、实例 B · 评论侧回流（Electric Scooter）
+## IV. Ví dụ B · Quay vòng từ phía đánh giá (Electric Scooter)
 
-### B1 · 起点
+### B1 · Điểm xuất phát
 
-03 产出的旗舰案例 Listing（[Examples/01](../../Examples/01_Patinete_Eletrico_500W/)）已含详情页注意事项段，**主动预测了三类差评**（承重、续航、组装）。
+Listing của case study chủ lực do 03 tạo ra ([Examples/01](../../Examples/01_Patinete_Eletrico_500W/)) đã có đoạn lưu ý trên trang chi tiết, **chủ động dự đoán ba loại đánh giá tiêu cực** (tải trọng, quãng đường, lắp ráp).
 
-上架后积累 128 条评论。
+Sau khi đăng bán, tích lũy được 128 đánh giá.
 
-### B2 · 第 3 圈诊断（07）
+### B2 · Chẩn đoán vòng 3 (07)
 
-| 项 | 数值 |
+| Mục | Giá trị |
 |---|---|
-| 好评率 | 81,2% |
-| 差评数 | 13 条（10,2%） |
-| 带图评论 | 24,2% |
-| **误解型差评** | **5 条（占差评 38,5%）** |
-| **可修复差评** | **11 条（占差评 84,6%）** |
+| Tỷ lệ đánh giá tích cực | 81,2% |
+| Số đánh giá tiêu cực | 13 (10,2%) |
+| Đánh giá kèm ảnh | 24,2% |
+| **Đánh giá tiêu cực loại hiểu lầm** | **5 (chiếm 38,5% đánh giá tiêu cực)** |
+| **Đánh giá tiêu cực sửa được** | **11 (chiếm 84,6% đánh giá tiêu cực)** |
 
-**07 的两个核心发现**：
+**Hai phát hiện cốt lõi của 07**:
 
-**发现 1 · 84,6% 的差评是文案问题**
+**Phát hiện 1 · 84,6% đánh giá tiêu cực là vấn đề nội dung mô tả**
 
 ```
-可修复 = 误解型 5 + 参数不符 3 + 配件缺失 2 + 使用困难 1
-      = 11 ÷ 13 = 84,6%
+Sửa được = loại hiểu lầm 5 + sai thông số 3 + thiếu phụ kiện 2 + khó sử dụng 1
+        = 11 ÷ 13 = 84,6%
 ```
 
-> 修复成本接近于零、周期是"改完立即生效"。
-> 对比剩下的 2 条（物流慢 + 破损故障）——修复周期是数周到数月。
-> **正确顺序：先花一天改文案消除 11 条，再去处理 2 条。**
+> Chi phí sửa gần như bằng 0, chu kỳ là "sửa xong có hiệu lực ngay".
+> So với 2 đánh giá còn lại (giao hàng chậm + hư hỏng/lỗi) — chu kỳ sửa mất từ vài tuần đến vài tháng.
+> **Thứ tự đúng: dành một ngày sửa nội dung để loại bỏ 11 đánh giá, rồi mới xử lý 2 đánh giá kia.**
 
-**发现 2 · 最大卖点同时是最大误解源**
+**Phát hiện 2 · Điểm bán hàng lớn nhất đồng thời là nguồn hiểu lầm lớn nhất**
 
-| 卖点 | 好评排名 | 相关差评 |
+| Điểm bán hàng | Xếp hạng trong đánh giá tích cực | Đánh giá tiêu cực liên quan |
 |---|---|---|
-| **爬坡能力** | **🥇 第 1（38 次提及）** | **1 条误解型**（以为能上陡坡） |
-| 电池续航 | 第 4（22 次） | 1 条参数不符（实测低于标称） |
+| **Khả năng leo dốc** | **🥇 Thứ 1 (38 lần nhắc đến)** | **1 đánh giá loại hiểu lầm** (tưởng leo được dốc đứng) |
+| Quãng đường pin | Thứ 4 (22 lần) | 1 đánh giá sai thông số (đo thực tế thấp hơn công bố) |
 
-> **不是巧合，是规律**：你在详情页和视频里强调得越强的卖点，买家预期越高，落差空间越大。
+> **Không phải trùng hợp, mà là quy luật**: điểm bán hàng bạn nhấn mạnh càng mạnh trong trang chi tiết và video, kỳ vọng của người mua càng cao, khoảng hụt hẫng càng lớn.
 >
-> **正确应对不是削弱宣传，而是加边界**：
-> - ❌ 削弱爬坡宣传 → 丢掉第 1 卖点，得不偿失
-> - ❌ 不写限定 → 差评持续
-> - ✅ **图 2 打 `Motor 500W` + 小字 `Indicado para ladeiras leves`** → 保住卖点 + 管住预期
+> **Cách xử lý đúng không phải là giảm quảng bá, mà là thêm giới hạn**:
+> - ❌ Giảm quảng bá khả năng leo dốc → mất điểm bán hàng số 1, được không bù mất
+> - ❌ Không ghi giới hạn → đánh giá tiêu cực tiếp tục
+> - ✅ **Ảnh 2 ghi `Motor 500W` + chữ nhỏ `Indicado para ladeiras leves`** → giữ được điểm bán hàng + kiểm soát được kỳ vọng
 
-### B3 · 第 3 圈干预
+### B3 · Can thiệp vòng 3
 
-07 输出的回流（详见 [07 案例](../../Agents/07_Review_Analysis_Agent/examples/electric_scooter_reviews.md)）：
+Các thao tác quay vòng về do 07 xuất ra (chi tiết xem [case study 07](../../Agents/07_Review_Analysis_Agent/examples/electric_scooter_reviews.md)):
 
-| # | 动作 | 回流目标 | 覆盖差评 |
+| # | Thao tác | Đích quay về | Đánh giá tiêu cực được xử lý |
 |---|---|---|---|
-| 1 | 包装清单图标注 `Não incluso: capacete, bomba de ar` | **04（iterate）** | 2 条 |
-| 2 | 段 6 补 5 条边界说明（单人 / 缓坡 / 18kg / 灯光用途 / 保修期） | **03（iterate）** | 5 条 |
-| 3 | 参数段补测试条件（续航的体重条件、速度的最高值、充电的原装充电器） | **03（iterate）** | 3 条 |
-| 4 | 补组装指引图 | **04（iterate）** | 1 条 |
-| 5 | 段 5 新增"客服 24h 响应" | **03（iterate）** | — （**新增卖点**） |
+| 1 | Ảnh danh sách đóng gói ghi chú `Não incluso: capacete, bomba de ar` | **04 (iterate)** | 2 |
+| 2 | Đoạn 6 bổ sung 5 mục giới hạn (một người lái / dốc thoải / 18kg / công dụng đèn / thời hạn bảo hành) | **03 (iterate)** | 5 |
+| 3 | Đoạn thông số bổ sung điều kiện thử nghiệm (điều kiện cân nặng của quãng đường, giá trị tối đa của tốc độ, sạc bằng bộ sạc chính hãng) | **03 (iterate)** | 3 |
+| 4 | Bổ sung ảnh hướng dẫn lắp ráp | **04 (iterate)** | 1 |
+| 5 | Đoạn 5 thêm "CSKH phản hồi trong 24h" | **03 (iterate)** | — (**điểm bán hàng mới**) |
 
-> **动作 5 来自好评分析**：客服响应被 9 条好评主动称赞，但 Listing 里一个字都没提。
-> **这是零成本的信任要素**——而评价数量不足、信任度不够，正是转化率的主要阻力（见实例 A）。
+> **Thao tác 5 đến từ phân tích đánh giá tích cực**: tốc độ phản hồi của CSKH được 9 đánh giá tích cực chủ động khen, nhưng Listing không nhắc một chữ nào.
+> **Đây là yếu tố tạo niềm tin không tốn chi phí** — mà thiếu đánh giá, thiếu niềm tin chính là rào cản chính của tỷ lệ chuyển đổi (xem ví dụ A).
 >
-> **评论分析最大的价值就是发现这类"被真实买家验证过、但没写进 Listing 的优点"。**
+> **Giá trị lớn nhất của phân tích đánh giá là phát hiện ra những "ưu điểm đã được người mua thật kiểm chứng, nhưng chưa được viết vào Listing" như thế này.**
 
-### B4 · 三次回流的差异对照
+### B4 · Đối chiếu khác biệt giữa các lần quay vòng về
 
-| | 实例 A（广告侧） | 实例 B（评论侧） |
+| | Ví dụ A (phía quảng cáo) | Ví dụ B (phía đánh giá) |
 |---|---|---|
-| 数据源 | 广告数据 | 评论数据 |
-| 诊断工具 | 四类漏斗 + 盈亏线 | 八类归因 + 误解型识别 |
-| 主要回流对象 | 出价 / 匹配方式 / 详情页段 2·4 | 详情页段 6 / 包装清单图 / 新增卖点 |
-| 复测周期 | **7 天** | **14–30 天** |
-| 主验证指标 | **ROAS**（≥ 盈亏线） | **误解型差评占差评比例**（38,5% → <20%） |
-| 为什么选这个指标 | ROAS 是最终结论，能覆盖所有环节 | 差评总数受销量/物流影响，误解型占比**几乎完全由文案决定** |
+| Nguồn dữ liệu | Dữ liệu quảng cáo | Dữ liệu đánh giá |
+| Công cụ chẩn đoán | Phễu 4 loại + ngưỡng hòa vốn | Quy nguyên nhân 8 loại + nhận diện loại hiểu lầm |
+| Đối tượng quay về chính | Giá thầu / kiểu đối sánh / đoạn 2·4 trang chi tiết | Đoạn 6 trang chi tiết / ảnh danh sách đóng gói / điểm bán hàng mới |
+| Chu kỳ kiểm tra lại | **7 ngày** | **14–30 ngày** |
+| Chỉ số kiểm chứng chính | **ROAS** (≥ ngưỡng hòa vốn) | **Tỷ lệ đánh giá tiêu cực loại hiểu lầm trên tổng đánh giá tiêu cực** (38,5% → <20%) |
+| Vì sao chọn chỉ số này | ROAS là kết luận cuối cùng, bao quát được mọi khâu | Tổng đánh giá tiêu cực bị ảnh hưởng bởi doanh số/vận chuyển, còn tỷ lệ loại hiểu lầm **gần như hoàn toàn do nội dung mô tả quyết định** |
 
-> **复测指标的选择原则**：**要选"你改动的那个环节能控制"的指标。**
-> - 广告动作 → 看 ROAS（可被投放控制）
-> - 文案动作 → 看误解型占比（可被文案控制）
-> - **不要看总销量**（受大促、季节、竞品影响，无法归因）
+> **Nguyên tắc chọn chỉ số kiểm tra lại**: **phải chọn chỉ số mà "khâu bạn vừa sửa kiểm soát được".**
+> - Thao tác quảng cáo → xem ROAS (chạy quảng cáo kiểm soát được)
+> - Thao tác nội dung → xem tỷ lệ loại hiểu lầm (nội dung kiểm soát được)
+> - **Đừng xem tổng doanh số** (bị ảnh hưởng bởi đợt sale lớn, mùa vụ, đối thủ, không quy nguyên nhân được)
 
 ---
 
-## 五、闭环全图（含数据）
+## V. Toàn cảnh vòng khép kín (kèm số liệu)
 
 ```text
-第 1 圈 · 基线
-  03 产出 Listing（Power Bank） → 上架 → 投放 7 天
-  ROAS 1,84 | 转化率 0,55% | 净贡献 −R$ 235,56
+Vòng 1 · Baseline
+  03 tạo Listing (Power Bank) → đăng bán → chạy quảng cáo 7 ngày
+  ROAS 1,84 | Tỷ lệ chuyển đổi 0,55% | Đóng góp ròng −R$ 235,56
         │
         ▼
-第 1 圈诊断（06）
-  瓶颈定位：转化率，不是点击率
-  ✦ 反直觉：修 CTR 最差的组 → 亏损扩大到 −R$ 335,26
+Chẩn đoán vòng 1 (06)
+  Xác định điểm nghẽn: tỷ lệ chuyển đổi, không phải CTR
+  ✦ Ngược trực giác: sửa nhóm có CTR tệ nhất → lỗ phình lên −R$ 335,26
         │
         ▼
-第 1 圈干预
-  出价 ↓ / 匹配收窄 / 评价建设 / 详情页段2·4 优化
+Can thiệp vòng 1
+  Giá thầu ↓ / Thu hẹp đối sánh / Xây dựng đánh giá / Tối ưu đoạn 2·4 trang chi tiết
         │
-        ▼  7 天复测
-第 2 圈 · 首圈验证
-  点击 2.017 → 1.780（−11,8%）  花费 678,42 → 520,00（−23,4%）
-  订单 11 → 15（+36,4%）        转化率 0,55% → 0,843%（+53%）
-  ROAS 1,84 → 3,27 ✅ 跨过盈亏线 2,82
-  净贡献 −R$ 235,56 → +R$ 83,90 ✅ 由亏转盈
+        ▼  Kiểm tra lại sau 7 ngày
+Vòng 2 · Kiểm chứng vòng đầu
+  Click 2.017 → 1.780 (−11,8%)    Chi tiêu 678,42 → 520,00 (−23,4%)
+  Đơn hàng 11 → 15 (+36,4%)       Tỷ lệ chuyển đổi 0,55% → 0,843% (+53%)
+  ROAS 1,84 → 3,27 ✅ Vượt ngưỡng hòa vốn 2,82
+  Đóng góp ròng −R$ 235,56 → +R$ 83,90 ✅ Từ lỗ chuyển sang lãi
         │
-        ├─────────────── 放量分支 ───────────────┐
-        │                                       │
-        ▼  达标                                   ▼  未达标
-   逐步放量（每次 +20–30%）                  回诊断，不加码同一动作
-        │
-        ▼
-第 3 圈 · 评论侧回流（Electric Scooter）
-  07 诊断：可修复差评 11/13 = 84,6% ｜ 误解型占 38,5%
-  发现：最大卖点（爬坡 38 次）同时是最大误解源
+        ├──────────────── Nhánh scale ────────────────┐
+        │                                             │
+        ▼  Đạt                                        ▼  Chưa đạt
+   Scale từ từ (mỗi lần +20–30%)                 Quay lại chẩn đoán, không dồn thêm cùng một thao tác
         │
         ▼
-第 3 圈干预
-  段 6 补边界说明 / 包装清单图明确 Não incluso
-  参数段补测试条件 / 补组装指引图 / 新增"客服 24h"卖点
+Vòng 3 · Quay vòng từ phía đánh giá (Electric Scooter)
+  07 chẩn đoán: đánh giá tiêu cực sửa được 11/13 = 84,6% | loại hiểu lầm chiếm 38,5%
+  Phát hiện: điểm bán hàng lớn nhất (leo dốc, 38 lần) đồng thời là nguồn hiểu lầm lớn nhất
         │
-        ▼  14–30 天复测
-第 4 圈 · 验证
-  主指标：误解型差评占差评比例 38,5% → 目标 <20%
+        ▼
+Can thiệp vòng 3
+  Đoạn 6 bổ sung giới hạn / Ảnh danh sách đóng gói ghi rõ Não incluso
+  Đoạn thông số bổ sung điều kiện thử nghiệm / Bổ sung ảnh hướng dẫn lắp ráp / Thêm điểm bán hàng "CSKH 24h"
+        │
+        ▼  Kiểm tra lại sau 14–30 ngày
+Vòng 4 · Kiểm chứng
+  Chỉ số chính: tỷ lệ đánh giá tiêu cực loại hiểu lầm trên tổng đánh giá tiêu cực 38,5% → mục tiêu <20%
 ```
 
 ---
 
-## 六、这个案例证明了什么
+## VI. Case study này chứng minh điều gì
 
-### 关于闭环本身
+### Về bản thân vòng khép kín
 
-| 结论 | 证据 |
+| Kết luận | Bằng chứng |
 |---|---|
-| **回流能让不成立的模型变成成立的** | 同一个产品、同样的售价与成本，仅通过改变投放结构与文案，净贡献从 −R$ 235,56 变为 +R$ 83,90 |
-| **回流必须带"不改什么"的约束** | A 组只动匹配方式，主图/详情页/价格一律不动 |
-| **不同数据源回流到不同环节** | 广告侧 → 出价与详情页卖点段；评论侧 → 注意事项段与包装清单图 |
-| **复测指标要选能被改动控制的** | 广告看 ROAS，文案看误解型占比，**都不看总销量** |
+| **Quay vòng về có thể biến một mô hình không khả thi thành khả thi** | Cùng một sản phẩm, cùng giá bán và giá vốn, chỉ thay đổi cơ cấu chạy quảng cáo và nội dung, đóng góp ròng đi từ −R$ 235,56 thành +R$ 83,90 |
+| **Quay vòng về bắt buộc kèm ràng buộc "không sửa gì"** | Nhóm A chỉ động vào kiểu đối sánh, ảnh chính/trang chi tiết/giá đều giữ nguyên |
+| **Nguồn dữ liệu khác nhau quay về các khâu khác nhau** | Phía quảng cáo → giá thầu và đoạn điểm bán hàng trên trang chi tiết; phía đánh giá → đoạn lưu ý và ảnh danh sách đóng gói |
+| **Chỉ số kiểm tra lại phải chọn loại mà thay đổi kiểm soát được** | Quảng cáo xem ROAS, nội dung xem tỷ lệ loại hiểu lầm, **đều không xem tổng doanh số** |
 
-### 关于反直觉的坑
+### Về những cái bẫy ngược trực giác
 
-| 坑 | 后果 | 正确做法 |
+| Bẫy | Hậu quả | Cách làm đúng |
 |---|---|---|
-| 按"哪个指标最差"排序动作 | 修 CTR 最差的组 → 亏损扩大 42% | 按**是否影响盈亏线**排序动作 |
-| 盯着点击量看效果 | 收窄匹配后点击下降，误判为失败 | 看 CPA 与 ROAS |
-| 未达标就加码同一动作 | 改主图无效再换主图，烧钱无进展 | 回诊断，重新定位环节 |
-| 放大曝光解决亏损 | ROAS 2,12，亏损从 235 扩大到 290 | 先修转化再加量 |
+| Sắp xếp thao tác theo "chỉ số nào tệ nhất" | Sửa nhóm có CTR tệ nhất → lỗ phình thêm 42% | Sắp xếp thao tác theo **có ảnh hưởng đến ngưỡng hòa vốn hay không** |
+| Dán mắt vào lượt click để xem hiệu quả | Thu hẹp đối sánh làm click giảm, đánh giá nhầm là thất bại | Xem CPA và ROAS |
+| Chưa đạt thì dồn thêm vào cùng một thao tác | Đổi ảnh chính không hiệu quả lại đổi ảnh chính khác, đốt tiền mà không tiến triển | Quay lại chẩn đoán, khoanh vùng lại khâu có vấn đề |
+| Tăng hiển thị để giải quyết lỗ | ROAS 2,12, lỗ phình từ 235 lên 290 | Sửa chuyển đổi trước rồi mới tăng lượng |
 
-### 关于文案的力量
+### Về sức mạnh của nội dung mô tả
 
-| 结论 | 证据 |
+| Kết luận | Bằng chứng |
 |---|---|
-| **多数差评是文案问题，不是产品问题** | 84,6% 的差评可由改描述/改图修复 |
-| **"写了"不等于"有效"** | 旗舰案例已预测 3 类差评并写了说明，仍全部发生 → 位置/形式不对 |
-| **配件误解必须用图** | 文字说明会被跳过，平铺图 + `Não incluso` 不会 |
-| **让描述更精确，而不是更保守** | 加"缓坡"边界，既保住第 1 卖点又管住预期 |
-| **好评里藏着没被写的优点** | 客服响应被 9 条好评称赞但 Listing 未提 → 零成本优化点 |
-| **竞品参数会变成自己的红线** | `60 km` `60 km/h` 来自竞品词表 → 必须列入 `forbidden_words` |
+| **Đa số đánh giá tiêu cực là vấn đề nội dung, không phải vấn đề sản phẩm** | 84,6% đánh giá tiêu cực sửa được bằng cách sửa mô tả/sửa ảnh |
+| **"Đã viết" không đồng nghĩa với "hiệu quả"** | Case study chủ lực đã dự đoán 3 loại đánh giá tiêu cực và viết giải thích, nhưng vẫn xảy ra cả 3 → sai vị trí/hình thức |
+| **Hiểu lầm về phụ kiện bắt buộc phải dùng ảnh** | Chữ giải thích sẽ bị bỏ qua, còn ảnh bày phẳng + `Não incluso` thì không |
+| **Làm mô tả chính xác hơn, chứ không phải dè dặt hơn** | Thêm giới hạn "dốc thoải", vừa giữ được điểm bán hàng số 1 vừa kiểm soát được kỳ vọng |
+| **Trong đánh giá tích cực ẩn chứa ưu điểm chưa được viết ra** | Tốc độ phản hồi CSKH được 9 đánh giá tích cực khen nhưng Listing không nhắc → điểm tối ưu không tốn chi phí |
+| **Thông số của đối thủ sẽ thành lằn ranh đỏ của chính mình** | `60 km` `60 km/h` đến từ bảng từ khóa của đối thủ → bắt buộc đưa vào `forbidden_words` |
 
-### 一句话总结
+### Tóm lại trong một câu
 
-> **这套工具箱不是"更快地写出 Listing"，而是"写出来的 Listing 会随着数据变准"。**
-> 第 1 圈和第 4 圈的差别，就是"生成内容"和"生成有效内容"的差别。
+> **Bộ công cụ này không phải để "viết Listing nhanh hơn", mà để "Listing viết ra sẽ ngày càng chính xác theo dữ liệu".**
+> Khác biệt giữa vòng 1 và vòng 4 chính là khác biệt giữa "tạo nội dung" và "tạo nội dung hiệu quả".
 
 ---
 
-**关联文件**：
+**Tệp liên quan**:
 [03 Listing Creative](../../Agents/03_Listing_Creative_Agent/) ·
 [04 Product Image](../../Agents/04_Product_Image_Agent/) ·
 [06 Advertising Optimization](../../Agents/06_Advertising_Optimization_Agent/) ·
 [07 Review Analysis](../../Agents/07_Review_Analysis_Agent/) ·
-[旗舰案例 01](../01_Patinete_Eletrico_500W/) ·
-[iterate 案例 02](../02_Thermal_Bag/) ·
-[广告诊断案例](../../Agents/06_Advertising_Optimization_Agent/examples/powerbank_20000mah_ads.md) ·
-[评论分析案例](../../Agents/07_Review_Analysis_Agent/examples/electric_scooter_reviews.md)
+[Case study chủ lực 01](../01_Patinete_Eletrico_500W/) ·
+[Case study iterate 02](../02_Thermal_Bag/) ·
+[Case study chẩn đoán quảng cáo](../../Agents/06_Advertising_Optimization_Agent/examples/powerbank_20000mah_ads.md) ·
+[Case study phân tích đánh giá](../../Agents/07_Review_Analysis_Agent/examples/electric_scooter_reviews.md)
