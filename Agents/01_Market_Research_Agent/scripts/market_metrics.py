@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-market_metrics.py — 类目数据的指标计算层
+market_metrics.py — Tầng tính chỉ số cho dữ liệu ngành hàng
 
-设计原则：**能算的别让模型猜。**
-集中度、占比、分箱、交叉表都是确定性的计算，交给脚本；
-Agent 只负责解读"这些数字意味着什么、下一步做什么"。
+Nguyên tắc thiết kế: **cái gì tính được thì đừng để model đoán.**
+Mức độ tập trung, tỷ trọng, chia bin, bảng chéo đều là phép tính tất định, giao cho script;
+Agent chỉ phụ trách diễn giải "những con số này nghĩa là gì, bước tiếp theo làm gì".
 
-依赖：仅标准库。
+Phụ thuộc: chỉ thư viện chuẩn.
 
-用法：
+Cách dùng:
     python market_metrics.py <normalized.json> [--bins 10] [--top 10]
-                             [--config-fields 功率,承重] [--format md|json]
+                             [--config-fields "công suất,tải trọng"] [--format md|json]
     python market_metrics.py data.normalized.json --config-fields "potencia,peso_max"
 """
 
@@ -22,10 +22,11 @@ import json
 import re
 import statistics
 import sys
+import unicodedata
 from typing import Any
 
 # ---------------------------------------------------------------------------
-# 工具
+# Tiện ích
 # ---------------------------------------------------------------------------
 def _get(item: dict, key: str) -> Any:
     return item.get(key)
@@ -44,7 +45,7 @@ def _fmt_pct(v: float) -> str:
 
 
 # ---------------------------------------------------------------------------
-# 1. 市场容量
+# 1. Quy mô thị trường
 # ---------------------------------------------------------------------------
 def market_capacity(items: list[dict]) -> dict:
     prices = [i["price"] for i in items if i.get("price")]
@@ -63,18 +64,18 @@ def market_capacity(items: list[dict]) -> dict:
         "price_max": round(max(prices), 2) if prices else 0,
         "avg_monthly_sales_per_item": round(_safe_div(total_sales, len(items)), 1),
         "implied_avg_price": round(_safe_div(total_rev, total_sales), 2),
-        "rev_share_top10": 0.0,  # 由 concentration 回填
+        "rev_share_top10": 0.0,  # được điền lại từ concentration
     }
 
 
 # ---------------------------------------------------------------------------
-# 2. 集中度（品牌 / 卖家）
+# 2. Mức độ tập trung (thương hiệu / người bán)
 # ---------------------------------------------------------------------------
 def _concentration(items: list[dict], key: str, top_n: int = 10) -> dict:
-    """按 key 聚合销售额与销量，算 CR-n 与 HHI。"""
+    """Gộp doanh thu và lượng bán theo key, tính CR-n và HHI."""
     agg: dict[str, dict[str, float]] = {}
     for i in items:
-        name = (i.get(key) or "").strip() or "（未填写）"
+        name = (i.get(key) or "").strip() or "(chưa điền)"
         slot = agg.setdefault(name, {"revenue": 0.0, "sales": 0.0, "items": 0})
         slot["revenue"] += i.get("monthly_revenue") or 0.0
         slot["sales"] += i.get("monthly_sales") or 0.0
@@ -87,16 +88,16 @@ def _concentration(items: list[dict], key: str, top_n: int = 10) -> dict:
     ranked = sorted(agg.items(), key=lambda kv: -kv[1]["revenue"])
     cr = _safe_div(sum(v["revenue"] for _, v in ranked[:top_n]), total_rev)
 
-    # HHI：各主体销售额占比平方和 × 10000（0–10000，越高越集中）
+    # HHI: tổng bình phương tỷ trọng doanh thu của từng chủ thể × 10000 (0–10000, càng cao càng tập trung)
     hhi = round(sum((_safe_div(v["revenue"], total_rev) ** 2) for _, v in ranked) * 10000, 1)
 
-    # ⚠️ 主体数 ≤ top_n 时 CR-n 恒为 100%，无参考意义 → 给 CR3 与明确提示
+    # ⚠️ Khi số chủ thể ≤ top_n, CR-n luôn bằng 100%, không có giá trị tham khảo → đưa CR3 kèm cảnh báo rõ ràng
     cr_note = None
     cr3 = round(_safe_div(sum(v["revenue"] for _, v in ranked[:3]), total_rev), 4)
     if len(agg) <= top_n:
         cr_note = (
-            f"主体数（{len(agg)}）≤ n（{top_n}），CR{top_n} 恒为 100%，无参考意义。"
-            f"请改用 CR3（{cr3 * 100:.1f}%）与 HHI（{hhi}）判断集中度。"
+            f"Số chủ thể ({len(agg)}) ≤ n ({top_n}), CR{top_n} luôn bằng 100%, không có giá trị tham khảo. "
+            f"Hãy dùng CR3 ({cr3 * 100:.1f}%) và HHI ({hhi}) để đánh giá mức độ tập trung."
         )
 
     top_list = [
@@ -127,22 +128,22 @@ def _concentration(items: list[dict], key: str, top_n: int = 10) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# 3. 价格带分箱 + 波谷检测
+# 3. Chia bin dải giá + dò vùng trũng
 # ---------------------------------------------------------------------------
 def price_bands(items: list[dict], n_bins: int = 10, valley_min_drop: float = 0.15,
                 max_bands: int = 5) -> dict:
     """
-    SOP 1.4：横坐标价格区间、纵坐标销量，从波谷到波谷划分价格带。
+    SOP 1.4: trục hoành là khoảng giá, trục tung là lượng bán, chia dải giá từ vùng trũng đến vùng trũng.
 
-    实现：等宽分箱 → 统计销量 → **在原始曲线上**检局部最小值（波谷）→ 按波谷切分价格带。
+    Cách làm: chia bin đều → thống kê lượng bán → dò cực tiểu cục bộ (vùng trũng) **trên đường cong gốc** → cắt dải giá theo vùng trũng.
 
-    两个关键参数：
-      valley_min_drop  波谷相对两侧邻居的最小跌幅，低于此值视为噪声（默认 0.15 = 15%）
-      max_bands        最多保留的价格带数，超出的按跌幅取前几名（默认 5）
+    Hai tham số chính:
+      valley_min_drop  mức giảm tối thiểu của vùng trũng so với hai bin bên cạnh, thấp hơn thì coi là nhiễu (mặc định 0.15 = 15%)
+      max_bands        số dải giá tối đa được giữ, vượt quá thì lấy các vùng trũng sâu nhất (mặc định 5)
 
-    注意：**不在默认流程里做平滑**。3 点滑动平均会把陡峭的局部波谷抹平
-    （例如 799 → 618 → 1120 的波谷会被平均掉），反而漏掉真实的价格带边界。
-    需要平滑时用 --smooth。
+    Lưu ý: **luồng mặc định không làm mượt (smoothing)**. Trung bình trượt 3 điểm sẽ san phẳng các vùng trũng cục bộ dốc
+    (ví dụ vùng trũng 799 → 618 → 1120 sẽ bị trung bình hóa mất), khiến bỏ sót ranh giới dải giá thật.
+    Cần làm mượt thì dùng --smooth.
     """
     pts = [(i["price"], i.get("monthly_sales") or 0, i.get("monthly_revenue") or 0)
            for i in items if i.get("price")]
@@ -152,7 +153,7 @@ def price_bands(items: list[dict], n_bins: int = 10, valley_min_drop: float = 0.
     prices = sorted(p for p, _, _ in pts)
     lo, hi = prices[0], prices[-1]
     if hi <= lo:
-        return {"bins": [], "valleys": [], "suggested_bands": [], "note": "价格无差异，无法分箱"}
+        return {"bins": [], "valleys": [], "suggested_bands": [], "note": "Giá không có chênh lệch, không chia bin được"}
 
     width = (hi - lo) / n_bins
     bins = []
@@ -172,7 +173,7 @@ def price_bands(items: list[dict], n_bins: int = 10, valley_min_drop: float = 0.
 
     raw = [b["total_sales"] for b in bins]
 
-    # 波谷检测：局部最小值 + 相对跌幅显著性过滤
+    # Dò vùng trũng: cực tiểu cục bộ + lọc theo mức giảm tương đối có ý nghĩa
     candidates = []
     for i in range(1, len(raw) - 1):
         if raw[i] < raw[i - 1] and raw[i] < raw[i + 1]:
@@ -182,14 +183,14 @@ def price_bands(items: list[dict], n_bins: int = 10, valley_min_drop: float = 0.
             if raw[i + 1]:
                 drops.append((raw[i + 1] - raw[i]) / raw[i + 1])
             drop = min(drops) if drops else 0.0
-            # 右邻居是上升趋势的第一格时，右侧跌幅天然巨大 → 用左侧跌幅作为主判据
+            # Khi bin bên phải là bin đầu tiên của xu hướng tăng, mức giảm bên phải tự nhiên rất lớn → dùng mức giảm bên trái làm tiêu chí chính
             candidates.append({"bin_index": i + 1, "price": round(bins[i]["price_hi"], 2),
                                "drop": round(drop, 4)})
 
     significant = [c for c in candidates if c["drop"] >= valley_min_drop]
     noise_count = len(candidates) - len(significant)
 
-    # 波谷过多时，按跌幅取最深的 (max_bands - 1) 个
+    # Khi có quá nhiều vùng trũng, lấy (max_bands - 1) vùng sâu nhất theo mức giảm
     trimmed = []
     if len(significant) > max_bands - 1:
         ordered = sorted(significant, key=lambda c: -c["drop"])
@@ -227,24 +228,24 @@ def price_bands(items: list[dict], n_bins: int = 10, valley_min_drop: float = 0.
 
 
 # ---------------------------------------------------------------------------
-# 4. 配置组合交叉表
+# 4. Bảng chéo tổ hợp cấu hình
 # ---------------------------------------------------------------------------
 def _extract_dim(item: dict, field: str) -> str | None:
-    """从 title 或字段里抽取配置值。字段不存在时尝试从标题正则抽取。"""
+    """Trích giá trị cấu hình từ trường hoặc title. Trường không tồn tại thì thử trích từ tiêu đề bằng regex."""
     if item.get(field):
         return str(item[field]).strip()
 
     title = item.get("title") or ""
-    # 数字 + 常见单位
-    if re.search(r"(?i)(power|watt|potência|potencia)", field) or field == "功率":
+    # Số + đơn vị thường gặp (tên chiều hỗ trợ tiếng Trung / tiếng Việt / tiếng Anh / tiếng Bồ Đào Nha)
+    if re.search(r"(?i)(power|watt|potência|potencia|công suất|cong suat)", field) or field == "功率":
         m = re.search(r"(\d{2,4})\s*(?:w|W|瓦)", title)
         if m:
             return f"{m.group(1)}W"
-    if re.search(r"(?i)(weight|peso|承重|carga)", field) or field == "承重":
+    if re.search(r"(?i)(weight|peso|承重|carga|tải trọng|tai trong)", field) or field == "承重":
         m = re.search(r"(\d{2,3})\s*(?:kg|KG|公斤)", title)
         if m:
             return f"{m.group(1)}kg"
-    if re.search(r"(?i)(capacit|容量|容量|ah|mah|litro|L\b)", field) or field == "容量":
+    if re.search(r"(?i)(capacit|容量|dung lượng|dung luong|ah|mah|litro|L\b)", field) or field == "容量":
         m = re.search(r"(\d+(?:[.,]\d+)?)\s*(?:mah|mAh|Ah|ah|L|L\b|litros)", title)
         if m:
             return m.group(0)
@@ -253,12 +254,12 @@ def _extract_dim(item: dict, field: str) -> str | None:
 
 def config_matrix(items: list[dict], fields: list[str]) -> dict:
     """
-    SOP 1.5：每个配置维度统计「商品数量 / 数量占比 / 平均销量 / 总销量」
-    并给出四维判断：
-      - 总销量高 → 需求大
-      - 平均销量高 → 单品效率高
-      - 数量占比高 → 主流（但竞争可能更激烈）
-      - 数量少但平均销量高 → 潜在机会配置
+    SOP 1.5: với mỗi chiều cấu hình, thống kê "số sản phẩm / tỷ trọng số lượng / lượng bán trung bình / tổng lượng bán"
+    và đưa ra đánh giá bốn chiều:
+      - Tổng lượng bán cao → nhu cầu lớn
+      - Lượng bán trung bình cao → hiệu suất mỗi SKU cao
+      - Tỷ trọng số lượng cao → cấu hình phổ biến (nhưng cạnh tranh có thể gắt hơn)
+      - Số lượng ít nhưng lượng bán trung bình cao → cấu hình cơ hội tiềm năng
     """
     out: dict[str, Any] = {}
     total_items = len(items)
@@ -277,7 +278,7 @@ def config_matrix(items: list[dict], fields: list[str]) -> dict:
             slot["revenue"] += i.get("monthly_revenue") or 0
 
         if not agg:
-            out[field] = {"error": "该维度未解析出任何值。请把配置写在单独列里，或用 --mapping 指定。",
+            out[field] = {"error": "Không trích được giá trị nào cho chiều này. Hãy để cấu hình ở cột riêng, hoặc chỉ định bằng --mapping.",
                           "unparsed": unparsed}
             continue
 
@@ -296,28 +297,28 @@ def config_matrix(items: list[dict], fields: list[str]) -> dict:
 
         n_values = len(rows)
         avg_sales_all = _safe_div(total_sales, sum(r["item_count"] for r in rows))
-        # 均分基准：若某取值占 1/n，说明各取值"势均力敌"
+        # Mốc chia đều: nếu một giá trị chiếm 1/n, nghĩa là các giá trị "ngang ngửa nhau"
         equal_share = 1.0 / n_values if n_values else 1.0
 
         for r in rows:
             flags = []
-            # ① 总销量高 → 市场需求大
+            # ① Tổng lượng bán cao → nhu cầu thị trường lớn
             if r["sales_share"] >= 0.30:
-                flags.append("总销量高→需求大")
-            # ② 单品效率高：平均销量显著高于整体
+                flags.append("Tổng lượng bán cao→nhu cầu lớn")
+            # ② Hiệu suất mỗi SKU cao: lượng bán trung bình cao hơn hẳn mức chung
             if avg_sales_all and r["avg_sales"] > avg_sales_all * 1.2:
-                flags.append("单品效率高")
-            # ③ 主流配置：数量占比显著高于均分（→ 竞争更激烈）
+                flags.append("Hiệu suất mỗi SKU cao")
+            # ③ Cấu hình phổ biến: tỷ trọng số lượng cao hơn hẳn mức chia đều (→ cạnh tranh gắt hơn)
             if r["item_share"] >= equal_share * 1.5:
-                flags.append("主流配置→竞争激烈")
-            # ④ 潜在机会配置：数量占比显著低于均分，但单品效率高
+                flags.append("Cấu hình phổ biến→cạnh tranh gắt")
+            # ④ Cấu hình cơ hội tiềm năng: tỷ trọng số lượng thấp hơn hẳn mức chia đều, nhưng hiệu suất mỗi SKU cao
             if r["item_share"] <= equal_share * 0.6 and avg_sales_all \
                     and r["avg_sales"] > avg_sales_all * 1.2:
-                flags.append("★机会配置（数量少但效率高）")
-            # ⑤ 市场大但竞争激烈：总销量高而单品效率低
+                flags.append("★Cấu hình cơ hội (ít sản phẩm nhưng hiệu suất cao)")
+            # ⑤ Thị trường lớn nhưng cạnh tranh gắt: tổng lượng bán cao mà hiệu suất mỗi SKU thấp
             if r["sales_share"] >= 0.30 and avg_sales_all and r["avg_sales"] < avg_sales_all:
-                flags.append("市场大但竞争激烈")
-            r["judgement"] = flags or ["常规"]
+                flags.append("Thị trường lớn nhưng cạnh tranh gắt")
+            r["judgement"] = flags or ["Bình thường"]
 
         out[field] = {
             "value_count": n_values,
@@ -331,58 +332,58 @@ def config_matrix(items: list[dict], fields: list[str]) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# 报告渲染
+# Render báo cáo
 # ---------------------------------------------------------------------------
 def render_md(payload: dict) -> str:
     cap = payload["market_capacity"]
     L: list[str] = []
-    L.append("# 类目指标计算报告\n")
-    L.append(f"数据来源：`{payload['meta'].get('source_file', '—')}` ｜ "
-             f"样本量：{cap['item_count']} 个商品\n")
+    L.append("# Báo cáo chỉ số ngành hàng\n")
+    L.append(f"Nguồn dữ liệu: `{payload['meta'].get('source_file', '—')}` · "
+             f"Cỡ mẫu: {cap['item_count']} sản phẩm\n")
 
-    L.append("## 1. 市场容量\n")
-    L.append("| 指标 | 数值 |")
+    L.append("## 1. Quy mô thị trường\n")
+    L.append("| Chỉ số | Giá trị |")
     L.append("|---|---|")
-    L.append(f"| 样本商品数 | {cap['item_count']} |")
-    L.append(f"| 月总销量 | {cap['total_monthly_sales']:,} |")
-    L.append(f"| 月总销售额 | R$ {_fmt_money(cap['total_monthly_revenue'])} |")
-    L.append(f"| 均价 | R$ {_fmt_money(cap['avg_price'])} |")
-    L.append(f"| 中位价 | R$ {_fmt_money(cap['median_price'])} |")
-    L.append(f"| 价格范围 | R$ {_fmt_money(cap['price_min'])} – R$ {_fmt_money(cap['price_max'])} |")
-    L.append(f"| 单商品平均月销量 | {cap['avg_monthly_sales_per_item']} |")
-    L.append(f"| 隐含均价（GMV÷销量） | R$ {_fmt_money(cap['implied_avg_price'])} |")
-    L.append(f"| 头部 10 名销售额占比 | {_fmt_pct(cap.get('rev_share_top10', 0))} |")
+    L.append(f"| Số sản phẩm trong mẫu | {cap['item_count']} |")
+    L.append(f"| Tổng lượng bán tháng | {cap['total_monthly_sales']:,} |")
+    L.append(f"| Tổng doanh thu tháng | R$ {_fmt_money(cap['total_monthly_revenue'])} |")
+    L.append(f"| Giá trung bình | R$ {_fmt_money(cap['avg_price'])} |")
+    L.append(f"| Giá trung vị | R$ {_fmt_money(cap['median_price'])} |")
+    L.append(f"| Khoảng giá | R$ {_fmt_money(cap['price_min'])} – R$ {_fmt_money(cap['price_max'])} |")
+    L.append(f"| Lượng bán tháng trung bình mỗi sản phẩm | {cap['avg_monthly_sales_per_item']} |")
+    L.append(f"| Giá trung bình ngầm định (GMV÷lượng bán) | R$ {_fmt_money(cap['implied_avg_price'])} |")
+    L.append(f"| Tỷ trọng doanh thu của top 10 | {_fmt_pct(cap.get('rev_share_top10', 0))} |")
     L.append("")
 
     br = payload.get("brand_concentration")
     if br:
-        L.append("## 2. 品牌集中度\n")
-        L.append(f"- 品牌数：**{br['subject_count']}**")
-        L.append(f"- **CR3（销售额）：{_fmt_pct(br['cr3'])}** ｜ CR10：{_fmt_pct(br['cr10'])}"
-                 f" ｜ CR10 按销量：{_fmt_pct(br['cr10_by_sales'])}")
-        L.append(f"- HHI：**{br['hhi']}**（0–10000，越高越集中）")
+        L.append("## 2. Mức độ tập trung thương hiệu\n")
+        L.append(f"- Số thương hiệu: **{br['subject_count']}**")
+        L.append(f"- **CR3 (doanh thu): {_fmt_pct(br['cr3'])}** · CR10: {_fmt_pct(br['cr10'])}"
+                 f" · CR10 theo lượng bán: {_fmt_pct(br['cr10_by_sales'])}")
+        L.append(f"- HHI: **{br['hhi']}** (0–10000, càng cao càng tập trung)")
         if br.get("cr_note"):
             L.append(f"\n> ⚠️ {br['cr_note']}")
         L.append("")
-        L.append("| # | 品牌 | 销售额 | 销售额占比 | 销量占比 | 商品数 |")
+        L.append("| # | Thương hiệu | Doanh thu | Tỷ trọng doanh thu | Tỷ trọng lượng bán | Số sản phẩm |")
         L.append("|---|---|---|---|---|---|")
         for r in br["top_list"][:10]:
             L.append(f"| {r['rank']} | {r['name']} | R$ {_fmt_money(r['revenue'])} | "
                      f"{_fmt_pct(r['revenue_share'])} | {_fmt_pct(r['sales_share'])} | {r['item_count']} |")
         L.append("")
-        L.append("> **判断**（SOP 1.3）：品牌集中度 < 50% → 白牌仍有机会；> 50% → 头部品牌影响强，需谨慎。\n")
+        L.append("> **Đánh giá** (SOP 1.3): mức độ tập trung thương hiệu < 50% → hàng no-brand vẫn còn cơ hội; > 50% → thương hiệu top đầu chi phối mạnh, cần thận trọng.\n")
 
     sl = payload.get("seller_concentration")
     if sl:
-        L.append("## 3. 卖家集中度\n")
-        L.append(f"- 卖家数：**{sl['subject_count']}**")
-        L.append(f"- **CR3（销售额）：{_fmt_pct(sl['cr3'])}** ｜ "
-                 f"**CR10（销售额）：{_fmt_pct(sl['cr10'])}** ｜ CR10 按销量：{_fmt_pct(sl['cr10_by_sales'])}")
-        L.append(f"- HHI：**{sl['hhi']}**")
+        L.append("## 3. Mức độ tập trung người bán\n")
+        L.append(f"- Số người bán: **{sl['subject_count']}**")
+        L.append(f"- **CR3 (doanh thu): {_fmt_pct(sl['cr3'])}** · "
+                 f"**CR10 (doanh thu): {_fmt_pct(sl['cr10'])}** · CR10 theo lượng bán: {_fmt_pct(sl['cr10_by_sales'])}")
+        L.append(f"- HHI: **{sl['hhi']}**")
         if sl.get("cr_note"):
             L.append(f"\n> ⚠️ {sl['cr_note']}")
         L.append("")
-        L.append("| # | 卖家 | 销售额占比 | 销量占比 | 商品数 |")
+        L.append("| # | Người bán | Tỷ trọng doanh thu | Tỷ trọng lượng bán | Số sản phẩm |")
         L.append("|---|---|---|---|---|")
         for r in sl["top_list"][:10]:
             L.append(f"| {r['rank']} | {r['name']} | {_fmt_pct(r['revenue_share'])} | "
@@ -391,12 +392,12 @@ def render_md(payload: dict) -> str:
 
     pb = payload.get("price_bands")
     if pb and pb.get("bins"):
-        L.append("## 4. 价格带分析\n")
-        L.append(f"- 价格范围：R$ {_fmt_money(pb['price_range'][0])} – R$ {_fmt_money(pb['price_range'][1])}"
-                 f" ｜ 箱宽：R$ {_fmt_money(pb['bin_width'])}")
+        L.append("## 4. Phân tích dải giá\n")
+        L.append(f"- Khoảng giá: R$ {_fmt_money(pb['price_range'][0])} – R$ {_fmt_money(pb['price_range'][1])}"
+                 f" · Độ rộng bin: R$ {_fmt_money(pb['bin_width'])}")
         L.append("")
-        L.append("### 4.1 等宽分箱（销量曲线）\n")
-        L.append("| 区间 | 价格段 | 商品数 | 总销量 | 曲线 | 总销售额 | 单商品均销 |")
+        L.append("### 4.1 Chia bin đều (đường cong lượng bán)\n")
+        L.append("| Bin | Khoảng giá | Số sản phẩm | Tổng lượng bán | Đường cong | Tổng doanh thu | Lượng bán TB/sản phẩm |")
         L.append("|---|---|---|---|---|---|---|")
         peak = max((b["total_sales"] for b in pb["bins"]), default=0)
         for b in pb["bins"]:
@@ -405,87 +406,87 @@ def render_md(payload: dict) -> str:
                      f"{b['item_count']} | {b['total_sales']:,} | {bar} | "
                      f"R$ {_fmt_money(b['total_revenue'])} | {b['avg_sales_per_item']} |")
         L.append("")
-        L.append("### 4.2 波谷检测\n")
+        L.append("### 4.2 Dò vùng trũng\n")
         if pb.get("valleys"):
-            L.append(f"判定阈值：波谷相对两侧邻居的最小跌幅 **≥ {_fmt_pct(pb.get('valley_min_drop', 0))}**"
-                     f"（低于此值视为噪声）\n")
-            L.append("| 箱序 | 价格边界 | 跌幅 | 作为价格带边界 |")
+            L.append(f"Ngưỡng xác định: mức giảm tối thiểu của vùng trũng so với hai bin bên cạnh **≥ {_fmt_pct(pb.get('valley_min_drop', 0))}**"
+                     f" (thấp hơn thì coi là nhiễu)\n")
+            L.append("| Bin số | Ranh giới giá | Mức giảm | Dùng làm ranh giới dải giá |")
             L.append("|---|---|---|---|")
             for v in pb["valleys"]:
                 L.append(f"| {v['bin_index']} | R$ {_fmt_money(v['price'])} | {_fmt_pct(v['drop'])} | ✅ |")
             L.append("")
             if pb.get("noise_valleys"):
-                L.append(f"> 另有 {pb['noise_valleys']} 个跌幅不足阈值的候选波谷被过滤为噪声。\n")
+                L.append(f"> Ngoài ra có {pb['noise_valleys']} vùng trũng ứng viên có mức giảm dưới ngưỡng đã bị lọc như nhiễu.\n")
             if pb.get("trimmed_valleys"):
-                names = "、".join(f"箱{v['bin_index']}(R$ {_fmt_money(v['price'])})"
+                names = ", ".join(f"bin {v['bin_index']} (R$ {_fmt_money(v['price'])})"
                                 for v in pb["trimmed_valleys"])
-                L.append(f"> 因超出最多价格带数（{pb.get('max_bands', 5)}）被裁掉：{names}。"
-                         f"如需保留请调大 `--max-bands`。\n")
+                L.append(f"> Bị cắt bỏ do vượt số dải giá tối đa ({pb.get('max_bands', 5)}): {names}. "
+                         f"Muốn giữ lại thì tăng `--max-bands`.\n")
         else:
-            L.append("未检测到显著波谷。可能原因：样本量偏小（建议 ≥ 50）、"
-                     "价格分布过于连续、或销量曲线单调。\n")
+            L.append("Không phát hiện vùng trũng đáng kể. Nguyên nhân có thể: cỡ mẫu nhỏ (nên ≥ 50), "
+                     "phân bố giá quá liên tục, hoặc đường cong lượng bán đơn điệu.\n")
         if pb.get("suggested_bands"):
-            L.append("### 4.3 建议价格带（按波谷切分）\n")
-            L.append("| 价格带 | 区间 | 商品数 | 总销量 | 总销售额 | 单商品均销 |")
+            L.append("### 4.3 Dải giá đề xuất (cắt theo vùng trũng)\n")
+            L.append("| Dải giá | Khoảng giá | Số sản phẩm | Tổng lượng bán | Tổng doanh thu | Lượng bán TB/sản phẩm |")
             L.append("|---|---|---|---|---|---|")
             for b in pb["suggested_bands"]:
                 L.append(f"| #{b['band_index']} | R$ {_fmt_money(b['price_from'])}–{_fmt_money(b['price_to'])} | "
                          f"{b['item_count']} | {b['total_sales']:,} | "
                          f"R$ {_fmt_money(b['total_revenue'])} | {b['avg_sales_per_item']} |")
             L.append("")
-            L.append("> ⚠️ 波谷切分只是**数学建议**。SOP 1.4 要求最终判断还要叠加："
-                     "公司产品有没有利润、竞品是否特别强。这一步由 Agent 结合成本结构完成。\n")
+            L.append("> ⚠️ Cắt theo vùng trũng chỉ là **gợi ý toán học**. SOP 1.4 yêu cầu kết luận cuối cùng phải xét thêm: "
+                     "sản phẩm của công ty có lãi không, đối thủ có quá mạnh không. Bước này do Agent làm dựa trên cấu trúc chi phí.\n")
 
     cm = payload.get("config_matrix")
     if cm:
-        L.append("## 5. 配置组合交叉表\n")
+        L.append("## 5. Bảng chéo tổ hợp cấu hình\n")
         for field, data in cm.items():
-            L.append(f"### 维度：{field}\n")
+            L.append(f"### Chiều: {field}\n")
             if "error" in data:
                 L.append(f"⚠️ {data['error']}\n")
                 continue
-            L.append(f"- 取值数：{data['value_count']} ｜ 整体平均单品销量：{data['avg_sales_all_values']}"
-                     f" ｜ 均分参考（1/n）：{_fmt_pct(data.get('equal_share_reference', 0))}")
+            L.append(f"- Số giá trị: {data['value_count']} · Lượng bán TB mỗi SKU toàn bộ: {data['avg_sales_all_values']}"
+                     f" · Mốc chia đều (1/n): {_fmt_pct(data.get('equal_share_reference', 0))}")
             if data.get("unparsed_items"):
-                L.append(f"- ⚠️ 未能解析该维度的商品：{data['unparsed_items']} 个")
+                L.append(f"- ⚠️ Số sản phẩm không trích được chiều này: {data['unparsed_items']}")
             L.append("")
-            L.append("| 配置值 | 商品数 | 数量占比 | 总销量 | 销量占比 | 平均销量 | 判断 |")
+            L.append("| Giá trị cấu hình | Số sản phẩm | Tỷ trọng số lượng | Tổng lượng bán | Tỷ trọng lượng bán | Lượng bán TB | Đánh giá |")
             L.append("|---|---|---|---|---|---|---|")
             for r in data["rows"]:
                 L.append(f"| {r['value']} | {r['item_count']} | {_fmt_pct(r['item_share'])} | "
                          f"{r['total_sales']:,} | {_fmt_pct(r['sales_share'])} | {r['avg_sales']} | "
-                         f"{'；'.join(r['judgement'])} |")
+                         f"{'; '.join(r['judgement'])} |")
             L.append("")
-        L.append("> **判断规则**（SOP 1.5）：总销量高 = 需求大（销量占比 ≥30%）；"
-                 "平均销量高 = 单品效率高（高于整体均值 1.2 倍）；"
-                 "数量占比高 = 主流但竞争激烈（高于均分 1.5 倍）；"
-                 "**数量少但平均销量高 = 潜在机会配置**（低于均分 0.6 倍且效率高，需再确认是否被头部占据）；"
-                 "总销量高但平均销量低 = 市场大但竞争激烈。\n")
+        L.append("> **Quy tắc đánh giá** (SOP 1.5): tổng lượng bán cao = nhu cầu lớn (tỷ trọng lượng bán ≥30%); "
+                 "lượng bán TB cao = hiệu suất mỗi SKU cao (gấp trên 1.2 lần mức TB chung); "
+                 "tỷ trọng số lượng cao = phổ biến nhưng cạnh tranh gắt (gấp trên 1.5 lần mức chia đều); "
+                 "**ít sản phẩm nhưng lượng bán TB cao = cấu hình cơ hội tiềm năng** (dưới 0.6 lần mức chia đều và hiệu suất cao, cần xác nhận thêm có bị nhóm top đầu chiếm không); "
+                 "tổng lượng bán cao nhưng lượng bán TB thấp = thị trường lớn nhưng cạnh tranh gắt.\n")
 
     return "\n".join(L)
 
 
 # ---------------------------------------------------------------------------
 def main() -> None:
-    ap = argparse.ArgumentParser(description="类目指标计算（集中度 / 价格带 / 配置交叉表）")
-    ap.add_argument("input", help="shaduola_parser.py 产出的 normalized.json")
-    ap.add_argument("--bins", type=int, default=10, help="价格分箱数（默认 10）")
-    ap.add_argument("--top", type=int, default=10, help="CR-n 与 Top 榜单长度（默认 10）")
-    ap.add_argument("--config-fields", default="", help="配置维度字段，逗号分隔，如 功率,承重")
+    ap = argparse.ArgumentParser(description="Tính chỉ số ngành hàng (mức độ tập trung / dải giá / bảng chéo cấu hình)")
+    ap.add_argument("input", help="File normalized.json do shaduola_parser.py tạo ra")
+    ap.add_argument("--bins", type=int, default=10, help="Số bin chia giá (mặc định 10)")
+    ap.add_argument("--top", type=int, default=10, help="n của CR-n và độ dài bảng Top (mặc định 10)")
+    ap.add_argument("--config-fields", default="", help="Các trường chiều cấu hình, phân tách bằng dấu phẩy, ví dụ \"công suất,tải trọng\"")
     ap.add_argument("--valley-min-drop", type=float, default=0.15,
-                    help="波谷相对两侧邻居的最小跌幅，低于此值视为噪声（默认 0.15）")
-    ap.add_argument("--max-bands", type=int, default=5, help="最多保留的价格带数（默认 5）")
-    ap.add_argument("--brand-field", default="brand", help="品牌字段名（默认 brand）")
-    ap.add_argument("--seller-field", default="seller", help="卖家字段名（默认 seller）")
-    ap.add_argument("--format", choices=["md", "json", "both"], default="both")
-    ap.add_argument("-o", "--output", help="输出文件前缀（默认 <输入名>.metrics）")
+                    help="Mức giảm tối thiểu của vùng trũng so với hai bin bên cạnh, thấp hơn thì coi là nhiễu (mặc định 0.15)")
+    ap.add_argument("--max-bands", type=int, default=5, help="Số dải giá tối đa được giữ (mặc định 5)")
+    ap.add_argument("--brand-field", default="brand", help="Tên trường thương hiệu (mặc định brand)")
+    ap.add_argument("--seller-field", default="seller", help="Tên trường người bán (mặc định seller)")
+    ap.add_argument("--format", choices=["md", "json", "both"], default="both", help="Định dạng đầu ra (mặc định both)")
+    ap.add_argument("-o", "--output", help="Tiền tố file đầu ra (mặc định <tên_đầu_vào>.metrics)")
     args = ap.parse_args()
 
     with open(args.input, encoding="utf-8") as f:
         data = json.load(f)
     items = data.get("items", [])
     if not items:
-        sys.exit("[ERROR] 输入 JSON 里没有 items。请先用 shaduola_parser.py 转换。")
+        sys.exit("[ERROR] JSON đầu vào không có items. Hãy chuyển đổi bằng shaduola_parser.py trước.")
 
     cap = market_capacity(items)
     brand = _concentration(items, args.brand_field, args.top)
@@ -503,7 +504,7 @@ def main() -> None:
         "price_bands": pb,
     }
 
-    fields = [f.strip() for f in args.config_fields.split(",") if f.strip()]
+    fields = [unicodedata.normalize("NFC", f.strip()) for f in args.config_fields.split(",") if f.strip()]
     if fields:
         payload["config_matrix"] = config_matrix(items, fields)
 
@@ -521,9 +522,9 @@ def main() -> None:
         print(md)
 
     print("\n" + "=" * 60)
-    print("给 Agent 的输入：把上面这份指标报告（JSON 或 MD）连同 "
-          "templates/input_category_data.md 一起提交。")
-    print("Agent 只负责解读，不负责重算。若数字有疑问，回来改脚本参数。")
+    print("Đầu vào cho Agent: gửi báo cáo chỉ số ở trên (JSON hoặc MD) kèm "
+          "templates/input_category_research.md.")
+    print("Agent chỉ diễn giải, không tính lại. Nếu nghi ngờ con số, quay lại chỉnh tham số script.")
 
 
 if __name__ == "__main__":

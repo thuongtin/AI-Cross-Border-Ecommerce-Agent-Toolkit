@@ -1,218 +1,218 @@
-# 案例 · Patinete Elétrico 类目分析（Shopee 巴西站）
+# Case study · Phân tích ngành hàng Patinete Elétrico (Shopee Brazil)
 
-> **案例类型**：可复现案例 · 数据由本仓库样本脚本生成
-> **使用模块**：01 Market Research Agent（含 `scripts/` 全流程）
-> **对应 SOP**：1.1 – 1.6
-> **重点演示**：**指标由脚本算、Agent 只解读** · 波谷切分与成本可行价的自洽
+> **Loại case study**: case study tái lập được · dữ liệu do script mẫu của repo này tạo ra
+> **Module sử dụng**: 01 Market Research Agent (gồm toàn bộ quy trình `scripts/`)
+> **SOP tương ứng**: 1.1 – 1.6
+> **Trọng tâm minh họa**: **chỉ số do script tính, Agent chỉ diễn giải** · tính nhất quán giữa việc cắt theo vùng trũng và giá khả thi theo chi phí
 
-**这个案例的特别之处**：数据**完全由本仓库的脚本生成**，所以每一步你都能在本机复现、核对每一个数字。不是"讲故事型的案例"。
+**Điểm đặc biệt của case study này**: dữ liệu **hoàn toàn do script của repo này tạo ra**, nên mỗi bước bạn đều tái lập được trên máy mình và đối chiếu được từng con số. Không phải "case study kiểu kể chuyện".
 
 ---
 
-## 一、复现方式
+## 1. Cách tái lập
 
 ```bash
 cd Agents/01_Market_Research_Agent/scripts
-python make_sample.py                                              # ① 生成样本
-python shaduola_parser.py ../samples/sample_patinete_eletrico.csv   # ② 格式标准化
+python make_sample.py                                              # ① Tạo dữ liệu mẫu
+python shaduola_parser.py ../samples/sample_patinete_eletrico.csv   # ② Chuẩn hóa định dạng
 python market_metrics.py ../samples/sample_patinete_eletrico.normalized.json \
-    --bins 10 --config-fields "功率,承重,容量"                       # ③ 指标计算
+    --bins 10 --config-fields "công suất,tải trọng,dung lượng"       # ③ Tính chỉ số
 ```
 
-全部输出落在 `samples/` 下。**下文所有数字均可从 `sample_patinete_eletrico.metrics.md` 中逐项核对。**
+Toàn bộ đầu ra nằm trong `samples/`. **Mọi con số bên dưới đều đối chiếu được từng mục trong `sample_patinete_eletrico.metrics.md`.**
 
-> ⚠️ 样本是**合成数据**（`random.seed(20261013)`），用于演示方法与复现流程，**不代表真实市场**。
+> ⚠️ Mẫu là **dữ liệu tổng hợp** (`random.seed(20261013)`), dùng để minh họa phương pháp và quy trình tái lập, **không đại diện cho thị trường thật**.
 
 ---
 
-## 二、产品背景
+## 2. Bối cảnh sản phẩm
 
-| 项 | 内容 |
+| Hạng mục | Nội dung |
 |---|---|
-| 类目 | 电动滑板车（成人款） |
-| 市场 | 巴西（Shopee BR） |
-| 公司资源 | 有现货、有稳定供应商、能处理换货（不做维修） |
-| 成本结构 | 产品成本 `R$ 780` + 尾程 `R$ 130` + 仓储 `R$ 25` = **`R$ 935`** |
-| 目标毛利 | 32%（大件 30–35%） |
-| 广告预留 | 5%（大件） |
+| Ngành hàng | Xe trượt điện (dành cho người lớn) |
+| Thị trường | Brazil (Shopee BR) |
+| Nguồn lực công ty | Có hàng sẵn, có nhà cung cấp ổn định, xử lý được đổi hàng (không sửa chữa) |
+| Cấu trúc chi phí | Giá vốn sản phẩm `R$ 780` + vận chuyển chặng cuối `R$ 130` + kho bãi `R$ 25` = **`R$ 935`** |
+| Biên lợi nhuận gộp mục tiêu | 32% (hàng cồng kềnh 30–35%) |
+| Dự phòng quảng cáo | 5% (hàng cồng kềnh) |
 
 ---
 
-## 三、Step 1 · 类目前置判断（SOP 1.1）
+## 3. Step 1 · Sàng lọc sơ bộ ngành hàng (SOP 1.1)
 
-### 3.1 货盘适配性
+### 3.1 Mức độ phù hợp với nguồn hàng
 
-| 检查项 | 结论 | 依据 |
+| Hạng mục kiểm tra | Kết luận | Căn cứ |
 |---|---|---|
-| 是否有现货或即将到货 | ✅ | 有现货 |
-| 是否有稳定供应商 | ✅ | — |
-| 产品成本是否有优势 | ⚠️ | **待确认**：需与同类目头部卖家采购价对比 |
-| 是否适合目标市场 | ✅ | 巴西城市通勤需求强 |
-| 体积重量是否适合仓储物流 | ⚠️ | 单件 18 kg / 90×25×110 cm，属大件，**需确认当前仓储的大件位余量** |
-| 是否有能力处理售后 / 配件 / 退换货 | ⚠️ | 能换货、**不做维修** → 故障类售后会走退货 |
+| Có hàng sẵn hoặc hàng sắp về không | ✅ | Có hàng sẵn |
+| Có nhà cung cấp ổn định không | ✅ | — |
+| Giá vốn có lợi thế không | ⚠️ | **Cần xác nhận**: phải so với giá nhập của người bán top đầu cùng ngành hàng |
+| Có hợp với thị trường mục tiêu không | ✅ | Nhu cầu đi lại trong đô thị ở Brazil mạnh |
+| Kích thước, cân nặng có hợp với kho bãi và vận chuyển không | ⚠️ | Mỗi chiếc 18 kg / 90×25×110 cm, thuộc hàng cồng kềnh, **cần xác nhận dư chỗ cho hàng cồng kềnh trong kho hiện tại** |
+| Có năng lực xử lý hậu mãi / phụ kiện / đổi trả không | ⚠️ | Đổi hàng được, **không sửa chữa** → hậu mãi do lỗi kỹ thuật sẽ chuyển thành trả hàng |
 
-### 3.2 风险类目判定
+### 3.2 Xác định ngành hàng rủi ro
 
-| # | 判断维度 | 结论 | 说明 |
+| # | Chiều đánh giá | Kết luận | Giải thích |
 |---|---|---|---|
-| 1 | 容易产生使用问题 | 🔴 是 | 组装、充电、刹车调节均有上手门槛 |
-| 2 | 容易引发投诉 | 🔴 是 | 续航与承重是最常见争议点 |
-| 3 | 退货成本高 | 🔴 是 | 大件，退货运费高 |
-| 4 | 容易参数虚标 | 🔴 是 | 续航/速度/承重都易被夸大 |
-| 5 | 涉及知识产权 / 禁售风险 | 🟡 中 | 不禁售，但需注意品牌词 |
-| 6 | 容易造成罚分 | 🟡 中 | 破损率与迟发风险 |
+| 1 | Dễ phát sinh vấn đề khi sử dụng | 🔴 Có | Lắp ráp, sạc pin, chỉnh phanh đều cần thời gian làm quen |
+| 2 | Dễ dẫn đến khiếu nại | 🔴 Có | Quãng đường đi được và tải trọng là điểm tranh cãi phổ biến nhất |
+| 3 | Chi phí trả hàng cao | 🔴 Có | Hàng cồng kềnh, phí vận chuyển trả hàng cao |
+| 4 | Dễ khai khống thông số | 🔴 Có | Quãng đường/tốc độ/tải trọng đều dễ bị thổi phồng |
+| 5 | Liên quan sở hữu trí tuệ / rủi ro cấm bán | 🟡 Trung bình | Không bị cấm bán, nhưng cần chú ý từ khóa thương hiệu |
+| 6 | Dễ bị phạt điểm | 🟡 Trung bình | Rủi ro tỷ lệ hư hỏng và giao hàng trễ |
 
-**风险等级：🔴 高风险（命中 4 项）**
+**Mức độ rủi ro: 🔴 Rủi ro cao (dính 4 mục)**
 
-### 3.3 利润承载力检验（高风险类目必做）
+### 3.3 Kiểm tra khả năng gánh rủi ro bằng lợi nhuận (bắt buộc với ngành hàng rủi ro cao)
 
-| 项 | 数值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 目标售价 | `R$ 2.200` |
-| 广告前可支配毛利 | `R$ 913,00`（41,5%） |
-| 预估退货率 | 6% |
-| 预估售后成本 / 单（含退货损耗分摊） | `R$ 90` |
-| **风险后净毛利** | `R$ 913 − R$ 110(广告) − R$ 90 = R$ 713` |
-| 风险后毛利率 | **32,4%** |
-| 是否足以覆盖风险 | ✅ 是（≥ 32% 目标） |
+| Giá bán mục tiêu | `R$ 2.200` |
+| Lợi nhuận gộp khả dụng trước quảng cáo | `R$ 913,00` (41,5%) |
+| Tỷ lệ trả hàng ước tính | 6% |
+| Chi phí hậu mãi ước tính / đơn (gồm phân bổ hao hụt do trả hàng) | `R$ 90` |
+| **Lợi nhuận gộp ròng sau rủi ro** | `R$ 913 − R$ 110(quảng cáo) − R$ 90 = R$ 713` |
+| Biên lợi nhuận gộp sau rủi ro | **32,4%** |
+| Có đủ bù rủi ro không | ✅ Có (≥ mục tiêu 32%) |
 
-### 3.4 前置判断结论
+### 3.4 Kết luận sàng lọc sơ bộ
 
-| # | 结论项 | 内容 |
+| # | Hạng mục kết luận | Nội dung |
 |---|---|---|
-| 1 | 是否适合公司当前货盘 | ⚠️ 待确认（成本优势 + 大件仓储位） |
-| 2 | 是否存在供应链优势 | ⚠️ 待确认 |
-| 3 | 是否存在物流或仓储问题 | ⚠️ 大件仓储位需确认 |
-| 4 | 风险等级 | 🔴 高风险（4 项） |
-| 5 | 高风险类目的利润承载力 | ✅ 足以（32,4%） |
-| 6 | 平台限制 | 无禁售；注意品牌词；建议确认是否需认证 |
-| 7 | **是否进入市场容量分析** | ⚠️ **有条件进入** |
+| 1 | Có hợp với nguồn hàng hiện tại của công ty không | ⚠️ Cần xác nhận (lợi thế giá vốn + chỗ kho cho hàng cồng kềnh) |
+| 2 | Có lợi thế chuỗi cung ứng không | ⚠️ Cần xác nhận |
+| 3 | Có vấn đề về vận chuyển hoặc kho bãi không | ⚠️ Cần xác nhận chỗ kho cho hàng cồng kềnh |
+| 4 | Mức độ rủi ro | 🔴 Rủi ro cao (4 mục) |
+| 5 | Khả năng gánh rủi ro bằng lợi nhuận của ngành hàng rủi ro cao | ✅ Đủ (32,4%) |
+| 6 | Hạn chế của sàn | Không cấm bán; chú ý từ khóa thương hiệu; nên xác nhận có cần chứng nhận không |
+| 7 | **Có sang bước phân tích quy mô thị trường không** | ⚠️ **Sang bước tiếp có điều kiện** |
 
-> **判断**：在「成本优势可确认」与「大件仓储位可保障」两个条件成立的前提下，数据支持进入下一步。
-> 凭借 32,4% 的风险后毛利率，该高风险类目的利润承载力成立 —— **这是高风险类目能做的唯一理由**。
+> **Nhận định**: với tiền đề hai điều kiện 「lợi thế giá vốn xác nhận được」 và 「chỗ kho cho hàng cồng kềnh đảm bảo được」 đều thỏa, dữ liệu ủng hộ sang bước tiếp theo.
+> Nhờ biên lợi nhuận gộp sau rủi ro đạt 32,4%, khả năng gánh rủi ro bằng lợi nhuận của ngành hàng rủi ro cao này là có —— **đây là lý do duy nhất để làm một ngành hàng rủi ro cao**.
 
-**待确认清单**
-- [ ] 与同类目头部卖家的采购成本对比
-- [ ] 当前仓储大件位余量
-- [ ] 巴西对电动滑板车的认证与上路要求
+**Danh sách cần xác nhận**
+- [ ] So sánh giá nhập với người bán top đầu cùng ngành hàng
+- [ ] Dư chỗ cho hàng cồng kềnh trong kho hiện tại
+- [ ] Yêu cầu chứng nhận và quy định lưu thông đối với xe trượt điện tại Brazil
 
 ---
 
-## 四、Step 2 · 市场容量（SOP 1.2）
+## 4. Step 2 · Quy mô thị trường (SOP 1.2)
 
-### 4.1 规模
+### 4.1 Quy mô
 
-| 指标 | 数值 | 判断 |
+| Chỉ số | Giá trị | Nhận định |
 |---|---|---|
-| 样本商品数 | 50 | 达到 SOP 的基本样本量 |
-| 月总销量 | **5.886** | 容量充足 |
-| 月总销售额 | **R$ 12.700.584** | 容量充足 |
-| 均价 | `R$ 2.238,56` | — |
-| 中位价 | `R$ 2.252,03` | 与均价接近 → **分布不偏斜** |
-| 隐含均价（GMV÷销量） | `R$ 2.157,76` | 低于算术均价 → 低价段贡献了更多销量 |
-| 单商品平均月销量 | **117,7** | 品类活跃度健康 |
+| Số sản phẩm trong mẫu | 50 | Đạt cỡ mẫu cơ bản theo SOP |
+| Tổng lượng bán tháng | **5.886** | Quy mô đủ lớn |
+| Tổng doanh thu tháng | **R$ 12.700.584** | Quy mô đủ lớn |
+| Giá trung bình | `R$ 2.238,56` | — |
+| Giá trung vị | `R$ 2.252,03` | Gần giá trung bình → **phân bố không lệch** |
+| Giá trung bình ngầm định (GMV÷lượng bán) | `R$ 2.157,76` | Thấp hơn giá trung bình số học → phân khúc giá thấp đóng góp nhiều lượng bán hơn |
+| Lượng bán tháng trung bình mỗi sản phẩm | **117,7** | Mức độ sôi động của ngành hàng lành mạnh |
 
-**【判断】市场容量足够支撑投入。**
-补充信号：中位价≈均价（2.252 vs 2.239）说明价格分布是对称的，没有极端低价或极端高价拉偏均值；但隐含均价（2.158）低于均价 → **销量更集中在偏低的价格段**，这个信号在 Step 4 so 会用到。
+**【Nhận định】Quy mô thị trường đủ để chống đỡ khoản đầu tư.**
+Tín hiệu bổ sung: giá trung vị ≈ giá trung bình (2.252 vs 2.239) cho thấy phân bố giá đối xứng, không có giá cực thấp hay cực cao kéo lệch giá trung bình; nhưng giá trung bình ngầm định (2.158) thấp hơn giá trung bình → **lượng bán tập trung hơn ở phân khúc giá hơi thấp**, tín hiệu này sẽ được dùng ở Step 4.
 
-### 4.2 销售趋势
+### 4.2 Xu hướng bán hàng
 
-⚠️ **本案例只有单期快照数据，无法判断趋势。** 
+⚠️ **Case study này chỉ có dữ liệu chụp nhanh một kỳ, không đánh giá được xu hướng.** 
 
-SOP 要求通过月销量与月销售额判断"是否处于增长期/下滑期"，这需要 ≥2 期数据（建议间隔 30 天）对比。**单期数据能说明"现在有多大"，不能说明"在变大还是变小"。**
+SOP yêu cầu dựa vào lượng bán tháng và doanh thu tháng để đánh giá "đang trong giai đoạn tăng trưởng/suy giảm", việc này cần so sánh ≥2 kỳ dữ liệu (nên cách nhau 30 ngày). **Dữ liệu một kỳ cho biết "hiện tại lớn cỡ nào", không cho biết "đang lớn lên hay nhỏ đi".**
 
-| 问题 | 结论 |
+| Câu hỏi | Kết luận |
 |---|---|
-| 是否持续出单 | 数据不足（单期快照） |
-| 增长 / 下滑 | **数据不足，需补第二期数据** |
-| 是否短期爆发 | 无法判断 |
-| 是否季节性 | 无法判断 |
+| Có ra đơn đều đặn không | Không đủ dữ liệu (chụp nhanh một kỳ) |
+| Tăng trưởng / suy giảm | **Không đủ dữ liệu, cần bổ sung dữ liệu kỳ thứ hai** |
+| Có phải bùng nổ ngắn hạn không | Không đánh giá được |
+| Có theo mùa không | Không đánh giá được |
 
-### 4.3 新品表现
+### 4.3 Hiệu quả sản phẩm mới
 
-| 问题 | 结论 |
+| Câu hỏi | Kết luận |
 |---|---|
-| 新品是否能出单 | ⚠️ **数据不可靠** |
+| Sản phẩm mới có ra đơn được không | ⚠️ **Dữ liệu không đáng tin** |
 
-**原因**：SOP 原文即注明"这一部分虾多拉数据不准确"。本样本的 `listing_age_days` 由脚本随机生成，仅用于演示字段格式，**不具备分析价值** → 该区块需人工核对真实上架时间。
+**Nguyên nhân**: bản gốc SOP đã ghi chú "phần này dữ liệu Shaduola không chính xác". `listing_age_days` trong mẫu này do script sinh ngẫu nhiên, chỉ để minh họa định dạng trường, **không có giá trị phân tích** → khối này cần đối chiếu thủ công thời gian đăng bán thực tế.
 
-> **这一节示范了模块的一个设计原则**：数据不够就说"数据不足"，不要用"市场机会尚不明朗"这类模糊话把问题盖过去。
+> **Mục này minh họa một nguyên tắc thiết kế của module**: dữ liệu không đủ thì nói "không đủ dữ liệu", đừng dùng những câu mơ hồ kiểu "cơ hội thị trường chưa rõ ràng" để che lấp vấn đề.
 
 ---
 
-## 五、Step 3 · 集中度（SOP 1.3）
+## 5. Step 3 · Mức độ tập trung (SOP 1.3)
 
-### 5.1 品牌集中度
+### 5.1 Mức độ tập trung thương hiệu
 
-| 指标 | 数值 | 阈值 | 判定 |
+| Chỉ số | Giá trị | Ngưỡng | Phán định |
 |---|---|---|---|
-| 品牌数 | **6** | — | — |
-| CR3（销售额） | **74,1%** | — | — |
-| CR10 | 100,0% | — | ⚠️ **无意义**（主体数 6 ≤ 10） |
-| HHI | **2.219,7** | > 1800 视为高集中 | 🔴 集中 |
+| Số thương hiệu | **6** | — | — |
+| CR3 (doanh thu) | **74,1%** | — | — |
+| CR10 | 100,0% | — | ⚠️ **Vô nghĩa** (số chủ thể 6 ≤ 10) |
+| HHI | **2.219,7** | > 1800 coi là tập trung cao | 🔴 Tập trung |
 
-> ⚠️ **脚本自动提示**：主体数（6）≤ n（10），CR10 恒为 100%，无参考意义。应改用 CR3 与 HHI。
-> **这是本模块最容易踩的坑**：看到"CR10 = 100%"就以为"完全垄断"，实际只是因为品牌数不够 10 个。
+> ⚠️ **Script tự động nhắc**: Số chủ thể (6) ≤ n (10), CR10 luôn bằng 100%, không có giá trị tham khảo. Nên chuyển sang dùng CR3 và HHI.
+> **Đây là cái bẫy dễ vấp nhất của module này**: thấy "CR10 = 100%" là tưởng "độc quyền hoàn toàn", thực ra chỉ vì không đủ 10 thương hiệu.
 
-**头部品牌商品数占比**
+**Tỷ trọng số sản phẩm của thương hiệu top đầu**
 
-| 品牌 | 销售额占比 | 销量占比 | 商品数占比 | 类型判断 |
+| Thương hiệu | Tỷ trọng doanh thu | Tỷ trọng lượng bán | Tỷ trọng số sản phẩm | Phân loại |
 |---|---|---|---|---|
-| Generic | 29,9% | 30,5% | 24,0% | 白牌，靠商品数 |
-| Sem marca | 28,7% | 27,4% | 30,0% | 白牌，靠商品数 |
-| Outras | 15,5% | 15,3% | 20,0% | 白牌 |
-| MarcaA | 12,5% | 13,5% | 12,0% | 品牌，占比接近 |
-| MarcaB | 9,6% | 8,5% | 8,0% | 品牌 |
-| MarcaC | 3,9% | 4,9% | 6,0% | 品牌 |
+| Generic | 29,9% | 30,5% | 24,0% | No-brand, dựa vào số lượng sản phẩm |
+| Sem marca | 28,7% | 27,4% | 30,0% | No-brand, dựa vào số lượng sản phẩm |
+| Outras | 15,5% | 15,3% | 20,0% | No-brand |
+| MarcaA | 12,5% | 13,5% | 12,0% | Có thương hiệu, tỷ trọng tương đương |
+| MarcaB | 9,6% | 8,5% | 8,0% | Có thương hiệu |
+| MarcaC | 3,9% | 4,9% | 6,0% | Có thương hiệu |
 
-**【判断】不存在品牌垄断。**
+**【Nhận định】Không có độc quyền thương hiệu.**
 
-CR3 = 74,1% 看似很高，但拆开看：**前三名全是白牌（Generic / Sem marca / Outras），合计占 74,1% 销售额。** 真正的品牌（MarcaA/B/C）合计仅 26%。
+CR3 = 74,1% trông có vẻ rất cao, nhưng tách ra mà xem: **ba vị trí đầu đều là hàng no-brand (Generic / Sem marca / Outras), cộng lại chiếm 74,1% doanh thu.** Các thương hiệu thật sự (MarcaA/B/C) cộng lại chỉ 26%.
 
-> **这是一个"CR 高但不构成品牌壁垒"的典型例子。** 如果只看 CR3 = 74,1% 就下"品牌集中度过高，需谨慎进入"的结论，会完全误判。
-> **正确读法**：CR 高只说明"头部份额集中"，还要看**头部是谁** —— 是品牌还是白牌。白牌占头部 → 说明买家不认品牌，认的是产品与价格 → **新店仍有空间**。
+> **Đây là ví dụ điển hình của "CR cao nhưng không tạo thành rào cản thương hiệu".** Nếu chỉ nhìn CR3 = 74,1% mà kết luận "mức độ tập trung thương hiệu quá cao, cần thận trọng khi vào" thì sẽ đánh giá sai hoàn toàn.
+> **Cách đọc đúng**: CR cao chỉ cho thấy "thị phần nhóm top đầu tập trung", còn phải xem **nhóm top đầu là ai** —— là thương hiệu hay no-brand. No-brand chiếm nhóm đầu → người mua không chuộng thương hiệu, mà chuộng sản phẩm và giá → **shop mới vẫn còn dư địa**.
 
-白牌合计 74,1% 且商品数占比也高 → 市场处于**白牌竞争**状态，品牌壁垒低。
+No-brand cộng lại chiếm 74,1% và tỷ trọng số sản phẩm cũng cao → thị trường đang ở trạng thái **cạnh tranh giữa hàng no-brand**, rào cản thương hiệu thấp.
 
-### 5.2 卖家集中度
+### 5.2 Mức độ tập trung người bán
 
-| 指标 | 数值 | 判定 |
+| Chỉ số | Giá trị | Phán định |
 |---|---|---|
-| 卖家数 | **34** | 卖家数量充足 |
-| CR3（销售额） | **46,8%** | 中等 |
-| **CR10（销售额）** | **71,5%** | 🟡 偏高 |
-| CR10（销量） | 70,6% | 与销售额口径一致 |
-| HHI | **951,5** | < 1500 → 中低集中 |
+| Số người bán | **34** | Số lượng người bán dồi dào |
+| CR3 (doanh thu) | **46,8%** | Trung bình |
+| **CR10 (doanh thu)** | **71,5%** | 🟡 Hơi cao |
+| CR10 (lượng bán) | 70,6% | Khớp với tính theo doanh thu |
+| HHI | **951,5** | < 1500 → tập trung trung bình thấp |
 
-| # | 卖家 | 销售额占比 | 销量占比 | 商品数占比 | 类型 |
+| # | Người bán | Tỷ trọng doanh thu | Tỷ trọng lượng bán | Tỷ trọng số sản phẩm | Loại |
 |---|---|---|---|---|---|
-| 1 | LojaGrande1 | 21,3% | 21,4% | 16,0% | 效率型（份额>商品数占比） |
-| 2 | LojaGrande3 | 17,0% | 16,1% | 10,0% | 效率型 |
-| 3 | LojaGrande2 | 8,5% | 9,7% | 12,0% | **占位型**（商品数占比 > 销售额占比） |
-| 4–10 | 中小卖家 | 合计 24,7% | — | 各 2% | 单人单品 |
+| 1 | LojaGrande1 | 21,3% | 21,4% | 16,0% | Loại hiệu suất (thị phần > tỷ trọng số sản phẩm) |
+| 2 | LojaGrande3 | 17,0% | 16,1% | 10,0% | Loại hiệu suất |
+| 3 | LojaGrande2 | 8,5% | 9,7% | 12,0% | **Loại chiếm chỗ** (tỷ trọng số sản phẩm > tỷ trọng doanh thu) |
+| 4–10 | Người bán vừa và nhỏ | Cộng lại 24,7% | — | Mỗi bên 2% | Một người một sản phẩm |
 
-**【判断】存在中度卖家集中，但未构成垄断。**
+**【Nhận định】Có mức độ tập trung người bán trung bình, nhưng chưa tạo thành độc quyền.**
 
-关键读数：**销售额占比与商品数占比的比值**：
+Chỉ số đọc then chốt: **tỷ lệ giữa tỷ trọng doanh thu và tỷ trọng số sản phẩm**:
 
-| 卖家 | 销售额占比 ÷ 商品数占比 | 解读 |
+| Người bán | Tỷ trọng doanh thu ÷ tỷ trọng số sản phẩm | Diễn giải |
 |---|---|---|
-| LojaGrande1 | 21,3 / 16,0 = **1,33** | 效率高于平均 |
-| LojaGrande3 | 17,0 / 10,0 = **1,70** | **效率最高** |
-| LojaGrande2 | 8,5 / 12,0 = **0,71** | **靠铺品占位，单品效率低** |
+| LojaGrande1 | 21,3 / 16,0 = **1,33** | Hiệu suất cao hơn mức trung bình |
+| LojaGrande3 | 17,0 / 10,0 = **1,70** | **Hiệu suất cao nhất** |
+| LojaGrande2 | 8,5 / 12,0 = **0,71** | **Dựa vào phủ sản phẩm để chiếm chỗ, hiệu suất mỗi SKU thấp** |
 
-> **LojaGrande2 是最值得注意的一个**：销售额占比 8,5% 看着不小，但它的商品数占比有 12% —— 说明它是**靠数量堆出来的份额**，单品效率反而低于平均。
-> **这类卖家不是壁垒，是"可超越对象"**。相反 LojaGrande3 以 10% 的商品数拿到 17% 销售额，才是真正需要研究的对手。
+> **LojaGrande2 là người bán đáng chú ý nhất**: tỷ trọng doanh thu 8,5% trông không nhỏ, nhưng tỷ trọng số sản phẩm lên tới 12% —— cho thấy đây là **thị phần chồng lên nhờ số lượng**, hiệu suất mỗi SKU lại thấp hơn mức trung bình.
+> **Loại người bán này không phải rào cản, mà là "đối tượng có thể vượt qua"**. Ngược lại, LojaGrande3 dùng 10% số sản phẩm để lấy 17% doanh thu, đó mới là đối thủ thật sự cần nghiên cứu.
 
-**CR10 = 71,5% 但尾部有大量单人单品卖家** → 长尾仍活跃，新品进入不会被挤出。
+**CR10 = 71,5% nhưng phần đuôi có rất nhiều người bán một người một sản phẩm** → phần đuôi dài vẫn sôi động, sản phẩm mới vào sẽ không bị chèn ép ra ngoài.
 
 ---
 
-## 六、Step 4 · 价格带（SOP 1.4）
+## 6. Step 4 · Dải giá (SOP 1.4)
 
-### 6.1 分箱与波谷检测
+### 6.1 Chia bin và dò vùng trũng
 
-| 区间 | 价格段 | 商品数 | 总销量 | 曲线 | 单商品均销 |
+| Khoảng | Phân khúc giá | Số sản phẩm | Tổng lượng bán | Đường cong | Lượng bán TB mỗi sản phẩm |
 |---|---|---|---|---|---|
 | 1 | R$ 1.500,59–1.663,44 | 7 | 499 | ████████ | 71,3 |
 | 2 | R$ 1.663,44–1.826,28 | 7 | 799 | ██████████████ | 114,1 |
@@ -225,263 +225,263 @@ CR3 = 74,1% 看似很高，但拆开看：**前三名全是白牌（Generic / Se
 | **9** | **R$ 2.803,37–2.966,21** | 2 | **56** | █ | 28,0 |
 | 10 | R$ 2.966,21–3.129,06 | 5 | 127 | ██ | 25,4 |
 
-**波谷检测结果**（阈值：跌幅 ≥ 15%）
+**Kết quả dò vùng trũng** (ngưỡng: mức giảm ≥ 15%)
 
-| 箱序 | 价格边界 | 跌幅 | 用作价格带边界 |
+| Thứ tự bin | Ranh giới giá | Mức giảm | Dùng làm ranh giới dải giá |
 |---|---|---|---|
 | **3** | **R$ 1.989,13** | 22,7% | ✅ |
 | **9** | **R$ 2.966,21** | 55,9% | ✅ |
 
-> **关于"为什么不做平滑"**：箱 3（618）相对于箱 2（799）与箱 4（1.120）是一个明显的局部低点，跌幅 22,7%。
-> 但如果做 3 点滑动平均，箱 3 会变成 (799+618+1120)/3 = **846**，箱 2 变成 639、箱 4 变成 912 —— 曲线变成单调递增，**这个波谷会被完全抹掉**，价格带边界就丢了。
-> 这是脚本默认不平滑的原因，详见 [`scripts/README.md`](../scripts/README.md)。
+> **Về câu hỏi "vì sao không làm mượt"**: bin 3 (618) là một điểm thấp cục bộ rõ rệt so với bin 2 (799) và bin 4 (1.120), mức giảm 22,7%.
+> Nhưng nếu làm trung bình trượt 3 điểm, bin 3 sẽ thành (799+618+1120)/3 = **846**, bin 2 thành 639, bin 4 thành 912 —— đường cong biến thành tăng đơn điệu, **vùng trũng này bị xóa sạch**, ranh giới dải giá cũng mất luôn.
+> Đây là lý do script mặc định không làm mượt, chi tiết xem [`scripts/README.md`](../scripts/README.md).
 
-### 6.2 建议价格带（按波谷切分）
+### 6.2 Dải giá đề xuất (cắt theo vùng trũng)
 
-| 价格带 | 区间 | 商品数 | 总销量 | 单商品均销 |
+| Dải giá | Khoảng giá | Số sản phẩm | Tổng lượng bán | Lượng bán TB mỗi sản phẩm |
 |---|---|---|---|---|
 | #1 | R$ 1.500,59–1.989,13 | 18 | 1.916 | 106,4 |
 | **#2** | **R$ 1.989,13–2.966,21** | 27 | **3.843** | **142,3** |
 | #3 | R$ 2.966,21–3.129,06 | 5 | 127 | 25,4 |
 
-### 6.3 目标价格带四项交叉判断
+### 6.3 Đánh giá chéo bốn điều kiện cho dải giá mục tiêu
 
-| 条件 | 判断 | 依据 |
+| Điều kiện | Nhận định | Căn cứ |
 |---|---|---|
-| **① 销量高** | ✅ | 带 #2 占总销量 **65,3%**（3.843 ÷ 5.886） |
-| **② 平均销量高** | ✅ | 均销 **142,3** vs 整体均值 117,7 → **1,21 倍** |
-| **③ 公司产品有利润** | ✅ | 见下方测算 |
-| **④ 竞品不是特别强** | ⚠️ 部分 | 带 #2 有 27 件商品（占 54%），竞争不弱；但 CR3 仅 46,8%，无单一垄断者 |
+| **① Lượng bán cao** | ✅ | Dải #2 chiếm **65,3%** tổng lượng bán (3.843 ÷ 5.886) |
+| **② Lượng bán trung bình cao** | ✅ | Lượng bán TB **142,3** vs trung bình chung 117,7 → **gấp 1,21 lần** |
+| **③ Sản phẩm của công ty có lãi** | ✅ | Xem phần tính toán bên dưới |
+| **④ Đối thủ không quá mạnh** | ⚠️ Một phần | Dải #2 có 27 sản phẩm (chiếm 54%), cạnh tranh không yếu; nhưng CR3 chỉ 46,8%, không có ai độc quyền |
 
-#### 条件 ③ 的测算
+#### Tính toán cho điều kiện ③
 
-用定价公式反算"目标价位下限"：
+Dùng công thức định giá để tính ngược "cận dưới của mức giá mục tiêu":
 
 ```
-P = (产品成本 + 尾程物流 + 仓储费) ÷ (1 − 佣金率 − 广告率 − 退货率 − 目标毛利率)
+P = (giá vốn sản phẩm + vận chuyển chặng cuối + phí kho) ÷ (1 − tỷ lệ hoa hồng − tỷ lệ quảng cáo − tỷ lệ trả hàng − biên lợi nhuận gộp mục tiêu)
   = 935 ÷ (1 − 0,14 − 0,05 − 0,02 − 0,32)
   = 935 ÷ 0,47
   = R$ 1.989,36
 ```
 
-**而波谷检测给出的价格带 #2 下边界是 R$ 1.989,13 —— 两者相差 R$ 0,23。**
+**Còn cận dưới của dải giá #2 do dò vùng trũng đưa ra là R$ 1.989,13 —— hai con số chênh nhau R$ 0,23.**
 
-> **这个 0.23 雷亚尔的吻合不是刻意凑的，它是两个独立推导的交叉验证：**
-> - 波谷检测：纯数学（销量曲线的局部低点）
-> - 定价公式：纯财务（成本 + 费率 + 目标毛利）
+> **Sự trùng khớp 0,23 real này không phải cố tình làm cho khớp, mà là kiểm chứng chéo của hai cách suy luận độc lập:**
+> - Dò vùng trũng: thuần toán học (điểm thấp cục bộ của đường cong lượng bán)
+> - Công thức định giá: thuần tài chính (chi phí + các loại phí + biên lợi nhuận gộp mục tiêu)
 >
-> **两条路径指向同一个价位，说明这个价格带的选择同时满足"市场结构"与"成本可行"。**
-> 这是一个很有价值的信号 —— 当两者差异很大时（比如数学最优带是 R$ 1.600，但成本可行价是 R$ 2.100），说明**市场上最好卖的价格段你做不出利润**，那就必须重新考虑产品配置（降成本）或放弃。
+> **Hai con đường cùng chỉ về một mức giá, cho thấy lựa chọn dải giá này đồng thời thỏa "cấu trúc thị trường" và "khả thi về chi phí".**
+> Đây là một tín hiệu rất có giá trị —— khi hai bên chênh lệch lớn (ví dụ dải tối ưu về toán học là R$ 1.600, nhưng giá khả thi theo chi phí là R$ 2.100), nghĩa là **phân khúc giá bán chạy nhất trên thị trường thì bạn không làm ra lãi**, khi đó bắt buộc phải xem lại cấu hình sản phẩm (giảm chi phí) hoặc bỏ cuộc.
 
-#### 价格带 #3 的排除理由
+#### Lý do loại dải giá #3
 
-带 #3（R$ 2.966–3.129）虽然均销数据不好看（25,4），但要注意它的**样本量只有 5 件商品**。SOP 提到"如果销量在 50 名之后没有断崖式下跌，可以把样本扩到 100" —— 高价段单品少，**结论容易受个例影响**。
+Dải #3 (R$ 2.966–3.129) tuy số liệu lượng bán trung bình không đẹp (25,4), nhưng cần lưu ý **cỡ mẫu của nó chỉ có 5 sản phẩm**. SOP có nói "nếu sau vị trí 50 lượng bán không giảm đột ngột thì có thể mở rộng mẫu lên 100" —— phân khúc giá cao có ít sản phẩm, **kết luận dễ bị ảnh hưởng bởi trường hợp cá biệt**.
 
-**【判断】排除 #3 作为主战场，但可作为高配 SKU 的价位参考。**
+**【Nhận định】Loại #3 khỏi vai trò chiến trường chính, nhưng có thể dùng làm tham chiếu giá cho SKU cấu hình cao.**
 
-### 6.4 目标价格区间
+### 6.4 Khoảng giá mục tiêu
 
-| 项 | 建议 |
+| Hạng mục | Gợi ý |
 |---|---|
-| **推荐目标价格区间** | **`R$ 1.989 – R$ 2.966`**（带 #2） |
-| **主推价位** | **`R$ 2.100 – R$ 2.300`**（箱 4+5，合计 2.119 销量，是该带内的销量双峰） |
-| 日常售价 | `R$ 2.199` |
-| 活动价 | `R$ 1.999` |
-| 优惠券后价格 | `R$ 1.949`（贴价格带下边界，不放破 R$ 1.989 的成本线） |
-| 目标毛利率 | 32% |
-| 引流 SKU | 建议设置 350W 低配款在 R$ 1.799（落在带 #1，用于拉点击） |
+| **Khoảng giá mục tiêu khuyến nghị** | **`R$ 1.989 – R$ 2.966`** (dải #2) |
+| **Mức giá chủ lực** | **`R$ 2.100 – R$ 2.300`** (bin 4+5, cộng lại 2.119 lượng bán, là hai đỉnh lượng bán trong dải này) |
+| Giá bán thường ngày | `R$ 2.199` |
+| Giá chương trình | `R$ 1.999` |
+| Giá sau voucher | `R$ 1.949` (sát cận dưới dải giá, không phá vỡ ngưỡng chi phí R$ 1.989) |
+| Biên lợi nhuận gộp mục tiêu | 32% |
+| SKU kéo traffic | Nên đặt mẫu cấu hình thấp 350W ở R$ 1.799 (rơi vào dải #1, dùng để kéo click) |
 
-> **注意活动价与成本线的关系**：活动价 R$ 1.999 已经压到成本可行线 1.989 附近，**优惠券后价 1.949 会低于 1.989** —— 这意味着券后单可能不赚钱。
-> **这是可以接受的**：优惠券是拉转化的手段，不是常态价。但如果券后价是**长期**状态，就说明定价模型不成立，需要重新核算成本或调整配置。
+> **Chú ý quan hệ giữa giá chương trình và ngưỡng chi phí**: giá chương trình R$ 1.999 đã ép sát ngưỡng khả thi theo chi phí 1.989, **giá sau voucher 1.949 sẽ thấp hơn 1.989** —— nghĩa là đơn dùng voucher có thể không có lãi.
+> **Điều này chấp nhận được**: voucher là công cụ kéo chuyển đổi, không phải giá thường ngày. Nhưng nếu giá sau voucher là trạng thái **lâu dài**, nghĩa là mô hình định giá không đứng vững, cần tính lại chi phí hoặc điều chỉnh cấu hình.
 
 ---
 
-## 七、Step 5 · 配置组合（SOP 1.5）
+## 7. Step 5 · Tổ hợp cấu hình (SOP 1.5)
 
-### 7.1 功率
+### 7.1 Công suất
 
-| 配置值 | 商品数 | 数量占比 | 总销量 | 销量占比 | 平均销量 | 判断 |
+| Giá trị cấu hình | Số sản phẩm | Tỷ trọng số lượng | Tổng lượng bán | Tỷ trọng lượng bán | Lượng bán TB | Đánh giá |
 |---|---|---|---|---|---|---|
-| **500W** | 19 | 38,0% | **3.612** | **61,4%** | **190,1** | 总销量高→需求大；单品效率高 |
-| 350W | 14 | 28,0% | 1.298 | 22,1% | 92,7 | 常规 |
-| 800W | 17 | 34,0% | 976 | 16,6% | 57,4 | 常规 |
+| **500W** | 19 | 38,0% | **3.612** | **61,4%** | **190,1** | Tổng lượng bán cao→nhu cầu lớn; Hiệu suất mỗi SKU cao |
+| 350W | 14 | 28,0% | 1.298 | 22,1% | 92,7 | Bình thường |
+| 800W | 17 | 34,0% | 976 | 16,6% | 57,4 | Bình thường |
 
-> **800W 是最反直觉的一行**：商品数最多（17 件，34%），销量占比却最低（16,6%），均销只有 57,4（整体均值的 0.49 倍）。
-> **说明市场把 800W 当成"高价配置"而非"性能诉求"** —— 卖不动不是因为功率不够，而是因为贵。
-> **结论**：不要做 800W 主推，它是"提高客单价的高配 SKU"的料，不是主战场。
+> **800W là dòng ngược trực giác nhất**: số sản phẩm nhiều nhất (17 sản phẩm, 34%), nhưng tỷ trọng lượng bán thấp nhất (16,6%), lượng bán TB chỉ 57,4 (bằng 0,49 lần trung bình chung).
+> **Cho thấy thị trường coi 800W là "cấu hình giá cao" chứ không phải "nhu cầu hiệu năng"** —— bán không chạy không phải vì công suất không đủ, mà vì đắt.
+> **Kết luận**: đừng lấy 800W làm SKU chủ lực, nó là ứng viên cho "SKU cấu hình cao để nâng giá trị đơn hàng", không phải chiến trường chính.
 
-### 7.2 承重
+### 7.2 Tải trọng
 
-| 配置值 | 商品数 | 数量占比 | 总销量 | 销量占比 | 平均销量 | 判断 |
+| Giá trị cấu hình | Số sản phẩm | Tỷ trọng số lượng | Tổng lượng bán | Tỷ trọng lượng bán | Lượng bán TB | Đánh giá |
 |---|---|---|---|---|---|---|
-| 150kg | 32 | **64,0%** | 3.740 | 63,5% | 116,9 | 总销量高→需求大；主流配置→竞争激烈；市场大但竞争激烈 |
-| 100kg | 14 | 28,0% | 1.298 | 22,1% | 92,7 | 常规 |
-| **200kg** | **4** | **8,0%** | 848 | 14,4% | **212,0** | 单品效率高；**★机会配置（数量少但效率高）** |
+| 150kg | 32 | **64,0%** | 3.740 | 63,5% | 116,9 | Tổng lượng bán cao→nhu cầu lớn; Cấu hình phổ biến→cạnh tranh gắt; Thị trường lớn nhưng cạnh tranh gắt |
+| 100kg | 14 | 28,0% | 1.298 | 22,1% | 92,7 | Bình thường |
+| **200kg** | **4** | **8,0%** | 848 | 14,4% | **212,0** | Hiệu suất mỗi SKU cao; **★Cấu hình cơ hội (ít sản phẩm nhưng hiệu suất cao)** |
 
-### 7.3 ⭐ 机会配置的关键核查：是否被头部占据？
+### 7.3 ⭐ Kiểm tra then chốt cho cấu hình cơ hội: có bị nhóm top đầu chiếm không?
 
-SOP 明确要求："**数量少但平均销量高，说明可能是机会配置，但要进一步看是否被少数头部卖家占据。**"
+SOP yêu cầu rõ: "**Ít sản phẩm nhưng lượng bán trung bình cao, cho thấy có thể là cấu hình cơ hội, nhưng phải xem tiếp có bị một số ít người bán top đầu chiếm không.**"
 
-**200kg 的 4 件商品的持有者：**
+**Chủ sở hữu 4 sản phẩm 200kg:**
 
-| 持有卖家 | 价格 | 月销量 | 是否 Top3 卖家 |
+| Người bán sở hữu | Giá | Lượng bán tháng | Có phải người bán Top3 không |
 |---|---|---|---|
-| LojaGrande1 | R$ 1.985,12 | 138 | ✅ 是（销售额第 1） |
-| LojaGrande2 | R$ 1.984,19 | 249 | ✅ 是（销售额第 3） |
-| LojaPequena05 | R$ 1.944,98 | 138 | ❌ 否 |
-| **LojaPequena15** | R$ 2.069,39 | **323** | ❌ 否 |
+| LojaGrande1 | R$ 1.985,12 | 138 | ✅ Có (doanh thu hạng 1) |
+| LojaGrande2 | R$ 1.984,19 | 249 | ✅ Có (doanh thu hạng 3) |
+| LojaPequena05 | R$ 1.944,98 | 138 | ❌ Không |
+| **LojaPequena15** | R$ 2.069,39 | **323** | ❌ Không |
 
-**【判断】机会配置成立，未被头部垄断。**
+**【Nhận định】Cấu hình cơ hội là có thật, chưa bị nhóm top đầu độc quyền.**
 
-三条依据：
+Ba căn cứ:
 
-1. **4 件中只有 2 件在 Top3 卖家手里** —— 头部占了一半，但没占完
-2. **单品销量最高的一条（323）来自中小卖家 LojaPequena15** —— 说明这个配置的胜出**靠配置本身，不靠店铺权重**
-3. **头部只占了一半商品数** —— 说明它们没有在批量铺这个配置，这里是**配置空白而非价格战**
+1. **Trong 4 sản phẩm chỉ có 2 sản phẩm nằm trong tay người bán Top3** —— nhóm đầu chiếm một nửa, nhưng chưa chiếm hết
+2. **Listing có lượng bán cao nhất (323) đến từ người bán vừa và nhỏ LojaPequena15** —— cho thấy cấu hình này thắng **nhờ bản thân cấu hình, không nhờ trọng số của shop**
+3. **Nhóm đầu chỉ chiếm một nửa số sản phẩm** —— cho thấy họ không phủ hàng loạt cấu hình này, đây là **khoảng trống cấu hình chứ không phải cuộc chiến giá**
 
-> **第 2 条是关键证据。** 如果 200kg 配置的头部商品全部来自 LojaGrande1，那它可能是"头部靠权重硬推"的结果，新店复制不了。
-> 但最高销量出现在一个单人单品的小卖家身上 —— **这证明市场对这个配置本身有需求**，而不是对某个店铺有偏好。
+> **Căn cứ thứ 2 là bằng chứng then chốt.** Nếu toàn bộ sản phẩm top đầu của cấu hình 200kg đều thuộc LojaGrande1, thì đó có thể là kết quả "nhóm đầu dùng trọng số shop để đẩy cứng", shop mới không sao chép được.
+> Nhưng lượng bán cao nhất lại xuất hiện ở một người bán nhỏ một người một sản phẩm —— **điều này chứng minh thị trường có nhu cầu với chính cấu hình này**, chứ không phải ưu ái một shop nào đó.
 >
-> **这就是 SOP 说的"机会配置"与"看起来像机会的陷阱"的区别。**
+> **Đây chính là khác biệt giữa "cấu hình cơ hội" và "cái bẫy trông giống cơ hội" mà SOP nói tới.**
 
-### 7.4 容量
+### 7.4 Dung lượng
 
-| 配置值 | 商品数 | 数量占比 | 总销量 | 销量占比 | 平均销量 | 判断 |
+| Giá trị cấu hình | Số sản phẩm | Tỷ trọng số lượng | Tổng lượng bán | Tỷ trọng lượng bán | Lượng bán TB | Đánh giá |
 |---|---|---|---|---|---|---|
-| 12Ah | 36 | 72,0% | 4.588 | 78,0% | 127,4 | 总销量高→需求大 |
-| 10Ah | 14 | 28,0% | 1.298 | 22,1% | 92,7 | 常规 |
+| 12Ah | 36 | 72,0% | 4.588 | 78,0% | 127,4 | Tổng lượng bán cao→nhu cầu lớn |
+| 10Ah | 14 | 28,0% | 1.298 | 22,1% | 92,7 | Bình thường |
 
-> **这一维度信息量最低**（只有 2 个取值，且高度共线于价格档位）。**维度取值数太少时，交叉表的价值会下降** —— 判断时必须意识到这一点，不要硬读。
+> **Chiều này có lượng thông tin thấp nhất** (chỉ có 2 giá trị, và gần như trùng khớp với các nấc giá). **Khi chiều cấu hình có quá ít giá trị, giá trị của bảng chéo sẽ giảm** —— khi nhận định phải ý thức được điều này, đừng cố đọc ra ý nghĩa.
 
-### 7.5 推荐配置组合
+### 7.5 Tổ hợp cấu hình khuyến nghị
 
-| 维度 | 推荐取值 | 依据 |
+| Chiều | Giá trị khuyến nghị | Căn cứ |
 |---|---|---|
-| 功率 | **500W** | 销量占比 61,4% + 均销 190,1（1,62 倍均值） |
-| **承重** | **200kg** ⭐ | **机会配置**：仅 4 件商品但均销 212,0（1,80 倍均值），且未被头部垄断 |
-| 电池容量 | 12Ah | 销量占比 78%，是主流 |
-| 价格 | R$ 2.100–2.300 | 价格带 #2 内的销量双峰 |
+| Công suất | **500W** | Tỷ trọng lượng bán 61,4% + lượng bán TB 190,1 (gấp 1,62 lần trung bình) |
+| **Tải trọng** | **200kg** ⭐ | **Cấu hình cơ hội**: chỉ 4 sản phẩm nhưng lượng bán TB 212,0 (gấp 1,80 lần trung bình), và chưa bị nhóm top đầu độc quyền |
+| Dung lượng pin | 12Ah | Tỷ trọng lượng bán 78%, là cấu hình phổ biến |
+| Giá | R$ 2.100–2.300 | Hai đỉnh lượng bán trong dải giá #2 |
 
-**五项条件核对**
+**Đối chiếu năm điều kiện**
 
-| 条件 | 是否满足 | 说明 |
+| Điều kiện | Có thỏa không | Giải thích |
 |---|---|---|
-| 总销量高 | ✅ | 500W 占 61,4% 销量；带 #2 占 65,3% |
-| 平均销量高 | ✅ | 机会配置均销 212,0 = 1,80 倍整体均值 |
-| 公司能做 | ⚠️ | **待确认承重件供应商能否支持 200kg 规格** |
-| 利润可接受 | ✅ | 32,4% 风险后毛利率（同价位段） |
-| 售后可控 | ⚠️ | 承重提升会加大安全相关售后风险，需确认售后能力 |
+| Tổng lượng bán cao | ✅ | 500W chiếm 61,4% lượng bán; dải #2 chiếm 65,3% |
+| Lượng bán trung bình cao | ✅ | Lượng bán TB của cấu hình cơ hội 212,0 = gấp 1,80 lần trung bình chung |
+| Công ty làm được | ⚠️ | **Cần xác nhận nhà cung cấp linh kiện chịu lực có hỗ trợ quy cách 200kg không** |
+| Lợi nhuận chấp nhận được | ✅ | Biên lợi nhuận gộp sau rủi ro 32,4% (cùng phân khúc giá) |
+| Hậu mãi kiểm soát được | ⚠️ | Tăng tải trọng sẽ làm tăng rủi ro hậu mãi liên quan đến an toàn, cần xác nhận năng lực hậu mãi |
 
-> **"500W + 200kg" 这个组合是本案例的核心产出。**
-> 它的逻辑是：**用主流量（500W）保证需求，用机会配置（200kg）做差异化。**
-> 这正好回答 SOP 1.7 要的那句结论里的一半 —— "主打什么卖点"：**"500W 动力 + 200kg 承重"**。
-> 而 200kg 在市场上只有 4 个竞品，是难得的**低竞争高需求**位置。
-
----
-
-## 八、Step 6 · 竞品与推广节奏
-
-（本案例为脚本生成数据，无真实竞品链接。此节给出**方法与待填结构**。）
-
-| 项 | 反推结论 |
-|---|---|
-| 新链接大概多久起量 | 待填（需竞品上架时间 + 当前销量对比） |
-| 起量前需要多少基础评价 | 待填（SOP：新链接初期一定要联系客户留带图买家秀） |
-| 起量前需要多少销量支撑 | 参考：带 #2 的均销 142,3/月，目标做到 50% 即 **约 71 单/月** |
-| 是否靠广告放量 | 待填 |
-
-**我方机会点**
-
-| 机会点 | 依据 |
-|---|---|
-| **200kg 承重差异化** | 仅 4 个竞品，均销 1,80 倍于整体，且未被头部垄断 |
-| **上坡能力可视化** | 差评/竞品普遍不写测试条件 → 我方主动写明边界反而建立信任 |
-
-**我方风险点**
-
-| 风险点 | 依据 |
-|---|---|
-| 续航期望落差 | 承重提升后实际续航会下降，**必须写明测试条件**（重量/路况/速度） |
-| 安全相关售后 | 200kg 承重涉及安全，**文案与说明书必须给边界**（缓坡、单人乘坐） |
-| 组装门槛 | 大件组装是高频退货原因，需补组装指引 |
-
-> 后两条直接对应 [`07 Review Analysis`](../../07_Review_Analysis_Agent/examples/electric_scooter_reviews.md) 里发现的"可修复差评 84,6%"—— **风险点要在上架时就用文案防住，而不是等差评出现再补。**
+> **Tổ hợp "500W + 200kg" là đầu ra cốt lõi của case study này.**
+> Logic của nó là: **dùng cấu hình phổ biến (500W) để đảm bảo nhu cầu, dùng cấu hình cơ hội (200kg) để tạo khác biệt.**
+> Điều này trả lời đúng một nửa câu kết luận mà SOP 1.7 cần —— "điểm bán hàng chủ lực là gì": **"động cơ 500W + tải trọng 200kg"**.
+> Mà 200kg trên thị trường chỉ có 4 sản phẩm cạnh tranh, là vị trí **cạnh tranh thấp nhu cầu cao** hiếm có.
 
 ---
 
-## 九、分析合规扫描
+## 8. Step 6 · Đối thủ và nhịp độ đẩy sản phẩm
 
-`分析合规扫描：无命中`
+(Case study này dùng dữ liệu do script tạo ra, không có link đối thủ thật. Mục này đưa ra **phương pháp và cấu trúc cần điền**.)
 
-（未编造数据、未夸大机会、未替代决策、未建议规避规则、未臆断竞品数据真伪。所有数值均来自脚本产出且可复现。）
+| Hạng mục | Kết luận suy ngược |
+|---|---|
+| Listing mới mất bao lâu để lên đơn | Cần điền (cần so sánh thời gian đăng bán của đối thủ + lượng bán hiện tại) |
+| Cần bao nhiêu đánh giá nền trước khi lên đơn | Cần điền (SOP: giai đoạn đầu của listing mới nhất định phải liên hệ khách để lại đánh giá kèm ảnh) |
+| Cần bao nhiêu lượng bán làm nền trước khi lên đơn | Tham khảo: lượng bán TB của dải #2 là 142,3/tháng, mục tiêu đạt 50% tức **khoảng 71 đơn/tháng** |
+| Có dựa vào quảng cáo để scale không | Cần điền |
+
+**Điểm cơ hội của bên mình**
+
+| Điểm cơ hội | Căn cứ |
+|---|---|
+| **Khác biệt hóa bằng tải trọng 200kg** | Chỉ 4 sản phẩm cạnh tranh, lượng bán TB gấp 1,80 lần mức chung, và chưa bị nhóm top đầu độc quyền |
+| **Trực quan hóa khả năng leo dốc** | Đánh giá tiêu cực/đối thủ thường không ghi điều kiện thử nghiệm → bên mình chủ động ghi rõ giới hạn lại tạo được niềm tin |
+
+**Điểm rủi ro của bên mình**
+
+| Điểm rủi ro | Căn cứ |
+|---|---|
+| Hụt kỳ vọng về quãng đường đi được | Sau khi tăng tải trọng, quãng đường thực tế sẽ giảm, **bắt buộc ghi rõ điều kiện thử nghiệm** (cân nặng/mặt đường/tốc độ) |
+| Hậu mãi liên quan đến an toàn | Tải trọng 200kg liên quan đến an toàn, **nội dung listing và hướng dẫn sử dụng bắt buộc nêu giới hạn** (dốc thoải, một người lái) |
+| Rào cản lắp ráp | Lắp ráp hàng cồng kềnh là nguyên nhân trả hàng thường gặp, cần bổ sung hướng dẫn lắp ráp |
+
+> Hai mục sau tương ứng trực tiếp với phát hiện "đánh giá tiêu cực khắc phục được 84,6%" trong [`07 Review Analysis`](../../07_Review_Analysis_Agent/examples/electric_scooter_reviews.md) —— **điểm rủi ro phải được chặn bằng nội dung ngay khi đăng bán, chứ không đợi đánh giá tiêu cực xuất hiện rồi mới vá.**
 
 ---
 
-## 十、交付给 02 Product Strategy 的字段
+## 9. Quét tuân thủ phân tích
+
+`Quét tuân thủ phân tích: không vi phạm`
+
+(Không bịa dữ liệu, không thổi phồng cơ hội, không quyết định thay con người, không gợi ý lách quy định, không phỏng đoán thật giả của dữ liệu đối thủ. Mọi giá trị đều lấy từ đầu ra của script và tái lập được.)
+
+---
+
+## 10. Các trường bàn giao cho 02 Product Strategy
 
 ```yaml
 target_price_range: [1989.13, 2966.21]
 main_price_zone: [2100, 2300]
 
 price_band_analysis:
-  band_1: {range: [1500.59, 1989.13], items: 18, sales: 1916, avg_sales: 106.4, role: "引流段"}
-  band_2: {range: [1989.13, 2966.21], items: 27, sales: 3843, avg_sales: 142.3, role: "主战场"}
-  band_3: {range: [2966.21, 3129.06], items: 5,  sales: 127,  avg_sales: 25.4,  role: "高配参考，样本仅 5 件"}
+  band_1: {range: [1500.59, 1989.13], items: 18, sales: 1916, avg_sales: 106.4, role: "Phân khúc kéo traffic"}
+  band_2: {range: [1989.13, 2966.21], items: 27, sales: 3843, avg_sales: 142.3, role: "Chiến trường chính"}
+  band_3: {range: [2966.21, 3129.06], items: 5,  sales: 127,  avg_sales: 25.4,  role: "Tham chiếu cấu hình cao, mẫu chỉ có 5 sản phẩm"}
 
-cost_floor_price: 1989.36          # 毛利32%+广告5% 反算的最低可行价
-note_convergence: "波谷下界 1989.13 与成本可行价 1989.36 相差 0.23，两条独立推导吻合"
+cost_floor_price: 1989.36          # Giá khả thi thấp nhất tính ngược từ biên lợi nhuận gộp 32% + quảng cáo 5%
+note_convergence: "Cận dưới vùng trũng 1989.13 và giá khả thi theo chi phí 1989.36 chênh 0.23, hai cách suy luận độc lập trùng khớp"
 
 recommended_config:
-  power: "500W"                     # 销量占比 61.4%，均销 1.62 倍均值
-  load: "200kg"                     # ★机会配置，均销 1.80 倍均值
+  power: "500W"                     # Tỷ trọng lượng bán 61.4%, lượng bán TB gấp 1.62 lần trung bình
+  load: "200kg"                     # ★Cấu hình cơ hội, lượng bán TB gấp 1.80 lần trung bình
   capacity: "12Ah"
 mainstream_config: {power: "500W", load: "150kg", capacity: "12Ah"}
 opportunity_config:
   value: "200kg"
-  evidence: "4 件商品，均销 212.0（1.80 倍整体均值），Top3 卖家仅占 2/4，最高销量来自中小卖家"
-  differentiation: "500W 动力 + 200kg 承重 —— 低竞争高需求位置"
+  evidence: "4 sản phẩm, lượng bán TB 212.0 (gấp 1.80 lần trung bình chung), người bán Top3 chỉ chiếm 2/4, lượng bán cao nhất đến từ người bán vừa và nhỏ"
+  differentiation: "Động cơ 500W + tải trọng 200kg —— vị trí cạnh tranh thấp nhu cầu cao"
 
-brand_barrier: low                  # CR3 74.1% 但前三名全是白牌 → 买家不认品牌
-seller_barrier: medium              # CR10 71.5%，但尾部活跃、LojaGrande2 属占位型
+brand_barrier: low                  # CR3 74.1% nhưng ba vị trí đầu đều là no-brand → người mua không chuộng thương hiệu
+seller_barrier: medium              # CR10 71.5%, nhưng phần đuôi sôi động, LojaGrande2 thuộc loại chiếm chỗ
 
 competitor_weakness:
-  - "800W 段商品数最多但均销最低（0.49 倍），说明高价配置卖不动"
-  - "竞品普遍不写续航/承重测试条件 → 我方写明条件可建立信任"
+  - "Phân khúc 800W có nhiều sản phẩm nhất nhưng lượng bán TB thấp nhất (0.49 lần), cho thấy cấu hình giá cao bán không chạy"
+  - "Đối thủ thường không ghi điều kiện thử nghiệm quãng đường/tải trọng → bên mình ghi rõ điều kiện sẽ tạo được niềm tin"
 
-competitor_review_insights: []      # 需接真实评论，交给 07
+competitor_review_insights: []      # Cần kết nối đánh giá thật, giao cho 07
 
 benchmark_for_launch:
-  days_to_ramp: null                # 待填
-  reviews_needed_before_ramp: null  # 待填
-  sales_needed_before_ramp: 71      # 带 #2 均销的 50%
-  ad_dependency: null               # 待填
+  days_to_ramp: null                # Cần điền
+  reviews_needed_before_ramp: null  # Cần điền
+  sales_needed_before_ramp: 71      # 50% lượng bán TB của dải #2
+  ad_dependency: null               # Cần điền
 
 pending_confirmations:
-  - "与头部卖家的采购成本对比"
-  - "大件仓储位余量"
-  - "200kg 承重件供应商能否支持"
-  - "巴西电动滑板车认证与上路要求"
-  - "第二期数据（判断趋势）"
-  - "真实竞品链接与推广数据"
+  - "So sánh giá nhập với người bán top đầu"
+  - "Dư chỗ kho cho hàng cồng kềnh"
+  - "Nhà cung cấp linh kiện chịu lực có hỗ trợ 200kg không"
+  - "Yêu cầu chứng nhận và quy định lưu thông xe trượt điện tại Brazil"
+  - "Dữ liệu kỳ thứ hai (để đánh giá xu hướng)"
+  - "Link đối thủ thật và dữ liệu quảng bá"
 ```
 
 ---
 
-## 十一、这个案例证明了什么
+## 11. Case study này chứng minh điều gì
 
-| 结论 | 证据 |
+| Kết luận | Bằng chứng |
 |---|---|
-| **指标由脚本算、Agent 只解读** | 全部数字可用三条命令复现；Agent 的输出是判断而非计算 |
-| **CR 高 ≠ 垄断** | 品牌 CR3 = 74,1% 看似高，但前三名全是白牌 → 买家不认品牌，新店仍有空间 |
-| **要看份额与商品数的比值** | LojaGrande2 销售额 8,5% 但商品数占 12% → **占位型而非效率型**，是可超越对象 |
-| **波谷不能做平滑** | 箱 3 的波谷（22,7% 跌幅）在 3 点滑动平均后消失 → 价格带边界丢失 |
-| **数学最优带与成本可行价应当交叉验证** | 波谷下界 1.989,13 与成本可行价 1.989,36 相差 R$ 0,23 —— 两条独立路径吻合 |
-| **"机会配置"必须核查头部持有情况** | 200kg 只有 4 件竞品，且**最高销量的那条来自中小卖家** → 靠配置胜出而非店铺权重 |
-| **取值数太少的维度价值低** | 容量维度只有 2 个取值且与价格档位共线 → 信息量最低，不宜硬读 |
-| **单期数据不能判断趋势** | SOP 要求看增长/下滑，但快照只说明"现在有多大" |
-| **数据不足要直说** | 新品表现、销售趋势两节都明确标注"数据不足"，未用模糊话覆盖 |
-| **上架前就要防住已知风险** | 续航/承重/组装三个风险点在分析阶段就识别，写进文案而非等差评 |
+| **Chỉ số do script tính, Agent chỉ diễn giải** | Mọi con số đều tái lập được bằng ba lệnh; đầu ra của Agent là nhận định chứ không phải tính toán |
+| **CR cao ≠ độc quyền** | CR3 thương hiệu = 74,1% trông cao, nhưng ba vị trí đầu đều là no-brand → người mua không chuộng thương hiệu, shop mới vẫn còn dư địa |
+| **Phải xem tỷ lệ giữa thị phần và số sản phẩm** | LojaGrande2 có doanh thu 8,5% nhưng số sản phẩm chiếm 12% → **loại chiếm chỗ chứ không phải loại hiệu suất**, là đối tượng có thể vượt qua |
+| **Vùng trũng không được làm mượt** | Vùng trũng ở bin 3 (mức giảm 22,7%) biến mất sau trung bình trượt 3 điểm → mất ranh giới dải giá |
+| **Dải tối ưu về toán học và giá khả thi theo chi phí cần được kiểm chứng chéo** | Cận dưới vùng trũng 1.989,13 và giá khả thi theo chi phí 1.989,36 chênh R$ 0,23 —— hai con đường độc lập trùng khớp |
+| **"Cấu hình cơ hội" bắt buộc kiểm tra nhóm top đầu có nắm giữ không** | 200kg chỉ có 4 sản phẩm cạnh tranh, và **listing có lượng bán cao nhất đến từ người bán vừa và nhỏ** → thắng nhờ cấu hình chứ không nhờ trọng số shop |
+| **Chiều có quá ít giá trị thì giá trị thấp** | Chiều dung lượng chỉ có 2 giá trị và trùng khớp với nấc giá → lượng thông tin thấp nhất, không nên cố đọc |
+| **Dữ liệu một kỳ không đánh giá được xu hướng** | SOP yêu cầu xem tăng trưởng/suy giảm, nhưng ảnh chụp nhanh chỉ cho biết "hiện tại lớn cỡ nào" |
+| **Thiếu dữ liệu thì phải nói thẳng** | Hai mục hiệu quả sản phẩm mới và xu hướng bán hàng đều ghi rõ "không đủ dữ liệu", không dùng câu mơ hồ để che lấp |
+| **Phải chặn rủi ro đã biết ngay trước khi đăng bán** | Ba điểm rủi ro quãng đường/tải trọng/lắp ráp được nhận diện ngay ở giai đoạn phân tích, đưa vào nội dung listing thay vì đợi đánh giá tiêu cực |
 
 ---
 
-**关联文件**：[模块说明](../README.md) · [脚本说明](../scripts/README.md) · [样本说明](../samples/README.md) · [前置判断 Prompt](../prompts/01_category_precheck.md) · [市场分析 Prompt](../prompts/02_market_analysis.md) · **下游**：[02 Product Strategy](../../02_Product_Strategy_Agent/)
+**File liên quan**: [Giới thiệu module](../README.md) · [Giải thích script](../scripts/README.md) · [Giải thích dữ liệu mẫu](../samples/README.md) · [Prompt sàng lọc sơ bộ](../prompts/01_category_precheck.md) · [Prompt phân tích thị trường](../prompts/02_market_analysis.md) · **Bước sau**: [02 Product Strategy](../../02_Product_Strategy_Agent/)
