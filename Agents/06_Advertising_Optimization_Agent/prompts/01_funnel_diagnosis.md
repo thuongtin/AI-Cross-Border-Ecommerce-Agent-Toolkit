@@ -1,216 +1,216 @@
-# TASK · 四类漏斗诊断与动作清单
+# TASK · Chẩn đoán phễu bốn loại và danh sách hành động
 
-> 配套使用：`00_system.md` + `templates/input_ad_data.md`（已填写的广告数据）
-> 对应 SOP **3.6 广告调整逻辑**
+> Dùng kèm: `00_system.md` + `templates/input_ad_data.md` (dữ liệu quảng cáo đã điền)
+> Tương ứng SOP **3.6 Logic điều chỉnh quảng cáo**
 
 ---
 
 # INPUT
 
-| 字段 | 说明 | 缺失影响 |
+| Trường | Giải thích | Ảnh hưởng khi thiếu |
 |---|---|---|
-| `platform` | 目标平台 | 无法应用平台差异规则 |
-| `test_window_days` | 测试周期（天） | 无法判断数据是否稳定 |
-| `price` | 售价 | 无法算 ROAS 与盈亏线 |
-| `ad_groups[]` | 广告组数组 | — |
-| `ad_groups[].keyword_or_target` | 广告对象（关键词/商品/店铺） | 无法给出具体动作 |
-| `ad_groups[].match_type` | 匹配方式（广泛/精准/竞品/场景） | 影响诊断侧重 |
-| `ad_groups[].impressions` | 曝光 | 必需 |
-| `ad_groups[].clicks` | 点击 | 必需 |
-| `ad_groups[].add_to_cart` | 加购 | 必需（缺失则无法判定第 2 环） |
-| `ad_groups[].orders` | 订单 | 必需 |
-| `ad_groups[].spend` | 花费 | 必需 |
-| `cost_structure` | 成本结构（成本/物流/仓储/佣金率/退货率） | 缺失则**拒绝输出 ROI 结论** |
-| `existing_main_image` | 现有主图描述（可选） | CTR 不达标时，无法给出具体的换图建议 |
-| `existing_title` | 现有标题（可选） | CTR 不达标时，无法给出具体的改标题建议 |
+| `platform` | Sàn mục tiêu | Không áp dụng được quy tắc khác biệt giữa các sàn |
+| `test_window_days` | Chu kỳ test (ngày) | Không xác định được dữ liệu đã ổn định chưa |
+| `price` | Giá bán | Không tính được ROAS và ngưỡng hòa vốn |
+| `ad_groups[]` | Mảng nhóm quảng cáo | — |
+| `ad_groups[].keyword_or_target` | Đối tượng quảng cáo (từ khóa/sản phẩm/shop) | Không đưa ra được hành động cụ thể |
+| `ad_groups[].match_type` | Kiểu khớp (rộng/chính xác/đối thủ/ngữ cảnh) | Ảnh hưởng trọng tâm chẩn đoán |
+| `ad_groups[].impressions` | Lượt hiển thị | Bắt buộc |
+| `ad_groups[].clicks` | Click | Bắt buộc |
+| `ad_groups[].add_to_cart` | Thêm vào giỏ | Bắt buộc (thiếu thì không xét được khâu 2) |
+| `ad_groups[].orders` | Đơn | Bắt buộc |
+| `ad_groups[].spend` | Chi phí | Bắt buộc |
+| `cost_structure` | Cấu trúc chi phí (giá vốn/vận chuyển/kho/tỷ lệ hoa hồng/tỷ lệ hoàn hàng) | Thiếu thì **từ chối xuất kết luận ROI** |
+| `existing_main_image` | Mô tả ảnh chính hiện tại (tùy chọn) | Khi CTR không đạt, không đưa ra được đề xuất đổi ảnh cụ thể |
+| `existing_title` | Tiêu đề hiện tại (tùy chọn) | Khi CTR không đạt, không đưa ra được đề xuất sửa tiêu đề cụ thể |
 
 ---
 
-# STEP 1 · 整体概览
+# STEP 1 · Tổng quan
 
-先算汇总指标，给出**一句话总判定**。
+Tính các chỉ số tổng trước, đưa ra **đánh giá tổng một câu**.
 
 ```markdown
-## 1. 整体概览
+## 1. Tổng quan
 
-| 指标 | 数值 | 基准 | 判定 |
+| Chỉ số | Giá trị | Chuẩn | Đánh giá |
 |---|---|---|---|
-| 总曝光 | | — | — |
-| 总点击 | | — | — |
-| **整体 CTR** | | 3–5% | ✅ / ❌ |
-| 总加购 | | — | — |
-| **整体加购率** | | > 8% | ✅ / ❌ |
-| 总订单 | | — | — |
-| **整体转化率** | | > 1% | ✅ / ❌ |
-| 总花费 | | — | — |
-| 总 GMV | | — | — |
-| **整体 ROAS** | | ≥ 盈亏线 `<值>` | ✅ / ❌ |
-| **净贡献毛利** | | > 0 | ✅ / ❌ |
+| Tổng lượt hiển thị | | — | — |
+| Tổng click | | — | — |
+| **CTR tổng** | | 3–5% | ✅ / ❌ |
+| Tổng thêm vào giỏ | | — | — |
+| **Tỷ lệ thêm vào giỏ tổng** | | > 8% | ✅ / ❌ |
+| Tổng đơn | | — | — |
+| **Tỷ lệ chuyển đổi tổng** | | > 1% | ✅ / ❌ |
+| Tổng chi phí | | — | — |
+| Tổng GMV | | — | — |
+| **ROAS tổng** | | ≥ ngưỡng hòa vốn `<giá trị>` | ✅ / ❌ |
+| **Lợi nhuận gộp đóng góp ròng** | | > 0 | ✅ / ❌ |
 
-**一句话总判定**：<整体处于什么状态，最该做的一件事是什么>
+**Đánh giá tổng một câu**: <tổng thể đang ở trạng thái nào, việc nên làm nhất là gì>
 
-**数据可信度标注**：<样本量是否充足 / 测试周期是否达标>
+**Ghi chú độ tin cậy dữ liệu**: <cỡ mẫu có đủ không / chu kỳ test có đạt không>
 ```
 
-**计算公式**（必须展示，便于复核）：
+**Công thức tính** (bắt buộc trình bày để dễ kiểm tra lại):
 
 ```
-CTR      = 点击 ÷ 曝光
-加购率   = 加购 ÷ 点击
-转化率   = 订单 ÷ 点击
-CPC      = 花费 ÷ 点击
-CPA      = 花费 ÷ 订单
-GMV      = 订单 × 售价
-ROAS     = GMV ÷ 花费
-净贡献   = 广告前可支配毛利 × 订单 − 花费
+CTR               = Click ÷ Lượt hiển thị
+Tỷ lệ thêm giỏ    = Thêm vào giỏ ÷ Click
+Tỷ lệ chuyển đổi  = Đơn ÷ Click
+CPC               = Chi phí ÷ Click
+CPA               = Chi phí ÷ Đơn
+GMV               = Đơn × Giá bán
+ROAS              = GMV ÷ Chi phí
+Đóng góp ròng     = Lợi nhuận gộp khả dụng trước quảng cáo × Đơn − Chi phí
 ```
 
 ---
 
-# STEP 2 · 逐广告组漏斗判定
+# STEP 2 · Xét phễu theo từng nhóm quảng cáo
 
-这是本任务的核心。**每个广告组独立走一遍四步判定**。
+Đây là phần cốt lõi của nhiệm vụ. **Mỗi nhóm quảng cáo đi riêng một lượt bốn bước xét**.
 
 ```markdown
-## 2. 逐广告组诊断
+## 2. Chẩn đoán theo từng nhóm quảng cáo
 
-### 广告组 A · <关键词/对象>（<匹配方式>）
+### Nhóm quảng cáo A · <từ khóa/đối tượng> (<kiểu khớp>)
 
-**原始数据**
+**Dữ liệu gốc**
 
-| 曝光 | 点击 | CTR | 加购 | 加购率 | 订单 | 转化率 | 花费 | CPC | CPA | ROAS |
+| Hiển thị | Click | CTR | Thêm giỏ | Tỷ lệ thêm giỏ | Đơn | Tỷ lệ chuyển đổi | Chi phí | CPC | CPA | ROAS |
 |---|---|---|---|---|---|---|---|---|---|---|
 | | | | | | | | | | | |
 
-**漏斗判定**
+**Xét phễu**
 
-| 步骤 | 检查项 | 基准 | 实际 | 通过 | 结论 |
+| Bước | Hạng mục kiểm tra | Chuẩn | Thực tế | Đạt | Kết luận |
 |---|---|---|---|---|---|
 | 1 | CTR | 3–5% | | ✅/❌ | |
-| 2 | 加购率 | > 8% | | ✅/❌ | |
-| 3 | 转化率 | > 1% | | ✅/❌ | |
-| 4 | ROAS | ≥ 盈亏线 | | ✅/❌ | |
+| 2 | Tỷ lệ thêm giỏ | > 8% | | ✅/❌ | |
+| 3 | Tỷ lệ chuyển đổi | > 1% | | ✅/❌ | |
+| 4 | ROAS | ≥ ngưỡng hòa vốn | | ✅/❌ | |
 
-**判定结论**：<四类之一 或 健康单元>
+**Kết luận**: <một trong bốn loại hoặc đơn vị khỏe>
 
-**病因分析**：<为什么会出现这个症状，指向哪个具体环节>
+**Phân tích nguyên nhân**: <vì sao xuất hiện triệu chứng này, chỉ tới khâu cụ thể nào>
 
-**动作清单**
+**Danh sách hành động**
 
-| # | 动作 | 对象 | 判定依据 | 预期效果 | 优先级 |
+| # | Hành động | Đối tượng | Căn cứ | Hiệu quả kỳ vọng | Ưu tiên |
 |---|---|---|---|---|---|
-| 1 | | | | | 🔴 高 |
+| 1 | | | | | 🔴 Cao |
 
-**本轮明确不动的部分**：<列出本组不需要改的环节，并说明为什么>
+**Vòng này dứt khoát không động vào**: <liệt kê các khâu của nhóm này không cần sửa, và giải thích vì sao>
 ```
 
-> **"本轮明确不动的部分"是本任务强制输出项。** 它防止运营在修 A 环节时顺手把 B 环节改坏——那是典型的"改到最后不知道哪个动作起了作用"。
+> **"Vòng này dứt khoát không động vào" là mục bắt buộc của nhiệm vụ này.** Nó ngăn người vận hành tiện tay làm hỏng khâu B khi đang sửa khâu A — tình huống điển hình "sửa tới cuối không biết hành động nào có tác dụng".
 
 ---
 
-# STEP 3 · 动作汇总与优先级
+# STEP 3 · Tổng hợp hành động và ưu tiên
 
 ```markdown
-## 3. 动作汇总
+## 3. Tổng hợp hành động
 
-按「影响面 × 紧急度」排序：
+Sắp xếp theo「phạm vi ảnh hưởng × mức khẩn cấp」:
 
-| 优先级 | 动作 | 涉及广告组 | 影响预算占比 | 预期效果 | 复测周期 |
+| Ưu tiên | Hành động | Nhóm quảng cáo liên quan | Tỷ trọng ngân sách bị ảnh hưởng | Hiệu quả kỳ vọng | Chu kỳ kiểm tra lại |
 |---|---|---|---|---|---|
-| 🔴 P0 | | | | | 7 天 |
-| 🟡 P1 | | | | | 7 天 |
-| ⚪ P2 | | | | | 7 天 |
+| 🔴 P0 | | | | | 7 ngày |
+| 🟡 P1 | | | | | 7 ngày |
+| ⚪ P2 | | | | | 7 ngày |
 
-### 一次只改一件事
+### Mỗi lần chỉ sửa một việc
 
-本轮建议的改动数量：<n> 项
-<若 > 1 项，说明为什么必须同时改 / 或建议拆成几轮>
+Số thay đổi đề xuất trong vòng này: <n> hạng mục
+<nếu > 1 hạng mục, giải thích vì sao bắt buộc sửa cùng lúc / hoặc đề xuất tách thành mấy vòng>
 ```
 
-**关于"一次只改一件事"**：
+**Về "mỗi lần chỉ sửa một việc"**:
 
-理想情况下，每一轮只改一个变量，这样效果可归因。但实务中如果某一环严重不达标（如 CTR 只有 1,4%，不足基准下限的一半），且占据大量预算，可以同时改主图和砍掉低效词——因为这两件事指向**同一个病因**（点击环节），不是两个独立变量。
+Lý tưởng là mỗi vòng chỉ sửa một biến, để hiệu quả có thể quy nguyên nhân. Nhưng thực tế nếu một khâu nào đó không đạt nghiêm trọng (như CTR chỉ có 1,4%, chưa tới một nửa mức sàn của chuẩn) và chiếm phần lớn ngân sách, thì có thể đồng thời đổi ảnh chính và cắt từ khóa kém hiệu quả — vì hai việc này chỉ tới **cùng một nguyên nhân gốc** (khâu click), không phải hai biến độc lập.
 
-**判断标准**：改动是否指向**同一个病因**。是 → 可以同批改；否 → 必须拆轮次。
+**Tiêu chí phán đoán**: thay đổi có chỉ tới **cùng một nguyên nhân gốc** không. Có → có thể sửa cùng đợt; không → bắt buộc tách vòng.
 
 ---
 
-# STEP 4 · 广告跑不动时的解 bug 流程
+# STEP 4 · Quy trình gỡ bug khi quảng cáo không chạy
 
-**仅当输入中出现"曝光不足 / 花不出钱"的广告组时才输出本节。**
+**Chỉ xuất mục này khi đầu vào có nhóm quảng cáo "thiếu hiển thị / không tiêu được tiền".**
 
 ```markdown
-## 4. 广告跑不动的处理
+## 4. Xử lý quảng cáo không chạy
 
-触发广告组：<列出曝光异常低的组>
+Nhóm kích hoạt: <liệt kê các nhóm có lượt hiển thị thấp bất thường>
 
-| 组 | 曝光 | 判断 |
+| Nhóm | Hiển thị | Đánh giá |
 |---|---|---|
-| | | 曝光不足，无法进入漏斗诊断 |
+| | | Thiếu hiển thị, chưa thể vào chẩn đoán phễu |
 
-**处理流程**（SOP 3.6）
+**Quy trình xử lý** (SOP 3.6)
 
-| 步骤 | 动作 | 说明 | 观察周期 |
+| Bước | Hành động | Giải thích | Chu kỳ theo dõi |
 |---|---|---|---|
-| 1 | 更换主图 | SOP：一般改一下主图即可解除广告 bug | 1–2 天 |
-| 2 | 同步微调标题 | 优先级低于主图，仅在主图无效后再做 | 1–2 天 |
-| 3 | 找客服提工单 | 前两步无效时使用 | 按平台响应 |
+| 1 | Đổi ảnh chính | SOP: thường chỉ cần đổi ảnh chính là gỡ được bug quảng cáo | 1–2 ngày |
+| 2 | Tinh chỉnh tiêu đề đồng thời | Ưu tiên thấp hơn ảnh chính, chỉ làm khi đổi ảnh chính không hiệu quả | 1–2 ngày |
+| 3 | Tìm CSKH mở ticket | Dùng khi hai bước trên không hiệu quả | Theo thời gian phản hồi của sàn |
 
-**注意**：不要用"提高出价"作为第一手段。SOP 明确指出应先改素材。
+**Lưu ý**: đừng dùng "tăng giá thầu" làm biện pháp đầu tiên. SOP chỉ rõ nên sửa creative trước.
 ```
 
 ---
 
-# STEP 5 · 复测方案
+# STEP 5 · Phương án kiểm tra lại
 
 ```markdown
-## 5. 复测方案
+## 5. Phương án kiểm tra lại
 
-| 项 | 内容 |
+| Hạng mục | Nội dung |
 |---|---|
-| 复测触发时点 | 改动后第 **7 天**（SOP 测试区间） |
-| 需回收的数据 | 同本轮的字段（曝光/点击/加购/订单/花费） |
-| 通过标准 | 所有被改动环节的指标回到基准线以上，且 ROAS ≥ 盈亏线 |
-| 未通过的处理 | 回到 Step 2 重新诊断，**不要继续加码同一动作** |
-| 需同步确认 | 改动期间是否有活动、调价、竞品动作等外部干扰 |
+| Thời điểm kiểm tra lại | Ngày thứ **7** sau khi thay đổi (khoảng test của SOP) |
+| Dữ liệu cần thu | Cùng các trường của vòng này (hiển thị/click/thêm giỏ/đơn/chi phí) |
+| Tiêu chí đạt | Chỉ số của mọi khâu được sửa quay về trên đường chuẩn, và ROAS ≥ ngưỡng hòa vốn |
+| Xử lý khi không đạt | Quay lại Step 2 chẩn đoán lại, **đừng tiếp tục tăng liều cùng một hành động** |
+| Cần xác nhận đồng thời | Trong thời gian thay đổi có chương trình, chỉnh giá, động thái đối thủ hay nhiễu bên ngoài nào không |
 ```
 
-> **"不要继续加码同一动作"很重要**：如果改主图 7 天后 CTR 没起来，再换一张主图通常也没用——说明问题不在主图。要回到诊断，重新定位环节。
+> **"Đừng tiếp tục tăng liều cùng một hành động" rất quan trọng**: nếu đổi ảnh chính 7 ngày mà CTR không lên, đổi thêm một ảnh chính nữa thường cũng vô ích — nghĩa là vấn đề không nằm ở ảnh chính. Phải quay lại chẩn đoán, xác định lại khâu.
 
 ---
 
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 整体概览
-## 2. 逐广告组诊断
-   （每组含：原始数据 / 漏斗判定 / 判定结论 / 病因分析 / 动作清单 / 本轮不动的部分）
-## 3. 动作汇总
-## 4. 广告跑不动的处理      （条件输出）
-## 5. 复测方案
-## 6. 建议合规扫描
-   （按 00_system.md 的 G1–G5 输出；无命中必须写"无命中"）
-## 7. 交付给其他模块的字段
-   - symptom_by_group: {}          # 各组症状 → 传给 03/04 作为改动输入
-   - ctr_fail_groups: []           # CTR 不达标的组 → 03 改标题 / 04 换主图
-   - atc_fail_groups: []           # 加购不达标的组 → 03 改详情页
-   - cvr_fail_groups: []           # 转化不达标的组 → 03 改价格展示 / 07 分析评价
-   - breakeven_roas: <值>          # 盈亏线，供后续复测对标
-   - review_needed: true/false     # 是否需要 07 介入分析评价
+## 1. Tổng quan
+## 2. Chẩn đoán theo từng nhóm quảng cáo
+   (mỗi nhóm gồm: dữ liệu gốc / xét phễu / kết luận / phân tích nguyên nhân / danh sách hành động / phần vòng này không động vào)
+## 3. Tổng hợp hành động
+## 4. Xử lý quảng cáo không chạy      (xuất có điều kiện)
+## 5. Phương án kiểm tra lại
+## 6. Quét tuân thủ đề xuất
+   (xuất theo G1–G5 của 00_system.md; không vi phạm thì bắt buộc ghi "không vi phạm")
+## 7. Các trường bàn giao cho module khác
+   - symptom_by_group: {}          # triệu chứng từng nhóm → chuyển cho 03/04 làm đầu vào sửa đổi
+   - ctr_fail_groups: []           # nhóm CTR không đạt → 03 sửa tiêu đề / 04 đổi ảnh chính
+   - atc_fail_groups: []           # nhóm thêm giỏ không đạt → 03 sửa trang chi tiết
+   - cvr_fail_groups: []           # nhóm chuyển đổi không đạt → 03 sửa cách hiển thị giá / 07 phân tích đánh giá
+   - breakeven_roas: <giá trị>     # ngưỡng hòa vốn, dùng để đối chiếu khi kiểm tra lại
+   - review_needed: true/false     # có cần 07 vào phân tích đánh giá không
 ```
 
 ---
 
 # SELF-CHECK
 
-- [ ] 每个广告组都独立走完四步判定，未跳步
-- [ ] 每组都给出了明确判定结论（四类之一 / 健康单元 / 数据不足）
-- [ ] 每组都输出了"本轮明确不动的部分"
-- [ ] 未在漏斗前段达标前建议调出价
-- [ ] 动作清单每条都含具体对象与数值
-- [ ] 各项指标的计算公式已展示
-- [ ] 盈亏线 ROAS 已计算（成本结构缺失时已明确拒绝输出 ROI 结论）
-- [ ] 样本不足 / 周期不足的情况已标注
-- [ ] 已说明改动是否指向同一病因（决定能否同批改）
-- [ ] 已输出复测方案
-- [ ] 末尾已附建议合规扫描 + 下游字段
+- [ ] Mỗi nhóm quảng cáo đều đi riêng đủ bốn bước xét, không bỏ bước
+- [ ] Mỗi nhóm đều có kết luận rõ ràng (một trong bốn loại / đơn vị khỏe / thiếu dữ liệu)
+- [ ] Mỗi nhóm đều xuất phần "vòng này dứt khoát không động vào"
+- [ ] Không đề xuất chỉnh giá thầu khi phần đầu phễu chưa đạt
+- [ ] Mỗi dòng trong danh sách hành động đều có đối tượng và con số cụ thể
+- [ ] Đã trình bày công thức tính các chỉ số
+- [ ] Đã tính ROAS hòa vốn (khi thiếu cấu trúc chi phí đã từ chối rõ ràng việc xuất kết luận ROI)
+- [ ] Đã ghi chú trường hợp thiếu mẫu / thiếu chu kỳ
+- [ ] Đã giải thích các thay đổi có chỉ tới cùng một nguyên nhân gốc không (quyết định có sửa cùng đợt được không)
+- [ ] Đã xuất phương án kiểm tra lại
+- [ ] Cuối đầu ra đã kèm quét tuân thủ đề xuất + các trường cho hạ nguồn
