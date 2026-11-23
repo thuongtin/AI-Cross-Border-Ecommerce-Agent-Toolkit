@@ -65,6 +65,9 @@ _CN_UNITS = {
 }
 
 
+_CJK_RE = re.compile(r"[\u4e00-\u9fff]")
+
+
 def _norm_key(s: str) -> str:
     """Chuẩn hóa tên cột: chuẩn Unicode NFC, bỏ khoảng trắng và dấu ngoặc, chuyển chữ thường."""
     if s is None:
@@ -118,10 +121,17 @@ def _to_number(raw: Any) -> float | None:
             s = s.replace(",", "")
     elif "," in s:
         # Chỉ có dấu phẩy: 1,234 coi là phân cách hàng nghìn; 1,5 coi là dấu thập phân
+        # (có đơn vị số lượng thì luôn là dấu thập phân: 1,25 nghìn → 1250)
         head, _, tail = s.rpartition(",")
-        s = (head.replace(",", "") + "." + tail) if len(tail) == 1 else s.replace(",", "")
+        if len(tail) == 3 and mult == 1.0:
+            s = s.replace(",", "")
+        else:
+            s = head.replace(",", "") + "." + tail
     elif s.count(".") > 1:
         # Nhiều dấu chấm (kiểu Việt Nam 1.234.567) → đều là phân cách hàng nghìn
+        s = s.replace(".", "")
+    elif "." in s and mult == 1.0 and len(s.rpartition(".")[2]) == 3:
+        # Một dấu chấm + đúng 3 chữ số, không có đơn vị: 1.234 → 1234 (kiểu Brazil/Việt Nam)
         s = s.replace(".", "")
 
     try:
@@ -213,20 +223,29 @@ def build_column_map(header: list[str], custom: dict | None = None) -> dict[str,
 
     norm_header = {_norm_key(h): h for h in header if h is not None}
     resolved: dict[str, str] = {}
+    # Lượt 1: khớp chính xác cho mọi trường, để cột đã khớp không bị trường khác "giành" ở lượt mờ
     for field, aliases in mapping.items():
         for alias in aliases:
             key = _norm_key(alias)
             if key in norm_header:
                 resolved[field] = norm_header[key]
                 break
-        else:
-            # So khớp mờ: alias là chuỗi con của tên cột
-            for alias in aliases:
-                key = _norm_key(alias)
-                hit = next((orig for nk, orig in norm_header.items() if key and key in nk), None)
-                if hit:
-                    resolved[field] = hit
-                    break
+    # Lượt 2: khớp mờ trên các cột chưa dùng. Alias tiếng Trung khớp chuỗi con;
+    # alias chữ Latin chỉ khớp tiền tố ("giá" khớp "Giá (R$)" nhưng không khớp "Điểm đánh giá").
+    for field, aliases in mapping.items():
+        if field in resolved:
+            continue
+        used = set(resolved.values())
+        for alias in aliases:
+            key = _norm_key(alias)
+            if not key:
+                continue
+            cjk = bool(_CJK_RE.search(key))
+            hit = next((orig for nk, orig in norm_header.items()
+                        if orig not in used and (key in nk if cjk else nk.startswith(key))), None)
+            if hit:
+                resolved[field] = hit
+                break
     return resolved
 
 
