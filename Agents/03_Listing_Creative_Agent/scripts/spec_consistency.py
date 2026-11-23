@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""参数一致性校验 —— 「参数唯一来源」原则的自动化。
+"""Kiểm tra tính nhất quán thông số — tự động hóa nguyên tắc "thông số chỉ có một nguồn duy nhất".
 
-  python spec_consistency.py --spec spec_table.csv --text 文案.txt --allow 2026,110
-  python spec_consistency.py --spec spec_table.csv --title "标题" --text 详情.md
+  python spec_consistency.py --spec spec_table.csv --text noi_dung.txt --allow 2026,110
+  python spec_consistency.py --spec spec_table.csv --title "Tiêu đề" --text chi_tiet.md
 
-规则：**文案里出现的每一个数字，都必须能溯源到 spec_table**。
-  溯源 = 与某个参数值中的数字相等（20000mAh 的 20000、45W 的 45、3 Saídas 的 3）。
-  溯源不了的数字 = 参数漂移（笔误/编造/口径不一致），逐个列出并给出上下文。
+Quy tắc: **mọi con số xuất hiện trong nội dung đều phải truy được về spec_table**.
+  Truy được = trùng với một con số trong giá trị thông số (20000 của 20000mAh, 45 của 45W, 3 của 3 Saídas).
+  Số không truy được = lệch thông số (gõ nhầm / bịa ra / không thống nhất cách tính), liệt kê từng số kèm ngữ cảnh.
 
-反向检查：spec_table 里的数字在文案中一次都没出现 = 参数没讲，提醒补内容。
+Kiểm tra ngược: con số trong spec_table chưa từng xuất hiện trong nội dung = thông số chưa được nhắc tới, nhắc bổ sung nội dung.
 """
 import argparse
 import csv
@@ -20,7 +20,7 @@ NUM_RE = re.compile(r"(?<![\w.])(\d{1,3}(?:[.,]\d{3})+|\d+(?:[.,]\d+)?)(?![\w]*\
 
 
 def load_spec(path):
-    """spec_table：CSV（参数,数值 两列）或 JSON（dict）。返回 [(参数, 原始值, 数字集合)]。"""
+    """spec_table: CSV (2 cột Thông số,Giá trị) hoặc JSON (dict). Trả về [(thông số, giá trị gốc, tập các con số)]."""
     specs = []
     if path.endswith(".json"):
         with open(path, encoding="utf-8") as f:
@@ -32,7 +32,7 @@ def load_spec(path):
     for row in rows:
         if len(row) < 2 or not row[1].strip():
             continue
-        if row[0].strip().lower() in ("参数", "param", "key", "项目"):
+        if row[0].strip().lower() in ("参数", "param", "key", "项目", "thông số", "tham số", "hạng mục"):
             continue
         val = row[1].strip()
         specs.append((row[0].strip(), val, _nums_in(val)))
@@ -40,7 +40,7 @@ def load_spec(path):
 
 
 def _nums_in(s):
-    """从字符串抽数字：支持 20.000（巴西千分位）、20,000、20000、1.5。"""
+    """Tách số từ chuỗi: hỗ trợ 20.000 (dấu phân cách hàng nghìn kiểu Brazil), 20,000, 20000, 1.5."""
     out = set()
     for m in re.finditer(r"\d{1,3}(?:[.,]\d{3})+(?!\d)|\d+(?:[.,]\d+)?", s):
         t = m.group()
@@ -64,7 +64,7 @@ def check(text, specs, allow):
             spec_nums.setdefault(n, []).append(name)
 
     text_norm = text.replace("\u00a0", " ")
-    # 文案中的数字（带上下文）
+    # Các con số trong nội dung (kèm ngữ cảnh)
     found, untraceable = [], []
     for m in re.finditer(r"\d{1,3}(?:[.,]\d{3})+(?!\d)|\d+(?:[.,]\d+)?", text_norm):
         raw = m.group()
@@ -83,16 +83,16 @@ def check(text, specs, allow):
         if n in spec_nums or n in allow_nums:
             continue
         untraceable.append(dict(number=raw, context=f"…{ctx}…",
-                                hint="溯源不到 spec_table —— 笔误 / 编造 / 口径不一致？"))
+                                hint="Không truy được về spec_table — gõ nhầm / bịa ra / không thống nhất cách tính?"))
 
-    # 反向：参数从未出现（只查含数字的参数；无数值参数如"Display Digital"无从匹配）
+    # Kiểm tra ngược: thông số chưa từng xuất hiện (chỉ xét thông số có chứa số; thông số không có số như "Display Digital" thì không đối chiếu được)
     missing = []
     for name, raw, nums in specs:
         if not nums:
             continue
         hit = any(re.search(rf"(?<![\d.,]){re.escape(str(n))}(?![\d])", text_norm) for n in nums)
         if not hit:
-            missing.append(f"{name}（{raw}）")
+            missing.append(f"{name} ({raw})")
 
     ok = not untraceable
     return dict(ok=ok, spec_count=len(specs),
@@ -102,16 +102,16 @@ def check(text, specs, allow):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="参数一致性校验（参数唯一来源原则）")
-    ap.add_argument("--spec", required=True, help="spec_table：CSV（参数,数值）或 JSON")
-    ap.add_argument("--text", help="文案文件（标题+详情一起校验最佳）")
-    ap.add_argument("--title", help="标题文本（可与 --text 同时给，合并校验）")
-    ap.add_argument("--allow", help="豁免数字，逗号分隔（年份、无关常量等）")
+    ap = argparse.ArgumentParser(description="Kiểm tra tính nhất quán thông số (nguyên tắc thông số chỉ có một nguồn duy nhất)")
+    ap.add_argument("--spec", required=True, help="spec_table: CSV (Thông số,Giá trị) hoặc JSON")
+    ap.add_argument("--text", help="File nội dung (tốt nhất là kiểm tra tiêu đề + trang chi tiết cùng lúc)")
+    ap.add_argument("--title", help="Nội dung tiêu đề (có thể truyền cùng --text để kiểm tra gộp)")
+    ap.add_argument("--allow", help="Các số được miễn kiểm tra, phân tách bằng dấu phẩy (năm, hằng số không liên quan...)")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
     if not args.text and not args.title:
-        sys.exit("[ERROR] 给 --text 文件或 --title 文本")
+        sys.exit("[ERROR] Cần truyền file --text hoặc nội dung --title")
     text = ""
     if args.title:
         text += args.title + "\n"
@@ -120,23 +120,23 @@ def main():
             with open(args.text, encoding="utf-8") as f:
                 text += f.read()
         except OSError as e:
-            sys.exit(f"[ERROR] 读不了文件：{e}")
+            sys.exit(f"[ERROR] Không đọc được file: {e}")
 
     specs = load_spec(args.spec)
     if not specs:
-        sys.exit("[ERROR] spec_table 里没有可用参数")
+        sys.exit("[ERROR] spec_table không có thông số nào dùng được")
     allow = [a.strip() for a in args.allow.split(",")] if args.allow else []
 
     rep = check(text, specs, allow)
     if args.json:
         print(json.dumps(rep, ensure_ascii=False, indent=2))
     else:
-        print(f"\n参数 {rep['spec_count']} 项 ｜ 文案中数字 {rep['numbers_in_text']} 处 ｜ "
-              f"总判定: {'✅ 全部可溯源' if rep['ok'] else '❌ 存在参数漂移'}")
+        print(f"\nThông số: {rep['spec_count']} mục | Số trong nội dung: {rep['numbers_in_text']} chỗ | "
+              f"Kết luận: {'✅ Truy được toàn bộ' if rep['ok'] else '❌ Có lệch thông số'}")
         for u in rep["untraceable"]:
             print(f"  ❌ {u['number']}: {u['context']}")
         if rep["missing_specs"]:
-            print(f"  ⚠️ 以下参数在文案中从未出现（提醒补内容）：{'、'.join(rep['missing_specs'])}")
+            print(f"  ⚠️ Các thông số sau chưa từng xuất hiện trong nội dung (nên bổ sung): {', '.join(rep['missing_specs'])}")
     sys.exit(0 if rep["ok"] else 1)
 
 

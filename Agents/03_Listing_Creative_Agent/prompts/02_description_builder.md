@@ -1,74 +1,74 @@
-# TASK · 详情页构建与卖点/参数提炼
+# TASK · Xây dựng trang chi tiết và chắt lọc điểm bán hàng / thông số
 
-> 配套使用：`00_system.md`（系统 Prompt）+ `01_keyword_to_title.md` 的输出（关键词分类表）+ `templates/input_product_brief.md`
+> Dùng kèm: `00_system.md` (System Prompt) + đầu ra của `01_keyword_to_title.md` (bảng phân loại từ khóa) + `templates/input_product_brief.md`
 
-对应 SOP **3.3 Listing 打造（详情页结构）**。
+Tương ứng SOP **3.3 Xây dựng Listing (cấu trúc trang chi tiết)**.
 
-> ⚠️ **SOP 原文的编号问题**：原文写"可以分为以下 8 个部分"，但实际只列出 7 项（欢迎语 / 核心卖点 / 使用场景 / 详细参数 / 售后客服 / 注意事项 / 关键词标签区）。本模块按 **7 段**执行。若后续补齐第 8 段，请更新此处与 `docs/02_Platform_Output_Spec.md`。
+> ⚠️ **Vấn đề đánh số trong bản gốc SOP**: bản gốc viết "có thể chia thành 8 phần sau", nhưng thực tế chỉ liệt kê 7 mục (lời chào / điểm bán hàng cốt lõi / ngữ cảnh sử dụng / thông số chi tiết / hậu mãi và CSKH / lưu ý / khu vực tag từ khóa). Module này thực hiện theo **7 đoạn**. Nếu sau này bổ sung đoạn thứ 8, hãy cập nhật ở đây và trong `docs/02_Platform_Output_Spec.md`.
 
 ---
 
 # INPUT
 
-必需字段：
+Trường bắt buộc:
 
-| 字段 | 说明 |
+| Trường | Mô tả |
 |---|---|
-| `platform` | 目标平台（决定结构：Shopee 7 段 / ML 五点 + Ficha Técnica） |
-| `target_market` | 目标市场（决定输出语言） |
-| `product_name` | 产品通用名 |
-| `category` | 类目 |
-| `spec_table` | 参数表（键值对） |
-| `usage_scope[]` | 允许表达的使用场景 |
-| `selling_points_input[]` | 已知卖点（原始表述，可含夸张表达，由 Agent 改写） |
-| `warranty` | 保修信息（**巴西站必需**，ML 也要求） |
-| `package_content[]` | 包装清单（**这是差评高发项，务必填全**） |
-| `notes_required` | 是否需要生成"注意事项"段（`true` / `false`） |
-| `keyword_classified` | 来自 `01_keyword_to_title.md` 第 5 段 |
+| `platform` | Sàn mục tiêu (quyết định cấu trúc: Shopee 7 đoạn / ML 5 ý + Ficha Técnica) |
+| `target_market` | Thị trường mục tiêu (quyết định ngôn ngữ đầu ra) |
+| `product_name` | Tên gọi chung của sản phẩm |
+| `category` | Ngành hàng |
+| `spec_table` | Bảng thông số (cặp key-value) |
+| `usage_scope[]` | Các ngữ cảnh sử dụng được phép nêu |
+| `selling_points_input[]` | Điểm bán hàng đã biết (cách diễn đạt gốc, có thể phóng đại, Agent sẽ viết lại) |
+| `warranty` | Thông tin bảo hành (**bắt buộc với Shopee Brazil**, ML cũng yêu cầu) |
+| `package_content[]` | Danh sách hàng trong hộp (**đây là mục hay bị đánh giá tiêu cực nhất, nhất định phải điền đủ**) |
+| `notes_required` | Có cần tạo đoạn "Lưu ý" hay không (`true` / `false`) |
+| `keyword_classified` | Lấy từ đoạn 5 của `01_keyword_to_title.md` |
 
-可选字段：
-- `review_insights`：来自 07 Review Analysis Agent 的差评归因（有则用于补强第 6 段）
-- `competitor_weakness[]`：竞品短板（用于差异化表达）
+Trường tùy chọn:
+- `review_insights`: kết quả quy nguyên nhân đánh giá tiêu cực từ 07 Review Analysis Agent (nếu có thì dùng để bổ sung đoạn 6)
+- `competitor_weakness[]`: điểm yếu của đối thủ (dùng cho cách diễn đạt khác biệt hóa)
 
 ---
 
-# 输出结构（platform = shopee）
+# Cấu trúc đầu ra (platform = shopee)
 
-严格 7 段，顺序固定：
+Đúng 7 đoạn, thứ tự cố định:
 
 ```markdown
-## 1. 详情页正文
+## 1. Nội dung trang chi tiết
 
-### 段 1 · 欢迎语（Boas-vindas）
-### 段 2 · 核心卖点（Diferenciais）
-### 段 3 · 使用场景（Cenários de Uso）
-### 段 4 · 详细参数（Especificações）
-### 段 5 · 售后与客服承诺（Garantia e Atendimento）
-### 段 6 · 注意事项（Observações Importantes）  ← 仅在 notes_required = true 时生成
-### 段 7 · 关键词标签区（Tags de Busca）
+### Đoạn 1 · Lời chào (Boas-vindas)
+### Đoạn 2 · Điểm bán hàng cốt lõi (Diferenciais)
+### Đoạn 3 · Ngữ cảnh sử dụng (Cenários de Uso)
+### Đoạn 4 · Thông số chi tiết (Especificações)
+### Đoạn 5 · Cam kết hậu mãi và CSKH (Garantia e Atendimento)
+### Đoạn 6 · Lưu ý (Observações Importantes)  ← chỉ tạo khi notes_required = true
+### Đoạn 7 · Khu vực tag từ khóa (Tags de Busca)
 ```
 
 ---
 
-## 段 1 · 欢迎语
+## Đoạn 1 · Lời chào
 
-**内容**：一句话自我介绍 + 促销信息。
-**字数**：2–3 句，不超过 200 字符。
-**注意**：不写"感谢光临本店"这类无信息量的客套。写"我们卖什么 + 为什么值得看下去"。
+**Nội dung**: một câu tự giới thiệu + thông tin khuyến mãi.
+**Độ dài**: 2–3 câu, không quá 200 ký tự.
+**Lưu ý**: không viết kiểu xã giao không có thông tin như "Cảm ơn đã ghé shop". Viết "chúng tôi bán gì + vì sao đáng để đọc tiếp".
 
 ---
 
-## 段 2 · 核心卖点
+## Đoạn 2 · Điểm bán hàng cốt lõi
 
-**内容**：产品解决了什么问题、有什么优势。
-**数量**：3–5 条。
-**格式**：每条一行，`卖点标题 — 量化支撑`。
+**Nội dung**: sản phẩm giải quyết vấn đề gì, có ưu điểm gì.
+**Số lượng**: 3–5 ý.
+**Định dạng**: mỗi ý một dòng, `tiêu đề điểm bán hàng — số liệu chứng minh`.
 
-### 卖点真实化映射（强制执行）
+### Ánh xạ điểm bán hàng về sự thật (bắt buộc thực hiện)
 
-输入里的卖点若是夸张表述，**必须改写成可验证表达**：
+Điểm bán hàng ở đầu vào nếu là cách nói phóng đại, **bắt buộc viết lại thành cách diễn đạt kiểm chứng được**:
 
-| 输入（夸张） | 输出（可验证） |
+| Đầu vào (phóng đại) | Đầu ra (kiểm chứng được) |
 |---|---|
 | Bateria mais forte do mercado | Bateria de 20000mAh |
 | Carrega super rápido | Saída de 45W, recarrega um celular em cerca de 40 minutos* |
@@ -77,147 +77,147 @@
 | Design moderno | Corpo de 14,2 cm × 6,8 cm × 2,8 cm, 380 g |
 | Serve para tudo | Compatível com smartphones, tablets e fones com entrada USB-C ou USB-A |
 
-> **改写规则**：把"形容词"换成"名词 + 数字"。凡是无法用一张图、一个参数或一份测试条件支撑的表述，一律删掉。
-> 带 `*` 的数值需在段 6 补充测试条件。
+> **Quy tắc viết lại**: thay "tính từ" bằng "danh từ + con số". Câu nào không chứng minh được bằng một tấm ảnh, một thông số hoặc một điều kiện test thì xóa hết.
+> Giá trị có dấu `*` cần bổ sung điều kiện test ở đoạn 6.
 
 ---
 
-## 段 3 · 使用场景
+## Đoạn 3 · Ngữ cảnh sử dụng
 
-**内容**：让买家代入情境，激发购买欲。
+**Nội dung**: giúp người mua hình dung bản thân trong tình huống, kích thích mong muốn mua.
 
-> ⚠️ **这是虚假宣传的高发区。** SOP 原文也标注了这一点。执行时强制约束：
-> 每个场景**必须**落在 `input.usage_scope` 列表中。超出范围的场景一律删除，并记录 `[SCENE_DROPPED]`。
+> ⚠️ **Đây là vùng dễ quảng cáo sai sự thật nhất.** Bản gốc SOP cũng đã đánh dấu điểm này. Khi thực hiện, ràng buộc bắt buộc:
+> Mỗi ngữ cảnh **bắt buộc** nằm trong danh sách `input.usage_scope`. Ngữ cảnh vượt phạm vi đều bị xóa, và ghi `[SCENE_DROPPED]`.
 
-**格式**：3–5 个场景，每个写 `场景名 + 具体用法`（不写"让生活更美好"这类空话）。
-
----
-
-## 段 4 · 详细参数
-
-**内容**：颜色、材质、尺寸、容量、包装等规格信息。
-
-**格式**：表格。左列参数名（母语），右列值（含单位）。
-
-**硬约束**：
-- 每个值**必须**逐字符等于 `spec_table` 中的对应项
-- `package_content[]` 必须**完整列出**，一项不能少（这是差评第一大来源）
-- 单位全部公制，小数用逗号
+**Định dạng**: 3–5 ngữ cảnh, mỗi ngữ cảnh ghi `tên ngữ cảnh + cách dùng cụ thể` (không viết câu sáo rỗng kiểu "giúp cuộc sống tốt đẹp hơn").
 
 ---
 
-## 段 5 · 售后与客服承诺
+## Đoạn 4 · Thông số chi tiết
 
-**内容**：降低退货顾虑。
+**Nội dung**: các thông tin quy cách như màu sắc, chất liệu, kích thước, dung lượng, đóng gói.
 
-**要求**：
-- 承诺必须与 `input.warranty` 一致
-- **巴西站**：保修信息是消费法要求，必须明确写出时长与范围
-- **禁止**承诺做不到的事（如"无条件退货"若平台规则不支持）
+**Định dạng**: bảng. Cột trái là tên thông số (ngôn ngữ bản địa), cột phải là giá trị (kèm đơn vị).
 
----
-
-## 段 6 · 注意事项（条件生成）
-
-**触发条件**：`notes_required = true`，**或** `review_insights` 中存在"误解型差评"。
-
-**内容来源**（按优先级）：
-1. `review_insights` 中的**误解型差评** → 转化为预防性说明（这是 ROI 最高的用法）
-2. 产品天然的使用限制（电压、兼容性、清洁方式）
-3. 段 2 中带 `*` 的测试条件
-
-**禁止**：把平台通用规则抄一遍充数。
+**Ràng buộc cứng**:
+- Mỗi giá trị **bắt buộc** khớp từng ký tự với mục tương ứng trong `spec_table`
+- `package_content[]` bắt buộc **liệt kê đầy đủ**, không được thiếu một món nào (đây là nguồn đánh giá tiêu cực số một)
+- Đơn vị toàn bộ là hệ mét, số thập phân dùng dấu phẩy
 
 ---
 
-## 段 7 · 关键词标签区
+## Đoạn 5 · Cam kết hậu mãi và CSKH
 
-**内容**：埋词优化搜索曝光。
+**Nội dung**: giảm nỗi lo trả hàng.
 
-**来源**：`keyword_classified` 中的**核心词 + 功能词 + 场景词 + 配件词**。
-**禁止**：放入风险词、无关词、重复词。标签数控制在 10–15 个。
+**Yêu cầu**:
+- Cam kết phải khớp với `input.warranty`
+- **Shopee Brazil**: thông tin bảo hành là yêu cầu của luật bảo vệ người tiêu dùng, bắt buộc ghi rõ thời hạn và phạm vi
+- **Cấm** cam kết điều không làm được (ví dụ "đổi trả vô điều kiện" nếu quy tắc sàn không hỗ trợ)
 
 ---
 
-# 输出结构（platform = mercadolivre）
+## Đoạn 6 · Lưu ý (tạo có điều kiện)
 
-结构不同，改为：
+**Điều kiện kích hoạt**: `notes_required = true`, **hoặc** trong `review_insights` có "đánh giá tiêu cực loại hiểu lầm".
+
+**Nguồn nội dung** (theo thứ tự ưu tiên):
+1. **Đánh giá tiêu cực loại hiểu lầm** trong `review_insights` → chuyển thành lời giải thích phòng ngừa (đây là cách dùng có ROI cao nhất)
+2. Giới hạn sử dụng vốn có của sản phẩm (điện áp, khả năng tương thích, cách vệ sinh)
+3. Điều kiện test của các mục có dấu `*` ở đoạn 2
+
+**Cấm**: chép lại quy tắc chung của sàn cho đủ số lượng.
+
+---
+
+## Đoạn 7 · Khu vực tag từ khóa
+
+**Nội dung**: cài từ khóa để tối ưu lượt hiển thị tìm kiếm.
+
+**Nguồn**: **từ cốt lõi + từ tính năng + từ ngữ cảnh + từ phụ kiện** trong `keyword_classified`.
+**Cấm**: đưa vào từ rủi ro, từ không liên quan, từ lặp. Số tag giữ trong khoảng 10–15.
+
+---
+
+# Cấu trúc đầu ra (platform = mercadolivre)
+
+Cấu trúc khác, đổi thành:
 
 ```markdown
-## 1. 详情页正文
+## 1. Nội dung trang chi tiết
 
-### 1.1 Características principais（五点描述）
-每条 = 技术参数 + 适用场景 + 售后保障 的组合。5 条，每条不超过 120 字符。
+### 1.1 Características principais (mô tả 5 ý)
+Mỗi ý = kết hợp thông số kỹ thuật + ngữ cảnh phù hợp + bảo đảm hậu mãi. 5 ý, mỗi ý không quá 120 ký tự.
 
-### 1.2 Ficha Técnica（技术规格表）
-「能填就填满」——平台对完整填写的 listing 有排名倾斜。
-必须包含：Marca / Modelo / Cor / Material / Peso / Dimensões /
+### 1.2 Ficha Técnica (bảng thông số kỹ thuật)
+"Điền được bao nhiêu điền hết bấy nhiêu" — sàn ưu tiên xếp hạng cho listing điền đầy đủ.
+Bắt buộc có: Marca / Modelo / Cor / Material / Peso / Dimensões /
          Voltagem / Potência / Garantia / Itens incluídos
 
 ### 1.3 Observações
-（条件生成，同 Shopee 段 6）
+(tạo có điều kiện, giống đoạn 6 của Shopee)
 ```
 
 ---
 
-# STEP 2 · 卖点分层提炼
+# STEP 2 · Chắt lọc điểm bán hàng theo tầng
 
-详情页正文写完后，额外输出一份**卖点分层表**——这是 04 和 05 模块的直接输入。
+Sau khi viết xong nội dung trang chi tiết, xuất thêm một **bảng phân tầng điểm bán hàng** — đây là đầu vào trực tiếp của module 04 và 05.
 
 ```markdown
-## 2. 卖点分层
+## 2. Phân tầng điểm bán hàng
 
-| 层级 | 卖点 | 支撑依据 | 用于 |
+| Tầng | Điểm bán hàng | Căn cứ chứng minh | Dùng cho |
 |---|---|---|---|
-| **主卖点**（1 个） | <核心差异点> | <参数 / 测试 / 材料> | 主图核心文案、视频钩子、标题关键词 |
-| **副卖点**（3–5 个） | <各条> | <依据> | 详情图文案、视频卖点段、五点描述 |
-| **备用卖点**（若干） | <各条> | <依据> | A/B 测试、场景化素材 |
-| **禁用卖点** | <被剔除的夸张表述> | <为什么不能用> | ⛔ 列入 forbidden_words |
+| **Điểm bán hàng chính** (1 ý) | <điểm khác biệt cốt lõi> | <thông số / kết quả test / chất liệu> | Chữ chính trên ảnh chính, hook video, từ khóa tiêu đề |
+| **Điểm bán hàng phụ** (3–5 ý) | <từng ý> | <căn cứ> | Chữ trên ảnh chi tiết, đoạn điểm bán hàng trong video, mô tả 5 ý |
+| **Điểm bán hàng dự phòng** (một số) | <từng ý> | <căn cứ> | A/B test, nội dung sáng tạo theo ngữ cảnh |
+| **Điểm bán hàng bị cấm** | <cách nói phóng đại bị loại> | <vì sao không dùng được> | ⛔ Đưa vào forbidden_words |
 ```
 
-**主卖点选择标准**（按优先级）：
-1. 竞品普遍**没有**或**做得差**的
-2. 买家评论里**反复提到**的
-3. 能用**一个数字**说清的
-4. 和价格的关联最直接的
+**Tiêu chí chọn điểm bán hàng chính** (theo thứ tự ưu tiên):
+1. Thứ mà đối thủ phần lớn **không có** hoặc **làm kém**
+2. Thứ được **nhắc đi nhắc lại** trong đánh giá của người mua
+3. Thứ nói rõ được bằng **một con số**
+4. Thứ liên quan trực tiếp nhất tới giá
 
 ---
 
-# STEP 3 · 参数一致性校验
+# STEP 3 · Kiểm tra tính nhất quán thông số
 
 ```markdown
-## 3. 参数一致性校验
+## 3. Kiểm tra tính nhất quán thông số
 
-| 参数 | input.spec_table | 详情页正文 | 标题 | 一致 |
+| Thông số | input.spec_table | Nội dung trang chi tiết | Tiêu đề | Nhất quán |
 |---|---|---|---|---|
-| <键> | <值> | <值> | <值> | ✅ / ❌ |
+| <key> | <giá trị> | <giá trị> | <giá trị> | ✅ / ❌ |
 
-校验结果：<全部一致 / 发现 N 处不一致，已修正>
+Kết quả kiểm tra: <nhất quán toàn bộ / phát hiện N chỗ không nhất quán, đã sửa>
 ```
 
-> 三处（输入 / 标题 / 详情页）必须逐字符一致。这是跨模块参数漂移的第一道防线。
+> Ba nơi (đầu vào / tiêu đề / trang chi tiết) phải khớp nhau từng ký tự. Đây là tuyến phòng thủ đầu tiên chống lệch thông số giữa các module.
 
 ---
 
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 详情页正文
-（按 platform 输出对应结构）
+## 1. Nội dung trang chi tiết
+(xuất cấu trúc tương ứng theo platform)
 
-## 2. 卖点分层
+## 2. Phân tầng điểm bán hàng
 
-## 3. 参数一致性校验
+## 3. Kiểm tra tính nhất quán thông số
 
-## 4. 合规扫描
-（按 00_system.md 输出；无命中也必须写"无命中"）
+## 4. Quét tuân thủ
+(xuất theo 00_system.md; không dính cũng phải ghi "không dính")
 
-## 5. 交付给下游模块的字段
+## 5. Các trường bàn giao cho module phía sau
 - core_selling_point:
 - secondary_points: [...]
 - spec_table: {...}
 - forbidden_words: [...]
-- visual_tone_hint:     ← 视觉调性提示，供 04/05 统一风格
+- visual_tone_hint:     ← gợi ý tông hình ảnh, để 04/05 thống nhất phong cách
 - usage_scope_confirmed: [...]
 ```
 
@@ -225,12 +225,12 @@
 
 # SELF-CHECK
 
-- [ ] 7 段结构完整（`notes_required = false` 且无误解型差评时，段 6 可省略并注明原因）
-- [ ] 使用场景全部落在 `usage_scope` 内
-- [ ] `package_content[]` 已完整列出，无遗漏
-- [ ] 段 2 无绝对化用语，夸张表述已全部改写
-- [ ] 段 4 每个数值与 `spec_table` 逐字符一致
-- [ ] 段 6 的内容有明确来源（评论归因 / 产品限制 / 测试条件），不是通用套话
-- [ ] 段 7 不含风险词
-- [ ] 保修信息完整（巴西站、ML 必须）
-- [ ] 输出末尾已附下游字段 + 合规扫描
+- [ ] Cấu trúc 7 đoạn đầy đủ (khi `notes_required = false` và không có đánh giá tiêu cực loại hiểu lầm, có thể bỏ đoạn 6 và ghi rõ lý do)
+- [ ] Mọi ngữ cảnh sử dụng đều nằm trong `usage_scope`
+- [ ] `package_content[]` đã liệt kê đầy đủ, không sót
+- [ ] Đoạn 2 không có từ ngữ tuyệt đối hóa, mọi cách nói phóng đại đã được viết lại
+- [ ] Mỗi giá trị số ở đoạn 4 khớp từng ký tự với `spec_table`
+- [ ] Nội dung đoạn 6 có nguồn rõ ràng (quy nguyên nhân đánh giá / giới hạn sản phẩm / điều kiện test), không phải câu sáo rỗng chung chung
+- [ ] Đoạn 7 không chứa từ rủi ro
+- [ ] Thông tin bảo hành đầy đủ (bắt buộc với Shopee Brazil và ML)
+- [ ] Cuối đầu ra đã kèm các trường cho module phía sau + quét tuân thủ

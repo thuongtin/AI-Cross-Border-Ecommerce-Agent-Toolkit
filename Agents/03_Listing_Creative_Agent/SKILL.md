@@ -1,11 +1,11 @@
 ---
 name: sop-ecom-listing-lint
 description: >-
-  Listing 合规校验 Skill：标题字符数实测（字符非字节）、禁用词命中、核心词覆盖、
-  促销词/表情/堆砌检测、参数一致性溯源（文案里每个数字必须能对上 spec_table）。
-  当用户要检查标题、查超限、查禁用词、查参数漂移、上架前自检时使用。
-  中文「标题查一下 / 合规检查 / 参数对不对」同样触发。
-  NOT for 写标题写详情页（那是 03 主流程的活）、生图（04）。
+  Skill kiểm tra tuân thủ Listing: đo thực tế số ký tự tiêu đề (ký tự chứ không phải byte), dính từ cấm, độ phủ từ khóa cốt lõi,
+  phát hiện từ khuyến mãi / emoji / nhồi từ khóa, truy nguồn tính nhất quán thông số (mọi con số trong nội dung phải khớp với spec_table).
+  Dùng khi người dùng muốn kiểm tra tiêu đề, kiểm tra vượt giới hạn ký tự, kiểm tra từ cấm, kiểm tra lệch thông số, tự kiểm tra trước khi đăng bán.
+  Câu tiếng Việt như "kiểm tra tiêu đề giúp / check tuân thủ / thông số đúng chưa" cũng kích hoạt.
+  NOT for viết tiêu đề, viết trang chi tiết (việc của luồng chính 03), tạo ảnh (04).
 allowed-tools:
   - Bash(python *)
   - Read
@@ -15,66 +15,66 @@ metadata:
   license: MIT
 ---
 
-# 03 · Listing Compliance Skill（下限守卫）
+# 03 · Listing Compliance Skill (chốt chặn mức sàn)
 
-> **定位**：守住 Listing 的**下限** —— 不超字、不被截断、不踩禁用词、参数不漂移。
-> **上限**（点不点得动）不归它管，那要上架看真实 CTR。
+> **Định vị**: giữ **mức sàn** của Listing — không vượt số ký tự, không bị cắt chữ, không dính từ cấm, thông số không bị lệch.
+> **Mức trần** (có kéo được click hay không) không thuộc phạm vi Skill này, cái đó phải đăng bán rồi xem CTR thực tế.
 
 ---
 
-## 快速开始
+## Bắt đầu nhanh
 
 ```bash
-# 标题校验（字符数是实测值）
-python scripts/title_lint.py "标题文本" --platform shopee \
+# Kiểm tra tiêu đề (số ký tự là giá trị đo thực tế)
+python scripts/title_lint.py "Nội dung tiêu đề" --platform shopee \
     --forbidden "iPhone,Samsung" --keywords "carregador,20000mah,45w"
 
-# 参数一致性：文案里每个数字必须溯源到 spec_table
-python scripts/spec_consistency.py --spec examples/spec_table.csv --text 详情页文案.md
+# Tính nhất quán thông số: mọi con số trong nội dung phải truy được về spec_table
+python scripts/spec_consistency.py --spec examples/spec_table.csv --text noi_dung_trang_chi_tiet.md
 
-# 标题 + 详情一起校验
+# Kiểm tra tiêu đề + trang chi tiết cùng lúc
 python scripts/spec_consistency.py --spec examples/spec_table.csv \
-    --title "标题" --text 详情页文案.md
+    --title "Tiêu đề" --text noi_dung_trang_chi_tiet.md
 ```
 
 ---
 
-## 检查项
+## Các mục kiểm tra
 
-### title_lint.py（按平台规则卡）
+### title_lint.py (theo bảng quy tắc của từng sàn)
 
-| 检查 | Shopee | Mercado Livre | Amazon |
+| Kiểm tra | Shopee | Mercado Livre | Amazon |
 |---|---|---|---|
-| 字符上限 | 120 | **60** | 200 |
-| 前 30 字符 | ✅ 单独输出（权重最高段） | — | — |
-| 促销词 | ⚠️ 谨慎 | ⚠️ 明确不建议 | ⚠️ |
-| 表情符号 | ❌ 禁 | ⚠️ | ⚠️ |
-| 全大写堆砌 | ⚠️ | ⚠️ | ⚠️ |
-| 重复词 ≥3 次 | ❌ 堆砌降权 | ❌ | ⚠️ |
-| 中文字符混入 | ❌（PT-BR 站） | ❌ | ❌ |
-| 禁用词 | ❌（自备清单：未授权品牌词/绝对化用语） | ❌ | ❌ |
-| 核心词覆盖 | ⚠️ 缺词提醒 | ⚠️ | ⚠️ |
+| Giới hạn ký tự | 120 | **60** | 200 |
+| 30 ký tự đầu | ✅ Xuất riêng (đoạn có trọng số cao nhất) | — | — |
+| Từ khuyến mãi | ⚠️ Cẩn trọng | ⚠️ Khuyến cáo rõ là không dùng | ⚠️ |
+| Emoji | ❌ Cấm | ⚠️ | ⚠️ |
+| Viết hoa toàn bộ tràn lan | ⚠️ | ⚠️ | ⚠️ |
+| Từ lặp ≥3 lần | ❌ Nhồi từ khóa bị giảm thứ hạng | ❌ | ⚠️ |
+| Lẫn ký tự tiếng Trung | ❌ (sàn PT-BR) | ❌ | ❌ |
+| Từ cấm | ❌ (tự chuẩn bị danh sách: thương hiệu chưa ủy quyền / từ ngữ tuyệt đối hóa) | ❌ | ❌ |
+| Độ phủ từ khóa cốt lõi | ⚠️ Nhắc thiếu từ | ⚠️ | ⚠️ |
 
 ### spec_consistency.py
 
-| 检查 | 说明 |
+| Kiểm tra | Mô tả |
 |---|---|
-| **参数漂移** | 文案里每个数字溯源到 spec_table；溯不到 = 笔误/编造/口径不一致 |
-| **参数漏讲** | spec_table 里有数字的参数在文案中从未出现 → 提醒补内容 |
+| **Lệch thông số** | Mọi con số trong nội dung phải truy được về spec_table; không truy được = gõ nhầm / bịa ra / không thống nhất cách tính |
+| **Bỏ sót thông số** | Thông số có số trong spec_table nhưng chưa từng xuất hiện trong nội dung → nhắc bổ sung |
 
-支持巴西数字格式（`20.000` = 20000）与 `--allow` 豁免（年份等无关常量）。
+Hỗ trợ định dạng số kiểu Brazil (`20.000` = 20000) và miễn kiểm tra bằng `--allow` (năm và các hằng số không liên quan).
 
 ---
 
-## 规则卡
+## Bảng quy tắc
 
-- [references/platform-title-rules.md](references/platform-title-rules.md) —— 字数/禁项/堆砌规则的出处与阈值
-- 案例数据：[examples/spec_table.csv](examples/spec_table.csv)（充电宝参数表）
+- [references/platform-title-rules.md](references/platform-title-rules.md) — nguồn gốc và ngưỡng của quy tắc số ký tự / mục cấm / nhồi từ khóa
+- Dữ liệu ví dụ: [examples/spec_table.csv](examples/spec_table.csv) (bảng thông số sạc dự phòng)
 
-## 已知限制
+## Giới hạn đã biết
 
-| 限制 | 说明 |
+| Giới hạn | Mô tả |
 |---|---|
-| 图内文字不检测 | 主图/详情图的叠字合规归 04 的 `check_main_image.py`（像素级） |
-| 禁用词清单要自备 | 平台不公开完整违禁词表；用 03 合规扫描 Prompt 的输出喂给 `--forbidden` |
-| 只校验不生成 | 写标题请回 03 主流程 Prompt；本 Skill 是发布前最后一道闸 |
+| Không kiểm tra chữ trong ảnh | Tuân thủ chữ chèn trên ảnh chính / ảnh chi tiết thuộc về `check_main_image.py` của 04 (cấp độ pixel) |
+| Phải tự chuẩn bị danh sách từ cấm | Sàn không công khai đầy đủ danh sách từ vi phạm; lấy đầu ra của Prompt quét tuân thủ 03 đưa vào `--forbidden` |
+| Chỉ kiểm tra, không tạo nội dung | Muốn viết tiêu đề hãy quay lại Prompt luồng chính 03; Skill này là chốt chặn cuối cùng trước khi đăng |

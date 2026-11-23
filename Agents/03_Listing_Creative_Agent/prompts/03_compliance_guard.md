@@ -1,152 +1,152 @@
-# TASK · 合规扫描（独立任务）
+# TASK · Quét tuân thủ (task độc lập)
 
-> 配套使用：`00_system.md`
+> Dùng kèm: `00_system.md`
 >
-> 这个 Prompt 可以**单独使用**——不一定要跑 01/02，也可以直接拿一份已有的 Listing（自己写的、竞品参考的、历史遗留的）丢进来做合规复核。
+> Prompt này có thể **dùng riêng** — không nhất thiết phải chạy 01/02, có thể lấy thẳng một Listing có sẵn (tự viết, tham khảo đối thủ, tồn đọng từ trước) đưa vào để rà soát tuân thủ.
 
 ---
 
-# 使用场景
+# Ngữ cảnh sử dụng
 
-| 场景 | 输入 | 输出 |
+| Ngữ cảnh | Đầu vào | Đầu ra |
 |---|---|---|
-| **流程内** | 01/02 的产出 | 拦截结果 + 改写后的版本 + `forbidden_words[]` |
-| **单独复核** | 任意已有 Listing 文本 | 风险清单 + 逐条改写建议 |
-| **上架前最后一道** | 完整素材包 | 通过 / 不通过 + 阻塞项 |
+| **Trong luồng** | Sản phẩm đầu ra của 01/02 | Kết quả chặn + bản đã viết lại + `forbidden_words[]` |
+| **Rà soát riêng** | Bất kỳ văn bản Listing có sẵn | Danh sách rủi ro + gợi ý viết lại từng mục |
+| **Chốt cuối trước khi đăng bán** | Bộ nội dung sáng tạo hoàn chỉnh | Đạt / Không đạt + các mục chặn |
 
 ---
 
 # INPUT
 
-必需字段：
+Trường bắt buộc:
 
-| 字段 | 说明 |
+| Trường | Mô tả |
 |---|---|
-| `scan_target` | 待扫描的文本（标题 / 描述 / 图内文案 / 字幕 / 整套素材包） |
-| `platform` | 目标平台 |
-| `target_market` | 目标市场 |
-| `spec_table` | **参数基准**——用于校验所有数值的真实性（R3） |
-| `brand_authorization` | 已授权品牌清单（可为空数组） |
-| `usage_scope[]` | 允许表达的使用场景（R6） |
-| `mode` | `in_flow`（流程内，需输出改写版本）/ `audit_only`（仅出报告） |
+| `scan_target` | Văn bản cần quét (tiêu đề / mô tả / chữ trong ảnh / phụ đề / cả bộ nội dung sáng tạo) |
+| `platform` | Sàn mục tiêu |
+| `target_market` | Thị trường mục tiêu |
+| `spec_table` | **Chuẩn thông số** — dùng để kiểm tra tính xác thực của mọi giá trị số (R3) |
+| `brand_authorization` | Danh sách thương hiệu đã được ủy quyền (có thể là mảng rỗng) |
+| `usage_scope[]` | Các ngữ cảnh sử dụng được phép nêu (R6) |
+| `mode` | `in_flow` (trong luồng, cần xuất bản viết lại) / `audit_only` (chỉ xuất báo cáo) |
 
 ---
 
 # SCAN RULES
 
-逐条扫描以下七类。**每条必须给出明确结论**，不能写"似乎""可能"。
+Quét lần lượt bảy loại dưới đây. **Mỗi mục phải có kết luận rõ ràng**, không được viết "có vẻ", "có thể".
 
 ```
-R1 绝对化用语
-   禁用词库：o melhor / mais rápido / 100% / perfeito / garantido /
+R1 Từ ngữ tuyệt đối hóa
+   Kho từ cấm: o melhor / mais rápido / 100% / perfeito / garantido /
             incomparável / único / nº1 / à prova de tudo / indestrutível
-   检查范围：全部买家可见文本（含图内文案、字幕）
-   动作：改写为可验证的量化表达
+   Phạm vi kiểm tra: toàn bộ văn bản người mua nhìn thấy (gồm chữ trong ảnh, phụ đề)
+   Xử lý: viết lại thành cách diễn đạt định lượng, kiểm chứng được
 
-R2 未授权品牌词
-   规则：文本中出现的任何品牌名/型号名，必须在 brand_authorization 中
-   检查范围：标题、描述、参数表、图内文案、字幕
-   动作：替换为 "Compatível com <marca> <modelo>"，或删除
+R2 Tên thương hiệu chưa được ủy quyền
+   Quy tắc: mọi tên thương hiệu / tên model xuất hiện trong văn bản phải có trong brand_authorization
+   Phạm vi kiểm tra: tiêu đề, mô tả, bảng thông số, chữ trong ảnh, phụ đề
+   Xử lý: thay bằng "Compatível com <marca> <modelo>", hoặc xóa
 
-R3 参数虚标
-   规则：文本中出现的每个数值（数字 + 单位），必须能在 spec_table 找到对应项
-   检查范围：标题、描述、参数表、图内文案、字幕
-   动作：无对应项 → 删除该数值 + 记录 [PARAM_DROPPED]
-        有对应项但数值不同 → 修正为 spec_table 的值 + 记录 [PARAM_FIXED]
+R3 Khai khống thông số
+   Quy tắc: mọi giá trị số (con số + đơn vị) xuất hiện trong văn bản phải tìm được mục tương ứng trong spec_table
+   Phạm vi kiểm tra: tiêu đề, mô tả, bảng thông số, chữ trong ảnh, phụ đề
+   Xử lý: không có mục tương ứng → xóa giá trị đó + ghi [PARAM_DROPPED]
+        có mục tương ứng nhưng giá trị khác → sửa về giá trị trong spec_table + ghi [PARAM_FIXED]
 
-R4 促销词入标题
-   禁用：标题中出现 促销 / 免运费 / 分期 / 折扣数字 / 限时
-   动作：移出标题 + 记录 [MOVE_TO_DESCRIPTION]
+R4 Từ khuyến mãi trong tiêu đề
+   Cấm: tiêu đề xuất hiện khuyến mãi / miễn phí vận chuyển / trả góp / con số giảm giá / giới hạn thời gian
+   Xử lý: chuyển ra khỏi tiêu đề + ghi [MOVE_TO_DESCRIPTION]
 
-R5 敏感表述
-   禁用：医疗功效（cura / previne / trata）、
-        绝对安全承诺（não causa nenhum risco / seguro para todos）、
-        金融收益（lucro garantido / renda extra garantida）
-   动作：删除 + 记录 [SENSITIVE_REMOVED]
+R5 Nội dung nhạy cảm
+   Cấm: công dụng y tế (cura / previne / trata),
+        cam kết an toàn tuyệt đối (não causa nenhum risco / seguro para todos),
+        lợi nhuận tài chính (lucro garantido / renda extra garantida)
+   Xử lý: xóa + ghi [SENSITIVE_REMOVED]
 
-R6 场景超范围
-   规则：描述中的使用场景必须落在 usage_scope 内
-   动作：超出 → 删除该场景 + 记录 [SCENE_DROPPED]
+R6 Ngữ cảnh vượt phạm vi
+   Quy tắc: ngữ cảnh sử dụng trong mô tả phải nằm trong usage_scope
+   Xử lý: vượt phạm vi → xóa ngữ cảnh đó + ghi [SCENE_DROPPED]
 
-R7 伪造证明
-   禁用：虚构认证标志（INMETRO / ANATEL / CE / FCC / RoHS）、
-        虚构销量（+10.000 vendidos）、虚构评价（截图/引用）、
-        虚构官方授权（loja oficial / autorizado，若无授权）
-   动作：删除 + 记录 [FAKE_PROOF_REMOVED]
+R7 Chứng cứ giả mạo
+   Cấm: dấu chứng nhận bịa đặt (INMETRO / ANATEL / CE / FCC / RoHS),
+        số lượng bán bịa đặt (+10.000 vendidos), đánh giá bịa đặt (ảnh chụp màn hình / trích dẫn),
+        ủy quyền chính hãng bịa đặt (loja oficial / autorizado, nếu không có ủy quyền)
+   Xử lý: xóa + ghi [FAKE_PROOF_REMOVED]
 ```
 
 ---
 
-# 输出结构
+# Cấu trúc đầu ra
 
 ## mode = in_flow
 
 ```markdown
-## 1. 扫描概览
+## 1. Tổng quan kết quả quét
 
-| 规则 | 命中数 | 严重度 | 处理状态 |
+| Quy tắc | Số lần dính | Mức độ nghiêm trọng | Trạng thái xử lý |
 |---|---|---|---|
-| R1 绝对化用语 | 2 | 中 | 已改写 |
-| R2 未授权品牌词 | 1 | **高** | 已替换 |
-| R3 参数虚标 | 0 | — | — |
-| R4 促销词入标题 | 1 | 中 | 已移出 |
-| R5 敏感表述 | 0 | — | — |
-| R6 场景超范围 | 1 | 中 | 已删除 |
-| R7 伪造证明 | 0 | — | — |
+| R1 Từ ngữ tuyệt đối hóa | 2 | Trung bình | Đã viết lại |
+| R2 Tên thương hiệu chưa được ủy quyền | 1 | **Cao** | Đã thay thế |
+| R3 Khai khống thông số | 0 | — | — |
+| R4 Từ khuyến mãi trong tiêu đề | 1 | Trung bình | Đã chuyển ra |
+| R5 Nội dung nhạy cảm | 0 | — | — |
+| R6 Ngữ cảnh vượt phạm vi | 1 | Trung bình | Đã xóa |
+| R7 Chứng cứ giả mạo | 0 | — | — |
 
-**结论**：命中 5 条，其中高危 1 条。全部已处理。
+**Kết luận**: dính 5 mục, trong đó 1 mục nguy cơ cao. Tất cả đã được xử lý.
 
-## 2. 逐条明细
+## 2. Chi tiết từng mục
 
-| # | 规则 | 原文位置 | 原文片段 | 问题 | 改写后 |
+| # | Quy tắc | Vị trí trong bản gốc | Đoạn trích gốc | Vấn đề | Sau khi viết lại |
 |---|---|---|---|---|---|
-| 1 | R2 | 标题 | `... iPhone 15 ...` | 未授权品牌名 | `Compatível com iPhone` |
+| 1 | R2 | Tiêu đề | `... iPhone 15 ...` | Tên thương hiệu chưa được ủy quyền | `Compatível com iPhone` |
 | ... | | | | | |
 
-## 3. 改写后的完整文本
-（mode = in_flow 时输出；mode = audit_only 时写"（仅审核，不输出改写版本）"）
+## 3. Toàn văn sau khi viết lại
+(xuất khi mode = in_flow; khi mode = audit_only thì ghi "(Chỉ rà soát, không xuất bản viết lại)")
 
-## 4. forbidden_words（供 04 / 05 硬拦截）
-["<词1>", "<词2>", ...]
+## 4. forbidden_words (để 04 / 05 chặn cứng)
+["<từ 1>", "<từ 2>", ...]
 
-## 5. 通过判定
+## 5. Phán định đạt
 
-| 检查项 | 结果 |
+| Mục kiểm tra | Kết quả |
 |---|---|
-| 高危项（R2 / R3 / R7）全部清除 | ✅ / ❌ |
-| 标题无促销词、无绝对化用语 | ✅ / ❌ |
-| 所有数值可溯源 | ✅ / ❌ |
-| 场景全部在范围内 | ✅ / ❌ |
-| **是否可发布** | ✅ 可发布 / ❌ 存在阻塞项：<列出> |
+| Đã loại bỏ toàn bộ mục nguy cơ cao (R2 / R3 / R7) | ✅ / ❌ |
+| Tiêu đề không có từ khuyến mãi, không có từ ngữ tuyệt đối hóa | ✅ / ❌ |
+| Mọi giá trị số đều truy được nguồn | ✅ / ❌ |
+| Mọi ngữ cảnh đều trong phạm vi | ✅ / ❌ |
+| **Có thể đăng hay không** | ✅ Có thể đăng / ❌ Có mục chặn: <liệt kê> |
 ```
 
 ---
 
-# 严重度定义
+# Định nghĩa mức độ nghiêm trọng
 
-| 级别 | 规则 | 含义 |
+| Mức | Quy tắc | Ý nghĩa |
 |---|---|---|
-| **高危** | R2 / R3 / R7 | 平台会判定为违规，可能导致下架、扣分、侵权投诉。**必须清除才能发布** |
-| 中危 | R1 / R4 / R6 | 影响转化效率或存在合规隐患，平台可能不主动处罚，但风险累积 |
-| 低危 | R5 | 视表述程度而定，涉及医疗/安全的按高危处理 |
+| **Nguy cơ cao** | R2 / R3 / R7 | Sàn sẽ phán là vi phạm, có thể dẫn tới bị gỡ sản phẩm, bị trừ điểm, bị khiếu nại vi phạm bản quyền. **Bắt buộc loại bỏ mới được đăng** |
+| Nguy cơ trung bình | R1 / R4 / R6 | Ảnh hưởng hiệu quả chuyển đổi hoặc có rủi ro tuân thủ tiềm ẩn, sàn có thể không chủ động phạt nhưng rủi ro sẽ tích tụ |
+| Nguy cơ thấp | R5 | Tùy mức độ diễn đạt, nội dung liên quan y tế / an toàn thì xử lý như nguy cơ cao |
 
 ---
 
-# 边界规则
+# Quy tắc ranh giới
 
-1. **只报告，不臆断。** 只标记可在文本中找到明确证据的问题。不推测"这句话可能暗示…"。
-2. **不评价审美。** 合规扫描不判断文案好不好听、有没有吸引力。
-3. **改写必须最小化。** 只改违规部分，其余保持原样。不要借机重写整段。
-4. **改写后必须重新扫描。** 改写文本可能引入新问题（如替换品牌词后产生新表述）。输出前对改写结果再跑一次，确认零命中。
-5. **无命中时也要输出完整结构**，第 1 段的表格全部填 0，第 5 段判定为"✅ 可发布"。
+1. **Chỉ báo cáo, không phỏng đoán.** Chỉ đánh dấu vấn đề có bằng chứng rõ ràng trong văn bản. Không suy diễn kiểu "câu này có thể ngụ ý…".
+2. **Không đánh giá thẩm mỹ.** Quét tuân thủ không đánh giá câu chữ hay hay dở, có hấp dẫn hay không.
+3. **Viết lại phải tối thiểu.** Chỉ sửa phần vi phạm, phần còn lại giữ nguyên. Đừng nhân tiện viết lại cả đoạn.
+4. **Sau khi viết lại phải quét lại.** Văn bản viết lại có thể phát sinh vấn đề mới (ví dụ thay tên thương hiệu xong lại tạo ra cách diễn đạt mới). Trước khi xuất, chạy lại một lần trên kết quả viết lại để xác nhận không dính mục nào.
+5. **Không dính mục nào vẫn phải xuất đủ cấu trúc**, bảng ở đoạn 1 điền toàn số 0, đoạn 5 phán định là "✅ Có thể đăng".
 
 ---
 
 # SELF-CHECK
 
-- [ ] 七条规则全部扫描，逐条给出命中数（包括 0）
-- [ ] 每条命中都有明确的原文片段作为证据
-- [ ] 改写后的文本已**二次扫描**确认零命中
-- [ ] `forbidden_words` 清单已输出，格式为数组
-- [ ] 输出了明确的「是否可发布」判定，含原因的阻塞项
-- [ ] 没有对文案做超出合规范围的改动
+- [ ] Đã quét đủ bảy quy tắc, mỗi quy tắc đều có số lần dính (kể cả 0)
+- [ ] Mỗi mục dính đều có đoạn trích gốc rõ ràng làm bằng chứng
+- [ ] Văn bản sau khi viết lại đã được **quét lần hai** xác nhận không dính mục nào
+- [ ] Đã xuất danh sách `forbidden_words`, định dạng là mảng
+- [ ] Đã xuất phán định "Có thể đăng hay không" rõ ràng, kèm các mục chặn có lý do
+- [ ] Không chỉnh sửa câu chữ vượt quá phạm vi tuân thủ
