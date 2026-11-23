@@ -4,16 +4,16 @@
     "row_count_raw": 50,
     "row_count_kept": 50,
     "column_map": {
-      "title": "商品名称",
-      "price": "价格",
-      "monthly_sales": "月销量",
-      "monthly_revenue": "月销售额",
-      "seller": "卖家",
-      "brand": "品牌",
-      "rating": "评分",
-      "review_count": "评价数",
-      "listing_age_days": "上架时间",
-      "url": "商品链接"
+      "title": "Tên sản phẩm",
+      "price": "Giá",
+      "monthly_sales": "Lượng bán tháng",
+      "monthly_revenue": "Doanh thu tháng",
+      "seller": "Người bán",
+      "brand": "Thương hiệu",
+      "rating": "Điểm đánh giá",
+      "review_count": "Số đánh giá",
+      "listing_age_days": "Thời gian đăng bán",
+      "url": "Link sản phẩm"
     }
   },
   "market_capacity": {
@@ -34,7 +34,7 @@
     "cr10_by_sales": 1.0,
     "cr3": 0.7409,
     "hhi": 2219.7,
-    "cr_note": "主体数（6）≤ n（10），CR10 恒为 100%，无参考意义。请改用 CR3（74.1%）与 HHI（2219.7）判断集中度。",
+    "cr_note": "Số chủ thể (6) ≤ n (10), CR10 luôn bằng 100%, không có giá trị tham khảo. Hãy dùng CR3 (74.1%) và HHI (2219.7) để đánh giá mức độ tập trung.",
     "top_list": [
       {
         "rank": 1,
@@ -353,7 +353,7 @@
     "max_bands": 5
   },
   "config_matrix": {
-    "功率": {
+    "công suất": {
       "value_count": 3,
       "unparsed_items": 0,
       "avg_sales_all_values": 117.7,
@@ -367,8 +367,8 @@
           "sales_share": 0.6137,
           "avg_sales": 190.1,
           "judgement": [
-            "总销量高→需求大",
-            "单品效率高"
+            "Tổng lượng bán cao→nhu cầu lớn",
+            "Hiệu suất mỗi SKU cao"
           ]
         },
         {
@@ -379,7 +379,7 @@
           "sales_share": 0.2205,
           "avg_sales": 92.7,
           "judgement": [
-            "常规"
+            "Bình thường"
           ]
         },
         {
@@ -390,12 +390,12 @@
           "sales_share": 0.1658,
           "avg_sales": 57.4,
           "judgement": [
-            "常规"
+            "Bình thường"
           ]
         }
       ]
     },
-    "承重": {
+    "tải trọng": {
       "value_count": 3,
       "unparsed_items": 0,
       "avg_sales_all_values": 117.7,
@@ -409,9 +409,9 @@
           "sales_share": 0.6354,
           "avg_sales": 116.9,
           "judgement": [
-            "总销量高→需求大",
-            "主流配置→竞争激烈",
-            "市场大但竞争激烈"
+            "Tổng lượng bán cao→nhu cầu lớn",
+            "Cấu hình phổ biến→cạnh tranh gắt",
+            "Thị trường lớn nhưng cạnh tranh gắt"
           ]
         },
         {
@@ -422,7 +422,7 @@
           "sales_share": 0.2205,
           "avg_sales": 92.7,
           "judgement": [
-            "常规"
+            "Bình thường"
           ]
         },
         {
@@ -433,13 +433,13 @@
           "sales_share": 0.1441,
           "avg_sales": 212.0,
           "judgement": [
-            "单品效率高",
-            "★机会配置（数量少但效率高）"
+            "Hiệu suất mỗi SKU cao",
+            "★Cấu hình cơ hội (ít sản phẩm nhưng hiệu suất cao)"
           ]
         }
       ]
     },
-    "容量": {
+    "dung lượng": {
       "value_count": 2,
       "unparsed_items": 0,
       "avg_sales_all_values": 117.7,
@@ -453,7 +453,7 @@
           "sales_share": 0.7795,
           "avg_sales": 127.4,
           "judgement": [
-            "总销量高→需求大"
+            "Tổng lượng bán cao→nhu cầu lớn"
           ]
         },
         {
@@ -464,7 +464,7 @@
           "sales_share": 0.2205,
           "avg_sales": 92.7,
           "judgement": [
-            "常规"
+            "Bình thường"
           ]
         }
       ]

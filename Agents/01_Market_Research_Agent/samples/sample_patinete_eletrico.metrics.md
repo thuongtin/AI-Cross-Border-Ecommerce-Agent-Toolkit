@@ -1,30 +1,30 @@
-# 类目指标计算报告
+# Báo cáo chỉ số ngành hàng
 
-数据来源：`sample_patinete_eletrico.csv` ｜ 样本量：50 个商品
+Nguồn dữ liệu: `sample_patinete_eletrico.csv` · Cỡ mẫu: 50 sản phẩm
 
-## 1. 市场容量
+## 1. Quy mô thị trường
 
-| 指标 | 数值 |
+| Chỉ số | Giá trị |
 |---|---|
-| 样本商品数 | 50 |
-| 月总销量 | 5,886.0 |
-| 月总销售额 | R$ 12,700,584.22 |
-| 均价 | R$ 2,238.56 |
-| 中位价 | R$ 2,252.03 |
-| 价格范围 | R$ 1,500.59 – R$ 3,129.06 |
-| 单商品平均月销量 | 117.7 |
-| 隐含均价（GMV÷销量） | R$ 2,157.76 |
-| 头部 10 名销售额占比 | 71.5% |
+| Số sản phẩm trong mẫu | 50 |
+| Tổng lượng bán tháng | 5,886.0 |
+| Tổng doanh thu tháng | R$ 12,700,584.22 |
+| Giá trung bình | R$ 2,238.56 |
+| Giá trung vị | R$ 2,252.03 |
+| Khoảng giá | R$ 1,500.59 – R$ 3,129.06 |
+| Lượng bán tháng trung bình mỗi sản phẩm | 117.7 |
+| Giá trung bình ngầm định (GMV÷lượng bán) | R$ 2,157.76 |
+| Tỷ trọng doanh thu của top 10 | 71.5% |
 
-## 2. 品牌集中度
+## 2. Mức độ tập trung thương hiệu
 
-- 品牌数：**6**
-- **CR3（销售额）：74.1%** ｜ CR10：100.0% ｜ CR10 按销量：100.0%
-- HHI：**2219.7**（0–10000，越高越集中）
+- Số thương hiệu: **6**
+- **CR3 (doanh thu): 74.1%** · CR10: 100.0% · CR10 theo lượng bán: 100.0%
+- HHI: **2219.7** (0–10000, càng cao càng tập trung)
 
-> ⚠️ 主体数（6）≤ n（10），CR10 恒为 100%，无参考意义。请改用 CR3（74.1%）与 HHI（2219.7）判断集中度。
+> ⚠️ Số chủ thể (6) ≤ n (10), CR10 luôn bằng 100%, không có giá trị tham khảo. Hãy dùng CR3 (74.1%) và HHI (2219.7) để đánh giá mức độ tập trung.
 
-| # | 品牌 | 销售额 | 销售额占比 | 销量占比 | 商品数 |
+| # | Thương hiệu | Doanh thu | Tỷ trọng doanh thu | Tỷ trọng lượng bán | Số sản phẩm |
 |---|---|---|---|---|---|
 | 1 | Generic | R$ 3,800,602.19 | 29.9% | 30.5% | 12 |
 | 2 | Sem marca | R$ 3,639,985.53 | 28.7% | 27.4% | 15 |
@@ -33,15 +33,15 @@
 | 5 | MarcaB | R$ 1,215,716.22 | 9.6% | 8.5% | 4 |
 | 6 | MarcaC | R$ 488,896.03 | 3.9% | 4.9% | 3 |
 
-> **判断**（SOP 1.3）：品牌集中度 < 50% → 白牌仍有机会；> 50% → 头部品牌影响强，需谨慎。
+> **Đánh giá** (SOP 1.3): mức độ tập trung thương hiệu < 50% → hàng no-brand vẫn còn cơ hội; > 50% → thương hiệu top đầu chi phối mạnh, cần thận trọng.
 
-## 3. 卖家集中度
+## 3. Mức độ tập trung người bán
 
-- 卖家数：**34**
-- **CR3（销售额）：46.8%** ｜ **CR10（销售额）：71.5%** ｜ CR10 按销量：70.6%
-- HHI：**951.5**
+- Số người bán: **34**
+- **CR3 (doanh thu): 46.8%** · **CR10 (doanh thu): 71.5%** · CR10 theo lượng bán: 70.6%
+- HHI: **951.5**
 
-| # | 卖家 | 销售额占比 | 销量占比 | 商品数 |
+| # | Người bán | Tỷ trọng doanh thu | Tỷ trọng lượng bán | Số sản phẩm |
 |---|---|---|---|---|
 | 1 | LojaGrande1 | 21.3% | 21.4% | 8 |
 | 2 | LojaGrande3 | 17.0% | 16.1% | 5 |
@@ -54,13 +54,13 @@
 | 9 | LojaPequena29 | 2.6% | 2.2% | 1 |
 | 10 | LojaPequena26 | 2.5% | 2.6% | 1 |
 
-## 4. 价格带分析
+## 4. Phân tích dải giá
 
-- 价格范围：R$ 1,500.59 – R$ 3,129.06 ｜ 箱宽：R$ 162.85
+- Khoảng giá: R$ 1,500.59 – R$ 3,129.06 · Độ rộng bin: R$ 162.85
 
-### 4.1 等宽分箱（销量曲线）
+### 4.1 Chia bin đều (đường cong lượng bán)
 
-| 区间 | 价格段 | 商品数 | 总销量 | 曲线 | 总销售额 | 单商品均销 |
+| Bin | Khoảng giá | Số sản phẩm | Tổng lượng bán | Đường cong | Tổng doanh thu | Lượng bán TB/sản phẩm |
 |---|---|---|---|---|---|---|
 | 1 | R$ 1,500.59–1,663.44 | 7 | 499 | ████████ | R$ 795,781.82 | 71.3 |
 | 2 | R$ 1,663.44–1,826.28 | 7 | 799 | ██████████████ | R$ 1,409,872.23 | 114.1 |
@@ -73,54 +73,54 @@
 | 9 | R$ 2,803.37–2,966.21 | 2 | 56 | █ | R$ 158,402.98 | 28.0 |
 | 10 | R$ 2,966.21–3,129.06 | 5 | 127 | ██ | R$ 387,585.43 | 25.4 |
 
-### 4.2 波谷检测
+### 4.2 Dò vùng trũng
 
-判定阈值：波谷相对两侧邻居的最小跌幅 **≥ 15.0%**（低于此值视为噪声）
+Ngưỡng xác định: mức giảm tối thiểu của vùng trũng so với hai bin bên cạnh **≥ 15.0%** (thấp hơn thì coi là nhiễu)
 
-| 箱序 | 价格边界 | 跌幅 | 作为价格带边界 |
+| Bin số | Ranh giới giá | Mức giảm | Dùng làm ranh giới dải giá |
 |---|---|---|---|
 | 3 | R$ 1,989.13 | 22.7% | ✅ |
 | 9 | R$ 2,966.21 | 55.9% | ✅ |
 
-### 4.3 建议价格带（按波谷切分）
+### 4.3 Dải giá đề xuất (cắt theo vùng trũng)
 
-| 价格带 | 区间 | 商品数 | 总销量 | 总销售额 | 单商品均销 |
+| Dải giá | Khoảng giá | Số sản phẩm | Tổng lượng bán | Tổng doanh thu | Lượng bán TB/sản phẩm |
 |---|---|---|---|---|---|
 | #1 | R$ 1,500.59–1,989.13 | 18 | 1,916 | R$ 3,420,480.50 | 106.4 |
 | #2 | R$ 1,989.13–2,966.21 | 27 | 3,843 | R$ 8,892,518.29 | 142.3 |
 | #3 | R$ 2,966.21–3,129.06 | 5 | 127 | R$ 387,585.43 | 25.4 |
 
-> ⚠️ 波谷切分只是**数学建议**。SOP 1.4 要求最终判断还要叠加：公司产品有没有利润、竞品是否特别强。这一步由 Agent 结合成本结构完成。
+> ⚠️ Cắt theo vùng trũng chỉ là **gợi ý toán học**. SOP 1.4 yêu cầu kết luận cuối cùng phải xét thêm: sản phẩm của công ty có lãi không, đối thủ có quá mạnh không. Bước này do Agent làm dựa trên cấu trúc chi phí.
 
-## 5. 配置组合交叉表
+## 5. Bảng chéo tổ hợp cấu hình
 
-### 维度：功率
+### Chiều: công suất
 
-- 取值数：3 ｜ 整体平均单品销量：117.7 ｜ 均分参考（1/n）：33.3%
+- Số giá trị: 3 · Lượng bán TB mỗi SKU toàn bộ: 117.7 · Mốc chia đều (1/n): 33.3%
 
-| 配置值 | 商品数 | 数量占比 | 总销量 | 销量占比 | 平均销量 | 判断 |
+| Giá trị cấu hình | Số sản phẩm | Tỷ trọng số lượng | Tổng lượng bán | Tỷ trọng lượng bán | Lượng bán TB | Đánh giá |
 |---|---|---|---|---|---|---|
-| 500W | 19 | 38.0% | 3,612 | 61.4% | 190.1 | 总销量高→需求大；单品效率高 |
-| 350W | 14 | 28.0% | 1,298 | 22.1% | 92.7 | 常规 |
-| 800W | 17 | 34.0% | 976 | 16.6% | 57.4 | 常规 |
+| 500W | 19 | 38.0% | 3,612 | 61.4% | 190.1 | Tổng lượng bán cao→nhu cầu lớn; Hiệu suất mỗi SKU cao |
+| 350W | 14 | 28.0% | 1,298 | 22.1% | 92.7 | Bình thường |
+| 800W | 17 | 34.0% | 976 | 16.6% | 57.4 | Bình thường |
 
-### 维度：承重
+### Chiều: tải trọng
 
-- 取值数：3 ｜ 整体平均单品销量：117.7 ｜ 均分参考（1/n）：33.3%
+- Số giá trị: 3 · Lượng bán TB mỗi SKU toàn bộ: 117.7 · Mốc chia đều (1/n): 33.3%
 
-| 配置值 | 商品数 | 数量占比 | 总销量 | 销量占比 | 平均销量 | 判断 |
+| Giá trị cấu hình | Số sản phẩm | Tỷ trọng số lượng | Tổng lượng bán | Tỷ trọng lượng bán | Lượng bán TB | Đánh giá |
 |---|---|---|---|---|---|---|
-| 150kg | 32 | 64.0% | 3,740 | 63.5% | 116.9 | 总销量高→需求大；主流配置→竞争激烈；市场大但竞争激烈 |
-| 100kg | 14 | 28.0% | 1,298 | 22.1% | 92.7 | 常规 |
-| 200kg | 4 | 8.0% | 848 | 14.4% | 212.0 | 单品效率高；★机会配置（数量少但效率高） |
+| 150kg | 32 | 64.0% | 3,740 | 63.5% | 116.9 | Tổng lượng bán cao→nhu cầu lớn; Cấu hình phổ biến→cạnh tranh gắt; Thị trường lớn nhưng cạnh tranh gắt |
+| 100kg | 14 | 28.0% | 1,298 | 22.1% | 92.7 | Bình thường |
+| 200kg | 4 | 8.0% | 848 | 14.4% | 212.0 | Hiệu suất mỗi SKU cao; ★Cấu hình cơ hội (ít sản phẩm nhưng hiệu suất cao) |
 
-### 维度：容量
+### Chiều: dung lượng
 
-- 取值数：2 ｜ 整体平均单品销量：117.7 ｜ 均分参考（1/n）：50.0%
+- Số giá trị: 2 · Lượng bán TB mỗi SKU toàn bộ: 117.7 · Mốc chia đều (1/n): 50.0%
 
-| 配置值 | 商品数 | 数量占比 | 总销量 | 销量占比 | 平均销量 | 判断 |
+| Giá trị cấu hình | Số sản phẩm | Tỷ trọng số lượng | Tổng lượng bán | Tỷ trọng lượng bán | Lượng bán TB | Đánh giá |
 |---|---|---|---|---|---|---|
-| 12Ah | 36 | 72.0% | 4,588 | 78.0% | 127.4 | 总销量高→需求大 |
-| 10Ah | 14 | 28.0% | 1,298 | 22.1% | 92.7 | 常规 |
+| 12Ah | 36 | 72.0% | 4,588 | 78.0% | 127.4 | Tổng lượng bán cao→nhu cầu lớn |
+| 10Ah | 14 | 28.0% | 1,298 | 22.1% | 92.7 | Bình thường |
 
-> **判断规则**（SOP 1.5）：总销量高 = 需求大（销量占比 ≥30%）；平均销量高 = 单品效率高（高于整体均值 1.2 倍）；数量占比高 = 主流但竞争激烈（高于均分 1.5 倍）；**数量少但平均销量高 = 潜在机会配置**（低于均分 0.6 倍且效率高，需再确认是否被头部占据）；总销量高但平均销量低 = 市场大但竞争激烈。
+> **Quy tắc đánh giá** (SOP 1.5): tổng lượng bán cao = nhu cầu lớn (tỷ trọng lượng bán ≥30%); lượng bán TB cao = hiệu suất mỗi SKU cao (gấp trên 1.2 lần mức TB chung); tỷ trọng số lượng cao = phổ biến nhưng cạnh tranh gắt (gấp trên 1.5 lần mức chia đều); **ít sản phẩm nhưng lượng bán TB cao = cấu hình cơ hội tiềm năng** (dưới 0.6 lần mức chia đều và hiệu suất cao, cần xác nhận thêm có bị nhóm top đầu chiếm không); tổng lượng bán cao nhưng lượng bán TB thấp = thị trường lớn nhưng cạnh tranh gắt.

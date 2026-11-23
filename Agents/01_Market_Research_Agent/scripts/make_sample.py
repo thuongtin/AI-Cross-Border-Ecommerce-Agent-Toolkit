@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-make_sample.py — 生成一份带"脏数据"的样本类目导出表
+make_sample.py — Tạo một bảng xuất ngành hàng mẫu có chứa "dữ liệu bẩn"
 
-用途：让使用者一拿到仓库就能立刻跑通 scripts/ 下的两个脚本，验证环境。
-数据是**合成数据**，用于演示格式与清洗能力，不代表任何真实市场。
+Mục đích: giúp người dùng vừa lấy repo về là chạy trọn vẹn được ngay hai script trong scripts/ để kiểm tra môi trường.
+Dữ liệu là **dữ liệu tổng hợp (synthetic)**, dùng để minh họa định dạng và khả năng làm sạch, không đại diện cho thị trường thật nào.
 
-用法：python make_sample.py [-o ../samples/sample_patinete_eletrico.csv]
+Cách dùng: python make_sample.py [-o ../samples/sample_patinete_eletrico.csv]
 """
 
 import argparse
@@ -16,23 +16,23 @@ from pathlib import Path
 
 random.seed(20261013)
 
-# 品牌：头部 2 个 + 一批白牌（模拟"白牌仍有机会"的市场）
+# Thương hiệu: 2 thương hiệu top đầu + một loạt hàng no-brand (mô phỏng thị trường "no-brand vẫn còn cơ hội")
 BRANDS = (
     ["MarcaA"] * 6 + ["MarcaB"] * 4 + ["MarcaC"] * 3
     + ["Generic"] * 12 + ["Sem marca"] * 15 + ["Outras"] * 10
 )
 
-# 卖家：CR10 由数据自然形成（3 个大卖家 + 一批小卖家）
+# Người bán: CR10 hình thành tự nhiên từ dữ liệu (3 shop lớn + một loạt shop nhỏ)
 SELLERS = (
     ["LojaGrande1"] * 8 + ["LojaGrande2"] * 6 + ["LojaGrande3"] * 5
     + [f"LojaPequena{i:02d}" for i in range(1, 32)]
 )
 
-POWERS = ["350W", "500W", "500W", "500W", "800W"]      # 500W 为主流
-LOADS = ["100kg", "120kg", "150kg", "150kg", "150kg"]  # 150kg 为主流
+POWERS = ["350W", "500W", "500W", "500W", "800W"]      # 500W là phổ biến nhất
+LOADS = ["100kg", "120kg", "150kg", "150kg", "150kg"]  # 150kg là phổ biến nhất
 FOLDABLE = ["Dobrável", "Dobrável", "Dobrável", "Não dobrável"]
 
-# 价格带设计：1500–3200，销量在 1800–2400 集中（给波谷检测留出可识别结构）
+# Thiết kế dải giá: 1500–3200, lượng bán tập trung ở 1800–2400 (chừa cấu trúc dễ nhận ra cho việc dò vùng trũng)
 PRICE_ANCHORS = [
     (1550, 40), (1700, 90), (1850, 160), (2000, 210), (2150, 230),
     (2300, 190), (2450, 120), (2600, 70), (2800, 40), (3050, 20),
@@ -45,7 +45,7 @@ def price_for(i: int) -> float:
 
 
 def sales_for(price: float) -> int:
-    # 找到最接近的锚点，取其销量 + 噪声
+    # Tìm điểm neo gần nhất, lấy lượng bán của nó + nhiễu
     best = min(PRICE_ANCHORS, key=lambda a: abs(a[0] - price))
     base = best[1]
     return max(0, int(random.gauss(base, base * 0.45)))
@@ -53,11 +53,11 @@ def sales_for(price: float) -> int:
 
 def config_for(price: float) -> tuple[str, str, str]:
     """
-    按价格档位分配配置 —— 这一点很关键。
+    Gán cấu hình theo mức giá — điểm này rất quan trọng.
 
-    如果配置与销量独立随机，配置交叉表算出来的"机会配置"就是噪声。
-    真实市场里配置与价格强相关（功率高→贵），所以样本也必须这样构造，
-    否则演示不出交叉表真正的用途。
+    Nếu cấu hình và lượng bán ngẫu nhiên độc lập, "cấu hình cơ hội" tính ra từ bảng chéo cấu hình chỉ là nhiễu.
+    Ở thị trường thật, cấu hình tương quan mạnh với giá (công suất cao → đắt), nên dữ liệu mẫu cũng phải dựng như vậy,
+    nếu không sẽ không minh họa được công dụng thật của bảng chéo.
     """
     if price < 1900:
         return "350W", "100kg", "10Ah"
@@ -67,7 +67,7 @@ def config_for(price: float) -> tuple[str, str, str]:
 
 
 def dirty(v) -> str:
-    """随机把数值格式弄脏，用来验证解析器的清洗能力。"""
+    """Làm "bẩn" định dạng số một cách ngẫu nhiên, để kiểm tra khả năng làm sạch của parser."""
     style = random.choice(["plain", "thousands_dot", "thousands_comma", "currency", "currency_comma_dot"])
     if isinstance(v, float):
         if style == "plain":
@@ -92,29 +92,29 @@ def dirty(v) -> str:
 def age_dirty(days: int) -> str:
     style = random.choice(["days", "months", "date", "plain"])
     if style == "days":
-        return f"{days}天"
+        return f"{days} ngày"
     if style == "months":
-        return f"{max(1, days // 30)}个月"
+        return f"{max(1, days // 30)} tháng"
     if style == "date":
         return f"2025-{(days % 12) + 1:02d}-15"
     return str(days)
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(description="Tạo bảng xuất ngành hàng mẫu (dữ liệu tổng hợp, có dữ liệu bẩn)")
     default_out = Path(__file__).resolve().parent.parent / "samples" / "sample_patinete_eletrico.csv"
-    ap.add_argument("-o", "--output", default=str(default_out))
-    ap.add_argument("-n", "--rows", type=int, default=50)
+    ap.add_argument("-o", "--output", default=str(default_out), help="Đường dẫn CSV đầu ra")
+    ap.add_argument("-n", "--rows", type=int, default=50, help="Số dòng (mặc định 50)")
     args = ap.parse_args()
 
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
 
     header = [
-        "商品名称", "价格", "月销量", "月销售额", "卖家", "品牌",
-        "评分", "评价数", "上架时间", "商品链接",
+        "Tên sản phẩm", "Giá", "Lượng bán tháng", "Doanh thu tháng", "Người bán", "Thương hiệu",
+        "Điểm đánh giá", "Số đánh giá", "Thời gian đăng bán", "Link sản phẩm",
     ]
 
-    # 机会配置：在峰值价格带里放 4 条"高承重"配置（数量少，看是否有单品效率优势）
+    # Cấu hình cơ hội: đặt 4 dòng cấu hình "tải trọng cao" vào dải giá đỉnh (số lượng ít, xem có lợi thế hiệu suất mỗi SKU không)
     opportunity_slots = {3, 13, 23, 33}
 
     with open(args.output, "w", encoding="utf-8-sig", newline="") as f:
@@ -128,7 +128,7 @@ def main() -> None:
             power, load, cap = config_for(p)
             fold = FOLDABLE[i % len(FOLDABLE)]
 
-            # 少数条目改成差异化配置（高承重），用来演示"机会配置"判断
+            # Đổi một số ít dòng sang cấu hình khác biệt (tải trọng cao) để minh họa việc đánh giá "cấu hình cơ hội"
             if i in opportunity_slots and 1900 <= p < 2400:
                 load = "200kg"
 
@@ -146,7 +146,7 @@ def main() -> None:
                 title,
                 dirty(p),
                 dirty(s),
-                dirty(round(p * s, 2)) if random.random() > 0.25 else "",  # 25% 缺失，测补算
+                dirty(round(p * s, 2)) if random.random() > 0.25 else "",  # Thiếu 25%, để kiểm tra tính bù
                 seller,
                 brand,
                 f"{rating}",
@@ -155,7 +155,7 @@ def main() -> None:
                 f"https://example.com/item/{100000 + i}",
             ])
 
-    print(f"✅ 已生成样本：{args.output}（{args.rows} 行，含刻意混入的脏数据格式）")
+    print(f"✅ Đã tạo dữ liệu mẫu: {args.output} ({args.rows} dòng, có cố ý trộn các định dạng dữ liệu bẩn)")
 
 
 if __name__ == "__main__":
