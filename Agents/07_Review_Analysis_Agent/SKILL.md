@@ -1,83 +1,83 @@
 ---
 name: review-analysis
-description: 跨境电商评论分析 Skill（Shopee BR / Mercado Livre，PT-BR）。把评论分类交给模型、计数交给脚本：八类差评归因、可修复率、好评卖点频次×权重排行，输出详情页修补建议。当用户要"分析差评 / 评论归因 / 卖点提炼 / 详情页为什么转化低"时使用。
+description: Skill phân tích đánh giá cho thương mại điện tử xuyên biên giới (Shopee BR / Mercado Livre, PT-BR). Phân loại đánh giá giao cho mô hình, đếm số giao cho script: quy nguyên nhân đánh giá tiêu cực theo 8 nhóm, tỷ lệ khắc phục được, xếp hạng điểm bán hàng từ đánh giá tích cực theo tần suất × trọng số, xuất đề xuất vá trang chi tiết. Dùng khi người dùng muốn "phân tích đánh giá tiêu cực / quy nguyên nhân đánh giá / rút ra điểm bán hàng / vì sao trang chi tiết chuyển đổi thấp".
 ---
 
-# 评论分析 Skill（07 Review Analysis Agent）
+# Skill phân tích đánh giá (07 Review Analysis Agent)
 
-## 什么时候用
+## Khi nào dùng
 
-- 积累了一批评论（建议 ≥ 20 条），要知道**差评到底为什么来、哪些能修**
-- 要从好评里提炼**真实卖点排行**，反哺详情页与主图
-- 广告转化率低，怀疑是评论/详情页问题（配合 06 使用）
+- Đã tích lũy được một lượng đánh giá (nên ≥ 20 đánh giá), cần biết **đánh giá tiêu cực rốt cuộc đến từ đâu, cái nào sửa được**
+- Cần rút ra **bảng xếp hạng điểm bán hàng thật** từ đánh giá tích cực, quay vòng về trang chi tiết và ảnh chính
+- CVR quảng cáo thấp, nghi ngờ vấn đề nằm ở đánh giá / trang chi tiết (dùng kết hợp với 06)
 
-## 分工边界（本 Skill 的核心设计）
+## Ranh giới phân công (thiết kế cốt lõi của Skill này)
 
 ```text
-模型的活                    脚本的活
-─────────────              ─────────────
-逐条读评论                  聚合计数
-→ 八类归因（语义判断）        → 占比 / 可修复率 / 合计校验
-→ 好评卖点提取 + 强度评级     → 频次 × 权重排序
-→ 产出修补文案（PT-BR）      → 输出统计报告
+Việc của mô hình                Việc của script
+─────────────                   ─────────────
+Đọc từng đánh giá               Tổng hợp, đếm số
+→ Quy 8 nhóm (phán đoán ngữ nghĩa) → Tỷ trọng / tỷ lệ khắc phục được / kiểm tra tổng
+→ Rút điểm bán hàng + chấm mức độ  → Xếp hạng tần suất × trọng số
+→ Viết nội dung vá (PT-BR)       → Xuất báo cáo thống kê
 ```
 
-**分类是模型做的事，脚本不猜；计数是脚本做的事，模型不许心算。**
+**Phân loại là việc của mô hình, script không đoán; đếm số là việc của script, mô hình không được nhẩm.**
 
-## 三条底线
+## Ba nguyên tắc bất di bất dịch
 
-1. **归因合计必须等于差评数** —— 脚本自动校验，不等 = 先修数据再下结论
-2. **修补文案必须 PT-BR 母语、可直接粘贴**（≤ 600 字符，与客服话术同一规范）
-3. **只按"责任方 / 可修复性"给动作** —— 不按现象罗列；同一现象（如"没收到配件"）
-   可能是包装问题（可修）也可能是物流问题（不可修）
+1. **Tổng số đã quy nguyên nhân phải bằng số đánh giá tiêu cực** — script tự kiểm tra, không khớp = sửa dữ liệu trước rồi mới kết luận
+2. **Nội dung vá phải là PT-BR chuẩn người bản xứ, dán thẳng được** (≤ 600 ký tự, cùng quy chuẩn với mẫu câu CSKH)
+3. **Chỉ đưa hành động theo "bên chịu trách nhiệm / khả năng khắc phục"** — không liệt kê theo hiện tượng; cùng một hiện tượng (như "không nhận được phụ kiện")
+   có thể là lỗi đóng gói (sửa được) hoặc lỗi vận chuyển (không sửa được)
 
-## 八类归因与默认可修复口径
+## 8 nhóm nguyên nhân và tiêu chí khắc phục mặc định
 
-| 类别 | 可修复 | 修复方式 |
+| Nhóm | Khắc phục được | Cách khắc phục |
 |---|---|---|
-| **误解型**（产品没错，理解错了） | ✅ | 详情页补说明 / 加图 —— **ROI 最高** |
-| 参数不符合预期 | ✅ | 卖点真实化映射 / 前置关键参数 |
-| 配件缺失（没读参数表） | ✅ | 平铺图 `Não incluso` 标注（**补发配件是错的**） |
-| 使用困难 | ✅ | 补使用说明 / 视频教程 |
-| 发货慢 | ❌ | 物流侧解决 |
-| 产品质量问题 | ❌ | 供应链侧解决 |
-| 破损/故障/退货 | ❌ | 包装/质检侧解决 |
-| 售后差 | ❌ | 客服流程解决 |
+| **Hiểu lầm** (sản phẩm không sai, người mua hiểu sai) | ✅ | Bổ sung giải thích / thêm ảnh trên trang chi tiết — **ROI cao nhất** |
+| Thông số không như kỳ vọng | ✅ | Ánh xạ điểm bán hàng sát thực tế / đưa thông số chính lên đầu |
+| Thiếu phụ kiện (không đọc bảng thông số) | ✅ | Ảnh bày phẳng ghi rõ `Não incluso` (**gửi bù phụ kiện là sai**) |
+| Khó sử dụng | ✅ | Bổ sung hướng dẫn sử dụng / video hướng dẫn |
+| Giao hàng chậm | ❌ | Giải quyết ở khâu vận chuyển |
+| Lỗi chất lượng sản phẩm | ❌ | Giải quyết ở khâu chuỗi cung ứng |
+| Hư hỏng/lỗi/trả hàng | ❌ | Giải quyết ở khâu đóng gói / QC |
+| Hậu mãi kém | ❌ | Giải quyết ở quy trình CSKH |
 
-可修复口径可用 `--fixable` 调整（默认：误解型,参数不符合预期,配件缺失,使用困难）。
+Tiêu chí khắc phục được có thể chỉnh bằng `--fixable` (mặc định: Hiểu lầm,Thông số không như kỳ vọng,Thiếu phụ kiện,Khó sử dụng).
 
-## 工作流
+## Quy trình
 
 ```text
-[Step 1] 导出评论 CSV（rating 必填；建议带 category / has_image 列）
-[Step 2] 模型逐条分类（差评 → 八类；好评 → 卖点 + 强度）
-[Step 3] 跑 scripts/review_stats.py 聚合校验
-         → 🔴 合计校验失败：回 Step 2 补齐未归因行
-[Step 4] 按"可修复率"决定动作优先级，输出修补文案
-[Step 5] 回流：修补文案 → 03（iterate）/ 04（补图）
+[Step 1] Xuất CSV đánh giá (bắt buộc rating; nên có cột category / has_image)
+[Step 2] Mô hình phân loại từng đánh giá (tiêu cực → 8 nhóm; tích cực → điểm bán hàng + mức độ)
+[Step 3] Chạy scripts/review_stats.py để tổng hợp và kiểm tra
+         → 🔴 Kiểm tra tổng thất bại: quay lại Step 2 bổ sung các dòng chưa quy nguyên nhân
+[Step 4] Dựa vào "tỷ lệ khắc phục được" để quyết định thứ tự ưu tiên, xuất nội dung vá
+[Step 5] Quay vòng về: nội dung vá → 03 (iterate) / 04 (bổ sung ảnh)
 ```
 
-## 命令速查
+## Tra nhanh lệnh
 
 ```bash
-# 基础统计（含合计校验）
-python scripts/review_stats.py --file 评论.csv
+# Thống kê cơ bản (kèm kiểm tra tổng)
+python scripts/review_stats.py --file danh_gia.csv
 
-# 完整版：指定可修复口径 + 卖点排行
-python scripts/review_stats.py --file 评论.csv \
-    --fixable "误解型,参数不符合预期,配件缺失,使用困难" \
-    --points 卖点.csv
+# Bản đầy đủ: chỉ định tiêu chí khắc phục được + xếp hạng điểm bán hàng
+python scripts/review_stats.py --file danh_gia.csv \
+    --fixable "Hiểu lầm,Thông số không như kỳ vọng,Thiếu phụ kiện,Khó sử dụng" \
+    --points diem_ban_hang.csv
 ```
 
-列名自动识别中/英/葡：`rating|评分|avaliacao`、`category|归因|categoria`、
-`has_image|带图|com_imagem`；数字兼容巴西格式。
+Tên cột tự nhận diện tiếng Việt / Trung / Anh / Bồ Đào Nha: `rating|số sao|评分|avaliacao`, `category|nguyên nhân|归因|categoria`,
+`has_image|có ảnh|带图|com_imagem`; số liệu tương thích định dạng Brazil. Tên nhóm và mức độ bằng tiếng Trung (`误解型`, `强/中/弱`…) được tự quy đổi sang tiếng Việt.
 
-## 卖点排行口径
+## Tiêu chí xếp hạng điểm bán hàng
 
-综合分 = 提及频次 × 情感权重（强=3 / 中=2 / 弱=1）。
-**排行指导卖点优先级，不指导真伪** —— 真实性仍须回到 `spec_table`。
+Điểm tổng hợp = tần suất nhắc đến × trọng số cảm xúc (mạnh=3 / vừa=2 / yếu=1).
+**Bảng xếp hạng định hướng thứ tự ưu tiên điểm bán hàng, không xác nhận tính xác thực** — tính xác thực vẫn phải đối chiếu với `spec_table`.
 
-## 边界
+## Ranh giới
 
-- 不代回评论、不联系买家、不删评（平台禁止的操作不做）
-- 评论区基数 < 20 条时结论噪声大，脚本照跑但须在报告里注明样本不足
+- Không trả lời đánh giá thay, không liên hệ người mua, không xóa đánh giá (việc sàn cấm thì không làm)
+- Khi tổng số đánh giá < 20, kết luận nhiều nhiễu; script vẫn chạy nhưng báo cáo phải ghi chú "mẫu chưa đủ"

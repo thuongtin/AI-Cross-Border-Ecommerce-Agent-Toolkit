@@ -1,232 +1,232 @@
-# TASK · 评论分类、归因与卖点排序
+# TASK · Phân loại đánh giá, quy nguyên nhân và xếp hạng điểm bán hàng
 
-> 配套使用：`00_system.md` + `templates/input_review_batch.md`
-> 对应 SOP **1.6 竞品分析与评论分析**
+> Dùng kèm: `00_system.md` + `templates/input_review_batch.md`
+> Tương ứng SOP **1.6 Phân tích đối thủ và phân tích đánh giá**
 
 ---
 
 # INPUT
 
-| 字段 | 说明 |
+| Trường | Mô tả |
 |---|---|
-| `platform` / `target_market` / `product_name` | 基础信息 |
-| `spec_table` | **阻塞项**（判断参数不符类差评所需） |
-| `package_content[]` | **阻塞项**（判断配件缺失属于真缺还是误解） |
-| `usage_scope[]` | 使用场景范围 |
-| `warranty` | 保修信息 |
-| `reviews[]` | 评论数组，含 `text` / `rating` / `has_image` / `source` |
-| `analysis_scope` | `own`（仅我方）/ `competitor`（仅竞品）/ `both`（对比） |
+| `platform` / `target_market` / `product_name` | Thông tin cơ bản |
+| `spec_table` | **Mục chặn** (cần để phán định đánh giá tiêu cực nhóm thông số không khớp) |
+| `package_content[]` | **Mục chặn** (phán định thiếu phụ kiện là thiếu thật hay hiểu lầm) |
+| `usage_scope[]` | Phạm vi tình huống sử dụng |
+| `warranty` | Thông tin bảo hành |
+| `reviews[]` | Mảng đánh giá, gồm `text` / `rating` / `has_image` / `source` |
+| `analysis_scope` | `own` (chỉ phía mình) / `competitor` (chỉ đối thủ) / `both` (so sánh) |
 
 ---
 
-# STEP 1 · 数据概览
+# STEP 1 · Tổng quan dữ liệu
 
 ```markdown
-## 1. 数据概览
+## 1. Tổng quan dữ liệu
 
-| 项 | 数值 |
+| Hạng mục | Giá trị |
 |---|---|
-| 总评论数 | |
-| 好评数（4–5 星） | |
-| 中评数（3 星） | |
-| 差评数（1–2 星） | |
-| 好评率 | |
-| 带图评论数 / 占比 | |
-| 数据来源 | <我方 / 竞品 A / 竞品 B> |
-| **样本量判定** | <充足 / 偏小 / 不足（仅供参考）> |
+| Tổng số đánh giá | |
+| Số đánh giá tích cực (4–5 sao) | |
+| Số đánh giá trung lập (3 sao) | |
+| Số đánh giá tiêu cực (1–2 sao) | |
+| Tỷ lệ đánh giá tích cực | |
+| Số đánh giá có ảnh / tỷ trọng | |
+| Nguồn dữ liệu | <phía mình / đối thủ A / đối thủ B> |
+| **Đánh giá cỡ mẫu** | <đủ / hơi nhỏ / chưa đủ (chỉ để tham khảo)> |
 
-**数据局限说明**：<平台删评影响 / 语言理解偏差 / 样本不足等>
+**Giới hạn dữ liệu**: <ảnh hưởng do sàn xóa đánh giá / sai lệch hiểu ngôn ngữ / mẫu chưa đủ…>
 ```
 
 ---
 
-# STEP 2 · 好评分析
+# STEP 2 · Phân tích đánh giá tích cực
 
-按 SOP 的 5 个维度分析。
+Phân tích theo 5 khía cạnh của SOP.
 
 ```markdown
-## 2. 好评分析
+## 2. Phân tích đánh giá tích cực
 
-### 2.1 买家为什么满意
+### 2.1 Vì sao người mua hài lòng
 
-| # | 满意原因 | 提及次数 | 占比 | 典型原文 |
+| # | Lý do hài lòng | Số lần nhắc | Tỷ trọng | Nguyên văn tiêu biểu |
 |---|---|---|---|---|
-| 1 | | | | `<原文>` |
+| 1 | | | | `<nguyên văn>` |
 
-### 2.2 被反复提到的功能
+### 2.2 Tính năng được nhắc đi nhắc lại
 
-| 功能 | 提及次数 | 情感倾向 | 典型原文 |
+| Tính năng | Số lần nhắc | Sắc thái cảm xúc | Nguyên văn tiêu biểu |
 |---|---|---|---|
-| | | 正面 / 中性 | |
+| | | Tích cực / trung tính | |
 
-### 2.3 哪些卖点真正有效
+### 2.3 Điểm bán hàng nào thực sự hiệu quả
 
-| 卖点 | 提及次数 | 是否在现有 Listing 中突出 | 建议 |
+| Điểm bán hàng | Số lần nhắc | Có được làm nổi bật trong Listing hiện tại không | Đề xuất |
 |---|---|---|---|
-| | | ✅ / ❌ | 主图突出 / 详情页强化 / 标题加入 |
+| | | ✅ / ❌ | Nổi bật trên ảnh chính / tăng cường trên trang chi tiết / đưa vào tiêu đề |
 
-> **"是否在现有 Listing 中突出"是关键判断**：
-> 如果某个卖点被买家反复称赞，但 Listing 里没突出它——**这是最直接的优化机会**，投入产出比极高。
+> **"Có được làm nổi bật trong Listing hiện tại không" là phán đoán then chốt**:
+> Nếu một điểm bán hàng được người mua khen đi khen lại mà Listing không làm nổi bật — **đây là cơ hội tối ưu trực tiếp nhất**, ROI cực cao.
 
-### 2.4 物流与售后满意度
+### 2.4 Mức hài lòng về vận chuyển và hậu mãi
 
-| 维度 | 正面提及 | 负面提及 | 净情感 |
+| Khía cạnh | Nhắc tích cực | Nhắc tiêu cực | Cảm xúc ròng |
 |---|---|---|---|
-| 发货速度 | | | |
-| 包装完整度 | | | |
-| 客服响应 | | | |
+| Tốc độ giao hàng | | | |
+| Độ nguyên vẹn của đóng gói | | | |
+| Phản hồi CSKH | | | |
 
-### 2.5 价格感知
+### 2.5 Cảm nhận về giá
 
-| 类型 | 提及次数 | 典型原文 |
+| Loại | Số lần nhắc | Nguyên văn tiêu biểu |
 |---|---|---|
-| 觉得划算 | | |
-| 觉得偏贵 | | |
-| 与其他产品比价 | | |
+| Thấy đáng tiền | | |
+| Thấy hơi đắt | | |
+| So giá với sản phẩm khác | | |
 ```
 
 ---
 
-# STEP 3 · 差评归因（八类）
+# STEP 3 · Quy nguyên nhân đánh giá tiêu cực (8 nhóm)
 
-**这是本任务的核心。**
+**Đây là cốt lõi của task này.**
 
 ```markdown
-## 3. 差评归因
+## 3. Quy nguyên nhân đánh giá tiêu cực
 
-### 3.1 归因分布
+### 3.1 Phân bố nguyên nhân
 
-| # | 归因类型 | 数量 | 占比 | 责任方 | 可否靠文案修复 |
+| # | Nhóm nguyên nhân | Số lượng | Tỷ trọng | Bên chịu trách nhiệm | Sửa được bằng nội dung không |
 |---|---|---|---|---|---|
-| 1 | **误解型** ⭐ | | | 我方（详情页） | ✅ 可 |
-| 2 | 产品质量问题 | | | 供应商 | ❌ 不可 |
-| 3 | 参数不符合预期 | | | 我方 | ✅ 可 |
-| 4 | 配件缺失 | | | 我方（包装清单） | ✅ 可（若为误解） |
-| 5 | 发货慢 | | | 物流 | ⚠️ 部分 |
-| 6 | 使用困难 | | | 我方（说明书） | ✅ 可 |
-| 7 | 售后差 | | | 我方 | ✅ 可 |
-| 8 | 破损 / 故障 / 退货 | | | 物流 / 供应商 | ❌ 不可 |
+| 1 | **Hiểu lầm** ⭐ | | | Phía mình (trang chi tiết) | ✅ Được |
+| 2 | Lỗi chất lượng sản phẩm | | | Nhà cung cấp | ❌ Không |
+| 3 | Thông số không như kỳ vọng | | | Phía mình | ✅ Được |
+| 4 | Thiếu phụ kiện | | | Phía mình (danh sách đóng gói) | ✅ Được (nếu là hiểu lầm) |
+| 5 | Giao hàng chậm | | | Đơn vị vận chuyển | ⚠️ Một phần |
+| 6 | Khó sử dụng | | | Phía mình (sách hướng dẫn) | ✅ Được |
+| 7 | Hậu mãi kém | | | Phía mình | ✅ Được |
+| 8 | Hư hỏng / lỗi / trả hàng | | | Đơn vị vận chuyển / nhà cung cấp | ❌ Không |
 
-**可修复项合计**：<第 1, 3, 4, 6, 7 类之和> 条，占差评总数的 <%>
+**Tổng các mục khắc phục được**: <tổng nhóm 1, 3, 4, 6, 7> đánh giá, chiếm <%> tổng số đánh giá tiêu cực
 
-> 这个合计数字是本模块最重要的输出之一：
-> **它说明"有多少差评是可以通过改描述解决的"，而不需要动产品。**
+> Con số tổng này là một trong những đầu ra quan trọng nhất của module:
+> **Nó cho biết "bao nhiêu đánh giá tiêu cực có thể giải quyết bằng cách sửa mô tả" mà không cần động vào sản phẩm.**
 
-### 3.2 逐类明细
+### 3.2 Chi tiết từng nhóm
 
-#### 类型 1 · 误解型（<n> 条）
+#### Nhóm 1 · Hiểu lầm (<n> đánh giá)
 
-| # | 原文 | 买家以为 | 实际 | 缺失说明的位置 |
+| # | Nguyên văn | Người mua tưởng | Thực tế | Vị trí thiếu giải thích |
 |---|---|---|---|---|
-| 1 | `<原文>` | | | 详情页 / 包装清单图 / 说明书 |
+| 1 | `<nguyên văn>` | | | Trang chi tiết / ảnh danh sách đóng gói / sách hướng dẫn |
 
-#### 类型 2 · 产品质量问题（<n> 条）
+#### Nhóm 2 · Lỗi chất lượng sản phẩm (<n> đánh giá)
 
-| # | 原文 | 问题描述 | 出现频次 | 是否需换供应商 |
+| # | Nguyên văn | Mô tả vấn đề | Tần suất xuất hiện | Có cần đổi nhà cung cấp không |
 |---|---|---|---|---|
 
-#### 类型 3 · 参数不符合预期（<n> 条）
+#### Nhóm 3 · Thông số không như kỳ vọng (<n> đánh giá)
 
-| # | 原文 | 买家预期 | `spec_table` 实际值 | 判定 |
+| # | Nguyên văn | Người mua kỳ vọng | Giá trị thực tế trong `spec_table` | Phán định |
 |---|---|---|---|---|
-| | | | | 描述不清 / 描述错误 / 买家误读 |
+| | | | | Mô tả chưa rõ / mô tả sai / người mua đọc nhầm |
 
-> **判定"描述不清 / 描述错误 / 买家误读"很重要**：
-> - 描述错误 → 必须立即改（合规风险）
-> - 描述不清 → 改表述方式
-> - 买家误读 → 加前置说明
+> **Phán định "mô tả chưa rõ / mô tả sai / người mua đọc nhầm" rất quan trọng**:
+> - Mô tả sai → phải sửa ngay (rủi ro tuân thủ)
+> - Mô tả chưa rõ → đổi cách diễn đạt
+> - Người mua đọc nhầm → thêm giải thích ở vị trí đầu
 
-#### 类型 4 · 配件缺失（<n> 条）
+#### Nhóm 4 · Thiếu phụ kiện (<n> đánh giá)
 
-| # | 原文 | 买家以为含 | `package_content` 实际 | 判定 |
+| # | Nguyên văn | Người mua tưởng có kèm | Thực tế trong `package_content` | Phán định |
 |---|---|---|---|---|
-| | | | | 真缺件（质量事故）/ 误解（需明确标注） |
+| | | | | Thiếu thật (sự cố chất lượng) / hiểu lầm (cần ghi rõ) |
 
-> ⚠️ **必须对照 `package_content` 判断。** 若产品本就不含该配件，买家仍投诉"没来"——这是**误解**，需要的是在包装清单图上明确标注"不含什么"，不是补发配件。
+> ⚠️ **Bắt buộc đối chiếu `package_content` để phán định.** Nếu sản phẩm vốn không kèm phụ kiện đó mà người mua vẫn phàn nàn "không có" — đây là **hiểu lầm**, cần ghi rõ "không kèm gì" trên ảnh danh sách đóng gói, không phải gửi bù phụ kiện.
 
-#### 类型 5–8（略，同格式）
+#### Nhóm 5–8 (lược, cùng định dạng)
 ```
 
 ---
 
-# STEP 4 · 卖点频次排序
+# STEP 4 · Xếp hạng tần suất điểm bán hàng
 
-用**提及频次 × 情感强度**排出卖点优先级。
+Dùng **tần suất nhắc đến × mức độ cảm xúc** để xếp thứ tự ưu tiên điểm bán hàng.
 
 ```markdown
-## 4. 卖点排序
+## 4. Xếp hạng điểm bán hàng
 
-| 排名 | 卖点 | 被提及次数 | 情感强度 | 综合分 | 建议动作 |
+| Hạng | Điểm bán hàng | Số lần được nhắc | Mức độ cảm xúc | Điểm tổng hợp | Hành động đề xuất |
 |---|---|---|---|---|---|
-| 1 | | | 强 / 中 / 弱 | | 主图核心 / 标题关键词 / 详情页 |
+| 1 | | | Mạnh / vừa / yếu | | Cốt lõi ảnh chính / từ khóa tiêu đề / trang chi tiết |
 ```
 
-### 情感强度判定标准
+### Tiêu chí phán định mức độ cảm xúc
 
-| 强度 | 特征词（葡语示例） | 权重 |
+| Mức độ | Từ đặc trưng (ví dụ tiếng Bồ Đào Nha) | Trọng số |
 |---|---|---|
-| **强** | `excelente` / `perfeito` / `superou` / `melhor que esperava` / `recomendo` | 3 |
-| **中** | `bom` / `funciona bem` / `atende` / `satisfeito` | 2 |
-| **弱** | `ok` / `razoável` / `normal` | 1 |
+| **Mạnh** | `excelente` / `perfeito` / `superou` / `melhor que esperava` / `recomendo` | 3 |
+| **Vừa** | `bom` / `funciona bem` / `atende` / `satisfeito` | 2 |
+| **Yếu** | `ok` / `razoável` / `normal` | 1 |
 
-**综合分 = 提及次数 × 情感强度权重**
+**Điểm tổng hợp = số lần được nhắc × trọng số mức độ cảm xúc**
 
-> **排序结果要能和 Listing 对上**：
-> 排名前 2 的卖点必须出现在**主图**上；前 3–5 名必须出现在**标题或详情页段 2**。
-> 如果某个高排名卖点在 Listing 里找不到——那就是明确的优化点。
+> **Kết quả xếp hạng phải đối chiếu được với Listing**:
+> 2 điểm bán hàng đứng đầu phải xuất hiện trên **ảnh chính**; hạng 3–5 phải xuất hiện trong **tiêu đề hoặc đoạn 2 của trang chi tiết**.
+> Nếu một điểm bán hàng xếp hạng cao mà không tìm thấy trong Listing — đó chính là điểm cần tối ưu rõ ràng.
 
 ---
 
-# STEP 5 · 竞品对比（`analysis_scope` 含 competitor 时输出）
+# STEP 5 · So sánh đối thủ (xuất khi `analysis_scope` có competitor)
 
 ```markdown
-## 5. 竞品对比
+## 5. So sánh đối thủ
 
-### 5.1 竞品靠什么卖
+### 5.1 Đối thủ bán được nhờ đâu
 
-| 竞品 | 好评集中点 | 差评集中点 | 它的护城河 |
+| Đối thủ | Điểm tập trung đánh giá tích cực | Điểm tập trung đánh giá tiêu cực | Lợi thế cạnh tranh (moat) |
 |---|---|---|---|
 | A | | | |
 | B | | | |
 
-### 5.2 我方 vs 竞品
+### 5.2 Phía mình vs đối thủ
 
-| 维度 | 我方 | 竞品 A | 竞品 B | 我方优劣势 |
+| Khía cạnh | Phía mình | Đối thủ A | Đối thủ B | Ưu/nhược điểm của phía mình |
 |---|---|---|---|---|
-| 好评高频点 | | | | |
-| 差评高频点 | | | | |
-| 带图评价占比 | | | | |
-| 价格感知 | | | | |
+| Điểm hay được khen | | | | |
+| Điểm hay bị chê | | | | |
+| Tỷ trọng đánh giá có ảnh | | | | |
+| Cảm nhận về giá | | | | |
 
-### 5.3 空白机会
+### 5.3 Cơ hội bỏ ngỏ
 
-| 机会 | 依据 | 具体动作 |
+| Cơ hội | Căn cứ | Hành động cụ thể |
 |---|---|---|
-| 竞品普遍差评但买家在意 | <竞品差评高频项> | 我方详情页 + 主图主动强调该点 |
-| 竞品普遍不写但买家常问 | <评论中的提问高频项> | 我方详情页前置说明 |
+| Đối thủ bị chê nhiều nhưng người mua quan tâm | <mục đối thủ hay bị chê> | Trang chi tiết + ảnh chính của mình chủ động nhấn mạnh điểm đó |
+| Đối thủ thường không viết nhưng người mua hay hỏi | <mục người mua hay hỏi trong đánh giá> | Giải thích ngay đầu trang chi tiết của mình |
 ```
 
-> **"竞品的差评 = 我方的卖点"** 这是 SOP 1.6 讲"我方机会点"的直接应用。
-> 但注意：**只能用作自我改进的依据，不能用来做恶意竞争。** 具体做法是把竞品差评的问题在自己详情页说清，而不是去举报或抹黑。
+> **"Đánh giá tiêu cực của đối thủ = điểm bán hàng của mình"** — đây là ứng dụng trực tiếp phần "cơ hội của phía mình" trong SOP 1.6.
+> Nhưng lưu ý: **chỉ dùng làm căn cứ tự cải thiện, không dùng để cạnh tranh không lành mạnh.** Cách làm cụ thể là giải thích rõ trên trang chi tiết của mình những vấn đề đối thủ bị chê, chứ không phải đi báo cáo hay bôi nhọ.
 
 ---
 
-# STEP 6 · 七个分析目标
+# STEP 6 · Bảy mục tiêu phân tích
 
-SOP 要求回答的七个问题，逐一给出答案：
+Bảy câu hỏi SOP yêu cầu trả lời, trả lời lần lượt từng câu:
 
 ```markdown
-## 6. 分析目标回答
+## 6. Trả lời mục tiêu phân tích
 
-| # | 问题 | 结论 | 依据（样本量） |
+| # | Câu hỏi | Kết luận | Căn cứ (cỡ mẫu) |
 |---|---|---|---|
-| 1 | 竞品靠什么卖 | | |
-| 2 | 买家真正关心什么 | | |
-| 3 | **哪些卖点必须写** | | |
-| 4 | **哪些参数不能乱写** | | |
-| 5 | **哪些问题需要提前在详情页解释** | | |
-| 6 | 我方应该突出什么差异化 | | |
-| 7 | 我方需要避开什么售后风险 | | |
+| 1 | Đối thủ bán được nhờ đâu | | |
+| 2 | Người mua thực sự quan tâm điều gì | | |
+| 3 | **Điểm bán hàng nào bắt buộc phải viết** | | |
+| 4 | **Thông số nào không được viết bừa** | | |
+| 5 | **Vấn đề nào cần giải thích trước trên trang chi tiết** | | |
+| 6 | Phía mình nên làm nổi bật khác biệt gì | | |
+| 7 | Phía mình cần tránh rủi ro hậu mãi gì | | |
 ```
 
 ---
@@ -234,34 +234,34 @@ SOP 要求回答的七个问题，逐一给出答案：
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 数据概览
-## 2. 好评分析
-## 3. 差评归因
-## 4. 卖点排序
-## 5. 竞品对比            （条件输出）
-## 6. 分析目标回答
-## 7. 分析合规扫描
-   （按 00_system.md 的 C1–C5；无命中必须写"无命中"）
-## 8. 交付给其他模块的字段
-   - selling_points_ranked: []        # → 03 标题/主图卖点选择
-   - forbidden_words_candidates: []   # → 03/04/05 硬拦截
-   - review_patch_suggestions: []     # → 03 注意事项段补写
-   - packaging_clarity_needed: true/false  # → 04 包装清单图
-   - fixable_ratio: <可修复差评占比>
+## 1. Tổng quan dữ liệu
+## 2. Phân tích đánh giá tích cực
+## 3. Quy nguyên nhân đánh giá tiêu cực
+## 4. Xếp hạng điểm bán hàng
+## 5. So sánh đối thủ            (xuất có điều kiện)
+## 6. Trả lời mục tiêu phân tích
+## 7. Quét tuân thủ phân tích
+   (theo C1–C5 của 00_system.md; không vi phạm thì bắt buộc ghi "không vi phạm")
+## 8. Các trường bàn giao cho module khác
+   - selling_points_ranked: []        # → 03 chọn điểm bán hàng cho tiêu đề/ảnh chính
+   - forbidden_words_candidates: []   # → 03/04/05 chặn cứng
+   - review_patch_suggestions: []     # → 03 viết bổ sung đoạn Lưu ý
+   - packaging_clarity_needed: true/false  # → 04 ảnh danh sách đóng gói
+   - fixable_ratio: <tỷ trọng đánh giá tiêu cực khắc phục được>
 ```
 
 ---
 
 # SELF-CHECK
 
-- [ ] 所有评论已脱敏
-- [ ] 好评与差评分开分析
-- [ ] 八类归因逐类给出数量与占比（包括 0 的类别）
-- [ ] 每条归因引用了原文
-- [ ] 误解型与产品质量问题严格区分
-- [ ] 配件缺失类已对照 `package_content` 判断
-- [ ] 可修复项合计已计算
-- [ ] 卖点排序含频次与情感强度，且与 Listing 现状对照过
-- [ ] 七个分析目标全部有答案
-- [ ] 回流建议含具体母语文案
-- [ ] 末尾已附分析合规扫描 + 交付字段
+- [ ] Mọi đánh giá đã ẩn danh hóa
+- [ ] Đánh giá tích cực và tiêu cực được phân tích riêng
+- [ ] 8 nhóm nguyên nhân đều có số lượng và tỷ trọng (kể cả nhóm bằng 0)
+- [ ] Mỗi lần quy nguyên nhân đều trích dẫn nguyên văn
+- [ ] Đã phân biệt nghiêm ngặt loại hiểu lầm và lỗi chất lượng sản phẩm
+- [ ] Nhóm thiếu phụ kiện đã đối chiếu `package_content` để phán định
+- [ ] Đã tính tổng các mục khắc phục được
+- [ ] Xếp hạng điểm bán hàng có tần suất và mức độ cảm xúc, đã đối chiếu với hiện trạng Listing
+- [ ] Bảy mục tiêu phân tích đều có câu trả lời
+- [ ] Đề xuất quay vòng có nội dung cụ thể bằng ngôn ngữ bản địa
+- [ ] Cuối đầu ra đã kèm Quét tuân thủ phân tích + các trường bàn giao
