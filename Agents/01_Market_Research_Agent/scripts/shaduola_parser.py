@@ -65,7 +65,13 @@ _CN_UNITS = {
 }
 
 
-_TOTAL_PREFIXES = ("tổng", "total", "总", "累计")
+# Từ loại trừ khi khớp mờ: tránh nhận nhầm khoảng giá / phí vận chuyển là giá, số lũy kế là số tháng
+_CUMULATIVE_WORDS = ("累计", "总", "tổng", "total", "lifetime", "acumulad")
+_FUZZY_EXCLUDE: dict[str, tuple[str, ...]] = {
+    "price": ("区间", "范围", "运费", "range", "faixa", "khoảng giá", "shipping", "frete", "vận chuyển", "ship"),
+    "monthly_sales": _CUMULATIVE_WORDS,
+    "monthly_revenue": _CUMULATIVE_WORDS,
+}
 
 
 def _norm_key(s: str) -> str:
@@ -233,21 +239,21 @@ def build_column_map(header: list[str], custom: dict | None = None) -> dict[str,
                 break
     # Lượt 2: khớp mờ trên các cột chưa dùng — trước hết theo tiền tố cho mọi trường
     # ("giá" khớp "Giá (R$)"), sau đó theo chuỗi con ("vendas mensais" khớp "Quantidade de vendas mensais").
-    # Ở lượt chuỗi con, cột bắt đầu bằng "tổng/total/总/累计" chỉ dành cho total_sales,
-    # để "Tổng doanh thu" không bị nhận là doanh thu tháng.
+    # Cột chứa từ loại trừ của trường (khoảng giá, phí ship, lũy kế...) không được khớp mờ vào trường đó.
     for strict in (True, False):
         for field, aliases in mapping.items():
             if field in resolved:
                 continue
             used = set(resolved.values())
+            exclude = [_norm_key(w) for w in _FUZZY_EXCLUDE.get(field, ())]
             for alias in aliases:
                 key = _norm_key(alias)
                 if not key:
                     continue
                 hit = next((orig for nk, orig in norm_header.items()
-                            if orig not in used and (nk.startswith(key) if strict else (
-                                key in nk and (field == "total_sales" or not nk.startswith(_TOTAL_PREFIXES))))),
-                           None)
+                            if orig not in used
+                            and (nk.startswith(key) if strict else key in nk)
+                            and not any(w in nk for w in exclude)), None)
                 if hit:
                     resolved[field] = hit
                     break
