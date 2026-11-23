@@ -1,77 +1,77 @@
-# actions.md · 动作库（条件 / 幅度 / 频率 / 回滚）
+# actions.md · Thư viện hành động (điều kiện / mức độ / tần suất / rollback)
 
-> 每个动作四要素：**触发条件 · 执行幅度 · 频率限制 · 回滚方式**。
-> 本 Skill 只**建议**动作，不执行 —— 执行由人决定。
+> Mỗi hành động có bốn yếu tố: **điều kiện kích hoạt · mức độ thực hiện · giới hạn tần suất · cách rollback**.
+> Skill này chỉ **đề xuất** hành động, không thực thi — việc thực thi do con người quyết định.
 
 ---
 
-## P0 止血类
+## Nhóm P0 cắt lỗ
 
-| 动作 | 触发 | 幅度 | 频率 | 回滚 |
+| Hành động | Kích hoạt | Mức độ | Tần suất | Rollback |
 |---|---|---|---|---|
-| **降出价** | ROAS < 0.5×BE，或点击≥30 零单 | 降到可承受 CPC 以下；单次降幅 ≤ 30% | 同组 3 天内不重复 | 出价回调至原值 |
-| **预算降档** | ROAS < 0.5×BE 持续 2 个诊断周期 | 降至最低档（或当日预算的 30%） | 每周 ≤ 1 次 | 预算回调 |
+| **Hạ giá thầu** | ROAS < 0.5×BE, hoặc click≥30 mà 0 đơn | Hạ xuống dưới CPC chịu được; mỗi lần hạ ≤ 30% | Cùng nhóm không lặp lại trong 3 ngày | Đưa giá thầu về mức cũ |
+| **Hạ nấc ngân sách** | ROAS < 0.5×BE kéo dài 2 chu kỳ chẩn đoán | Hạ về mức thấp nhất (hoặc 30% ngân sách ngày) | Mỗi tuần ≤ 1 lần | Đưa ngân sách về mức cũ |
 
-### ❗ 铁律：不要暂停广告
+### ❗ Nguyên tắc sắt: không tạm dừng quảng cáo
 
-暂停破坏广告连续性，降低广告权重与质量分，恢复期反而更贵。
-**止血手段 = 降预算 + 降出价**，让广告继续跑但几乎不花钱。
-（例外：违反平台政策 / 售罄 / 类目错放，这类必须停。）
+Tạm dừng làm đứt tính liên tục của quảng cáo, giảm điểm quảng cáo và điểm chất lượng, giai đoạn khôi phục lại còn tốn hơn.
+**Cách cắt lỗ = hạ ngân sách + hạ giá thầu**, để quảng cáo vẫn chạy nhưng gần như không tốn tiền.
+(Ngoại lệ: vi phạm chính sách sàn / hết hàng / đặt sai ngành hàng — những trường hợp này bắt buộc phải dừng.)
 
 ---
 
-## P1 改善类
+## Nhóm P1 cải thiện
 
-| 动作 | 触发 | 幅度 | 频率 | 回滚 |
+| Hành động | Kích hoạt | Mức độ | Tần suất | Rollback |
 |---|---|---|---|---|
-| **出价微调** | BE ≤ ROAS < 目标，CPC > 可承受 CPC | 单次 ≤ 20% | 同组 3 天一次 | 回调 |
-| **加否定词** | 搜索词报告出现不相关点击 ≥ 10 次 | 逐词加 | 每周一次导出报告时 | 可移除 |
-| **回流 03**（详情页） | CVR < 1% 且点击 ≥ 30 | iterate 模式，只改症状指向的段落 | 每轮 1 次 | — |
-| **回流 04**（换主图） | CTR < 2% | iterate 模式，只换首图 | 每轮 1 次 | — |
-| **回流 07**（差评归因） | CVR 低 + 近期差评激增 | 跑一次归因 | 每月一次 | — |
+| **Tinh chỉnh giá thầu** | BE ≤ ROAS < mục tiêu, CPC > CPC chịu được | Mỗi lần ≤ 20% | Cùng nhóm 3 ngày một lần | Đưa về mức cũ |
+| **Thêm từ khóa phủ định** | Báo cáo từ khóa tìm kiếm có click không liên quan ≥ 10 lần | Thêm từng từ | Mỗi tuần một lần khi xuất báo cáo | Có thể gỡ bỏ |
+| **Quay vòng về 03** (trang chi tiết) | CVR < 1% và click ≥ 30 | Chế độ iterate, chỉ sửa đoạn mà triệu chứng chỉ tới | Mỗi vòng 1 lần | — |
+| **Quay vòng về 04** (đổi ảnh chính) | CTR < 2% | Chế độ iterate, chỉ đổi ảnh đầu | Mỗi vòng 1 lần | — |
+| **Quay vòng về 07** (quy nguyên nhân đánh giá tiêu cực) | CVR thấp + đánh giá tiêu cực tăng vọt gần đây | Chạy một lần quy nguyên nhân | Mỗi tháng một lần | — |
 
 ---
 
-## P2 放量类
+## Nhóm P2 scale
 
-| 动作 | 触发 | 幅度 | 频率 | 回滚 |
+| Hành động | Kích hoạt | Mức độ | Tần suất | Rollback |
 |---|---|---|---|---|
-| **预算加档** | ROAS ≥ 目标 | **+20~30%**（一次只加一档） | 观察 3 天再加下一档 | 减回 |
-| **扩匹配** | P2 且预算加满仍有钱赚 | 精准 → 同义词扩展 | 每周一次 | 暂停新组 |
-| **复制跑同结构** | P2 稳定 2 周 | 新组同出价同预算 | 每两周一次 | 暂停 |
+| **Tăng nấc ngân sách** | ROAS ≥ mục tiêu | **+20~30%** (mỗi lần chỉ tăng một nấc) | Theo dõi 3 ngày rồi mới tăng nấc tiếp | Giảm lại |
+| **Mở rộng kiểu khớp** | Đạt P2 và tăng ngân sách tối đa vẫn có lãi | Chính xác → mở rộng từ đồng nghĩa | Mỗi tuần một lần | Tạm dừng nhóm mới |
+| **Nhân bản cấu trúc đang chạy** | P2 ổn định 2 tuần | Nhóm mới cùng giá thầu, cùng ngân sách | Hai tuần một lần | Tạm dừng |
 
-> **放量纪律**：一次只加一档。加两档等于把「涨了多少归因于哪一步」搞成糊涂账。
+> **Kỷ luật scale**: mỗi lần chỉ tăng một nấc. Tăng hai nấc cùng lúc thì không thể quy nguyên nhân「tăng bao nhiêu là nhờ bước nào」.
 
 ---
 
-## 平台特别规则
+## Quy tắc riêng theo sàn
 
-### Shopee BR（含本机自动化对接的实战约束）
+### Shopee BR (gồm các ràng buộc thực chiến khi nối với tự động hóa trên máy)
 
-| 规则 | 说明 |
+| Quy tắc | Giải thích |
 |---|---|
-| **预算节律** | 北京 11:00（巴西 0:00）→ 预算休眠至 **R$ 10**；北京 23:30（巴西 12:30 前后）→ 恢复激活值 |
-| **已花费只可上调** | 当天广告已产生花费后，**预算只能上调不能下调**；要调低须等巴西时间次日花费归零 |
-| **二次确认弹窗** | 点「确认」后会弹「修改前请确认」，要点「继续修改」—— 自动化必知 |
-| 主推位 | Carregador 20000mAh Turbo 45W（R$30/天）与 Trilho Elétrico（R$50/天）为在投主推 |
+| **Nhịp ngân sách** | 11:00 giờ Bắc Kinh (0:00 giờ Brazil) → cho ngân sách ngủ đông ở **R$ 10**; 23:30 giờ Bắc Kinh (khoảng 12:30 giờ Brazil) → khôi phục mức kích hoạt |
+| **Đã tiêu thì chỉ được tăng** | Sau khi quảng cáo trong ngày đã phát sinh chi phí, **ngân sách chỉ được tăng, không được giảm**; muốn giảm phải đợi sang ngày hôm sau theo giờ Brazil khi chi phí reset về 0 |
+| **Popup xác nhận lần hai** | Bấm「Xác nhận」xong sẽ hiện popup「Vui lòng xác nhận trước khi sửa」, phải bấm「Tiếp tục sửa」— bắt buộc biết khi tự động hóa |
+| Vị trí chủ lực | Carregador 20000mAh Turbo 45W (R$30/ngày) và Trilho Elétrico (R$50/ngày) là SKU chủ lực đang chạy quảng cáo |
 
 ### Mercado Livre
 
-| 规则 | 说明 |
+| Quy tắc | Giải thích |
 |---|---|
-| 广告产品 | Publicidad（Product Ads），卖家中心手动操作 |
-| 无公开写接口 | 卖家侧无公开广告 API → 动作需人工在后台执行（或浏览器自动化，谨慎） |
-| 指标口径 | ML 报表用 ACoS 口径（invertido），与 ROAS 互为倒数 |
+| Sản phẩm quảng cáo | Publicidad (Product Ads), thao tác tay trong trung tâm người bán |
+| Không có API ghi công khai | Người bán không có API quảng cáo công khai → hành động phải làm tay trên trang quản trị (hoặc tự động hóa trình duyệt, cẩn thận) |
+| Cách tính chỉ số | Báo cáo ML dùng cách tính ACoS (invertido), là nghịch đảo của ROAS |
 
 ---
 
-## 复测规则（改完怎么算成功）
+## Quy tắc kiểm tra lại (sửa xong thế nào là thành công)
 
-| 本轮改的 | 复测看什么 | 周期 |
+| Vòng này sửa gì | Kiểm tra lại chỉ số nào | Chu kỳ |
 |---|---|---|
-| 出价/预算 | ROAS 与净贡献 | 3–7 天 |
-| 主图（回流04） | CTR | 3–5 天 |
-| 详情页（回流03） | CVR | 7 天 |
-| 差评修补（回流07） | 误解型差评占比 | 2–4 周 |
+| Giá thầu/ngân sách | ROAS và đóng góp ròng | 3–7 ngày |
+| Ảnh chính (quay vòng về 04) | CTR | 3–5 ngày |
+| Trang chi tiết (quay vòng về 03) | CVR | 7 ngày |
+| Xử lý đánh giá tiêu cực (quay vòng về 07) | Tỷ trọng đánh giá tiêu cực loại hiểu lầm | 2–4 tuần |
 
-**不看总销量**（受大促/季节/竞品影响，无法归因）。
+**Không nhìn tổng doanh số** (bị ảnh hưởng bởi đợt sale lớn/mùa vụ/đối thủ, không thể quy nguyên nhân).

@@ -1,83 +1,83 @@
-# playbooks.md · 场景手册
+# playbooks.md · Playbook theo tình huống
 
-> 8 个最常见的场景。每个手册五段：**症状 → 诊断顺序 → 动作 → 本轮不动 → 复测**。
-> 先跑 `scripts/ad_metrics.py diagnose` 拿到分级，再翻对应手册。
-
----
-
-## 手册 1 · 新品冷启动（无数据）
-
-**症状**：广告组刚建，曝光 < 1,000。
-**诊断**：全部组落在第 0 层（INFO），不产生任何动作。
-**动作**：只做两件事 —— ①确认预算够买到最低曝光量；②把 listing 基础分先自查（标题/主图/价格带，用 03/04 的自检清单）。
-**不动**：出价（没有数据支撑任何调整）。
-**复测**：曝光过 1,000 后再跑 diagnose。
+> 8 tình huống thường gặp nhất. Mỗi playbook có năm phần: **Triệu chứng → Thứ tự chẩn đoán → Hành động → Vòng này không động vào → Kiểm tra lại**.
+> Chạy `scripts/ad_metrics.py diagnose` để lấy phân cấp trước, rồi mới mở playbook tương ứng.
 
 ---
 
-## 手册 2 · 整体亏损（总 ROAS < 盈亏线）
+## Playbook 1 · Sản phẩm mới khởi động lạnh (chưa có dữ liệu)
 
-**症状**：diagnose 总净贡献 < 0。
-**诊断顺序**：先看**有没有组达标**（P2 存在 = 结构没问题，是价格/预算问题）；
-再看 P0 组占花费的比例（>50% = 止血优先）。
-**动作**：P0 组全部止血 → P1 组降出价至可承受 CPC → 重跑 calc 看盈亏线本身是否合理
-（**如果含税后盈亏线高得离谱，先修定价，别修广告** —— 见 metrics.md 税费示例）。
-**不动**：达标的组（它不是问题，别把它也折腾了）。
-**复测**：3 天后 diagnose，看净贡献向 0 收敛的速度。
+**Triệu chứng**: nhóm quảng cáo vừa tạo, lượt hiển thị < 1,000.
+**Chẩn đoán**: tất cả các nhóm rơi vào tầng 0 (INFO), không sinh ra hành động nào.
+**Hành động**: chỉ làm hai việc — ① xác nhận ngân sách đủ mua lượng hiển thị tối thiểu; ② tự kiểm tra điểm cơ bản của Listing trước (tiêu đề/ảnh chính/dải giá, dùng checklist tự kiểm tra của 03/04).
+**Không động vào**: giá thầu (chưa có dữ liệu để làm căn cứ cho bất kỳ điều chỉnh nào).
+**Kiểm tra lại**: chạy lại diagnose khi lượt hiển thị vượt 1,000.
 
 ---
 
-## 手册 3 · 单组止血（P0）
+## Playbook 2 · Lỗ toàn bộ (ROAS tổng < ngưỡng hòa vốn)
 
-**症状**：某组 ROAS < 0.5 × 盈亏线。
-**动作**：出价降至可承受 CPC 以下 + 预算降档；**不暂停**（见 actions.md 铁律）。
-**不动**：素材与 listing（止血阶段一次只改一个病因）。
-**复测**：3 天。ROAS 仍 < 0.5×BE → 预算再降一档；进到 0.5–1.0×BE → 转手册 4。
-
----
-
-## 手册 4 · 贴着盈亏线的组（P1 改善）
-
-**症状**：0.5×BE ≤ ROAS < BE，漏斗各环基本健康。
-**动作**：**只降出价**到可承受 CPC 以下。这类组的问题几乎总是「买贵了」不是「买错了」。
-**不动**：预算、素材、listing。
-**复测**：3 天。ROAS 过盈亏线 → 观察是否够到目标；不过 → 检查 CPC 是否已到可承受线（到了还亏 = 盈亏线本身算错或产品没救，回手册 2 的定价检查）。
+**Triệu chứng**: diagnose cho đóng góp ròng tổng < 0.
+**Thứ tự chẩn đoán**: trước hết xem **có nhóm nào đạt chuẩn không** (có P2 = cấu trúc không có vấn đề, vấn đề nằm ở giá/ngân sách);
+sau đó xem tỷ trọng chi phí của các nhóm P0 (>50% = ưu tiên cắt lỗ).
+**Hành động**: cắt lỗ toàn bộ nhóm P0 → nhóm P1 hạ giá thầu về CPC chịu được → chạy lại calc xem bản thân ngưỡng hòa vốn có hợp lý không
+(**nếu ngưỡng hòa vốn sau thuế cao vô lý, hãy sửa định giá trước, đừng sửa quảng cáo** — xem ví dụ thuế trong metrics.md).
+**Không động vào**: các nhóm đã đạt chuẩn (chúng không phải là vấn đề, đừng quậy luôn cả chúng).
+**Kiểm tra lại**: chạy diagnose sau 3 ngày, xem tốc độ đóng góp ròng tiến về 0.
 
 ---
 
-## 手册 5 · 达标放量（P2）
+## Playbook 3 · Cắt lỗ một nhóm (P0)
 
-**症状**：ROAS ≥ 目标。
-**动作**：预算 +20~30%，3 天观察，稳定再加下一档；预算加满仍有利润 → 复制同结构新组。
-**不动**：出价（放量期提价最容易把 ROAS 打回去）。
-**复测**：每档加完 3 天，看 ROAS 是否守得住。
-
----
-
-## 手册 6 · CTR 低（曝光多点击少）
-
-**症状**：CTR < 2%，点击量不足。
-**诊断**：这是**素材问题**，广告端的出价/预算动它没用。
-**动作**：回流 04（iterate 模式只换首图）→ 新首图上线后 CTR 复测 3–5 天。
-**不动**：广告端一切参数。
-**复测**：CTR；若 CTR 修复后 ROAS 仍亏 → 回到手册 2/4。
+**Triệu chứng**: một nhóm có ROAS < 0.5 × ngưỡng hòa vốn.
+**Hành động**: hạ giá thầu xuống dưới CPC chịu được + hạ nấc ngân sách; **không tạm dừng** (xem nguyên tắc sắt trong actions.md).
+**Không động vào**: creative và Listing (giai đoạn cắt lỗ mỗi lần chỉ sửa một nguyên nhân gốc).
+**Kiểm tra lại**: 3 ngày. ROAS vẫn < 0.5×BE → hạ ngân sách thêm một nấc; lên tới 0.5–1.0×BE → chuyển sang playbook 4.
 
 ---
 
-## 手册 7 · CVR 低（点击多订单少）
+## Playbook 4 · Nhóm sát ngưỡng hòa vốn (P1 cải thiện)
 
-**症状**：点击 ≥ 30 且 CVR < 1%。
-**诊断**：落地页/价格/评论数问题。先查评论基数（新链接没评论，先做基础评价再谈转化）。
-**动作**：回流 03（详情页注意事项段）+ 回流 07（差评归因找误解点）；广告端只把出价压到可承受线。
-**不动**：预算。
-**复测**：CVR，7 天。
+**Triệu chứng**: 0.5×BE ≤ ROAS < BE, các khâu của phễu về cơ bản khỏe.
+**Hành động**: **chỉ hạ giá thầu** xuống dưới CPC chịu được. Vấn đề của nhóm này gần như luôn là「mua đắt」chứ không phải「mua sai」.
+**Không động vào**: ngân sách, creative, Listing.
+**Kiểm tra lại**: 3 ngày. ROAS vượt ngưỡng hòa vốn → theo dõi xem có chạm mục tiêu không; không vượt → kiểm tra CPC đã về tới mức chịu được chưa (về tới rồi mà vẫn lỗ = bản thân ngưỡng hòa vốn tính sai hoặc sản phẩm hết cứu, quay lại phần kiểm tra định giá ở playbook 2).
 
 ---
 
-## 手册 8 · 大促复盘（如黑五）
+## Playbook 5 · Đạt chuẩn thì scale (P2)
 
-**症状**：大促期间 ROAS 波动巨大，常态阈值失效。
-**诊断**：大促期**不用**盈亏线判定（大促本来就是拿利润换流量与排名）。
-**动作**：大促中只守两条 —— ①预算不被提前跑空（节律执行）；②禁止任何 P0 止血动作（大促流量价值在促后）。
-**不动**：一切优化动作，全部推迟到促后 7 天再做常态 diagnose。
-**复测**：促后第 7 天跑一次常态 diagnose，看权重与自然流量变化。
+**Triệu chứng**: ROAS ≥ mục tiêu.
+**Hành động**: ngân sách +20~30%, theo dõi 3 ngày, ổn định thì tăng nấc tiếp; tăng ngân sách tối đa mà vẫn có lãi → nhân bản cấu trúc sang nhóm mới.
+**Không động vào**: giá thầu (giai đoạn scale mà tăng giá thầu là dễ kéo ROAS tụt lại nhất).
+**Kiểm tra lại**: sau mỗi nấc tăng 3 ngày, xem ROAS có giữ được không.
+
+---
+
+## Playbook 6 · CTR thấp (hiển thị nhiều, click ít)
+
+**Triệu chứng**: CTR < 2%, lượng click không đủ.
+**Chẩn đoán**: đây là **vấn đề creative**, chỉnh giá thầu/ngân sách phía quảng cáo không giải quyết được.
+**Hành động**: quay vòng về 04 (chế độ iterate, chỉ đổi ảnh đầu) → sau khi ảnh đầu mới lên, kiểm tra lại CTR trong 3–5 ngày.
+**Không động vào**: mọi tham số phía quảng cáo.
+**Kiểm tra lại**: CTR; nếu CTR đã sửa xong mà ROAS vẫn lỗ → quay lại playbook 2/4.
+
+---
+
+## Playbook 7 · CVR thấp (click nhiều, đơn ít)
+
+**Triệu chứng**: click ≥ 30 và CVR < 1%.
+**Chẩn đoán**: vấn đề ở trang đích/giá/số lượng đánh giá. Kiểm tra số đánh giá nền trước (link mới chưa có đánh giá thì xây đánh giá nền trước rồi mới bàn chuyện chuyển đổi).
+**Hành động**: quay vòng về 03 (đoạn lưu ý trên trang chi tiết) + quay vòng về 07 (quy nguyên nhân đánh giá tiêu cực để tìm điểm hiểu lầm); phía quảng cáo chỉ ép giá thầu về mức chịu được.
+**Không động vào**: ngân sách.
+**Kiểm tra lại**: CVR, 7 ngày.
+
+---
+
+## Playbook 8 · Tổng kết sau đợt sale lớn (như Black Friday)
+
+**Triệu chứng**: trong đợt sale lớn ROAS dao động mạnh, ngưỡng thường ngày mất tác dụng.
+**Chẩn đoán**: trong đợt sale lớn **không dùng** ngưỡng hòa vốn để đánh giá (sale lớn vốn dĩ là đổi lợi nhuận lấy traffic và thứ hạng).
+**Hành động**: trong đợt sale chỉ giữ hai điều — ① ngân sách không bị tiêu cạn sớm (thực hiện theo nhịp); ② cấm mọi hành động cắt lỗ P0 (giá trị traffic của đợt sale nằm ở sau sale).
+**Không động vào**: mọi hành động tối ưu, dời hết sang 7 ngày sau đợt sale mới chạy diagnose thường lệ.
+**Kiểm tra lại**: ngày thứ 7 sau đợt sale chạy một lần diagnose thường lệ, xem thay đổi về điểm quảng cáo và traffic tự nhiên.
