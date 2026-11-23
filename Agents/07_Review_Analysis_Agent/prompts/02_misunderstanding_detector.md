@@ -1,188 +1,188 @@
-# TASK · 误解型差评识别与详情页修补
+# TASK · Nhận diện đánh giá tiêu cực loại hiểu lầm và vá trang chi tiết
 
-> 配套使用：`00_system.md` + `01_classify_and_attribute.md` 的输出
-> 对应 SOP **3.7 评价与售后维护** · **1.6 分析目标第 3–5 条**
+> Dùng kèm: `00_system.md` + đầu ra của `01_classify_and_attribute.md`
+> Tương ứng SOP **3.7 Duy trì đánh giá và hậu mãi** · **1.6 mục tiêu phân tích câu 3–5**
 
-**这是本模块最重要的一个任务。** 它的产出直接改写 Listing，且是整套流程里**投入产出比最高的动作**——改一句话，消除一类差评。
+**Đây là task quan trọng nhất của module này.** Đầu ra của nó viết lại trực tiếp Listing, và là **hành động có ROI cao nhất trong toàn bộ quy trình** — sửa một câu, xóa sổ cả một nhóm đánh giá tiêu cực.
 
 ---
 
 # INPUT
 
-| 字段 | 来源 | 说明 |
+| Trường | Nguồn | Mô tả |
 |---|---|---|
-| `platform` / `target_market` | 人工 | 决定输出语言 |
-| `spec_table` | 03 | **阻塞项**——判断参数类误解的基准 |
-| `package_content[]` | 03 | **阻塞项**——判断配件类误解的基准 |
-| `usage_scope[]` | 03 | **阻塞项**——判断场景类误解的基准 |
-| `warranty` | 03 | 判断售后类误解 |
-| `reviews[]` | 评论数据 | 差评原文 |
-| `attribution` | **01 的输出** | 已完成的八类归因 |
-| `current_description` | 03 | 现有详情页文案（用于定位该补在哪一段） |
-| `current_image_plan` | 04（可选） | 现有 9 图规划（用于判断是否需补图） |
+| `platform` / `target_market` | Người nhập | Quyết định ngôn ngữ đầu ra |
+| `spec_table` | 03 | **Mục chặn** — chuẩn để phán định hiểu lầm về thông số |
+| `package_content[]` | 03 | **Mục chặn** — chuẩn để phán định hiểu lầm về phụ kiện |
+| `usage_scope[]` | 03 | **Mục chặn** — chuẩn để phán định hiểu lầm về tình huống sử dụng |
+| `warranty` | 03 | Phán định hiểu lầm về hậu mãi |
+| `reviews[]` | Dữ liệu đánh giá | Nguyên văn đánh giá tiêu cực |
+| `attribution` | **Đầu ra của 01** | Kết quả quy nguyên nhân 8 nhóm đã hoàn tất |
+| `current_description` | 03 | Nội dung trang chi tiết hiện tại (để xác định cần bổ sung ở đoạn nào) |
+| `current_image_plan` | 04 (tùy chọn) | Kế hoạch 9 ảnh hiện tại (để phán đoán có cần bổ sung ảnh không) |
 
 ---
 
-# STEP 1 · 误解型判定
+# STEP 1 · Phán định loại hiểu lầm
 
-对**每一条**被归为"误解型"的差评，走一遍判定链：
+Với **từng** đánh giá tiêu cực được xếp vào "Hiểu lầm", đi qua chuỗi phán định:
 
 ```
-1. 买家投诉的具体是什么？
-2. 该信息在 input 的哪个字段里？（spec_table / package_content / usage_scope / warranty）
-3. 现有 Listing（current_description / current_image_plan）里有没有说到这一点？
-   ├─ 完全没提 → 判定：缺失说明
-   ├─ 提了但埋在细节里 → 判定：说明不醒目
-   └─ 提了且很醒目 → 判定：买家未阅读（需换表达位置或方式）
-4. 按判定结果给出修补动作
+1. Người mua phàn nàn cụ thể điều gì?
+2. Thông tin đó nằm ở trường nào của input? (spec_table / package_content / usage_scope / warranty)
+3. Listing hiện tại (current_description / current_image_plan) có nhắc điểm này không?
+   ├─ Hoàn toàn không nhắc → phán định: thiếu giải thích
+   ├─ Có nhắc nhưng bị chìm trong chi tiết → phán định: giải thích không nổi bật
+   └─ Có nhắc và rất nổi bật → phán định: người mua không đọc (cần đổi vị trí hoặc cách diễn đạt)
+4. Đưa ra hành động vá theo kết quả phán định
 ```
 
-## 三种判定与对应动作
+## Ba loại phán định và hành động tương ứng
 
-| 判定 | 特征 | 修补动作 | 成本 |
+| Phán định | Đặc điểm | Hành động vá | Chi phí |
 |---|---|---|---|
-| **缺失说明** | Listing 完全没提 | 新增说明条目 | 低 |
-| **说明不醒目** | 提了但在段落深处 / 小字 | 前置到注意事项段首条 / 补图 | 中 |
-| **买家未阅读** | 已很醒目仍被误解 | 换表达方式：从文字改为**图** | 中 |
+| **Thiếu giải thích** | Listing hoàn toàn không nhắc | Thêm mục giải thích mới | Thấp |
+| **Giải thích không nổi bật** | Có nhắc nhưng nằm sâu trong đoạn / chữ nhỏ | Đưa lên mục đầu tiên của đoạn Lưu ý / bổ sung ảnh | Trung bình |
+| **Người mua không đọc** | Đã rất nổi bật mà vẫn bị hiểu lầm | Đổi cách diễn đạt: từ chữ chuyển sang **ảnh** | Trung bình |
 
-> **"换成图"是解决"买家未阅读"的最有效手段。** 文字说明会被跳过，图不会。
-> 例：包装清单用文字写"含 X、不含 Y"，买家不看；做成一张平铺图并标注 `Não incluso`，就解决了。
+> **"Chuyển thành ảnh" là cách hiệu quả nhất để xử lý "người mua không đọc".** Chữ sẽ bị lướt qua, ảnh thì không.
+> Ví dụ: danh sách đóng gói viết bằng chữ "có X, không có Y" thì người mua không đọc; làm thành một ảnh bày phẳng và ghi `Não incluso` là giải quyết xong.
 
-## 输出格式
+## Định dạng đầu ra
 
 ```markdown
-## 1. 误解型差评判定
+## 1. Phán định đánh giá tiêu cực loại hiểu lầm
 
-| # | 差评原文 | 买家以为 | 实际（依据字段） | 现有 Listing 是否说到 | 判定 | 修补动作 |
+| # | Nguyên văn đánh giá tiêu cực | Người mua tưởng | Thực tế (trường căn cứ) | Listing hiện tại có nhắc không | Phán định | Hành động vá |
 |---|---|---|---|---|---|---|
-| 1 | `<原文>` | | `<spec_table.xxx = 值>` | 未提 | 缺失说明 | 详情页段 6 新增 |
-| 2 | `<原文>` | | `<package_content 不含 xxx>` | 提了但在段 4 表格末行 | 说明不醒目 | 移到段 6 首条 |
-| 3 | `<原文>` | | `<usage_scope 仅含缓坡>` | 已写但买家未注意 | 买家未阅读 | 补一张场景限定图 |
+| 1 | `<nguyên văn>` | | `<spec_table.xxx = giá trị>` | Không nhắc | Thiếu giải thích | Thêm vào đoạn 6 trang chi tiết |
+| 2 | `<nguyên văn>` | | `<package_content không có xxx>` | Có nhắc nhưng ở dòng cuối bảng đoạn 4 | Giải thích không nổi bật | Chuyển lên mục đầu đoạn 6 |
+| 3 | `<nguyên văn>` | | `<usage_scope chỉ gồm dốc thoải>` | Đã viết nhưng người mua không để ý | Người mua không đọc | Bổ sung một ảnh giới hạn tình huống |
 ```
 
-> ⚠️ **关键区分**：如果对照 `spec_table` / `package_content` 后发现**实际确实与描述不符**，那不是误解型，是**参数不符合预期**，应走另一条路径（修正描述或修产品），不能混进来。
+> ⚠️ **Phân biệt then chốt**: nếu đối chiếu `spec_table` / `package_content` mà thấy **thực tế đúng là không khớp mô tả**, thì đó không phải loại hiểu lầm mà là **thông số không như kỳ vọng**, phải đi theo hướng khác (sửa mô tả hoặc sửa sản phẩm), không được trộn vào đây.
 
 ---
 
-# STEP 2 · 详情页修补建议
+# STEP 2 · Đề xuất vá trang chi tiết
 
-对每条判定结果，输出**可直接粘贴的母语文案**。
+Với mỗi kết quả phán định, xuất **nội dung bằng ngôn ngữ bản địa, dán thẳng được**.
 
 ```markdown
-## 2. 详情页修补建议
+## 2. Đề xuất vá trang chi tiết
 
-### 2.1 新增/修改条目
+### 2.1 Mục thêm mới / chỉnh sửa
 
-| # | 对应差评 | 写入位置 | 文案（<目标语言>） | 中文说明 |
+| # | Đánh giá tiêu cực tương ứng | Vị trí viết | Nội dung (<ngôn ngữ mục tiêu>) | Giải thích (tiếng Việt) |
 |---|---|---|---|---|
-| 1 | #1 | 段 6 · 注意事项（首条） | `<母语文案>` | 明确不含头盔 |
-| 2 | #2 | 段 6 · 注意事项 | `<母语文案>` | 明确上坡能力边界 |
+| 1 | #1 | Đoạn 6 · Lưu ý (mục đầu) | `<nội dung bản địa>` | Ghi rõ không kèm mũ bảo hiểm |
+| 2 | #2 | Đoạn 6 · Lưu ý | `<nội dung bản địa>` | Ghi rõ giới hạn khả năng leo dốc |
 
-### 2.2 需要补的图（回流 04）
+### 2.2 Ảnh cần bổ sung (quay về 04)
 
-| # | 对应差评 | 图位 | 图内文案 | 说明 |
+| # | Đánh giá tiêu cực tương ứng | Vị trí ảnh | Chữ trên ảnh | Mô tả |
 |---|---|---|---|---|
-| 1 | #1 | 图 8 · 包装清单图 | `Não incluso: capacete` | 用图代替文字说明 |
+| 1 | #1 | Ảnh 8 · Ảnh danh sách đóng gói | `Não incluso: capacete` | Dùng ảnh thay cho giải thích bằng chữ |
 
-### 2.3 需要改的表述（回流 03）
+### 2.3 Cách diễn đạt cần sửa (quay về 03)
 
-| # | 原表述 | 问题 | 建议表述 |
+| # | Diễn đạt gốc | Vấn đề | Diễn đạt đề xuất |
 |---|---|---|---|
-| 1 | `<原文>` | 给了买家过高预期 | `<新表述>` |
+| 1 | `<nguyên văn>` | Tạo kỳ vọng quá cao cho người mua | `<diễn đạt mới>` |
 ```
 
-## 文案撰写的四条规则
+## Bốn quy tắc viết nội dung
 
-| 规则 | 说明 | 示例 |
+| Quy tắc | Mô tả | Ví dụ |
 |---|---|---|
-| **正面陈述，不辩解** | 不写"买家没看清楚"这类含蓄指责 | ✅ `O capacete não está incluso.` |
-| **给出边界，不说"做不到"** | 说清能力范围，而不是否定产品 | ✅ `Indicado para ladeiras leves e vias pavimentadas.` ❌ `Não sobe ladeiras.` |
-| **前置到醒目位置** | 易被误解的项放注意事项段**首条** | 不要放在段落中间 |
-| **带具体数值或长度** | 含糊的说明等于没说 | ✅ `O cabo tem 30 cm.` ❌ `O cabo é curto.` |
+| **Khẳng định trực diện, không biện minh** | Không viết kiểu ngầm trách "người mua không đọc kỹ" | ✅ `O capacete não está incluso.` |
+| **Nêu giới hạn, không nói "không làm được"** | Nói rõ phạm vi khả năng, thay vì phủ định sản phẩm | ✅ `Indicado para ladeiras leves e vias pavimentadas.` ❌ `Não sobe ladeiras.` |
+| **Đưa lên vị trí nổi bật** | Mục dễ bị hiểu lầm đặt ở **mục đầu** của đoạn Lưu ý | Đừng đặt giữa đoạn |
+| **Kèm số liệu hoặc độ dài cụ thể** | Giải thích mơ hồ coi như không giải thích | ✅ `O cabo tem 30 cm.` ❌ `O cabo é curto.` |
 
 ---
 
-# STEP 3 · 参数红线提炼
+# STEP 3 · Rút lằn ranh đỏ thông số
 
-把被反复投诉"不符预期"的参数，提炼成 `forbidden_words` 候选。
+Rút các thông số bị phàn nàn "không như kỳ vọng" nhiều lần thành ứng viên `forbidden_words`.
 
 ```markdown
-## 3. 参数红线
+## 3. Lằn ranh đỏ thông số
 
-| # | 被投诉的参数 | 买家预期 | `spec_table` 实际值 | 禁用词候选 | 理由 |
+| # | Thông số bị phàn nàn | Người mua kỳ vọng | Giá trị thực tế trong `spec_table` | Ứng viên từ cấm | Lý do |
 |---|---|---|---|---|---|
-| 1 | 续航 | 60 km | 35 km | `60 km` `autonomia longa` | 会引发续航类差评 |
-| 2 | 承重 | 200 kg | 150 kg | `200 kg` | 超载使用有安全风险 |
-| 3 | 上坡 | 任意坡道 | 缓坡 | `qualquer ladeira` `sobe tudo` | 未限定的表述会被理解为全场景 |
+| 1 | Quãng đường | 60 km | 35 km | `60 km` `autonomia longa` | Sẽ gây đánh giá tiêu cực về quãng đường |
+| 2 | Tải trọng | 200 kg | 150 kg | `200 kg` | Dùng quá tải có rủi ro an toàn |
+| 3 | Leo dốc | Mọi loại dốc | Dốc thoải | `qualquer ladeira` `sobe tudo` | Diễn đạt không giới hạn sẽ bị hiểu là mọi tình huống |
 
-**输出为 `forbidden_words_candidates[]`**（供 03/04/05 硬拦截）
+**Xuất thành `forbidden_words_candidates[]`** (để 03/04/05 chặn cứng)
 ```
 
-> **红线的价值在于"防患于未然"**：这些词往往出现在竞品的关键词表里（竞品可能是 60km 续航），如果 SEO 导向地拿来用，就等于主动制造虚标。**评论分析是发现这类红线的最直接途径。**
+> **Giá trị của lằn ranh đỏ là "phòng bệnh hơn chữa bệnh"**: những từ này thường xuất hiện trong bảng từ khóa của đối thủ (đối thủ có thể ghi quãng đường 60km), nếu lấy về dùng theo hướng SEO thì chẳng khác nào chủ động khai khống thông số. **Phân tích đánh giá là con đường trực tiếp nhất để phát hiện những lằn ranh đỏ như vậy.**
 
 ---
 
-# STEP 4 · 可修复性评估
+# STEP 4 · Đánh giá khả năng khắc phục
 
 ```markdown
-## 4. 可修复性评估
+## 4. Đánh giá khả năng khắc phục
 
-| 项 | 数量 | 占比 |
+| Hạng mục | Số lượng | Tỷ trọng |
 |---|---|---|
-| 差评总数 | | 100% |
-| **可由改描述/改图修复** | | |
-| 需改产品/供应商 | | |
-| 需改物流 | | |
+| Tổng đánh giá tiêu cực | | 100% |
+| **Khắc phục được bằng sửa mô tả / sửa ảnh** | | |
+| Cần sửa sản phẩm / nhà cung cấp | | |
+| Cần sửa vận chuyển | | |
 
-**结论**：<n>% 的差评可以通过修改 Listing 解决，不需要动产品。
+**Kết luận**: <n>% đánh giá tiêu cực có thể giải quyết bằng cách sửa Listing, không cần động vào sản phẩm.
 
-**优先修复顺序**：<按「出现频次 ÷ 修复成本」排序>
+**Thứ tự ưu tiên khắc phục**: <xếp theo «tần suất xuất hiện ÷ chi phí khắc phục»>
 ```
 
 ---
 
-# STEP 5 · 客服话术（可选）
+# STEP 5 · Mẫu câu CSKH (tùy chọn)
 
-**仅当输入中含明确要求时输出。**
+**Chỉ xuất khi input có yêu cầu rõ ràng.**
 
 ```markdown
-## 5. 客服话术建议
+## 5. Đề xuất mẫu câu CSKH
 
-| 场景 | 话术（目标语言） | 说明 |
+| Tình huống | Mẫu câu (ngôn ngữ mục tiêu) | Mô tả |
 |---|---|---|
-| 询单：问是否含某配件 | | 如实回答 + 推荐可购配件 |
-| 差评回复：参数不符（实测无误） | | 如实说明测试条件，不辩解 |
-| 差评回复：功能故障 | | 致歉 + 售后方案 |
+| Khách hỏi trước khi mua: có kèm phụ kiện X không | | Trả lời đúng sự thật + gợi ý phụ kiện có thể mua |
+| Trả lời đánh giá tiêu cực: thông số không khớp (đo thực tế không sai) | | Nói đúng điều kiện thử nghiệm, không biện minh |
+| Trả lời đánh giá tiêu cực: lỗi chức năng | | Xin lỗi + phương án hậu mãi |
 ```
 
-## 话术的三条底线
+## Ba nguyên tắc bất di bất dịch của mẫu câu
 
-| 底线 | 说明 |
+| Nguyên tắc | Mô tả |
 |---|---|
-| ❌ 不以利益诱导删评 | 这是 SOP 里有、但本仓库不实现的动作 |
-| ❌ 不以不实理由解释参数不符 | 如"说明书打包错了"——属欺诈 |
-| ✅ 如实说明 + 给出解决方案 | 唯一正当的路径 |
+| ❌ Không dùng lợi ích dụ dỗ xóa đánh giá | Đây là hành động có trong SOP nhưng repo này không triển khai |
+| ❌ Không dùng lý do sai sự thật để giải thích thông số không khớp | Như "đóng nhầm sách hướng dẫn" — là gian lận |
+| ✅ Nói đúng sự thật + đưa ra phương án giải quyết | Con đường chính đáng duy nhất |
 
 ---
 
 # FINAL OUTPUT STRUCTURE
 
 ```markdown
-## 1. 误解型差评判定
-## 2. 详情页修补建议
-   ### 2.1 新增/修改条目
-   ### 2.2 需要补的图（→ 04）
-   ### 2.3 需要改的表述（→ 03）
-## 3. 参数红线
-## 4. 可修复性评估
-## 5. 客服话术建议        （条件输出）
-## 6. 分析合规扫描
-   （按 00_system.md 的 C1–C5；无命中必须写"无命中"）
-## 7. 交付给其他模块的字段
-   - review_patch_suggestions: []      # → 03 详情页注意事项段
-   - forbidden_words_candidates: []    # → 03/04/05 硬拦截
-   - packaging_clarity_needed: true/false  # → 04 包装清单图
-   - scene_limit_image_needed: true/false  # → 04 场景限定图
+## 1. Phán định đánh giá tiêu cực loại hiểu lầm
+## 2. Đề xuất vá trang chi tiết
+   ### 2.1 Mục thêm mới / chỉnh sửa
+   ### 2.2 Ảnh cần bổ sung (→ 04)
+   ### 2.3 Cách diễn đạt cần sửa (→ 03)
+## 3. Lằn ranh đỏ thông số
+## 4. Đánh giá khả năng khắc phục
+## 5. Đề xuất mẫu câu CSKH        (xuất có điều kiện)
+## 6. Quét tuân thủ phân tích
+   (theo C1–C5 của 00_system.md; không vi phạm thì bắt buộc ghi "không vi phạm")
+## 7. Các trường bàn giao cho module khác
+   - review_patch_suggestions: []      # → 03 đoạn Lưu ý trang chi tiết
+   - forbidden_words_candidates: []    # → 03/04/05 chặn cứng
+   - packaging_clarity_needed: true/false  # → 04 ảnh danh sách đóng gói
+   - scene_limit_image_needed: true/false  # → 04 ảnh giới hạn tình huống
    - fixable_ratio: 0.00
 ```
 
@@ -190,13 +190,13 @@
 
 # SELF-CHECK
 
-- [ ] 每条误解题差评都对照了具体字段（spec_table / package_content / usage_scope）
-- [ ] 已区分"缺失说明 / 说明不醒目 / 买家未阅读"三种判定
-- [ ] 与描述确实不符的，已改判为"参数不符合预期"，未混入误解型
-- [ ] 修补文案是**目标语言**且可直接粘贴
-- [ ] 文案遵守四条规则（正面陈述 / 给边界 / 前置 / 带数值）
-- [ ] 涉及配件的已判断是否需补图
-- [ ] 参数红线含禁用词候选
-- [ ] 可修复性占比已计算
-- [ ] 客服话术未含诱导删评、未含不实解释
-- [ ] 末尾已附分析合规扫描 + 交付字段
+- [ ] Mỗi đánh giá tiêu cực loại hiểu lầm đều đã đối chiếu trường cụ thể (spec_table / package_content / usage_scope)
+- [ ] Đã phân biệt ba loại phán định "thiếu giải thích / giải thích không nổi bật / người mua không đọc"
+- [ ] Trường hợp đúng là không khớp mô tả đã chuyển sang "thông số không như kỳ vọng", không trộn vào loại hiểu lầm
+- [ ] Nội dung vá là **ngôn ngữ mục tiêu** và dán thẳng được
+- [ ] Nội dung tuân theo bốn quy tắc (khẳng định trực diện / nêu giới hạn / đưa lên đầu / kèm số liệu)
+- [ ] Trường hợp liên quan phụ kiện đã phán đoán có cần bổ sung ảnh không
+- [ ] Lằn ranh đỏ thông số có ứng viên từ cấm
+- [ ] Đã tính tỷ trọng khả năng khắc phục
+- [ ] Mẫu câu CSKH không có dụ dỗ xóa đánh giá, không có giải thích sai sự thật
+- [ ] Cuối đầu ra đã kèm Quét tuân thủ phân tích + các trường bàn giao
