@@ -1,102 +1,102 @@
-# 05 · SOP 差异登记表（未实现项）
+# 05 · Bảng đăng ký chênh lệch so với SOP (các hạng mục không triển khai)
 
-> **本文档的性质：登记，不是指南。**
+> **Bản chất của tài liệu này: đăng ký, không phải hướng dẫn.**
 >
-> 它回答一个问题：**"原始 SOP 里的某些内容，为什么在本仓库里找不到？"**
+> Nó trả lời một câu hỏi: **"Vì sao một số nội dung trong SOP gốc không tìm thấy trong repo này?"**
 >
-> 开源项目删掉了别人的内容如果不说明，会被误解成遗漏。所以本文档逐项登记：**原始 SOP 提到了什么 → 为什么未实现 → 是否有合规替代 → 替代方案落在哪个模块**。
+> Dự án mã nguồn mở bỏ đi nội dung của người khác mà không giải thích thì sẽ bị hiểu nhầm là bỏ sót. Vì vậy tài liệu này đăng ký từng mục: **SOP gốc nhắc đến điều gì → vì sao không triển khai → có phương án thay thế tuân thủ không → phương án thay thế nằm ở module nào**.
 >
-> ⚠️ **本文档只登记到"结论"层级，不复述操作细节。** 需要原始操作步骤请查阅 SOP 原件。这是刻意的设计——登记的目的是透明，不是传播。
+> ⚠️ **Tài liệu này chỉ đăng ký đến mức "kết luận", không thuật lại chi tiết thao tác.** Cần các bước thao tác gốc thì hãy tra bản SOP gốc. Đây là thiết kế có chủ ý —— mục đích của việc đăng ký là minh bạch, không phải lan truyền.
 
 ---
 
-## 一、为什么不做"逐条实现"
+## I. Vì sao không "triển khai từng mục"
 
-三个现实理由：
+Ba lý do thực tế:
 
-| 理由 | 说明 |
+| Lý do | Giải thích |
 |---|---|
-| **平台风险** | 这些动作属于平台最高等级违规，处罚是删评 / 限流 / 扣分 / 冻结，且部分行为**不可申诉** |
-| **法律风险** | 参数虚标在巴西属《消费者保护法》规制范围；恶意举报竞品可能构成不正当竞争 |
-| **项目风险** | 开源仓库含违规操作指引，会被平台风控识别，也会让使用者连带受损 |
+| **Rủi ro từ sàn** | Những thao tác này là vi phạm ở mức cao nhất của sàn, hình phạt gồm xóa đánh giá / bóp traffic / trừ điểm / khóa shop, và một số hành vi **không được khiếu nại** |
+| **Rủi ro pháp lý** | Khai khống thông số tại Brazil thuộc phạm vi điều chỉnh của «Bộ luật Bảo vệ Người tiêu dùng»; báo cáo ác ý đối thủ có thể cấu thành cạnh tranh không lành mạnh |
+| **Rủi ro cho dự án** | Repo mã nguồn mở chứa hướng dẫn thao tác vi phạm sẽ bị hệ thống kiểm soát rủi ro của sàn nhận diện, đồng thời khiến người dùng bị liên đới thiệt hại |
 
-**处理原则**：**业务目标保留，执行手段替换。**
+**Nguyên tắc xử lý**: **giữ mục tiêu kinh doanh, thay thủ đoạn thực hiện.**
 
-> 这是本仓库与其他"运营技巧合集"的分界线：我们不是把 SOP 抄一遍，而是**判断哪些能自动化、哪些不能、不能的怎么换成能做的**。
+> Đây là ranh giới giữa repo này và các "tuyển tập mẹo vận hành" khác: chúng tôi không chép lại SOP, mà **đánh giá phần nào tự động hóa được, phần nào không, phần không được thì đổi thành cách làm được ra sao**.
 
 ---
 
-## 二、登记表
+## II. Bảng đăng ký
 
-### 2.1 数据与评价类
+### 2.1 Nhóm dữ liệu và đánh giá
 
-| # | SOP 提及的内容 | 平台规则性质 | 本仓库处理 | 合规替代 | 落在哪 |
+| # | Nội dung SOP nhắc đến | Tính chất theo quy định sàn | Cách repo xử lý | Thay thế tuân thủ | Nằm ở đâu |
 |---|---|---|---|---|---|
-| 1 | 通过自建 SKU、调整规格、控制下单时段等方式组织交易，以积累销量与评价 | **虚假交易**——平台最高等级违规 | ❌ 未实现 | 真实低价促销快速破零；使用平台官方邀评通道；非公开优惠券引导真实买家 | [`03` 详情页段 5](../Agents/03_Listing_Creative_Agent/prompts/02_description_builder.md) · [`07` 回流建议](../Agents/07_Review_Analysis_Agent/) |
-| 2 | 用优惠券诱导买家评价；引用他人素材时修改文件特征以规避检测 | **规避风控 + 版权侵权** | ❌ 未实现 | 平台官方邀评工具；素材原创拍摄或购买授权 | [`docs/04` 自检 D 段](./04_Result_Checklist.md) |
-| 3 | 组织人员对竞品的评论进行集中举报 | **滥用举报机制 + 不正当竞争** | ❌ 未实现 | 竞品差评归因 → 转化为己方详情页的**防御性说明** | [`07` 竞品对比](../Agents/07_Review_Analysis_Agent/prompts/01_classify_and_attribute.md) |
-| 4 | 以退款 / 补偿为条件与买家协商删除差评 | **不当影响评价** | ❌ 未实现 | 如实说明 + 给出解决方案；把差评问题回流为详情页修补 | [`07` 误解题识别](../Agents/07_Review_Analysis_Agent/prompts/02_misunderstanding_detector.md) |
+| 1 | Tổ chức giao dịch bằng cách tự tạo SKU, điều chỉnh quy cách, kiểm soát khung giờ đặt hàng v.v. để tích lũy doanh số và đánh giá | **Giao dịch ảo** —— vi phạm ở mức cao nhất của sàn | ❌ Không triển khai | Khuyến mãi giá thấp có thật để nhanh chóng phá mốc 0 đơn; dùng kênh mời đánh giá chính thức của sàn; voucher không công khai để thu hút người mua thật | [`03` trang chi tiết phần 5](../Agents/03_Listing_Creative_Agent/prompts/02_description_builder.md) · [`07` đề xuất quay vòng về](../Agents/07_Review_Analysis_Agent/) |
+| 2 | Dùng voucher dụ dỗ người mua đánh giá; khi dùng lại hình ảnh của người khác thì sửa đặc trưng file để lách kiểm tra | **Lách kiểm soát rủi ro + xâm phạm bản quyền** | ❌ Không triển khai | Công cụ mời đánh giá chính thức của sàn; nội dung sáng tạo tự chụp hoặc mua bản quyền | [`docs/04` tự kiểm tra mục D](./04_Result_Checklist.md) |
+| 3 | Tổ chức người báo cáo tập trung vào đánh giá của đối thủ | **Lạm dụng cơ chế báo cáo + cạnh tranh không lành mạnh** | ❌ Không triển khai | Quy nguyên nhân đánh giá tiêu cực của đối thủ → chuyển thành **phần giải thích phòng ngừa** trên trang chi tiết của mình | [`07` so sánh đối thủ](../Agents/07_Review_Analysis_Agent/prompts/01_classify_and_attribute.md) |
+| 4 | Thương lượng với người mua để xóa đánh giá tiêu cực với điều kiện hoàn tiền / bồi thường | **Tác động không chính đáng đến đánh giá** | ❌ Không triển khai | Giải thích trung thực + đưa ra phương án giải quyết; đưa vấn đề trong đánh giá tiêu cực quay vòng về thành bản vá trang chi tiết | [`07` nhận diện loại hiểu lầm](../Agents/07_Review_Analysis_Agent/prompts/02_misunderstanding_detector.md) |
 
-> ⚠️ 第 3 项需要区分边界：**单条明显违规评论的正常申诉，是平台允许的**（SOP 提到的"先举报有机会消除"属于这一类）。本仓库移除的是"**组织性**集中举报"，不是否定正常申诉权。
+> ⚠️ Mục 3 cần phân rõ ranh giới: **khiếu nại thông thường với một đánh giá vi phạm rõ ràng là điều sàn cho phép** ("báo cáo trước thì có cơ hội được gỡ" mà SOP nhắc đến thuộc loại này). Thứ repo loại bỏ là "báo cáo tập trung **có tổ chức**", không phải phủ nhận quyền khiếu nại thông thường.
 
-### 2.2 内容与参数类
+### 2.2 Nhóm nội dung và thông số
 
-| # | SOP 提及的内容 | 平台规则性质 | 本仓库处理 | 合规替代 | 落在哪 |
+| # | Nội dung SOP nhắc đến | Tính chất theo quy định sàn | Cách repo xử lý | Thay thế tuân thủ | Nằm ở đâu |
 |---|---|---|---|---|---|
-| 5 | 标题写"在可控范围内的虚假宣传"以提高点击率 | **虚假宣传**（平台 + 巴西消费法） | ❌ 未实现 | **卖点真实化映射表**：夸大表达 → 可验证表达（`A Bateria Mais Forte do Mercado` → `Bateria de 20000mAh com saída de 45W`） | [`docs/03` 第三节](./03_Compliance_Guard.md) · [`03` 段 2](../Agents/03_Listing_Creative_Agent/prompts/02_description_builder.md) |
-| 6 | 参数存在虚标时，向买家解释为"说明书打包错误""产品有几个规格" | **欺诈** | ❌ 未实现 | **参数三处一致性校验**：输入 `spec_table` = 标题 = 详情页，逐字符一致 | [`03` 参数校验](../Agents/03_Listing_Creative_Agent/prompts/02_description_builder.md) · [`07` 参数红线](../Agents/07_Review_Analysis_Agent/prompts/02_misunderstanding_detector.md) |
-| 7 | 使用大品牌词、平台敏感词做标题埋词 | **侵权 + 平台违规** | ❌ 未实现 | 未授权品牌一律替换为 `Compatível com <marca>` 或删除；风险词单独隔离为 `forbidden_words` | [`docs/03` R2 规则](./03_Compliance_Guard.md) · [`03` 风险词隔离](../Agents/03_Listing_Creative_Agent/prompts/01_keyword_to_title.md) |
-| 8 | 竞品排名上升时，考虑给竞品上差评 | **恶意竞争** | ❌ 未实现 | 分析竞品的广告与转化原因；在我方详情页强化差异化 | [`01` 竞品分析](../Agents/01_Market_Research_Agent/) |
+| 5 | Tiêu đề viết "quảng cáo sai sự thật trong phạm vi kiểm soát được" để tăng CTR | **Quảng cáo sai sự thật** (quy định sàn + luật tiêu dùng Brazil) | ❌ Không triển khai | **Bảng ánh xạ điểm bán hàng về sự thật**: cách nói phóng đại → cách nói kiểm chứng được (`A Bateria Mais Forte do Mercado` → `Bateria de 20000mAh com saída de 45W`) | [`docs/03` mục III](./03_Compliance_Guard.md) · [`03` phần 2](../Agents/03_Listing_Creative_Agent/prompts/02_description_builder.md) |
+| 6 | Khi có khai khống thông số, giải thích với người mua là "đóng gói nhầm sách hướng dẫn", "sản phẩm có mấy phiên bản" | **Gian lận** | ❌ Không triển khai | **Kiểm tra tính nhất quán thông số ở ba chỗ**: `spec_table` đầu vào = tiêu đề = trang chi tiết, khớp từng ký tự | [`03` kiểm tra thông số](../Agents/03_Listing_Creative_Agent/prompts/02_description_builder.md) · [`07` lằn ranh đỏ thông số](../Agents/07_Review_Analysis_Agent/prompts/02_misunderstanding_detector.md) |
+| 7 | Dùng từ thương hiệu lớn, từ nhạy cảm của sàn để cài từ khóa vào tiêu đề | **Xâm phạm quyền + vi phạm quy định sàn** | ❌ Không triển khai | Thương hiệu chưa ủy quyền đều thay bằng `Compatível com <marca>` hoặc xóa; từ rủi ro được tách riêng thành `forbidden_words` | [`docs/03` quy tắc R2](./03_Compliance_Guard.md) · [`03` cô lập từ rủi ro](../Agents/03_Listing_Creative_Agent/prompts/01_keyword_to_title.md) |
+| 8 | Khi thứ hạng đối thủ tăng, cân nhắc đánh giá tiêu cực đối thủ | **Cạnh tranh ác ý** | ❌ Không triển khai | Phân tích nguyên nhân quảng cáo và chuyển đổi của đối thủ; tăng cường khác biệt hóa trên trang chi tiết của mình | [`01` phân tích đối thủ](../Agents/01_Market_Research_Agent/) |
 
-### 2.3 运营节奏类
+### 2.3 Nhóm nhịp độ vận hành
 
-| # | SOP 提及的内容 | 性质 | 本仓库处理 | 合规替代 |
+| # | Nội dung SOP nhắc đến | Tính chất | Cách repo xử lý | Thay thế tuân thủ |
 |---|---|---|---|---|
-| 9 | 用过低的成交价（如大额优惠券）在短期内制造成交数据 | **异常成交**——新店风控高发项 | ⚠️ 部分保留 | 保留"新店前期不要有过大的订单波动"的**风控提示**；移除"用大额优惠券制造成交"的做法。建议在正常推广节奏下放量 | 
-| 10 | 平台会删除部分评论；出问题后评价只能修改一次 | **平台事实** | ✅ 保留 | 保留为运营注意事项，用于强调"评价建设要做对一次" |
+| 9 | Dùng giá chốt đơn quá thấp (ví dụ voucher giá trị lớn) để tạo dữ liệu đơn hàng trong thời gian ngắn | **Giao dịch bất thường** —— mục hay bị kiểm soát rủi ro với shop mới | ⚠️ Giữ lại một phần | Giữ **cảnh báo rủi ro** "giai đoạn đầu shop mới đừng để lượng đơn biến động quá lớn"; loại bỏ cách làm "dùng voucher giá trị lớn để tạo đơn". Khuyến nghị scale theo nhịp đẩy sản phẩm bình thường | 
+| 10 | Sàn sẽ xóa một phần đánh giá; sau khi có vấn đề thì đánh giá chỉ được sửa một lần | **Sự thật về sàn** | ✅ Giữ lại | Giữ làm lưu ý vận hành, để nhấn mạnh "xây dựng đánh giá phải làm đúng ngay từ đầu" |
 
-> 第 9 项的边界：**低价促销本身是正常商业行为**，本仓库不反对。被移除的是"以制造虚假成交数据为目的、与真实需求不匹配的极端低价"。判断标准是**目的是否为了误导平台算法**。
+> Ranh giới của mục 9: **bản thân khuyến mãi giá thấp là hoạt động kinh doanh bình thường**, repo không phản đối. Thứ bị loại bỏ là "giá thấp cực đoan nhằm tạo dữ liệu đơn hàng giả, không khớp với nhu cầu thật". Tiêu chuẩn phán đoán là **mục đích có phải để đánh lừa thuật toán của sàn hay không**.
 
 ---
 
-## 三、本仓库做了哪些**加法**
+## III. Repo này đã **bổ sung** những gì
 
-差异登记之外，还有几处是 SOP 没有、本仓库补上的。列出以便对照：
+Ngoài phần đăng ký chênh lệch, còn vài chỗ SOP không có mà repo đã bổ sung. Liệt kê ra để tiện đối chiếu:
 
-| # | 补充内容 | 为什么加 | 落在哪 |
+| # | Nội dung bổ sung | Vì sao thêm | Nằm ở đâu |
 |---|---|---|---|
-| 1 | **盈亏线 ROAS 核算** | SOP 给了健康指标基准线，但没有"赚不赚钱"的判定线。两者是两回事——漏斗全达标也可能亏钱 | [`06`](../Agents/06_Advertising_Optimization_Agent/) |
-| 2 | **误解型差评单独分类** | SOP 按现象罗列差评，未区分"描述的问题"与"产品的问题"。分开后才发现 84,6% 的差评可靠改文案解决 | [`07`](../Agents/07_Review_Analysis_Agent/) |
-| 3 | **参数唯一来源（`spec_table`）** | SOP 没有强制统一数值来源，关键词表里混着竞品参数（如竞品标称 60km 续航）极易变成虚标 | [`03`](../Agents/03_Listing_Creative_Agent/) · [`Templates`](../Templates/product_brief_template.md) |
-| 4 | **模块间通信契约 + 阻塞字段** | 跨模块传递时防止信息损耗与模型自行推测 | [`Templates/product_brief_template.md`](../Templates/product_brief_template.md) |
-| 5 | **"本轮明确不动的部分"** | 防止修 A 环节时顺手改坏 B 环节，导致无法归因 | [`06` 漏斗诊断](../Agents/06_Advertising_Optimization_Agent/prompts/01_funnel_diagnosis.md) |
-| 6 | **复测指标的选择原则** | 选"改动能控制"的指标（广告看 ROAS，文案看误解型占比），不看总销量 | [`Examples/03`](../Examples/03_Closed_Loop/) |
-| 7 | **负面 Prompt 作为合规工具** | 不防水产品的场景图必须排除 `rain / water / swimming pool`，否则画面本身构成暗示 | [`04` 出图 Prompt](../Agents/04_Product_Image_Agent/prompts/02_image_prompt_generator.md) |
+| 1 | **Tính ROAS hòa vốn** | SOP đưa ra ngưỡng chuẩn cho chỉ số sức khỏe, nhưng không có đường phân định "có lãi hay không". Hai thứ này khác nhau —— phễu đạt chuẩn toàn bộ vẫn có thể lỗ | [`06`](../Agents/06_Advertising_Optimization_Agent/) |
+| 2 | **Phân loại riêng đánh giá tiêu cực loại hiểu lầm** | SOP liệt kê đánh giá tiêu cực theo hiện tượng, không phân biệt "vấn đề do mô tả" và "vấn đề do sản phẩm". Tách ra rồi mới thấy 84,6% đánh giá tiêu cực có thể giải quyết bằng cách sửa nội dung | [`07`](../Agents/07_Review_Analysis_Agent/) |
+| 3 | **Nguồn thông số duy nhất (`spec_table`)** | SOP không bắt buộc thống nhất nguồn giá trị số, bảng từ khóa lẫn cả thông số của đối thủ (ví dụ đối thủ ghi quãng đường 60km) rất dễ biến thành khai khống thông số | [`03`](../Agents/03_Listing_Creative_Agent/) · [`Templates`](../Templates/product_brief_template.md) |
+| 4 | **Hợp đồng giao tiếp giữa các module + trường chặn** | Tránh mất thông tin và mô hình tự suy đoán khi truyền giữa các module | [`Templates/product_brief_template.md`](../Templates/product_brief_template.md) |
+| 5 | **«Phần giữ nguyên trong vòng này»** | Tránh việc sửa khâu A tiện tay làm hỏng khâu B, dẫn đến không quy được nguyên nhân | [`06` chẩn đoán phễu](../Agents/06_Advertising_Optimization_Agent/prompts/01_funnel_diagnosis.md) |
+| 6 | **Nguyên tắc chọn chỉ số kiểm tra lại** | Chọn chỉ số "mà thay đổi kiểm soát được" (quảng cáo xem ROAS, nội dung xem tỷ lệ loại hiểu lầm), không xem tổng doanh số | [`Examples/03`](../Examples/03_Closed_Loop/) |
+| 7 | **Prompt phủ định như một công cụ tuân thủ** | Ảnh bối cảnh của sản phẩm không chống nước bắt buộc loại trừ `rain / water / swimming pool`, nếu không thì bản thân hình ảnh đã là một lời ám chỉ | [`04` Prompt tạo ảnh](../Agents/04_Product_Image_Agent/prompts/02_image_prompt_generator.md) |
 
 ---
 
-## 四、给使用者的建议
+## IV. Lời khuyên cho người dùng
 
-如果你手上就是那份完整 SOP：
+Nếu trong tay bạn chính là bản SOP đầy đủ đó:
 
-1. **本文档是判断依据，不是禁令清单。** 我们移除的是"手段"，业务目标（提销量、建评价、上排名）全部保留，只是换了做法。
-2. **遇到不在本文档里的内容**，用三个问题自查：
-   - 这个动作**如实描述**给人听，我会不会不舒服？
-   - 如果平台知道我在这么做，会不会处罚？
-   - 换成合规做法，**业务目标还能达成吗**？能 → 就换；不能 → 说明这个目标本身不成立。
-3. **不确定是否合规时**，对照 [`docs/03_Compliance_Guard.md`](./03_Compliance_Guard.md) 的改写对照表——它覆盖了绝大多数常见情况。
-
----
-
-## 五、贡献
-
-如果你发现本仓库遗漏了某个 SOP 内容未登记，或对某条的处理有异议：
-
-- 提 Issue，说明 **SOP 原文位置 + 你的判断 + 建议处理**
-- **不要在 Issue / PR 里粘贴具体的违规操作步骤** —— 登记到"结论"层级即可
-
-详见 [`CONTRIBUTING.md`](../CONTRIBUTING.md)。
+1. **Tài liệu này là căn cứ để phán đoán, không phải danh sách cấm.** Thứ chúng tôi loại bỏ là "thủ đoạn", còn mục tiêu kinh doanh (tăng doanh số, xây dựng đánh giá, lên thứ hạng) đều được giữ lại, chỉ là đổi cách làm.
+2. **Gặp nội dung không có trong tài liệu này**, hãy tự kiểm tra bằng ba câu hỏi:
+   - Nếu **kể đúng sự thật** thao tác này cho người khác nghe, tôi có thấy khó chịu không?
+   - Nếu sàn biết tôi đang làm thế này, có bị phạt không?
+   - Đổi sang cách làm tuân thủ, **mục tiêu kinh doanh còn đạt được không**? Được → thì đổi; không được → chứng tỏ bản thân mục tiêu đó không đứng vững.
+3. **Khi không chắc có tuân thủ hay không**, hãy đối chiếu với bảng đối chiếu viết lại trong [`docs/03_Compliance_Guard.md`](./03_Compliance_Guard.md) —— nó bao quát phần lớn các tình huống thường gặp.
 
 ---
 
-**相关文档**：[03 合规红线与改写对照](./03_Compliance_Guard.md) · [00 架构拆解](./00_Architecture_SOP_to_Agent.md) · [04 自检清单](./04_Result_Checklist.md)
+## V. Đóng góp
+
+Nếu bạn phát hiện repo bỏ sót chưa đăng ký một nội dung nào đó của SOP, hoặc không đồng ý với cách xử lý một mục:
+
+- Mở Issue, nêu rõ **vị trí trong SOP gốc + nhận định của bạn + đề xuất xử lý**
+- **Đừng dán các bước thao tác vi phạm cụ thể vào Issue / PR** —— chỉ cần đăng ký đến mức "kết luận"
+
+Xem chi tiết tại [`CONTRIBUTING.md`](../CONTRIBUTING.md).
+
+---
+
+**Tài liệu liên quan**: [03 Lằn ranh đỏ tuân thủ và đối chiếu viết lại](./03_Compliance_Guard.md) · [00 Phân rã kiến trúc](./00_Architecture_SOP_to_Agent.md) · [04 Checklist tự kiểm tra](./04_Result_Checklist.md)

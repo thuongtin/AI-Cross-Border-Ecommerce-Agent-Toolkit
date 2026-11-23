@@ -1,158 +1,158 @@
-# 01 · Prompt 设计规范
+# 01 · Quy chuẩn thiết kế Prompt
 
-> 本仓库所有 Prompt 必须遵循本节结构。不符合的 PR 不予合并。
+> Mọi Prompt trong repo này bắt buộc tuân theo cấu trúc ở phần này. PR không đạt sẽ không được merge.
 
 ---
 
-## 一、五要素结构
+## I. Cấu trúc năm thành phần
 
-每个任务 Prompt 由五段构成，缺一段就是不合格的 Prompt。
+Mỗi Prompt tác vụ gồm năm phần, thiếu một phần là Prompt không đạt.
 
-| # | 要素 | 作用 | 反例 |
+| # | Thành phần | Tác dụng | Ví dụ sai |
 |---|---|---|---|
-| 1 | **角色 ROLE** | 限定专业视角和判断标准 | "你是一个AI助手" ← 太泛 |
-| 2 | **上下文 CONTEXT** | 喂平台规则、类目特性、业务约束 | 缺了会让 AI 用通用电商常识覆盖平台规则 |
-| 3 | **输入契约 INPUT** | 声明必需字段，缺字段则拒答 | 缺了 AI 会自己编参数 |
-| 4 | **输出契约 OUTPUT** | 固定结构，便于下游模块解析 | 缺了下游没法自动接 |
-| 5 | **自检 SELF-CHECK** | 输出前逐条校验，不合格则重写 | 缺了产出稳定性掉一半 |
+| 1 | **Vai trò ROLE** | Giới hạn góc nhìn chuyên môn và tiêu chuẩn phán đoán | "Bạn là một trợ lý AI" ← quá chung chung |
+| 2 | **Ngữ cảnh CONTEXT** | Cung cấp quy định sàn, đặc thù ngành hàng, ràng buộc kinh doanh | Thiếu phần này thì AI sẽ lấy kiến thức thương mại điện tử chung chung đè lên quy định của sàn |
+| 3 | **Hợp đồng đầu vào INPUT** | Khai báo các trường bắt buộc, thiếu trường thì từ chối trả lời | Thiếu phần này thì AI sẽ tự bịa thông số |
+| 4 | **Hợp đồng đầu ra OUTPUT** | Cố định cấu trúc để module phía sau dễ phân tích | Thiếu phần này thì phía sau không nối tự động được |
+| 5 | **Tự kiểm tra SELF-CHECK** | Kiểm tra từng mục trước khi xuất, không đạt thì viết lại | Thiếu phần này thì độ ổn định của đầu ra giảm một nửa |
 
 ---
 
-## 二、标准骨架
+## II. Khung chuẩn
 
 ```text
 # ROLE
-你是<具体角色>，服务于<具体平台/市场>。你的判断标准是<标准1、标准2、标准3>。
+Bạn là <vai trò cụ thể>, phục vụ cho <sàn/thị trường cụ thể>. Tiêu chuẩn phán đoán của bạn là <tiêu chuẩn 1, tiêu chuẩn 2, tiêu chuẩn 3>.
 
 # CONTEXT
-<平台硬规则：字数/字段/禁用项>
-<类目特性：买家常问什么、常退什么>
-<业务约束：利润率、库存、售后能力>
+<Quy định cứng của sàn: số ký tự/trường dữ liệu/mục bị cấm>
+<Đặc thù ngành hàng: người mua hay hỏi gì, hay hoàn hàng vì gì>
+<Ràng buộc kinh doanh: biên lợi nhuận, tồn kho, năng lực hậu mãi>
 
 # INPUT
-必须包含以下字段，缺失任一字段则停止并列出缺失项，不要猜测：
-- field_a: <说明>
-- field_b: <说明>
+Bắt buộc có các trường sau, thiếu bất kỳ trường nào thì dừng lại và liệt kê các mục còn thiếu, không được đoán:
+- field_a: <mô tả>
+- field_b: <mô tả>
 
 # OUTPUT
-严格按以下结构输出，不要增删章节：
-## 1. <章节名>
+Xuất đúng theo cấu trúc sau, không thêm bớt mục:
+## 1. <tên mục>
 ...
 
-# SELF-CHECK（输出前逐条核对，任一不通过则重写）
-- [ ] 检查项 1
-- [ ] 检查项 2
+# SELF-CHECK (kiểm tra từng mục trước khi xuất, bất kỳ mục nào không đạt thì viết lại)
+- [ ] Mục kiểm tra 1
+- [ ] Mục kiểm tra 2
 ```
 
 ---
 
-## 三、四条硬规则
+## III. Bốn quy tắc cứng
 
-### 规则 1：缺字段必须报错，不许猜
+### Quy tắc 1: Thiếu trường thì phải báo lỗi, không được đoán
 
-**这是最重要的一条。** 跨境运营里，"AI 编了一个参数"造成的损失远大于"AI 拒绝回答"。
+**Đây là quy tắc quan trọng nhất.** Trong vận hành xuyên biên giới, thiệt hại do "AI bịa một thông số" lớn hơn nhiều so với "AI từ chối trả lời".
 
 ```text
-❌ 错误示范
-输入里没有电池容量 → AI 自己写 "20000mAh" → 上架后被投诉参数不符
+❌ Ví dụ sai
+Đầu vào không có dung lượng pin → AI tự viết "20000mAh" → sau khi đăng bán bị khiếu nại sai thông số
 
-✅ 正确示范
-输入里没有电池容量 → AI 输出：
-   [INPUT_MISSING] 缺少字段：battery_capacity
-   影响：无法生成规格表和标题参数词
-   请补充后重新提交
+✅ Ví dụ đúng
+Đầu vào không có dung lượng pin → AI xuất:
+   [INPUT_MISSING] Thiếu trường: battery_capacity
+   Ảnh hưởng: không thể tạo bảng thông số và từ khóa thông số trong tiêu đề
+   Vui lòng bổ sung rồi gửi lại
 ```
 
-### 规则 2：平台规则写在 CONTEXT，不写在 OUTPUT
+### Quy tắc 2: Quy định sàn viết ở CONTEXT, không viết ở OUTPUT
 
-规则放到 OUTPUT 段落里，AI 容易在生成时"忘记"。放在 CONTEXT 里，模型会把它当成前提约束。
+Đặt quy định trong phần OUTPUT thì AI dễ "quên" lúc sinh nội dung. Đặt trong CONTEXT thì mô hình sẽ coi đó là ràng buộc tiền đề.
 
-### 规则 3：输出结构用固定 Markdown 标题
+### Quy tắc 3: Cấu trúc đầu ra dùng tiêu đề Markdown cố định
 
-我们用 `## 1. xxx` 这种编号标题，而不是自由散文。原因：下游 04/05 模块要靠标题抓取字段，散文抓不了。
+Chúng tôi dùng tiêu đề đánh số kiểu `## 1. xxx` thay vì văn xuôi tự do. Lý do: module 04/05 phía sau phải dựa vào tiêu đề để lấy trường dữ liệu, văn xuôi thì không lấy được.
 
-### 规则 4：自检清单写成可勾选项
+### Quy tắc 4: Checklist tự kiểm tra viết thành các mục đánh dấu được
 
-每条自检必须是**二元判断**（通过/不通过），不能是"尽量""注意"这种模糊要求。
+Mỗi mục tự kiểm tra bắt buộc là **phán đoán nhị phân** (đạt/không đạt), không được là yêu cầu mơ hồ kiểu "cố gắng", "chú ý".
 
 ```text
-❌ - [ ] 标题要尽量吸引人
-✅ - [ ] 标题字符数 ≤ 120，且不含促销词、表情符号、全大写词
+❌ - [ ] Tiêu đề cố gắng thu hút
+✅ - [ ] Tiêu đề ≤ 120 ký tự, không chứa từ khuyến mãi, emoji, từ viết hoa toàn bộ
 ```
 
 ---
 
-## 四、输出语言策略
+## IV. Chiến lược ngôn ngữ đầu ra
 
-这是跨境场景特有的坑。
+Đây là cái bẫy đặc thù của bán hàng xuyên biên giới.
 
-| 场景 | 输出语言 | 原因 |
+| Tình huống | Ngôn ngữ đầu ra | Lý do |
 |---|---|---|
-| 标题 / 详情页 / 图内文案 / 字幕 | **目标市场母语**（巴西站 = PT-BR） | 直译英文的 Listing CTR 结构性偏低 |
-| 说明性字段、内部备注、参数含义 | 中文 | 方便运营人员核对 |
-| 图内文案 | 母语 + 字数上限标注 | 图内文字超长会挤压画面 |
+| Tiêu đề / trang chi tiết / chữ trên ảnh / phụ đề | **Tiếng bản địa của thị trường mục tiêu** (Shopee Brazil = PT-BR) | Listing dịch thẳng từ tiếng Anh có CTR thấp về mặt cấu trúc |
+| Trường giải thích, ghi chú nội bộ, ý nghĩa thông số | Tiếng Việt | Để đội vận hành dễ đối chiếu |
+| Chữ trên ảnh | Tiếng bản địa + ghi rõ giới hạn số ký tự | Chữ trên ảnh quá dài sẽ chèn ép hình ảnh |
 
-**Prompt 里必须显式写**：
+**Trong Prompt bắt buộc ghi rõ**:
 
 ```text
 # LANGUAGE RULE
-- 所有面向买家的文本（标题、描述、图内文案、字幕）必须使用 <PT-BR 巴西葡萄牙语>。
-- 禁止先写英文再翻译，必须以 <目标语言> 直接构思表达。
-- 参数单位使用公制（kg / cm / W / V / mAh），禁止英制（lb / inch）。
-- 内部备注字段用中文。
+- Mọi văn bản hướng tới người mua (tiêu đề, mô tả, chữ trên ảnh, phụ đề) bắt buộc dùng <PT-BR tiếng Bồ Đào Nha Brazil>.
+- Cấm viết tiếng Anh trước rồi dịch, phải trực tiếp nghĩ và diễn đạt bằng <ngôn ngữ mục tiêu>.
+- Đơn vị thông số dùng hệ mét (kg / cm / W / V / mAh), cấm dùng hệ Anh (lb / inch).
+- Các trường ghi chú nội bộ dùng tiếng Việt.
 ```
 
-> 为什么强调"不要先英文再翻译"：模型对"翻译任务"和"生成任务"的激活模式不同。写成翻译任务，会产出语法正确但读起来像外国人的文案（巴西买家能明显感知）。写成生成任务，才会调用母语的表达习惯。
+> Vì sao nhấn mạnh "không viết tiếng Anh trước rồi dịch": mô hình kích hoạt theo cách khác nhau với "tác vụ dịch" và "tác vụ sáng tạo". Viết thành tác vụ dịch sẽ cho ra nội dung đúng ngữ pháp nhưng đọc lên như người nước ngoài viết (người mua Brazil cảm nhận rất rõ). Viết thành tác vụ sáng tạo thì mô hình mới dùng đến thói quen diễn đạt của người bản xứ.
 
 ---
 
-## 五、参数化写法
+## V. Cách viết tham số hóa
 
-Prompt 里需要变量替换的地方，用 `<尖括号>` 标注，并在模板文件里给出示例值：
+Những chỗ trong Prompt cần thay biến thì đánh dấu bằng `<ngoặc nhọn>`, và đưa giá trị ví dụ trong file mẫu:
 
 ```text
 # CONTEXT
-平台：<Shopee / Mercado Livre>
-目标市场：<巴西 / 墨西哥 / 菲律宾>
-类目：<Patinete Elétrico / Carregador Portátil>
+Sàn: <Shopee / Mercado Livre>
+Thị trường mục tiêu: <Brazil / Mexico / Philippines>
+Ngành hàng: <Patinete Elétrico / Carregador Portátil>
 ```
 
-不要用 `{var}` 或 `$VAR`——容易和代码模板冲突，也容易被模型误当成需要保留的字面量。
+Đừng dùng `{var}` hay `$VAR` —— dễ xung đột với template code, và dễ bị mô hình hiểu nhầm là chuỗi literal cần giữ nguyên.
 
 ---
 
-## 六、复用与拼装
+## VI. Tái sử dụng và lắp ghép
 
-一次完整的调用 = **系统 Prompt + 任务 Prompt + 填好的输入模板**。
+Một lần gọi hoàn chỉnh = **Prompt hệ thống + Prompt tác vụ + mẫu đầu vào đã điền**.
 
 ```text
 ┌─────────────────────────────┐
-│ 00_system.md                │  ← 角色 + 通用约束，所有任务共用
+│ 00_system.md                │  ← vai trò + ràng buộc chung, mọi tác vụ dùng chung
 ├─────────────────────────────┤
-│ 0X_<task>.md                │  ← 具体任务：输入契约 + 输出契约 + 自检
+│ 0X_<task>.md                │  ← tác vụ cụ thể: hợp đồng đầu vào + hợp đồng đầu ra + tự kiểm tra
 ├─────────────────────────────┤
-│ templates/input_*.md (已填)  │  ← 真实数据
+│ templates/input_*.md (đã điền)│  ← dữ liệu thật
 └─────────────────────────────┘
 ```
 
-这样设计的好处：改平台规则只需改 `00_system.md` 一处；加新任务只需加一个任务 Prompt。
+Lợi ích của thiết kế này: sửa quy định sàn chỉ cần sửa một chỗ là `00_system.md`; thêm tác vụ mới chỉ cần thêm một Prompt tác vụ.
 
 ---
 
-## 七、调试方法
+## VII. Cách debug
 
-产出质量不稳定时，按这个顺序排查（从下往上）：
+Khi chất lượng đầu ra không ổn định, rà soát theo thứ tự này (từ dưới lên):
 
-| # | 排查项 | 典型症状 |
+| # | Hạng mục rà soát | Triệu chứng điển hình |
 |---|---|---|
-| 1 | 输出结构是否固定 | 每次输出的章节数量都不一样 |
-| 2 | 自检清单是否可执行 | 自检打勾了但内容仍不合格 |
-| 3 | 输入契约是否被遵守 | AI 开始编造未提供的参数 |
-| 4 | CONTEXT 是否被覆盖 | AI 用通用电商常识代替了平台规则 |
-| 5 | 角色设定是否太泛 | 输出像百科，不像资深运营的判断 |
+| 1 | Cấu trúc đầu ra đã cố định chưa | Mỗi lần xuất số lượng mục lại khác nhau |
+| 2 | Checklist tự kiểm tra có thực thi được không | Tự kiểm tra đã tick nhưng nội dung vẫn không đạt |
+| 3 | Hợp đồng đầu vào có được tuân thủ không | AI bắt đầu bịa thông số không được cung cấp |
+| 4 | CONTEXT có bị ghi đè không | AI dùng kiến thức thương mại điện tử chung chung thay cho quy định sàn |
+| 5 | Thiết lập vai trò có quá chung chung không | Đầu ra giống bách khoa toàn thư, không giống phán đoán của người vận hành lâu năm |
 
-**经验值**：90% 的产出不稳定问题出在第 3 和第 4 项。
+**Kinh nghiệm thực tế**: 90% vấn đề đầu ra không ổn định nằm ở mục 3 và mục 4.
 
 ---
 
-**相关文档**：[00 架构拆解](./00_Architecture_SOP_to_Agent.md) · [02 平台字段规范](./02_Platform_Output_Spec.md) · [03 合规红线](./03_Compliance_Guard.md)
+**Tài liệu liên quan**: [00 Phân rã kiến trúc](./00_Architecture_SOP_to_Agent.md) · [02 Quy chuẩn trường dữ liệu theo sàn](./02_Platform_Output_Spec.md) · [03 Lằn ranh đỏ tuân thủ](./03_Compliance_Guard.md)

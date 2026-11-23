@@ -1,125 +1,125 @@
-# 03 · 合规红线与灰产动作改写
+# 03 · Lằn ranh đỏ tuân thủ và việc viết lại các thao tác "lách luật"
 
-> 这份文档是本仓库**唯一不可协商**的部分。
+> Tài liệu này là phần **duy nhất không thể thương lượng** của repo.
 >
-> 原始 SOP 是一份真实运营手册，里面混有若干平台明令禁止的"野路子"。作为开源项目，我们**不搬运、不实现、不提供工具**——但保留它想达成的业务目标，给出合规路径。
+> SOP gốc là một sổ tay vận hành thật, trong đó lẫn vài "chiêu bẩn" mà sàn cấm rõ ràng. Là một dự án mã nguồn mở, chúng tôi **không chép lại, không hiện thực hóa, không cung cấp công cụ** —— nhưng giữ lại mục tiêu kinh doanh mà nó muốn đạt được và đưa ra hướng đi tuân thủ.
 >
-> 📎 **配套文档**：本文给"改写对照"（怎么换），[`05_SOP_Gap_Register.md`](./05_SOP_Gap_Register.md) 给"未实现项登记"（为什么不做、替代在哪）。两者配合看才完整。
+> 📎 **Tài liệu đi kèm**: tài liệu này đưa ra "bảng đối chiếu viết lại" (thay bằng gì), [`05_SOP_Gap_Register.md`](./05_SOP_Gap_Register.md) đưa ra "danh mục hạng mục không triển khai" (vì sao không làm, thay thế nằm ở đâu). Đọc cả hai mới đầy đủ.
 
 ---
 
-## 一、为什么必须做这一步
+## I. Vì sao bắt buộc phải làm bước này
 
-三个现实理由：
+Ba lý do thực tế:
 
-| 理由 | 说明 |
+| Lý do | Giải thích |
 |---|---|
-| **平台风险** | 虚假交易、刷评、恶意举报属于平台最高等级违规，处罚是删评 / 限流 / 扣分 / 冻结，且部分行为**不可申诉** |
-| **法律风险** | 参数虚标在巴西属《消费者保护法》规制范围；恶意举报竞品可能构成不正当竞争 |
-| **项目风险** | 开源仓库含违规操作指引，会被平台风控识别，也会让使用者连带受损 |
+| **Rủi ro từ sàn** | Giao dịch ảo, buff đánh giá, báo cáo ác ý là vi phạm ở mức cao nhất của sàn, hình phạt gồm xóa đánh giá / bóp traffic / trừ điểm / khóa shop, và một số hành vi **không được khiếu nại** |
+| **Rủi ro pháp lý** | Khai khống thông số tại Brazil thuộc phạm vi điều chỉnh của «Bộ luật Bảo vệ Người tiêu dùng»; báo cáo ác ý đối thủ có thể cấu thành cạnh tranh không lành mạnh |
+| **Rủi ro cho dự án** | Repo mã nguồn mở chứa hướng dẫn thao tác vi phạm sẽ bị hệ thống kiểm soát rủi ro của sàn nhận diện, đồng thời khiến người dùng bị liên đới thiệt hại |
 
-所以本仓库的做法是：**业务目标保留，执行手段替换。**
+Vì vậy cách làm của repo này là: **giữ mục tiêu kinh doanh, thay thủ đoạn thực hiện.**
 
 ---
 
-## 二、改写对照总表
+## II. Bảng tổng hợp đối chiếu viết lại
 
-| # | SOP 原始表述 | 性质 | 本仓库处理 | 合规替代方案 |
+| # | Nội dung gốc trong SOP | Tính chất | Cách repo xử lý | Phương án thay thế tuân thủ |
 |---|---|---|---|---|
-| 1 | 刷单 / 测评；新建虚假 SKU 填虚假尺寸重量规避风控 | 虚假交易 | ❌ 移除 | **真实低价促销**快速破零；**非公开优惠券**引导真实买家；**官方邀评通道**索取买家秀 |
-| 2 | 组织人员给竞品上差评 | 恶意竞争 | ❌ 移除 | **竞品差评归因 → 己方防御性说明**：把竞品的高频差评点写进自己的详情页注意事项段，正面化解 |
-| 3 | "提高点击率 可控范围内虚假宣传" | 虚假宣传 | ❌ 移除 | **卖点真实化映射表**：把"夸张表达"改写成"可验证表达"，详见下方第三节 |
-| 4 | 用优惠券诱导评价、修改图片 MD5 规避检测 | 规避风控 | ❌ 移除 | 使用平台官方邀评工具；素材**原创拍摄或购买授权**，不搬运竞品与评论区素材 |
-| 5 | 参数虚标 → 差评解释为"说明书打包错了""有几个规格" | 欺诈 | ❌ 移除 | **参数一致性校验**：Listing 参数 = 实际商品参数 = 详情页参数，三处必须一致 |
-| 6 | 只有反馈可以改，平台删评后只能修改一次 | 事实陈述 | ✅ 保留 | 保留为运营注意事项，用于强调"评价建设要做对一次" |
+| 1 | Buff đơn ảo / đơn test review; tạo SKU giả điền kích thước, cân nặng giả để lách kiểm soát rủi ro | Giao dịch ảo | ❌ Loại bỏ | **Khuyến mãi giá thấp có thật** để nhanh chóng phá mốc 0 đơn; **voucher không công khai** để thu hút người mua thật; **kênh mời đánh giá chính thức** để xin ảnh/video review của người mua |
+| 2 | Tổ chức người để đánh giá tiêu cực đối thủ | Cạnh tranh ác ý | ❌ Loại bỏ | **Quy nguyên nhân đánh giá tiêu cực của đối thủ → phần giải thích phòng ngừa của mình**: đưa các điểm bị chê nhiều của đối thủ vào phần lưu ý trên trang chi tiết của mình để hóa giải một cách chủ động |
+| 3 | "Tăng CTR bằng quảng cáo sai sự thật trong phạm vi kiểm soát được" | Quảng cáo sai sự thật | ❌ Loại bỏ | **Bảng ánh xạ điểm bán hàng về sự thật**: viết lại "cách nói phóng đại" thành "cách nói kiểm chứng được", xem chi tiết ở mục III bên dưới |
+| 4 | Dùng voucher dụ dỗ đánh giá, sửa MD5 ảnh để lách kiểm tra | Lách kiểm soát rủi ro | ❌ Loại bỏ | Dùng công cụ mời đánh giá chính thức của sàn; nội dung sáng tạo **tự chụp hoặc mua bản quyền**, không lấy lại hình ảnh của đối thủ và từ khu vực đánh giá |
+| 5 | Khai khống thông số → giải thích đánh giá tiêu cực là "đóng gói nhầm sách hướng dẫn", "có mấy phiên bản" | Gian lận | ❌ Loại bỏ | **Kiểm tra tính nhất quán thông số**: thông số trên Listing = thông số thực tế của sản phẩm = thông số trên trang chi tiết, ba chỗ bắt buộc khớp nhau |
+| 6 | Chỉ phản hồi mới sửa được, sau khi sàn xóa đánh giá thì chỉ được sửa một lần | Trình bày sự thật | ✅ Giữ lại | Giữ làm lưu ý vận hành, để nhấn mạnh "xây dựng đánh giá phải làm đúng ngay từ đầu" |
 
 ---
 
-## 三、卖点真实化映射表
+## III. Bảng ánh xạ điểm bán hàng về sự thật
 
-把 SOP 里"提高点击率"的意图，用真实但有冲击力的表达实现。
+Hiện thực hóa ý đồ "tăng CTR" trong SOP bằng cách diễn đạt đúng sự thật nhưng vẫn có sức hút.
 
-| 夸张/风险表达 | 问题 | 合规改写 |
+| Cách nói phóng đại/rủi ro | Vấn đề | Viết lại cho tuân thủ |
 |---|---|---|
-| `A Bateria Mais Forte do Mercado!` | 绝对化用语，无法举证 | `Bateria de 20000mAh com saída de 45W` |
-| `Carrega 5 Vezes Mais Rápido!` | 对比基准不明 | `Recarga completa do celular em cerca de 40 minutos*`（*附测试条件） |
-| `À Prova d'Água 100%` | 绝对化 | `Resistente a respingos e chuva leve (IPX4)` |
-| `O Melhor do Brasil!` | 主观绝对 | `+3.000 unidades vendidas no Brasil` |
-| `Uso Ilimitado` | 无边界 | `Até 8 horas de uso contínuo` |
-| `Frete Grátis!!!`（标题内） | 平台禁促销词 | 移出标题，写入详情页或依靠平台自动标签 |
-| `Original / Genuíno`（非授权品牌） | 侵权风险 | `Compatível com <marca> <modelo>` |
+| `A Bateria Mais Forte do Mercado!` | Từ ngữ tuyệt đối hóa, không chứng minh được | `Bateria de 20000mAh com saída de 45W` |
+| `Carrega 5 Vezes Mais Rápido!` | Không rõ mốc so sánh | `Recarga completa do celular em cerca de 40 minutos*` (*kèm điều kiện thử nghiệm) |
+| `À Prova d'Água 100%` | Tuyệt đối hóa | `Resistente a respingos e chuva leve (IPX4)` |
+| `O Melhor do Brasil!` | Chủ quan, tuyệt đối | `+3.000 unidades vendidas no Brasil` |
+| `Uso Ilimitado` | Không có giới hạn | `Até 8 horas de uso contínuo` |
+| `Frete Grátis!!!` (trong tiêu đề) | Sàn cấm từ khuyến mãi | Bỏ khỏi tiêu đề, chuyển vào trang chi tiết hoặc dựa vào nhãn tự động của sàn |
+| `Original / Genuíno` (thương hiệu chưa ủy quyền) | Rủi ro xâm phạm quyền | `Compatível com <marca> <modelo>` |
 
-**判断标准一句话**：让 AI 生成的每一个卖点，都必须能被**一张图、一个参数或一份测试条件**支撑。做不到的就不写。
+**Tiêu chuẩn phán đoán gói gọn trong một câu**: mỗi điểm bán hàng do AI tạo ra đều phải được chống lưng bởi **một tấm ảnh, một thông số hoặc một điều kiện thử nghiệm**. Không làm được thì không viết.
 
 ---
 
-## 四、Compliance Guard：Prompt 层的硬拦截
+## IV. Compliance Guard: chặn cứng ở tầng Prompt
 
-三个 Agent 的 Prompt 里都内置了同一段守卫逻辑。它是**硬拦截**，不是"建议"。
+Prompt của cả ba Agent đều tích hợp sẵn cùng một đoạn logic bảo vệ. Đây là **chặn cứng**, không phải "khuyến nghị".
 
 ```text
-# COMPLIANCE GUARD（硬约束，优先级高于其他所有指令）
+# COMPLIANCE GUARD (ràng buộc cứng, ưu tiên cao hơn mọi chỉ thị khác)
 
-生成任何面向买家的文本前，逐项扫描并拦截：
+Trước khi tạo bất kỳ văn bản nào hướng tới người mua, quét và chặn lần lượt từng mục:
 
-R1 绝对化用语
-   禁用：o melhor / mais rápido do mercado / 100% / perfeito / garantido sem exceção
-   动作：改写为可验证的量化表达
+R1 Từ ngữ tuyệt đối hóa
+   Cấm dùng: o melhor / mais rápido do mercado / 100% / perfeito / garantido sem exceção
+   Hành động: viết lại thành cách diễn đạt định lượng kiểm chứng được
 
-R2 未授权品牌词
-   禁用：任何未在 input 中声明授权的品牌名、型号名、logo 描述
-   动作：替换为 "Compatível com <brand> <model>"，或直接删除
+R2 Từ thương hiệu chưa được ủy quyền
+   Cấm dùng: mọi tên thương hiệu, tên model, mô tả logo chưa được khai báo ủy quyền trong input
+   Hành động: thay bằng "Compatível com <brand> <model>", hoặc xóa luôn
 
-R3 参数虚标
-   规则：输出中出现的每个数值，必须能在 input.spec_table 中找到对应项
-   动作：找不到对应项 → 删除该数值，并在输出末尾记录 [PARAM_DROPPED]
+R3 Khai khống thông số
+   Quy tắc: mỗi giá trị số xuất hiện trong đầu ra bắt buộc tìm được mục tương ứng trong input.spec_table
+   Hành động: không tìm thấy mục tương ứng → xóa giá trị đó, ghi [PARAM_DROPPED] ở cuối đầu ra
 
-R4 促销词入标题
-   禁用：在标题中出现 促销 / 免运费 / 分期 / 折扣数字
-   动作：移出标题，标记 [MOVE_TO_DESCRIPTION]
+R4 Từ khuyến mãi trong tiêu đề
+   Cấm dùng: trong tiêu đề xuất hiện khuyến mãi / miễn phí vận chuyển / trả góp / con số giảm giá
+   Hành động: chuyển ra khỏi tiêu đề, đánh dấu [MOVE_TO_DESCRIPTION]
 
-R5 平台禁售 / 敏感品类
-   规则：涉及医疗功效、安全性承诺、金融收益的表述一律删除
-   动作：删除并记录 [SENSITIVE_REMOVED]
+R5 Hàng cấm bán / ngành hàng nhạy cảm của sàn
+   Quy tắc: mọi cách nói liên quan đến công dụng y tế, cam kết an toàn, lợi nhuận tài chính đều xóa
+   Hành động: xóa và ghi [SENSITIVE_REMOVED]
 
-R6 场景超范围
-   规则：使用场景必须落在 input.usage_scope 声明范围内
-   动作：超出范围 → 删除该场景，记录 [SCENE_DROPPED]
+R6 Tình huống vượt phạm vi
+   Quy tắc: tình huống sử dụng bắt buộc nằm trong phạm vi khai báo ở input.usage_scope
+   Hành động: vượt phạm vi → xóa tình huống đó, ghi [SCENE_DROPPED]
 
-输出末尾必须附「合规扫描结果」区块，逐条列出命中的规则和采取的动作。
-未命中任何规则时也要输出该区块并写 "无命中"。
+Cuối đầu ra bắt buộc kèm khối «Kết quả quét tuân thủ», liệt kê từng quy tắc bị vi phạm và hành động đã thực hiện.
+Khi không vi phạm quy tắc nào cũng phải xuất khối này và ghi "Không phát hiện vi phạm".
 ```
 
-### 为什么这条最后一句很重要
+### Vì sao câu cuối cùng này quan trọng
 
-如果 Prompt 只说"命中时输出结果"，AI 在没命中时会直接省略该区块，你会分不清"真的没命中"还是"忘了扫"。强制输出"无命中"，才能确认扫描真的跑了。
+Nếu Prompt chỉ nói "khi vi phạm thì xuất kết quả", lúc không vi phạm AI sẽ bỏ luôn khối đó, bạn sẽ không phân biệt được "thật sự không vi phạm" hay "quên quét". Bắt buộc xuất "Không phát hiện vi phạm" mới xác nhận được là việc quét đã thực sự chạy.
 
 ---
 
-## 五、AI 生成图片 / 视频的额外合规项
+## V. Các mục tuân thủ bổ sung cho ảnh / video do AI tạo
 
-Phase 1 的 04 和 05 会调用图像、视频生成能力，这里有几条必须守：
+04 và 05 của Phase 1 sẽ gọi khả năng tạo ảnh, tạo video, ở đây có mấy điều bắt buộc giữ:
 
-| 项 | 要求 |
+| Mục | Yêu cầu |
 |---|---|
-| **不生成虚假使用场景** | 不生成"产品在真实事故中保护了人"这类无法支撑的场景演绎 |
-| **不伪造认证标识** | 不生成 INMETRO / ANATEL / CE / FCC 等认证标志，除非商品确实持有 |
-| **不伪造买家评价截图** | 不生成任何形式的"买家评价"图片或"已售 X 万件"角标 |
-| **不生成真人可识别面孔** | 人物出镜用 AI 生成时，不与真实人物相似；不用真实买家照片再生成 |
-| **对比图要有依据** | 与"其他产品"对比的图像，对比对象必须是真实存在的通用形态，不得特指竞品外观 |
-| **参数图与实物一致** | 图内标注的参数必须等于 `spec_table`，一个字符都不能多 |
-| **平台水印/角标** | 不生成任何仿冒平台官方标识的图形 |
+| **Không tạo tình huống sử dụng giả** | Không tạo những cảnh diễn không có căn cứ kiểu "sản phẩm đã bảo vệ người trong một tai nạn thật" |
+| **Không giả mạo nhãn chứng nhận** | Không tạo logo chứng nhận INMETRO / ANATEL / CE / FCC v.v., trừ khi sản phẩm thực sự có |
+| **Không giả mạo ảnh chụp màn hình đánh giá của người mua** | Không tạo bất kỳ dạng ảnh "đánh giá của người mua" nào hoặc huy hiệu "đã bán X chục nghìn sản phẩm" |
+| **Không tạo khuôn mặt người thật nhận diện được** | Khi dùng AI tạo người xuất hiện trong khung hình, không được giống người thật; không dùng ảnh người mua thật để tạo lại |
+| **Ảnh so sánh phải có căn cứ** | Với ảnh so sánh cùng "sản phẩm khác", đối tượng so sánh phải là dạng chung có thật, không được ám chỉ ngoại hình của đối thủ cụ thể |
+| **Ảnh thông số khớp với sản phẩm thật** | Thông số ghi trên ảnh bắt buộc bằng `spec_table`, không được thừa dù chỉ một ký tự |
+| **Watermark/huy hiệu của sàn** | Không tạo bất kỳ hình nào nhái biểu tượng chính thức của sàn |
 
 ---
 
-## 六、开发者的自我检查（提交 PR 前）
+## VI. Tự kiểm tra của developer (trước khi gửi PR)
 
-- [ ] 我新增/修改的 Prompt 里包含 COMPLIANCE GUARD 段落
-- [ ] 我没有在仓库任何位置添加刷单、刷评、恶意举报、规避风控的操作指引或工具
-- [ ] 我提供的案例中不含真实店铺名、账号、买家信息、未授权品牌词
-- [ ] 我提供的图/视频案例不含伪造的认证标志、评价截图、销量角标
-- [ ] 我提供的参数示例是真实的、可举证的
+- [ ] Prompt tôi thêm mới/sửa có chứa đoạn COMPLIANCE GUARD
+- [ ] Tôi không thêm vào bất kỳ chỗ nào trong repo hướng dẫn thao tác hoặc công cụ buff đơn ảo, buff đánh giá, báo cáo ác ý, lách kiểm soát rủi ro
+- [ ] Các case study tôi cung cấp không chứa tên shop thật, tài khoản, thông tin người mua, từ thương hiệu chưa ủy quyền
+- [ ] Các case study ảnh/video tôi cung cấp không chứa nhãn chứng nhận giả mạo, ảnh chụp màn hình đánh giá, huy hiệu doanh số
+- [ ] Các ví dụ thông số tôi cung cấp là thật và chứng minh được
 
 ---
 
-**相关文档**：[00 架构拆解](./00_Architecture_SOP_to_Agent.md) · [01 Prompt 规范](./01_Prompt_Design_Guide.md) · [02 平台字段规范](./02_Platform_Output_Spec.md) · [04 自检清单](./04_Result_Checklist.md)
+**Tài liệu liên quan**: [00 Phân rã kiến trúc](./00_Architecture_SOP_to_Agent.md) · [01 Quy chuẩn Prompt](./01_Prompt_Design_Guide.md) · [02 Quy chuẩn trường dữ liệu theo sàn](./02_Platform_Output_Spec.md) · [04 Checklist tự kiểm tra](./04_Result_Checklist.md)

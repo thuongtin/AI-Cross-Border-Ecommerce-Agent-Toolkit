@@ -1,273 +1,273 @@
-# 00 · 从 SOP 到 Agent：架构拆解总表
+# 00 · Từ SOP đến Agent: bảng tổng hợp phân rã kiến trúc
 
-> 本文是整个工具箱的**源头文档**。它回答一个问题：一份 38 页的跨境运营 SOP，哪些部分能交给 AI，哪些不能，以及怎么切。
+> Đây là **tài liệu gốc** của cả bộ công cụ (toolkit). Nó trả lời một câu hỏi: trong một bộ SOP vận hành thương mại điện tử xuyên biên giới dài 38 trang, phần nào giao được cho AI, phần nào không, và chia tách ra sao.
 
 ---
 
-## 一、拆解方法：三段判断
+## I. Phương pháp phân rã: ba câu hỏi sàng lọc
 
-不是所有 SOP 内容都适合做成 AI Agent。我们用三个问题筛：
+Không phải nội dung SOP nào cũng hợp để làm thành AI Agent. Chúng tôi sàng lọc bằng ba câu hỏi:
 
-| 判断 | 问题 | 结论 |
+| Tiêu chí | Câu hỏi | Kết luận |
 |---|---|---|
-| **① 是否依赖"判断"还是依赖"数据"** | 这一步的结论是靠人做取舍，还是靠跑数据？ | 靠人取舍 → 适合 Agent（Agent 擅长把规则结构化）；靠跑数据 → 适合脚本/API，Agent 只做解读 |
-| **② 输入是否可穷举** | 需要的输入能不能在一个表单里填完？ | 能 → 适合 Agent；不能（需要实时大盘）→ 不适合单机 Agent |
-| **③ 输出是否可验证** | 产出对不对，能不能一眼看出来？ | 能 → 优先做；不能 → 往后排 |
+| **① Dựa vào "phán đoán" hay dựa vào "dữ liệu"** | Kết luận của bước này do người cân nhắc đưa ra, hay do chạy số liệu? | Do người cân nhắc → hợp với Agent (Agent giỏi cấu trúc hóa quy tắc); do chạy số liệu → hợp với script/API, Agent chỉ diễn giải |
+| **② Đầu vào có liệt kê hết được không** | Đầu vào cần thiết có điền hết vào một biểu mẫu được không? | Được → hợp với Agent; không được (cần dữ liệu toàn thị trường theo thời gian thực) → không hợp với Agent chạy độc lập |
+| **③ Đầu ra có kiểm chứng được không** | Kết quả đúng hay sai, có nhìn qua là biết không? | Được → làm trước; không được → để sau |
 
-用这三条筛 38 页 SOP，得到三级分类：
+Lọc 38 trang SOP qua ba tiêu chí này, ta có ba cấp phân loại:
 
-| 分级 | 特征 | 承接方式 | SOP 中的占比 |
+| Cấp | Đặc điểm | Cách tiếp nhận | Tỷ trọng trong SOP |
 |---|---|---|---|
-| 🟢 **A 级：直接 Agent 化** | 输入表单化、输出可验证、纯文本/素材产出 | 完整 Agent 模块 | ~30% |
-| 🟡 **B 级：Agent 辅助** | 依赖外部数据，AI 只做解读和建议 | Agent + 人工喂数据 | ~45% |
-| 🔴 **C 级：不可 Agent 化** | 后台配置、物流操作、账号风控、人际沟通 | 保持 SOP 手册 | ~25% |
+| 🟢 **Cấp A: Agent hóa trực tiếp** | Đầu vào dạng biểu mẫu, đầu ra kiểm chứng được, sản phẩm thuần văn bản/nội dung sáng tạo (creative) | Module Agent hoàn chỉnh | ~30% |
+| 🟡 **Cấp B: Agent hỗ trợ** | Phụ thuộc dữ liệu bên ngoài, AI chỉ diễn giải và đề xuất | Agent + người cung cấp dữ liệu | ~45% |
+| 🔴 **Cấp C: Không Agent hóa được** | Cấu hình trong backend, thao tác vận chuyển, kiểm soát rủi ro tài khoản, giao tiếp giữa người với người | Giữ nguyên dạng sổ tay SOP | ~25% |
 
 ---
 
-## 二、SOP 章节 → Agent 映射总表
+## II. Bảng ánh xạ chương SOP → Agent
 
-### 第一章：市场分析（SOP 1.1 – 1.10）
+### Chương 1: Phân tích thị trường (SOP 1.1 – 1.10)
 
-| SOP 章节 | 核心运营经验 | 分级 | 承接 Agent | 输入 | 输出 |
+| Mục SOP | Kinh nghiệm vận hành cốt lõi | Cấp | Agent tiếp nhận | Đầu vào | Đầu ra |
 |---|---|---|---|---|---|
-| 1.1 类目前置判断 | 高退货/高售后/高风险类目要谨慎；有货有成本才能进 | 🟡 B | **01 Market Research** | 货盘表、供应商能力、售后能力 | 《类目前置判断结论》 |
-| 1.2 市场容量与销量 | 不看单个爆款，看类目总量；新品能否起量是关键信号 | 🟡 B | **01 Market Research** | 虾多拉导出数据 | 《市场容量与销量分析表》 |
-| 1.3 品牌/卖家集中度 | 品牌集中度 >50% 谨慎；CR10 反映新店难度 | 🟡 B | **01 Market Research** | 品牌/卖家销量占比 | 《集中度分析表》 |
-| 1.4 价格分析 | 找**销量高 + 竞争适中 + 有利润**的价格带，不是找最高峰 | 🟡 B | **01 Market Research** | 前 50/100 商品价格销量 | 《价格区间分析表》 |
-| 1.5 产品类型与配置组合 | 找"总销量高 + 平均销量高 + 能做 + 有利润 + 售后可控"的配置 | 🟡 B | **01 Market Research** | 前 50 商品配置拆解 | 《配置组合分析表》 |
-| 1.6 竞品与评论分析 | 评论是最接近真实需求的地方；好评找卖点，差评找风险 | 🟡 B | **01 + 07 Review** | 2–3 个竞品链接、评论原文 | 《竞品分析表》《评论洞察》 |
-| 1.7 主推产品确认 | 一句结论：做什么、卖给谁、什么价、主打什么、避开什么 | 🟢 A | **02 Product Strategy** | 上述 1.2–1.6 输出 | 《我的产品需求表》 |
-| **1.8 关键词表** | 搜索量/供需比/增长率三榜对比 → 高频词 → 七类分词 → 组合标题 | 🟢 A | **03 Listing Creative** ⭐ | 三榜关键词列表 | 关键词分类表 + 2–3 个备选标题 |
-| 1.9 定价 | 大件 30–35%、小件 25–30% 毛利；前期可略低养权重 | 🟢 A | **02 Product Strategy** | 成本、物流、佣金、费率 | 定价模型表 |
-| 1.10 推广计划 | 看竞品上架多久起量、起量前要多少评价 → 反推新品节奏 | 🟡 B | **06 Advertising** | 竞品推广数据 | 《新品推广计划表》 |
+| 1.1 Đánh giá sơ bộ ngành hàng | Ngành hàng tỷ lệ hoàn hàng cao/hậu mãi nặng/rủi ro cao phải thận trọng; có hàng, có giá vốn mới nên vào | 🟡 B | **01 Market Research** | Bảng nguồn hàng, năng lực nhà cung cấp, năng lực hậu mãi | «Kết luận đánh giá sơ bộ ngành hàng» |
+| 1.2 Quy mô thị trường và doanh số | Không nhìn một sản phẩm bán chạy (best-seller) đơn lẻ, mà nhìn tổng quy mô ngành hàng; sản phẩm mới có lên được đơn hay không là tín hiệu then chốt | 🟡 B | **01 Market Research** | Dữ liệu xuất từ Shaduola | «Bảng phân tích quy mô thị trường và doanh số» |
+| 1.3 Mức độ tập trung thương hiệu/người bán | Mức độ tập trung thương hiệu >50% thì thận trọng; CR10 phản ánh độ khó cho shop mới | 🟡 B | **01 Market Research** | Tỷ trọng doanh số theo thương hiệu/người bán | «Bảng phân tích mức độ tập trung» |
+| 1.4 Phân tích giá | Tìm dải giá **doanh số cao + cạnh tranh vừa phải + có lãi**, chứ không phải tìm đỉnh cao nhất | 🟡 B | **01 Market Research** | Giá và doanh số của top 50/100 sản phẩm | «Bảng phân tích khoảng giá» |
+| 1.5 Loại sản phẩm và tổ hợp cấu hình | Tìm cấu hình "tổng doanh số cao + doanh số trung bình cao + làm được + có lãi + hậu mãi kiểm soát được" | 🟡 B | **01 Market Research** | Phân rã cấu hình của top 50 sản phẩm | «Bảng phân tích tổ hợp cấu hình» |
+| 1.6 Phân tích đối thủ và đánh giá | Đánh giá (review) là nơi gần nhất với nhu cầu thật; đánh giá tốt để tìm điểm bán hàng, đánh giá tiêu cực để tìm rủi ro | 🟡 B | **01 + 07 Review** | 2–3 link đối thủ, nguyên văn đánh giá | «Bảng phân tích đối thủ» «Insight từ đánh giá» |
+| 1.7 Chốt sản phẩm chủ lực | Một câu kết luận: làm gì, bán cho ai, giá bao nhiêu, đánh vào đâu, tránh cái gì | 🟢 A | **02 Product Strategy** | Đầu ra của các mục 1.2–1.6 ở trên | «Bảng yêu cầu sản phẩm của tôi» |
+| **1.8 Bảng từ khóa** | So sánh ba bảng xếp hạng lượng tìm kiếm/tỷ lệ cung-cầu/tốc độ tăng trưởng → từ tần suất cao → tách từ theo bảy nhóm → ghép tiêu đề | 🟢 A | **03 Listing Creative** ⭐ | Danh sách từ khóa của ba bảng xếp hạng | Bảng phân loại từ khóa + 2–3 tiêu đề dự phòng |
+| 1.9 Định giá | Hàng cồng kềnh lãi gộp 30–35%, hàng nhỏ 25–30%; giai đoạn đầu có thể để thấp hơn một chút để nuôi điểm (trọng số) tìm kiếm | 🟢 A | **02 Product Strategy** | Giá vốn, vận chuyển, phí hoa hồng, các loại phí | Bảng mô hình định giá |
+| 1.10 Kế hoạch đẩy sản phẩm | Xem đối thủ đăng bán bao lâu thì lên đơn, cần bao nhiêu đánh giá trước khi lên đơn → suy ngược ra nhịp độ cho sản phẩm mới | 🟡 B | **06 Advertising** | Dữ liệu quảng cáo/đẩy sản phẩm của đối thủ | «Bảng kế hoạch đẩy sản phẩm mới» |
 
-### 第二章：店铺运营（SOP 2.1 – 2.5）
+### Chương 2: Vận hành shop (SOP 2.1 – 2.5)
 
-| SOP 章节 | 核心运营经验 | 分级 | 承接方式 |
+| Mục SOP | Kinh nghiệm vận hành cốt lõi | Cấp | Cách tiếp nhận |
 |---|---|---|---|
-| 2.1 店铺定位与商品结构 | 引流款/利润款/测试款/长尾款四类结构 | 🔴 C | 人工策略；Agent 可生成结构建议（02） |
-| 2.2 店铺装修与调性 | 类目统一、风格统一、分组清晰、关注礼券 | 🟢 A | 可复用 **03 Listing** 的视觉描述能力做店铺介绍文案 |
-| 2.3 新店冷启动与异常防控 | 不要批量上传高度相似商品；同款多店铺必须差异化 | 🟢 A | **03 Listing（多链接差异化模式）** ⭐ |
-| 2.4 流量冷启动节奏 | 前三周：基础访客 → 稳定测试 → 筛重点链接放量 | 🔴 C | 节奏表，人工执行 |
-| 2.5 账户健康与罚分维护 | 履约违规权重最高；迟发、取消率、未按时交付 | 🔴 C | 运营手册；**申诉文案**可 Agent 化 |
+| 2.1 Định vị shop và cơ cấu sản phẩm | Cơ cấu bốn loại: SKU kéo traffic/SKU lợi nhuận/SKU thử nghiệm/SKU long-tail | 🔴 C | Chiến lược do người làm; Agent có thể tạo đề xuất cơ cấu (02) |
+| 2.2 Trang trí shop và phong cách | Thống nhất ngành hàng, thống nhất phong cách, phân nhóm rõ ràng, voucher theo dõi shop | 🟢 A | Tái sử dụng năng lực mô tả hình ảnh của **03 Listing** để viết nội dung giới thiệu shop |
+| 2.3 Khởi động shop mới và phòng ngừa bất thường | Không đăng hàng loạt sản phẩm quá giống nhau; cùng một mẫu bán ở nhiều shop thì bắt buộc khác biệt hóa | 🟢 A | **03 Listing (chế độ khác biệt hóa nhiều link)** ⭐ |
+| 2.4 Nhịp độ khởi động traffic | Ba tuần đầu: lượt truy cập cơ bản → thử nghiệm ổn định → lọc link trọng điểm để scale (tăng ngân sách) | 🔴 C | Bảng nhịp độ, người thực hiện |
+| 2.5 Sức khỏe tài khoản và duy trì điểm phạt | Vi phạm hoàn tất đơn hàng có trọng số cao nhất; giao trễ, tỷ lệ hủy, không giao đúng hạn | 🔴 C | Sổ tay vận hành; **nội dung khiếu nại** có thể Agent hóa |
 
-### 第三章：单品运营（SOP 3.1 – 3.9）★ 核心
+### Chương 3: Vận hành từng sản phẩm (SOP 3.1 – 3.9) ★ Trọng tâm
 
-| SOP 章节 | 核心运营经验 | 分级 | 承接 Agent |
+| Mục SOP | Kinh nghiệm vận hành cốt lõi | Cấp | Agent tiếp nhận |
 |---|---|---|---|
-| 3.1 上架前准备 | 明确卖给谁、卖点、竞品、价格带、利润底线、售后风险 | 🟢 A | **02 Product Strategy** |
-| 3.2 定价与 SKU 策略 | 低配引流 / 主推成交 / 高配提客单 / 套装提利润 | 🟢 A | **02 Product Strategy** |
-| **3.3 Listing 打造** | 标题五词结构；**9 张电商图生成逻辑**；详情页 7 段结构 | 🟢 A | **03 Listing** ⭐ + **04 Image** ⭐ |
-| 3.4 单品多链接启动 | 多套标题/主图/详情页分别测试，找最优链接再集中放量 | 🟢 A | **03 Listing（A/B 变体模式）** ⭐ |
-| 3.5 广告与评价节奏 | 最大预算 × 目标 ROI 双变量；7 天测试区间 | 🟡 B | **06 Advertising** |
-| 3.6 广告调整逻辑 | 四类漏斗诊断：有曝光没点击 / 有点击没加购 / 有加购没转化 / 高花费低 ROI | 🟡 B | **06 Advertising** |
-| 3.7 评价与售后维护 | 邀请真实买家评价、引导买家秀、差评归因、询单转化 | 🟡 B | **07 Review** |
-| 3.8 单品竞品跟踪 | 价格/销量/主图/标题/详情页/优惠券/评价/排名变化 | 🟡 B | **01 Market Research（监控模式）** |
-| **3.9 单品数据复盘** | 日报 11 指标 / 周报 4 维度 / 月报 5 决策 | 🟡 B | **06 + 07 联合输出** |
+| 3.1 Chuẩn bị trước khi đăng bán | Xác định rõ bán cho ai, điểm bán hàng, đối thủ, dải giá, mức lãi tối thiểu, rủi ro hậu mãi | 🟢 A | **02 Product Strategy** |
+| 3.2 Chiến lược định giá và SKU | Bản cấu hình thấp kéo traffic / bản chủ lực chốt đơn / bản cấu hình cao tăng giá trị đơn / combo tăng lợi nhuận | 🟢 A | **02 Product Strategy** |
+| **3.3 Xây dựng Listing** | Tiêu đề cấu trúc năm cụm từ; **logic tạo 9 ảnh thương mại điện tử**; trang chi tiết cấu trúc 7 phần | 🟢 A | **03 Listing** ⭐ + **04 Image** ⭐ |
+| 3.4 Khởi động nhiều link cho một sản phẩm | Thử nghiệm riêng nhiều bộ tiêu đề/ảnh chính/trang chi tiết, tìm link tốt nhất rồi tập trung scale | 🟢 A | **03 Listing (chế độ biến thể A/B)** ⭐ |
+| 3.5 Nhịp độ quảng cáo và đánh giá | Hai biến: ngân sách tối đa × ROI mục tiêu; khung thử nghiệm 7 ngày | 🟡 B | **06 Advertising** |
+| 3.6 Logic điều chỉnh quảng cáo | Chẩn đoán phễu bốn loại: có hiển thị không có click / có click không thêm vào giỏ / có thêm vào giỏ không chuyển đổi / chi tiêu cao ROI thấp | 🟡 B | **06 Advertising** |
+| 3.7 Duy trì đánh giá và hậu mãi | Mời người mua thật đánh giá, khuyến khích ảnh/video review của người mua, quy nguyên nhân đánh giá tiêu cực, chuyển đổi tin nhắn hỏi hàng | 🟡 B | **07 Review** |
+| 3.8 Theo dõi đối thủ theo từng sản phẩm | Biến động giá/doanh số/ảnh chính/tiêu đề/trang chi tiết/voucher/đánh giá/thứ hạng | 🟡 B | **01 Market Research (chế độ giám sát)** |
+| **3.9 Rà soát dữ liệu từng sản phẩm** | Báo cáo ngày 11 chỉ số / báo cáo tuần 4 chiều / báo cáo tháng 5 quyết định | 🟡 B | **06 + 07 cùng xuất** |
 
-### 第四章：日常后台与系统操作（SOP 4.1 – 4.3）
+### Chương 4: Thao tác backend và hệ thống hằng ngày (SOP 4.1 – 4.3)
 
-| SOP 章节 | 分级 | 说明 |
+| Mục SOP | Cấp | Ghi chú |
 |---|---|---|
-| 4.1 库存检查与订单管理 | 🔴 C | 早晚各预报一次、TMS 拦截订单、退货处理流程 → 保持 SOP，可用 RPA |
-| 4.2 回复客户信息与售后 | 🟡 B | **客服话术可 Agent 化**（询单转化话术、部分退款话术、差评回复话术） |
-| 4.3 平台规则学习与记录 | 🟢 A | 规则记录模板（发生了什么/为什么/影响/怎么避免）可模板化 |
+| 4.1 Kiểm tra tồn kho và quản lý đơn hàng | 🔴 C | Dự báo sáng tối mỗi buổi một lần, chặn đơn trên TMS, quy trình xử lý hoàn hàng → giữ nguyên SOP, có thể dùng RPA |
+| 4.2 Trả lời khách và hậu mãi | 🟡 B | **Kịch bản CSKH có thể Agent hóa** (kịch bản chuyển đổi tin nhắn hỏi hàng, kịch bản hoàn tiền một phần, kịch bản phản hồi đánh giá tiêu cực) |
+| 4.3 Học và ghi chép quy định sàn | 🟢 A | Mẫu ghi chép quy định (chuyện gì xảy ra/vì sao/ảnh hưởng/cách tránh) có thể mẫu hóa |
 
 ---
 
-## 三、模块边界
+## III. Ranh giới module
 
-### Phase 1 · 分析簇（SOP 前置链路）
+### Phase 1 · Cụm phân tích (chuỗi tiền đề của SOP)
 
-**这一簇的瓶颈不在 Prompt，在数据获取。** 所以它是唯一带脚本的簇。
+**Nút thắt của cụm này không nằm ở Prompt mà ở việc lấy dữ liệu.** Vì vậy đây là cụm duy nhất có kèm script.
 
 ```
-类目导出数据
+Dữ liệu xuất theo ngành hàng
     │
     ▼
-scripts/shaduola_parser.py   ← 格式标准化（脏数据 → 统一 JSON）
-scripts/market_metrics.py    ← 指标计算（容量/集中度/价格带/配置交叉表）
+scripts/shaduola_parser.py   ← chuẩn hóa định dạng (dữ liệu bẩn → JSON thống nhất)
+scripts/market_metrics.py    ← tính chỉ số (quy mô/mức độ tập trung/dải giá/bảng chéo cấu hình)
     │
     ▼  metrics.md + metrics.json
-01 Market Research Agent     ← 只做解读，不重算
-    │ 输出：要不要做 / 什么价位 / 什么配置
+01 Market Research Agent     ← chỉ diễn giải, không tính lại
+    │ Đầu ra: có nên làm không / mức giá nào / cấu hình nào
     ▼
-02 Product Strategy Agent    ← 规格化（不做选品决策）
-    │ 输出：产品需求表（唯一主卖点 + SKU 结构 + 定价 + 风险清单）
+02 Product Strategy Agent    ← quy chuẩn hóa (không ra quyết định chọn sản phẩm)
+    │ Đầu ra: bảng yêu cầu sản phẩm (một điểm bán hàng chủ lực duy nhất + cơ cấu SKU + định giá + danh sách rủi ro)
 ```
 
-### Phase 2 · 创意簇（SOP 🟢 A 级、且彼此串联的环节）
+### Phase 2 · Cụm sáng tạo (các khâu 🟢 cấp A trong SOP và nối tiếp nhau)
 
-选择理由：**输入表单化、输出可验证、互相有依赖**。
+Lý do chọn: **đầu vào dạng biểu mẫu, đầu ra kiểm chứng được, phụ thuộc lẫn nhau**.
 
 ```
-02 的 product requirement ┐
-SOP 1.8 关键词表          ├──►  03 Listing Creative Agent
-SOP 3.3 Listing           │     │ 输出：标题 / 详情页 / 卖点 / 参数 / 关键词
-SOP 2.3 差异化            ┘     ▼
+product requirement của 02 ┐
+SOP 1.8 bảng từ khóa       ├──►  03 Listing Creative Agent
+SOP 3.3 Listing            │     │ Đầu ra: tiêu đề / trang chi tiết / điểm bán hàng / thông số / từ khóa
+SOP 2.3 khác biệt hóa      ┘     ▼
                           04 Product Image Agent
-                          │ 输出：9 图规划 + 每张图的出图 Prompt
+                          │ Đầu ra: kế hoạch 9 ảnh + Prompt tạo ảnh cho từng ảnh
                           ▼
                           05 Product Video Agent
-                            输出：脚本 / 分镜 / AI 视频 Prompt / 配音字幕
+                            Đầu ra: kịch bản / storyboard / Prompt video AI / lồng tiếng và phụ đề
 ```
 
-### Phase 3 · 运营簇（SOP 🟡 B 级中"数据可量化、结论可判定"的部分）
+### Phase 3 · Cụm vận hành (phần "dữ liệu định lượng được, kết luận phán định được" trong 🟡 cấp B của SOP)
 
-选择理由：**SOP 已把诊断逻辑写成可判定规则（条件 → 动作）**，这是 Agent 最擅长的形态。
+Lý do chọn: **SOP đã viết logic chẩn đoán thành quy tắc phán định được (điều kiện → hành động)**, đây là dạng Agent làm tốt nhất.
 
 ```
-广告数据 ──► 06 Advertising Optimization Agent
-             │ 输出：四类漏斗判定 + 动作清单 + 盈亏线 ROAS + 预算节律
+Dữ liệu quảng cáo ──► 06 Advertising Optimization Agent
+             │ Đầu ra: phán định phễu bốn loại + danh sách hành động + ROAS hòa vốn + nhịp phân bổ ngân sách
              │
-             │ 回流（症状 → 环节 → 具体对象）
+             │ Quay vòng về (triệu chứng → khâu → đối tượng cụ thể)
              ▼
-          03 / 04（iterate：只改症状指向的部分）
+          03 / 04 (iterate: chỉ sửa phần mà triệu chứng chỉ ra)
 
-评论数据 ──► 07 Review Analysis Agent
-             │ 输出：八类归因 + 误解型识别 + 参数红线 + 卖点排序
+Dữ liệu đánh giá ──► 07 Review Analysis Agent
+             │ Đầu ra: quy nguyên nhân tám nhóm + nhận diện loại hiểu lầm + lằn ranh đỏ thông số + xếp hạng điểm bán hàng
              │
-             │ 回流（差评 → 字段 → 文案）
+             │ Quay vòng về (đánh giá tiêu cực → trường → nội dung)
              ▼
-          03 / 04（iterate：补注意事项段 / 补包装清单图）
+          03 / 04 (iterate: bổ sung phần lưu ý / bổ sung ảnh danh sách đóng gói)
 ```
 
-### 三簇的关系
+### Quan hệ giữa ba cụm
 
 ```text
-01 市场分析 ──► 02 产品策略 ──► 03/04/05 素材产出 ──► 上架
-（要不要做）    （做成什么样）    （怎么表达）           │
-                                                        │
-                        ┌───────────────────────────────┘
+01 Phân tích thị trường ──► 02 Chiến lược sản phẩm ──► 03/04/05 Sản xuất creative ──► Đăng bán
+(có nên làm không)          (làm thành ra sao)          (thể hiện thế nào)              │
+                                                                                         │
+                        ┌────────────────────────────────────────────────────────────────┘
                         ▼
-        06 广告诊断 ─┐
-        07 评论诊断 ─┴──► 回流 03/04 修正 ──► 复测 ──► 达标放量 / 未达标回诊断
+        06 Chẩn đoán quảng cáo ─┐
+        07 Chẩn đoán đánh giá ──┴──► Quay về 03/04 sửa ──► Kiểm tra lại ──► Đạt thì scale / chưa đạt thì quay lại chẩn đoán
 ```
 
-**这是本工具箱与"一次性内容生成工具"的分界线**：产出的 Listing 会随着真实数据变准。
-完整闭环演示见 [`Examples/03_Closed_Loop/`](../Examples/03_Closed_Loop/)。
-完整前置链路见 [`01`](../Agents/01_Market_Research_Agent/examples/patinete_eletrico_market.md) → [`02`](../Agents/02_Product_Strategy_Agent/examples/patinete_eletrico_strategy.md)。
+**Đây là ranh giới giữa bộ công cụ này và các "công cụ tạo nội dung một lần"**: Listing được tạo ra sẽ ngày càng chuẩn hơn nhờ dữ liệu thật.
+Bản demo vòng khép kín (closed loop) đầy đủ xem tại [`Examples/03_Closed_Loop/`](../Examples/03_Closed_Loop/).
+Chuỗi tiền đề đầy đủ xem tại [`01`](../Agents/01_Market_Research_Agent/examples/patinete_eletrico_market.md) → [`02`](../Agents/02_Product_Strategy_Agent/examples/patinete_eletrico_strategy.md).
 
-### 各模块边界（做什么 / 不做什么）
+### Ranh giới của từng module (làm gì / không làm gì)
 
-| Agent | ✅ 负责 | ❌ 不负责 |
+| Agent | ✅ Phụ trách | ❌ Không phụ trách |
 |---|---|---|
-| **01 Market Research** | 前置判断、容量、集中度、价格带、配置组合、竞品浅层分析、**指标计算脚本** | 选品决策、定价、关键词表（交 03）、评论深度归因（交 07） |
-| **02 Product Strategy** | 产品定位、核心配置、主推卖点收敛、风险规避、定价模型、SKU 四角色 | **选品决策（需人确认）**、核价、平台活动规则、实际采购 |
-| **03 Listing Creative** | 关键词分类、标题生成、详情页 7 段、卖点提炼、参数表、合规自检 | 选品决策、定价、广告出价 |
-| **04 Product Image** | 9 图内容规划、每张图的构图/文案/出图 Prompt、白底与合规校验 | 实际渲染图片（交给 ImageGen / Midjourney）、渲染后质检 |
-| **05 Product Video** | 15s/30s 脚本、分镜表、镜头 Prompt、配音脚本文案、字幕 | 实际剪辑合成、BGM 版权采购 |
-| **06 Advertising** | 漏斗诊断、动作清单、盈亏线核算、预算与 ROI 目标、预算节律 | 实际改价改图、后台操作、实时竞价 |
-| **07 Review Analysis** | 分类归因、误解型识别、卖点排序、参数红线、修补建议、客服话术 | 实际修改 Listing、后台操作、联系买家 |
+| **01 Market Research** | Đánh giá sơ bộ, quy mô thị trường, mức độ tập trung, dải giá, tổ hợp cấu hình, phân tích đối thủ ở mức cơ bản, **script tính chỉ số** | Quyết định chọn sản phẩm, định giá, bảng từ khóa (giao cho 03), quy nguyên nhân đánh giá chuyên sâu (giao cho 07) |
+| **02 Product Strategy** | Định vị sản phẩm, cấu hình cốt lõi, chốt điểm bán hàng chủ lực, phòng tránh rủi ro, mô hình định giá, bốn vai trò SKU | **Quyết định chọn sản phẩm (cần người xác nhận)**, thẩm định giá vốn, quy định chương trình của sàn, thu mua thực tế |
+| **03 Listing Creative** | Phân loại từ khóa, tạo tiêu đề, trang chi tiết 7 phần, đúc kết điểm bán hàng, bảng thông số, tự kiểm tra tuân thủ | Quyết định chọn sản phẩm, định giá, đặt giá thầu quảng cáo |
+| **04 Product Image** | Lên kế hoạch nội dung 9 ảnh, bố cục/chữ trên ảnh/Prompt tạo ảnh cho từng ảnh, kiểm tra nền trắng và tuân thủ | Render ảnh thực tế (giao cho ImageGen / Midjourney), kiểm tra chất lượng sau render |
+| **05 Product Video** | Kịch bản 15s/30s, bảng storyboard, Prompt cho từng cảnh quay, kịch bản lồng tiếng, phụ đề | Dựng và ghép video thực tế, mua bản quyền BGM |
+| **06 Advertising** | Chẩn đoán phễu, danh sách hành động, tính ngưỡng hòa vốn, ngân sách và ROI mục tiêu, nhịp phân bổ ngân sách | Thực sự sửa giá sửa ảnh, thao tác backend, đấu thầu theo thời gian thực |
+| **07 Review Analysis** | Phân loại và quy nguyên nhân, nhận diện loại hiểu lầm, xếp hạng điểm bán hàng, lằn ranh đỏ thông số, đề xuất vá lỗi, kịch bản CSKH | Thực sự sửa Listing, thao tác backend, liên hệ người mua |
 
-**明确的交接契约**：
+**Hợp đồng bàn giao rõ ràng**:
 
-- 01 → 02：缺 `opportunity_config` / `cost_floor_price` 时 02 无法工作
-- 02 → 03：`core_selling_point` 必须是**唯一一句**，否则 03 的下游链路全部失焦
-- 03 → 04/05：缺 `core_selling_point` / `forbidden_words` 时 04/05 **不许开工**
-- 06/07 → 03/04：输出必须带"症状 → 环节 → 具体对象"，否则 `iterate` 不许执行
-
----
-
-## 四、跨模块数据流
-
-三个模块之间靠一份**标准中间产物**通信（定义见 [`Templates/product_brief_template.md`](../Templates/product_brief_template.md)）：
-
-| 字段 | 来源 | 消费者 | 是否必填 |
-|---|---|---|---|
-| `product_name` | 人工 | 03/04/05 | ✅ |
-| `target_market` | 人工 | 03/04/05 | ✅ |
-| `core_selling_point` | **03 输出** | 04/05 | ✅ **阻塞项** |
-| `secondary_points[]` | **03 输出** | 04/05 | ✅ |
-| `spec_table` | **03 输出** | 04 | ✅ |
-| `keyword_classified` | **03 输出** | 04（主图卖点）/ 05（字幕） | ✅ |
-| `title_final` | **03 输出** | 05（视频结尾 CTA） | ⭕ 推荐 |
-| `forbidden_words[]` | **03 合规自检输出** | 04/05 硬拦截 | ✅ **阻塞项** |
-
-> 这套契约的意义：让 AI 在**跨模块传递时不丢信息、不编信息**。04 拿不到 `core_selling_point` 就报错，而不是自己瞎猜一个。
-
-### 回流字段（v0.2 新增）
-
-06 和 07 的输出必须带"**症状 → 环节 → 具体对象**"三级信息，否则 03/04 的 `iterate` 模式不许执行：
-
-| 字段 | 来源 | 回流目标 | 用途 |
-|---|---|---|---|
-| `symptom_by_group` | 06 | 03/04 | 明确症状，防止改错环节 |
-| `ctr_fail_groups[]` | 06 | 03 / 04 | 改标题关键词 / 换主图 |
-| `atc_fail_groups[]` | 06 | 03 | 优化详情页 / 调整 SKU |
-| `cvr_fail_groups[]` | 06 | 03 / 07 | 改价格展示 / 启动评价分析 |
-| `breakeven_roas` | 06 | 复测对标 | 判断下一轮是否盈利 |
-| `review_patch_suggestions[]` | 07 | 03 | 补写详情页注意事项段 |
-| `forbidden_words_candidates[]` | 07 | 03 / 04 / 05 | 加入硬拦截清单 |
-| `selling_points_ranked[]` | 07 | 03 / 04 | 决定主图核心文案与标题关键词 |
-| `packaging_clarity_needed` | 07 | 04 | 是否需补包装清单图 |
-
-**回流的硬约束**：`iterate` 模式**只改症状指向的环节**，其余部分保持不动。这是保证"效果可归因"的前提。
+- 01 → 02: thiếu `opportunity_config` / `cost_floor_price` thì 02 không làm việc được
+- 02 → 03: `core_selling_point` bắt buộc chỉ là **một câu duy nhất**, nếu không toàn bộ chuỗi phía sau của 03 sẽ mất trọng tâm
+- 03 → 04/05: thiếu `core_selling_point` / `forbidden_words` thì 04/05 **không được bắt đầu**
+- 06/07 → 03/04: đầu ra bắt buộc kèm "triệu chứng → khâu → đối tượng cụ thể", nếu không thì không được chạy `iterate`
 
 ---
 
-## 五、哪些 SOP 内容被**改写**了
+## IV. Luồng dữ liệu liên module
 
-原始 SOP 中有几条动作属于平台明令禁止的灰产操作。作为开源项目，我们**不搬运、不实现**，但保留了它想达成的业务目标，并给出合规替代路径。
+Các module giao tiếp với nhau qua một **sản phẩm trung gian chuẩn** (định nghĩa xem tại [`Templates/product_brief_template.md`](../Templates/product_brief_template.md)):
 
-完整对照表见 **[`03_Compliance_Guard.md`](./03_Compliance_Guard.md)**，未实现项的逐条登记见 **[`05_SOP_Gap_Register.md`](./05_SOP_Gap_Register.md)**。摘要：
+| Trường | Nguồn | Bên sử dụng | Bắt buộc |
+|---|---|---|---|
+| `product_name` | Người nhập | 03/04/05 | ✅ |
+| `target_market` | Người nhập | 03/04/05 | ✅ |
+| `core_selling_point` | **Đầu ra 03** | 04/05 | ✅ **Mục chặn** |
+| `secondary_points[]` | **Đầu ra 03** | 04/05 | ✅ |
+| `spec_table` | **Đầu ra 03** | 04 | ✅ |
+| `keyword_classified` | **Đầu ra 03** | 04 (điểm bán hàng trên ảnh chính) / 05 (phụ đề) | ✅ |
+| `title_final` | **Đầu ra 03** | 05 (CTA cuối video) | ⭕ Khuyến nghị |
+| `forbidden_words[]` | **Đầu ra tự kiểm tra tuân thủ của 03** | 04/05 chặn cứng | ✅ **Mục chặn** |
 
-| SOP 原始表述 | 处理 | 合规替代 |
+> Ý nghĩa của bộ hợp đồng này: giúp AI **không làm mất thông tin, không bịa thông tin khi truyền giữa các module**. 04 không nhận được `core_selling_point` thì báo lỗi, chứ không tự đoán bừa một cái.
+
+### Các trường quay vòng về (mới ở v0.2)
+
+Đầu ra của 06 và 07 bắt buộc kèm thông tin ba cấp "**triệu chứng → khâu → đối tượng cụ thể**", nếu không thì chế độ `iterate` của 03/04 không được chạy:
+
+| Trường | Nguồn | Đích quay về | Mục đích |
+|---|---|---|---|
+| `symptom_by_group` | 06 | 03/04 | Nêu rõ triệu chứng, tránh sửa nhầm khâu |
+| `ctr_fail_groups[]` | 06 | 03 / 04 | Sửa từ khóa trong tiêu đề / đổi ảnh chính |
+| `atc_fail_groups[]` | 06 | 03 | Tối ưu trang chi tiết / điều chỉnh SKU |
+| `cvr_fail_groups[]` | 06 | 03 / 07 | Sửa cách hiển thị giá / khởi động phân tích đánh giá |
+| `breakeven_roas` | 06 | Mốc so sánh khi kiểm tra lại | Đánh giá vòng sau có lãi hay không |
+| `review_patch_suggestions[]` | 07 | 03 | Viết bổ sung phần lưu ý trên trang chi tiết |
+| `forbidden_words_candidates[]` | 07 | 03 / 04 / 05 | Thêm vào danh sách chặn cứng |
+| `selling_points_ranked[]` | 07 | 03 / 04 | Quyết định nội dung chính trên ảnh chính và từ khóa trong tiêu đề |
+| `packaging_clarity_needed` | 07 | 04 | Có cần bổ sung ảnh danh sách đóng gói không |
+
+**Ràng buộc cứng của vòng quay về**: chế độ `iterate` **chỉ sửa khâu mà triệu chứng chỉ ra**, các phần còn lại giữ nguyên. Đây là tiền đề để "hiệu quả quy được nguyên nhân".
+
+---
+
+## V. Những nội dung SOP đã bị **viết lại**
+
+SOP gốc có vài thao tác thuộc dạng "lách luật" mà sàn cấm rõ ràng. Là một dự án mã nguồn mở, chúng tôi **không chép lại, không hiện thực hóa**, nhưng giữ lại mục tiêu kinh doanh mà nó muốn đạt được và đưa ra hướng thay thế tuân thủ (compliance).
+
+Bảng đối chiếu đầy đủ xem tại **[`03_Compliance_Guard.md`](./03_Compliance_Guard.md)**, danh mục từng hạng mục không triển khai xem tại **[`05_SOP_Gap_Register.md`](./05_SOP_Gap_Register.md)**. Tóm tắt:
+
+| Nội dung gốc trong SOP | Xử lý | Thay thế tuân thủ |
 |---|---|---|
-| 刷单 / 测评 / 建虚假 SKU 规避风控 | ❌ 移除 | 真实低价促销快速破零 + 非公开优惠券邀评 |
-| 组织差评团给竞品上差评 | ❌ 移除 | 竞品差评归因 → 转化为己方详情页防御性说明 |
-| "可控范围内虚假宣传"、参数虚标解释 | ❌ 移除 | 卖点真实化映射表 + 参数一致性校验 |
-| 用优惠券诱导评价、改 MD5 规避检测 | ❌ 移除 | 平台允许的官方邀评通道 |
+| Buff đơn ảo / đơn test review / tạo SKU giả để lách kiểm soát rủi ro | ❌ Loại bỏ | Khuyến mãi giá thấp có thật để nhanh chóng phá mốc 0 đơn + voucher không công khai để mời đánh giá |
+| Tổ chức nhóm để đánh giá tiêu cực đối thủ | ❌ Loại bỏ | Quy nguyên nhân đánh giá tiêu cực của đối thủ → chuyển thành phần giải thích phòng ngừa trên trang chi tiết của mình |
+| "Quảng cáo sai sự thật trong phạm vi kiểm soát được", giải thích cho việc khai khống thông số | ❌ Loại bỏ | Bảng ánh xạ điểm bán hàng về sự thật + kiểm tra tính nhất quán thông số |
+| Dùng voucher dụ dỗ đánh giá, sửa MD5 để lách kiểm tra | ❌ Loại bỏ | Kênh mời đánh giá chính thức được sàn cho phép |
 
 ---
 
-## 六、完成情况与下一步
+## VI. Tình trạng hoàn thành và bước tiếp theo
 
-| 优先级 | 模块 | 状态 | 说明 |
+| Ưu tiên | Module | Trạng thái | Ghi chú |
 |---|---|---|---|
-| P0 | 06 Advertising Optimization | ✅ **v0.2 完成** | SOP 3.5–3.6 漏斗诊断规则最完整，改造成本最低 |
-| P0 | 07 Review Analysis | ✅ **v0.2 完成** | 输入是评论文本，纯文本任务，Agent 天然适配 |
-| P1 | 01 Market Research | ✅ **v0.3 完成** | **连脚本一起做了** —— 数据获取是工程问题，不能只留个 Prompt |
-| P2 | 02 Product Strategy | ✅ **v0.3 完成** | 依赖 01，随 01 一起交付 |
+| P0 | 06 Advertising Optimization | ✅ **Hoàn thành v0.2** | Quy tắc chẩn đoán phễu trong SOP 3.5–3.6 đầy đủ nhất, chi phí chuyển đổi thấp nhất |
+| P0 | 07 Review Analysis | ✅ **Hoàn thành v0.2** | Đầu vào là văn bản đánh giá, tác vụ thuần văn bản, Agent hợp sẵn |
+| P1 | 01 Market Research | ✅ **Hoàn thành v0.3** | **Làm luôn cả script** —— lấy dữ liệu là bài toán kỹ thuật, không thể chỉ để lại một Prompt |
+| P2 | 02 Product Strategy | ✅ **Hoàn thành v0.3** | Phụ thuộc 01, bàn giao cùng 01 |
 
-✅ **7 个模块全部完成。**
+✅ **Đã hoàn thành cả 7 module.**
 
-### 做完之后新增的五个认知
+### Năm nhận thức mới sau khi làm xong
 
-前四个认知是在拆解与实现过程中修正的判断，第五个是方法论层面的：
+Bốn nhận thức đầu là những phán đoán được điều chỉnh trong quá trình phân rã và hiện thực hóa, nhận thức thứ năm thuộc về phương pháp luận:
 
-**认知 1 · 基准线和盈亏线是两回事**
+**Nhận thức 1 · Ngưỡng chuẩn và ngưỡng hòa vốn là hai chuyện khác nhau**
 
-SOP 给的基准线（CTR 3–5% / 转化 >1% / 加购 >8%）判断的是"**哪一环不健康**"。
-但**漏斗全达标也可能亏钱** —— 06 案例里某广告组三环全部健康，ROAS 2,73 仍低于盈亏线 2,82。
+Ngưỡng chuẩn SOP đưa ra (CTR 3–5% / chuyển đổi >1% / thêm vào giỏ >8%) dùng để xác định "**khâu nào không khỏe**".
+Nhưng **phễu đạt chuẩn toàn bộ vẫn có thể lỗ** —— trong case study của 06, một nhóm quảng cáo khỏe cả ba khâu nhưng ROAS 2,73 vẫn thấp hơn ngưỡng hòa vốn 2,82.
 
-**认知 2 · "误解型差评"是投入产出比最高的修复项**
+**Nhận thức 2 · "Đánh giá tiêu cực loại hiểu lầm" là hạng mục sửa có tỷ suất đầu tư/hiệu quả cao nhất**
 
-SOP 把差评按现象罗列，但没有把"**描述的问题**"和"**产品的问题**"分开。
-分开后得到意外结论：**84,6% 的差评可以靠改文案解决**（电动车案例），且改完立即生效。
+SOP liệt kê đánh giá tiêu cực theo hiện tượng, nhưng không tách "**vấn đề do mô tả**" với "**vấn đề do sản phẩm**".
+Tách ra rồi mới có kết luận bất ngờ: **84,6% đánh giá tiêu cực có thể giải quyết bằng cách sửa nội dung** (case study xe điện), và sửa xong là có hiệu lực ngay.
 
-**认知 3 · 有边界的人类拆解，比完整的技术方案更实用**
+**Nhận thức 3 · Phân rã có ranh giới do con người làm thực dụng hơn một giải pháp kỹ thuật toàn diện**
 
-01 模块的定位从"做一个市场分析 Agent"改成了"**做一个数据管道 + 一个解读 Agent**"。
-原因：集中度、分箱、交叉表是确定性计算，**让模型算反而引入了不确定性**。
-最终形态是"脚本算 + Agent 解读"，而不是"全都交给 Agent"。
+Định vị của module 01 được đổi từ "làm một Agent phân tích thị trường" thành "**làm một pipeline dữ liệu + một Agent diễn giải**".
+Lý do: mức độ tập trung, chia bin, bảng chéo là các phép tính tất định, **để mô hình tính lại sinh ra bất định**.
+Hình thái cuối cùng là "script tính + Agent diễn giải", chứ không phải "giao hết cho Agent".
 
-**认知 4 · 约束"不改什么"和约束"改什么"同等重要**
+**Nhận thức 4 · Ràng buộc "không sửa gì" quan trọng ngang ràng buộc "sửa gì"**
 
-06 的输出强制包含「本轮明确不动的部分」，03/04 的 `iterate` 模式只改症状指向的环节。
-原因：闭环里最大的内耗不是没改对，而是**把本来有效的环节改坏了**。
+Đầu ra của 06 bắt buộc có «Phần giữ nguyên trong vòng này», chế độ `iterate` của 03/04 chỉ sửa khâu mà triệu chứng chỉ ra.
+Lý do: hao tổn lớn nhất trong vòng khép kín không phải là sửa chưa đúng, mà là **làm hỏng những khâu vốn đang hiệu quả**.
 
-**认知 5 · "交付物可复现"应当是开源工具箱的底线**
+**Nhận thức 5 · "Kết quả tái lập được" phải là mức tối thiểu của một bộ công cụ mã nguồn mở**
 
-01 的案例做成"三条命令可复现"之后，暴露了三个原本看不出的问题：
-- 3 点滑动平均会抹掉波谷（价格带边界丢失）
-- `item_share_all` 的设计使"主流配置"判定恒为 false
-- CR10 在主体数 ≤ 10 时恒为 100%，容易误读成"完全垄断"
+Sau khi case study của 01 được làm thành "ba lệnh là tái lập được", đã lộ ra ba vấn đề trước đó không nhìn thấy:
+- Trung bình trượt 3 điểm làm mất vùng trũng (valley) (mất ranh giới dải giá)
+- Thiết kế của `item_share_all` khiến phán định "cấu hình chủ đạo" luôn là false
+- CR10 luôn bằng 100% khi số chủ thể ≤ 10, dễ bị hiểu nhầm là "độc quyền hoàn toàn"
 
-**这三个问题在只有文档、没有可跑代码的情况下，是不会被发现的。**
+**Ba vấn đề này sẽ không bao giờ được phát hiện nếu chỉ có tài liệu mà không có code chạy được.**
 
-> **这是本次最重要的一条经验**：把方法论写成文档很容易，写成"别人能跑通并获得同样结果"的东西很难 —— 而后者才是开源的价值。
+> **Đây là bài học quan trọng nhất lần này**: viết phương pháp luận thành tài liệu thì dễ, viết thành thứ mà "người khác chạy trọn vẹn được và ra cùng kết quả" thì khó —— mà cái sau mới là giá trị của mã nguồn mở.
 
 ---
 
-**相关文档**：[01 Prompt 设计规范](./01_Prompt_Design_Guide.md) · [02 平台字段规范](./02_Platform_Output_Spec.md) · [03 合规红线](./03_Compliance_Guard.md) · [04 交付自检清单](./04_Result_Checklist.md)
+**Tài liệu liên quan**: [01 Quy chuẩn thiết kế Prompt](./01_Prompt_Design_Guide.md) · [02 Quy chuẩn trường dữ liệu theo sàn](./02_Platform_Output_Spec.md) · [03 Lằn ranh đỏ tuân thủ](./03_Compliance_Guard.md) · [04 Checklist tự kiểm tra trước khi bàn giao](./04_Result_Checklist.md)
