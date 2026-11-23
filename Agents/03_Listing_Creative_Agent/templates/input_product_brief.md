@@ -116,7 +116,7 @@ notes_required*: true        # có tạo đoạn "Lưu ý" hay không
 
 ## 6. Ba bảng từ khóa ★ Bắt buộc
 
-> Nguồn: 虾多拉 (Xiaduola) / công cụ từ khóa tìm kiếm của sàn / phân tích từ khóa trong Seller Center.
+> Nguồn: Shaduola / công cụ từ khóa tìm kiếm của sàn / phân tích từ khóa trong Seller Center.
 > **Định dạng**: mỗi bảng một từ một dòng, hoặc phân tách bằng dấu phẩy.
 > ⚠️ Agent **không tự sinh từ khóa**, chỉ phân loại và ghép. Thiếu ba bảng thì không thực hiện được phân loại từ khóa.
 

@@ -41,7 +41,7 @@ Case study là đóng góp giá trị nhất cho repo này. Yêu cầu:
 2. **Đầu vào** — toàn bộ đầu vào (`spec_table` / `forbidden_words` / `usage_scope`, v.v.)
 3. **Quy trình xử lý của AI** — đã chạy những Prompt nào, theo thứ tự nào
 4. **Kết quả tạo ra** — output thực tế (có thể trích một phần, nhưng phải thấy được chất lượng)
-5. **Các trường bàn giao cho module hạ nguồn** — theo định nghĩa trong [`Templates/product_brief_template.md`](./Templates/product_brief_template.md)
+5. **Các trường bàn giao cho module phía sau** — theo định nghĩa trong [`Templates/product_brief_template.md`](./Templates/product_brief_template.md)
 6. **Đề xuất tối ưu** — bước tiếp theo nên làm gì
 7. **Case study này chứng minh được điều gì** — nêu rõ kết luận
 

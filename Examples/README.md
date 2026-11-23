@@ -63,7 +63,7 @@ Các case study trong repo này bổ sung thêm hai phần:
 | Phân tích thị trường | Tài liệu hướng dẫn | — |
 | Quy trình xử lý bằng AI | Tài liệu hướng dẫn | — |
 | Kết quả tạo ra | Tài liệu hướng dẫn | — |
-| **Các trường bàn giao cho module hạ nguồn** | Repo này bổ sung | Để case study **thực sự tái lập được**, chứ không chỉ để đọc |
+| **Các trường bàn giao cho module phía sau** | Repo này bổ sung | Để case study **thực sự tái lập được**, chứ không chỉ để đọc |
 | **Case study này chứng minh điều gì** | Repo này bổ sung | Nêu rõ kết luận của case study, tiện so sánh chéo giữa các case study |
 
 ---
@@ -74,7 +74,7 @@ Rất hoan nghênh! Yêu cầu:
 
 1. **Bắt buộc ẩn danh hóa**: không có tên shop thật, tài khoản, thông tin người mua, từ khóa thương hiệu chưa được cấp phép
 2. **Thông số phải là thật**: thông số ví dụ phải có bằng chứng, không được bịa
-3. **Bắt buộc có phần "Các trường bàn giao cho module hạ nguồn"** (xem [`Templates/product_brief_template.md`](../Templates/product_brief_template.md))
+3. **Bắt buộc có phần "Các trường bàn giao cho module phía sau"** (xem [`Templates/product_brief_template.md`](../Templates/product_brief_template.md))
 4. **Bắt buộc rà qua** [`docs/04_Result_Checklist.md`](../docs/04_Result_Checklist.md)
 5. Nếu có case study về ảnh/video, **không được chứa logo chứng nhận giả, ảnh chụp đánh giá giả, nhãn số lượng đã bán giả**
 

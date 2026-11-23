@@ -20,7 +20,7 @@ prompt_language: en            # en | zh
 ## 1. Trường thượng nguồn · bàn giao từ 03 (mục chặn)
 
 ```yaml
-# ── Dán trực tiếp từ khối「Các trường bàn giao cho module tiếp theo」trong đầu ra của 03 ──
+# ── Dán trực tiếp từ khối「Các trường bàn giao cho module phía sau」trong đầu ra của 03 ──
 
 core_selling_point*: ""        # Hook và mạch chính của video
 

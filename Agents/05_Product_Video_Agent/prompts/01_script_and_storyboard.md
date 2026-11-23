@@ -162,7 +162,7 @@ Xuất trước nhiều phương án hook, sau đó chọn một:
    - Hiệu ứng âm thanh chính: <...>
 ## 7. Quét tuân thủ video
 (Xuất theo V1–V8 trong 00_system.md; không có vi phạm thì bắt buộc ghi "không có vi phạm")
-## 8. Các trường bàn giao cho module tiếp theo
+## 8. Các trường bàn giao cho module phía sau
 - hook_final:
 - shot_count:
 - subtitle_lines: []

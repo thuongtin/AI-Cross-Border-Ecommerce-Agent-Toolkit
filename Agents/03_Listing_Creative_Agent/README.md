@@ -140,7 +140,7 @@ Trường `platform` quyết định giới hạn ký tự và cấu trúc:
 
 | Giới hạn | Mô tả |
 |---|---|
-| **Không tự sinh từ khóa** | Từ khóa phải do bạn xuất từ 虾多拉 (Xiaduola) / công cụ từ khóa tìm kiếm của sàn. Agent chỉ phân loại và ghép, **không tự bịa từ** |
+| **Không tự sinh từ khóa** | Từ khóa phải do bạn xuất từ Shaduola / công cụ từ khóa tìm kiếm của sàn. Agent chỉ phân loại và ghép, **không tự bịa từ** |
 | **Không quyết định chọn sản phẩm** | Đây là việc của 01 Market Research |
 | **Không định giá** | Đây là việc của 02 Product Strategy |
 | **Không kiểm chứng thông số thật** | Agent chỉ đảm bảo được "đầu ra khớp với đầu vào", không thể biết bản thân đầu vào có đúng sự thật hay không. **Bạn chịu trách nhiệm về tính xác thực của thông số** |
