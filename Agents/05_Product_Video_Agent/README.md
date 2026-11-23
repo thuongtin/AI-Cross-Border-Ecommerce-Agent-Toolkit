@@ -1,127 +1,127 @@
 # 05 · Product Video Agent
 
-**商品短视频生成智能体** · 从一句卖点，到一条能直接录的分镜脚本。
+**Agent tạo video ngắn cho sản phẩm** · Từ một câu điểm bán hàng đến một kịch bản storyboard quay được ngay.
 
-> **v0.4 Skill 化**：新增 [`SKILL.md`](./SKILL.md)（Agent 入口）+
-> [`references/video-specs.md`](./references/video-specs.md)（平台视频规范卡）+
-> [`scripts/video_timing.py`](./scripts/video_timing.py)（**时长与字幕的确定性校验**：
-> 词数→时长换算、逐句时间轴、字幕行长、钩子检查、总时长 vs 15s/30s 目标 ±15% 容差）。
-> 时长校验实测：65 词 ÷ 2.5 词/秒 = 26.0s，与案例文档记录完全一致。
+> **v0.4 chuyển thành Skill**: bổ sung [`SKILL.md`](./SKILL.md) (điểm vào của Agent) +
+> [`references/video-specs.md`](./references/video-specs.md) (thẻ quy chuẩn video của sàn) +
+> [`scripts/video_timing.py`](./scripts/video_timing.py) (**kiểm tra tất định thời lượng và phụ đề**:
+> quy đổi số từ → thời lượng, timeline từng câu, độ dài dòng phụ đề, kiểm tra hook, tổng thời lượng so với mục tiêu 15s/30s dung sai ±15%).
+> Kiểm tra thời lượng thực tế: 65 từ ÷ 2,5 từ/giây = 26,0s, khớp hoàn toàn với số liệu ghi trong case study.
 
 ---
 
-## 一、它解决什么问题
+## I. Nó giải quyết vấn đề gì
 
-视频是三个创意模块里**门槛最高、最容易半途而废**的一环。
+Video là khâu **có rào cản cao nhất, dễ bỏ dở giữa chừng nhất** trong ba module sáng tạo.
 
-| 痛点 | 表现 | 本模块怎么解 |
+| Nỗi đau | Biểu hiện | Module này giải quyết thế nào |
 |---|---|---|
-| **不知道前 3 秒放什么** | 开头是"大家好，今天给大家介绍…"，观众已划走 | 强制钩子规则：前 3 秒必须是产品/结果/痛点，不是自我介绍 |
-| **写不出分镜** | 只有一段文字描述，到拍摄/剪辑时无从下手 | 输出结构化分镜表：镜号 / 时长 / 画面 / 运镜 / 文案 / 音效 |
-| **AI 视频 Prompt 没效果** | 丢一句话给视频模型，出来的画面不能用 | 按镜头输出结构化 Prompt：主体 + 动作 + 镜头运动 + 光线 + 风格 |
-| **配音文案像书面语** | 念出来很生硬，TTS 效果差 | 强制口语化改写 + 预估朗读时长 |
+| **Không biết 3 giây đầu đặt gì** | Mở đầu bằng "Xin chào mọi người, hôm nay mình giới thiệu…", người xem đã lướt qua | Quy tắc hook bắt buộc: 3 giây đầu phải là sản phẩm/kết quả/nỗi đau, không phải tự giới thiệu |
+| **Không viết được storyboard** | Chỉ có một đoạn mô tả, đến lúc quay/dựng không biết bắt đầu từ đâu | Xuất bảng storyboard có cấu trúc: số cảnh / thời lượng / hình ảnh / chuyển động máy / lời thoại / hiệu ứng âm thanh |
+| **Prompt video AI không hiệu quả** | Ném một câu cho mô hình video, hình ra không dùng được | Xuất Prompt có cấu trúc theo từng cảnh: chủ thể + hành động + chuyển động máy + ánh sáng + phong cách |
+| **Lời lồng tiếng như văn viết** | Đọc lên rất cứng, TTS ra kém | Bắt buộc viết lại theo văn nói + ước tính thời lượng đọc |
 
-**产出物**：15s / 30s 双版本脚本 + 分镜表 + 逐镜头 AI 视频 Prompt + 配音稿 + 字幕。
+**Đầu ra**: kịch bản hai bản 15s / 30s + bảng storyboard + Prompt video AI từng cảnh + kịch bản lồng tiếng + phụ đề.
 
 ---
 
-## 二、覆盖的 SOP 章节
+## II. Các chương SOP được bao phủ
 
-SOP 里没有独立的"视频"章节——**这是本仓库的延伸模块**，SOP 只提供了素材侧基础：
+SOP không có chương "video" riêng——**đây là module mở rộng của repo này**, SOP chỉ cung cấp nền tảng về mặt nội dung sáng tạo:
 
-| SOP 来源 | 提取的内容 | 怎么用 |
+| Nguồn SOP | Nội dung trích xuất | Cách dùng |
 |---|---|---|
-| **3.3 详情页内容框架** | 7 段结构（欢迎语 / 卖点 / 场景 / 参数 / 售后 / 注意 / 关键词） | 转成视频叙事骨架：钩子 → 卖点 → 场景 → 参数 → 信任 → CTA |
-| **3.3 标题写法** | 核心词 + 人群 + 参数 + 功能 + 场景 | 视频结尾 CTA 与标题保持一致 |
-| **1.6 评论分析** | 买家真正关心什么 | 决定视频里优先讲哪个卖点 |
-| **2.3 差异化** | 多店铺同款需差异化 | `variant` 模式下输出多套不同切入角度的脚本 |
+| **3.3 Khung nội dung trang chi tiết** | Cấu trúc 7 phần (lời chào / điểm bán hàng / bối cảnh / thông số / hậu mãi / lưu ý / từ khóa) | Chuyển thành khung tự sự video: hook → điểm bán hàng → bối cảnh → thông số → niềm tin → CTA |
+| **3.3 Cách viết tiêu đề** | Từ khóa chính + đối tượng + thông số + công năng + bối cảnh | CTA cuối video nhất quán với tiêu đề |
+| **1.6 Phân tích review** | Người mua thực sự quan tâm điều gì | Quyết định ưu tiên nói điểm bán hàng nào trong video |
+| **2.3 Tạo khác biệt** | Nhiều shop bán cùng mẫu cần tạo khác biệt | Chế độ `variant` xuất nhiều bộ kịch bản với góc tiếp cận khác nhau |
 
-> **诚实说明**：视频模块的方法论有较大比例来自通用短视频实践，而非这份 SOP。SOP 提供的是**素材和约束**（卖点、参数、场景范围、禁用词），本模块负责把它组织成视频语言。
+> **Nói thẳng**: phương pháp luận của module video phần lớn đến từ thực tiễn video ngắn nói chung, không phải từ bộ SOP này. SOP cung cấp **chất liệu và ràng buộc** (điểm bán hàng, thông số, phạm vi bối cảnh, từ cấm), module này lo việc tổ chức chúng thành ngôn ngữ video.
 
 ---
 
-## 三、工作流
+## III. Quy trình
 
 ```text
-输入：03 Listing Creative 的输出 + （可选）04 Product Image 的 hero_visual
+Đầu vào: đầu ra của 03 Listing Creative + (tùy chọn) hero_visual của 04 Product Image
         ▲
-        └── 【阻塞规则】core_selling_point 或 forbidden_words 为空 → 拒绝执行
+        └── 【Quy tắc chặn】core_selling_point hoặc forbidden_words rỗng → từ chối thực thi
                          ▼
         ┌────────────────────────────────┐
-        │ 00_system.md                   │  角色 + 平台视频规范 + 字幕合规守卫
+        │ 00_system.md                   │  Vai trò + quy chuẩn video sàn + kiểm soát tuân thủ phụ đề
         └──────────────┬─────────────────┘
                        ▼
         ┌────────────────────────────────┐
-        │ 01_script_and_storyboard.md    │  Step 1  15s / 30s 脚本
-        │                                │  Step 2  分镜表
+        │ 01_script_and_storyboard.md    │  Step 1  Kịch bản 15s / 30s
+        │                                │  Step 2  Bảng storyboard
         └──────────────┬─────────────────┘
                        ▼
         ┌────────────────────────────────┐
-        │ 02_ai_video_and_voice.md       │  Step 3  逐镜头 AI 视频 Prompt
-        │                                │  Step 4  配音稿 + 字幕 + 时长核对
+        │ 02_ai_video_and_voice.md       │  Step 3  Prompt video AI từng cảnh
+        │                                │  Step 4  Lồng tiếng + phụ đề + đối chiếu thời lượng
         └──────────────┬─────────────────┘
                        ▼
-        输出：output_video_pack.yaml  →  交给 VideoGen / 即梦 / Runway / 可灵 / 剪映
+        Đầu ra: output_video_pack.yaml  →  giao cho VideoGen / Jimeng / Runway / Kling / CapCut
 ```
 
 ---
 
-## 四、双版本策略
+## IV. Chiến lược hai phiên bản
 
-| 版本 | 用途 | 结构 |
+| Phiên bản | Mục đích | Cấu trúc |
 |---|---|---|
-| **15s** | 商品主图位视频、信息流广告、TikTok 首屏 | 钩子(0–3s) → 核心卖点(3–9s) → 场景(9–13s) → CTA(13–15s) |
-| **30s** | 详情页视频、商品页嵌入 | 钩子(0–3s) → 卖点 1(3–9s) → 卖点 2(9–16s) → 场景(16–23s) → 参数/信任(23–28s) → CTA(28–30s) |
+| **15s** | Video vị trí ảnh chính, quảng cáo trong Feed, màn hình đầu TikTok | Hook(0–3s) → Điểm bán hàng cốt lõi(3–9s) → Bối cảnh(9–13s) → CTA(13–15s) |
+| **30s** | Video trang chi tiết, nhúng trong trang sản phẩm | Hook(0–3s) → Điểm bán hàng 1(3–9s) → Điểm bán hàng 2(9–16s) → Bối cảnh(16–23s) → Thông số/Niềm tin(23–28s) → CTA(28–30s) |
 
-**为什么必须做 15s 版**：平台主图位视频和 TikTok 首屏对流量的拦截都发生在**前 3 秒到前 15 秒**。30s 版做得再好，前 15s 不成立就是废片——15s 版本质上是在逼你先把最有效的信息压缩出来。
+**Vì sao bắt buộc làm bản 15s**: video ở vị trí ảnh chính và màn hình đầu TikTok giữ chân traffic đều trong khoảng **3 giây đầu đến 15 giây đầu**. Bản 30s làm hay đến mấy mà 15s đầu không ổn thì vẫn là video bỏ đi——bản 15s về bản chất là ép bạn nén thông tin hiệu quả nhất lên trước.
 
 ---
 
-## 五、钩子设计（前 3 秒）
+## V. Thiết kế hook (3 giây đầu)
 
-SOP 没有直接讲视频钩子，但 SOP 1.6 讲了一件事：**评论是最接近真实买家需求的地方**。钩子的最佳来源就是这个：
+SOP không nói trực tiếp về hook video, nhưng SOP 1.6 có nói một điều: **review là nơi gần nhất với nhu cầu thật của người mua**. Nguồn hook tốt nhất chính là đây:
 
-| 钩子类型 | 来源 | 示例（巴西 / 充电宝） |
+| Loại hook | Nguồn | Ví dụ (Brazil / sạc dự phòng) |
 |---|---|---|
-| **痛点直击** | 差评里的高频抱怨 | `Seu celular acaba antes do fim do dia?` |
-| **结果前置** | 好评里的高频满意点 | `Carrega o celular 4 vezes sem tomada.` |
-| **反常识** | 参数里的意外点 | `20.000 mAh e ainda cabe no bolso.` |
-| **对比冲击** | 竞品短板 | `45W. Não 18W.` |
-| **场景代入** | `usage_scope` 主场景 | `Domingo inteiro fora de casa. Sem tomada.` |
+| **Đánh thẳng nỗi đau** | Lời phàn nàn hay gặp trong đánh giá tiêu cực | `Seu celular acaba antes do fim do dia?` |
+| **Đưa kết quả lên trước** | Điểm hài lòng hay gặp trong đánh giá tích cực | `Carrega o celular 4 vezes sem tomada.` |
+| **Phản trực giác** | Điểm bất ngờ trong thông số | `20.000 mAh e ainda cabe no bolso.` |
+| **Đối chiếu gây sốc** | Điểm yếu của đối thủ | `45W. Não 18W.` |
+| **Nhập vai bối cảnh** | Bối cảnh chính trong `usage_scope` | `Domingo inteiro fora de casa. Sem tomada.` |
 
-❌ **禁止**：`Olá pessoal, bem-vindos ao meu canal`、`Hoje vou apresentar para vocês`、任何自我介绍。
-
----
-
-## 六、Prompt 文件
-
-| 文件 | 作用 |
-|---|---|
-| [`prompts/00_system.md`](./prompts/00_system.md) | 系统 Prompt：角色 + 平台视频规范 + 字幕/画面合规守卫 |
-| [`prompts/01_script_and_storyboard.md`](./prompts/01_script_and_storyboard.md) | 任务 Prompt：脚本 + 分镜表 |
-| [`prompts/02_ai_video_and_voice.md`](./prompts/02_ai_video_and_voice.md) | 任务 Prompt：逐镜头 AI 视频 Prompt + 配音稿 + 字幕 |
-
-## 七、模板与案例
-
-| 文件 | 说明 |
-|---|---|
-| [`templates/input_video_brief.md`](./templates/input_video_brief.md) | 标准输入 |
-| [`templates/output_video_pack.yaml`](./templates/output_video_pack.yaml) | 标准输出 |
-| [`examples/air_fryer.md`](./examples/air_fryer.md) | 真实案例：空气炸锅 15s + 30s 双版本 |
+❌ **Cấm**: `Olá pessoal, bem-vindos ao meu canal`, `Hoje vou apresentar para vocês`, mọi kiểu tự giới thiệu.
 
 ---
 
-## 八、已知限制
+## VI. Các file Prompt
 
-| 限制 | 说明 |
+| File | Vai trò |
 |---|---|
-| **不渲染视频** | 只产出脚本、分镜和 Prompt，实际生成用视频工具 |
-| **SOP 无直接依据** | 本模块方法论部分来自通用短视频实践，已在上方注明 |
-| **音画同步需人工** | 分镜时长是建议值，实际需按配音音频对齐 |
-| **BGM 版权需自备** | 模块只给"需要什么情绪的音乐"，不提供音乐素材 |
-| **不支持真人出镜方案** | 涉及真人拍摄的镜头只给拍摄指令，不生成真人视频 Prompt（肖像合规风险） |
-| **无法判断成片质量** | 渲染后的品控需人工执行 D 段清单 |
+| [`prompts/00_system.md`](./prompts/00_system.md) | System Prompt: vai trò + quy chuẩn video sàn + kiểm soát tuân thủ phụ đề/hình ảnh |
+| [`prompts/01_script_and_storyboard.md`](./prompts/01_script_and_storyboard.md) | Task Prompt: kịch bản + bảng storyboard |
+| [`prompts/02_ai_video_and_voice.md`](./prompts/02_ai_video_and_voice.md) | Task Prompt: Prompt video AI từng cảnh + kịch bản lồng tiếng + phụ đề |
+
+## VII. Template và case study
+
+| File | Mô tả |
+|---|---|
+| [`templates/input_video_brief.md`](./templates/input_video_brief.md) | Đầu vào chuẩn |
+| [`templates/output_video_pack.yaml`](./templates/output_video_pack.yaml) | Đầu ra chuẩn |
+| [`examples/air_fryer.md`](./examples/air_fryer.md) | Case study thực tế: nồi chiên không dầu, hai bản 15s + 30s |
 
 ---
 
-**返回**：[Agents 索引](../README.md) · **上游**：[03 Listing Creative](../03_Listing_Creative_Agent/) · [04 Product Image](../04_Product_Image_Agent/) · **文档**：[平台字段规范](../../docs/02_Platform_Output_Spec.md) · [合规红线](../../docs/03_Compliance_Guard.md)
+## VIII. Hạn chế đã biết
+
+| Hạn chế | Mô tả |
+|---|---|
+| **Không render video** | Chỉ xuất kịch bản, storyboard và Prompt, việc tạo video thực tế dùng công cụ video |
+| **Không có căn cứ trực tiếp từ SOP** | Một phần phương pháp luận của module này đến từ thực tiễn video ngắn nói chung, đã ghi chú ở trên |
+| **Đồng bộ hình và tiếng cần làm thủ công** | Thời lượng storyboard là giá trị đề xuất, thực tế cần căn theo audio lồng tiếng |
+| **Tự lo bản quyền BGM** | Module chỉ đưa ra "cần nhạc mang cảm xúc gì", không cung cấp nhạc |
+| **Không hỗ trợ phương án người thật xuất hiện** | Cảnh quay người thật chỉ có chỉ dẫn quay, không tạo Prompt video người thật (rủi ro tuân thủ về chân dung) |
+| **Không đánh giá được chất lượng thành phẩm** | Kiểm soát chất lượng sau khi render cần người thực hiện theo checklist mục D |
+
+---
+
+**Quay lại**: [Mục lục Agents](../README.md) · **Thượng nguồn**: [03 Listing Creative](../03_Listing_Creative_Agent/) · [04 Product Image](../04_Product_Image_Agent/) · **Tài liệu**: [Quy chuẩn trường dữ liệu theo sàn](../../docs/02_Platform_Output_Spec.md) · [Lằn ranh đỏ tuân thủ](../../docs/03_Compliance_Guard.md)

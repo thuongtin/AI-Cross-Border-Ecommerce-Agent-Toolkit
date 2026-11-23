@@ -1,39 +1,39 @@
-# 视频平台规范卡（Shopee BR / Mercado Livre）
+# Thẻ quy chuẩn video của sàn (Shopee BR / Mercado Livre)
 
-> ⚠️ 以下为编写时的公开规则整理（2026-10）。平台规则会更新，
-> **发布前必须到卖家中心复核原文**。
+> ⚠️ Dưới đây là tổng hợp quy định công khai tại thời điểm biên soạn (2026-10). Quy định của sàn sẽ thay đổi,
+> **trước khi đăng bắt buộc kiểm tra lại văn bản gốc trên Seller Center**.
 
-## Shopee 巴西（主图视频 / 商品视频）
+## Shopee Brazil (video ảnh chính / video sản phẩm)
 
-| 项 | 要求 |
+| Hạng mục | Yêu cầu |
 |---|---|
-| 时长 | **≤ 30s**（商品主图视频；长视频另说） |
-| 画幅 | 竖版 9:16 或 1:1（1:1 与主图位一致最稳） |
-| 格式 | MP4（H.264），建议 ≤ 30MB |
-| 首帧 | **必须即产品**（黄金 3 秒法则：0–3s 钩子） |
-| 字幕 | **建议烧录**（大量买家静音刷 Feed），PT-BR，单行 ≤ 42 字符 |
-| 台词预算 | 30s ≈ 65 词 / 15s ≈ 30 词（2.5 词/秒，留白 3–4s） |
-| 禁止 | 促销词堆砌、夸大宣传（与 Listing 同一套合规守卫） |
+| Thời lượng | **≤ 30s** (video ảnh chính của sản phẩm; video dài tính riêng) |
+| Khung hình | Dọc 9:16 hoặc 1:1 (1:1 khớp với vị trí ảnh chính là an toàn nhất) |
+| Định dạng | MP4 (H.264), khuyến nghị ≤ 30MB |
+| Khung đầu | **Bắt buộc là sản phẩm** (quy tắc 3 giây vàng: 0–3s là hook) |
+| Phụ đề | **Nên burn-in** (rất nhiều người mua lướt Feed khi tắt tiếng), PT-BR, mỗi dòng ≤ 42 ký tự |
+| Ngân sách lời thoại | 30s ≈ 65 từ / 15s ≈ 30 từ (2,5 từ/giây, chừa khoảng lặng 3–4s) |
+| Cấm | Nhồi từ khóa khuyến mãi, quảng cáo phóng đại (dùng chung bộ kiểm soát tuân thủ với Listing) |
 
 ## Mercado Livre
 
-| 项 | 要求 |
+| Hạng mục | Yêu cầu |
 |---|---|
-| 时长 | 建议 ≤ 30s |
-| 一致性 | 视频里的产品呈现须与主图/详情图**同一套 identity**（颜色/配件/角度不漂移） |
-| 字幕 | PT-BR；静音可读性同样适用 |
-| 红线 | 与主图同源：无虚假演示（演示的功能必须真实存在） |
+| Thời lượng | Khuyến nghị ≤ 30s |
+| Tính nhất quán | Cách thể hiện sản phẩm trong video phải dùng **cùng một bộ identity** với ảnh chính/ảnh chi tiết (màu sắc/phụ kiện/góc chụp không bị lệch) |
+| Phụ đề | PT-BR; yêu cầu đọc được khi tắt tiếng vẫn áp dụng |
+| Lằn ranh đỏ | Cùng nguồn với ảnh chính: không demo sai sự thật (tính năng được demo phải có thật) |
 
-## 两平台通用
+## Áp dụng chung cho cả hai sàn
 
-- **静音可读性检查**：关掉声音只看画面 + 字幕，卖点链条必须仍然完整
-- **参数卡**：结尾参数卡数字与 `spec_table` 逐字一致（用 03 的
-  `spec_consistency.py` 复核台词与字幕里的数字）
-- **BGM**：选可商用曲库；音量不压人声
-- **演示真实性**：只演示产品真实具备的功能（合规守卫：不摆拍虚假效果）
+- **Kiểm tra khả năng đọc khi tắt tiếng**: tắt âm thanh, chỉ xem hình + phụ đề, chuỗi điểm bán hàng vẫn phải trọn vẹn
+- **Thẻ thông số**: các con số trên thẻ thông số cuối video phải khớp từng ký tự với `spec_table` (dùng
+  `spec_consistency.py` của 03 để rà lại con số trong lời thoại và phụ đề)
+- **BGM**: chọn thư viện nhạc được phép dùng thương mại; âm lượng không lấn giọng đọc
+- **Tính chân thực của demo**: chỉ demo tính năng sản phẩm thực sự có (kiểm soát tuân thủ: không dàn dựng hiệu ứng giả)
 
-## 黄金 3 秒（0–3s 钩子）
+## 3 giây vàng (hook 0–3s)
 
-- 第一句台词 ≤ **8 词**（2.5 词/秒下 ≈ 3.2s 内说完）
-- 画面有动作（计时器跳动 / 出料 / 展开动作），不要静态产品照
-- 钩子句写法：**痛点疑问** 或 **结果前置**（二选一，不堆两个）
+- Câu thoại đầu tiên ≤ **8 từ** (ở tốc độ 2,5 từ/giây ≈ đọc xong trong 3,2s)
+- Hình ảnh phải có chuyển động (đồng hồ hẹn giờ nhảy số / ra thành phẩm / thao tác mở ra), không dùng ảnh sản phẩm tĩnh
+- Cách viết câu hook: **câu hỏi nỗi đau** hoặc **đưa kết quả lên trước** (chọn một, không chồng cả hai)

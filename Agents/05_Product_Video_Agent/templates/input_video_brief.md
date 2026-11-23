@@ -1,15 +1,15 @@
-# 输入模板 · 视频生成简报
+# Template đầu vào · Brief tạo video
 
-> **前置要求**：本模块**依赖 03 Listing Creative Agent 的输出**；有 04 的输出则效果更好（风格统一）。
+> **Điều kiện tiên quyết**: module này **phụ thuộc vào đầu ra của 03 Listing Creative Agent**; có thêm đầu ra của 04 thì hiệu quả tốt hơn (thống nhất phong cách).
 
 ---
 
-## 0. 任务配置
+## 0. Cấu hình nhiệm vụ
 
 ```yaml
 platform*: shopee              # shopee | mercadolivre | amazon | tiktokshop | shopify
-target_market*: 巴西
-durations*: [15, 30]           # 可选 [15] / [30] / [15, 30]
+target_market*: Brazil
+durations*: [15, 30]           # Tùy chọn [15] / [30] / [15, 30]
 mode*: standard                # standard | variant
 production_mode*: mixed        # ai_generated | real_shoot | mixed
 prompt_language: en            # en | zh
@@ -17,39 +17,39 @@ prompt_language: en            # en | zh
 
 ---
 
-## 1. 上游字段 · 03 的交付（阻塞项）
+## 1. Trường thượng nguồn · bàn giao từ 03 (mục chặn)
 
 ```yaml
-# ── 从 03 输出的「交付给下游模块的字段」区块直接粘贴 ──
+# ── Dán trực tiếp từ khối「Các trường bàn giao cho module tiếp theo」trong đầu ra của 03 ──
 
-core_selling_point*: ""        # 视频钩子与主线
+core_selling_point*: ""        # Hook và mạch chính của video
 
-secondary_points*: []          # 卖点段内容
+secondary_points*: []          # Nội dung phần điểm bán hàng
 
-spec_table*: {}                # 参数段
+spec_table*: {}                # Phần thông số
 
-forbidden_words*: []           # 字幕硬拦截
+forbidden_words*: []           # Chặn cứng trong phụ đề
 
-usage_scope_confirmed*: []     # 场景镜头范围
+usage_scope_confirmed*: []     # Phạm vi cảnh bối cảnh
 
-title_final*: ""               # 结尾 CTA 必须与之一致
+title_final*: ""               # CTA cuối video bắt buộc khớp với trường này
 ```
 
-## 2. 上游字段 · 04 的交付（可选但建议）
+## 2. Trường thượng nguồn · bàn giao từ 04 (tùy chọn nhưng nên có)
 
 ```yaml
-# ── 从 04 输出的 handoff_to_video 区块粘贴 ──
+# ── Dán từ khối handoff_to_video trong đầu ra của 04 ──
 
-visual_tone_confirmed: ""      # 全片风格统一
-hero_visual: ""                # 首帧参考
-key_visual_moments: []         # 分镜优先项
+visual_tone_confirmed: ""      # Thống nhất phong cách toàn video
+hero_visual: ""                # Tham chiếu khung hình đầu
+key_visual_moments: []         # Ưu tiên khi lên storyboard
 ```
 
-> 有了这两个字段，视频的画面风格会和 9 图保持一致。**跨模块视觉统一是这套流程的专业度体现**——图是一种风格、视频是另一种风格，买家会觉得是拼凑的。
+> Có hai trường này, phong cách hình ảnh của video sẽ nhất quán với bộ 9 ảnh. **Thống nhất thị giác xuyên module là thể hiện độ chuyên nghiệp của quy trình này**——ảnh một phong cách, video một phong cách, người mua sẽ thấy như chắp vá.
 
 ---
 
-## 3. 产品信息
+## 3. Thông tin sản phẩm
 
 ```yaml
 product_name*: ""
@@ -62,43 +62,43 @@ appearance:
 
 ---
 
-## 4. 钩子来源（强烈建议填）
+## 4. Nguồn hook (rất nên điền)
 
-> SOP 1.6：**评论是最接近真实买家需求的地方。** 钩子的最佳来源就在这里。
+> SOP 1.6: **review là nơi gần nhất với nhu cầu thật của người mua.** Nguồn hook tốt nhất nằm ở đây.
 
 ```yaml
 hook_material:
-  pain_points: []              # 来自差评抱怨，例：
-    # - "买家抱怨充电宝在包里压到就断电"
-  satisfaction_points: []      # 来自好评满意点，例：
-    # - "买家反复提到屏幕显示剩余电量很实用"
-  competitor_weakness: []      # 竞品短板，例：
-    # - "竞品普遍 18W，本产品 45W"
+  pain_points: []              # Từ lời phàn nàn trong đánh giá tiêu cực, VD:
+    # - "Người mua phàn nàn sạc dự phòng bị đè trong túi là mất điện"
+  satisfaction_points: []      # Từ điểm hài lòng trong đánh giá tích cực, VD:
+    # - "Người mua nhắc đi nhắc lại màn hình hiển thị dung lượng còn lại rất tiện"
+  competitor_weakness: []      # Điểm yếu của đối thủ, VD:
+    # - "Đối thủ phổ biến 18W, sản phẩm này 45W"
 ```
 
 ---
 
-## 5. 制作约束
+## 5. Ràng buộc sản xuất
 
 ```yaml
 constraints:
-  has_real_product: true       # 是否有实物可拍
-  can_shoot_people: false      # 是否能拍真人出镜（false 则全部走不露脸或全 AI）
-  available_props: []          # 可用的道具
-  location_available: []       # 可用场地
-  budget_level: ""             # low | medium | high（影响分镜复杂度）
+  has_real_product: true       # Có sản phẩm thật để quay không
+  can_shoot_people: false      # Có quay được người thật xuất hiện không (false thì toàn bộ dùng phương án không lộ mặt hoặc hoàn toàn bằng AI)
+  available_props: []          # Đạo cụ có sẵn
+  location_available: []       # Địa điểm có sẵn
+  budget_level: ""             # low | medium | high (ảnh hưởng độ phức tạp của storyboard)
 ```
 
 ---
 
-## 6. 配音偏好（可选）
+## 6. Sở thích lồng tiếng (tùy chọn)
 
 ```yaml
 voice_style:
-  gender: ""                   # 男声 / 女声 / 不限
-  tone: ""                     # 亲切 / 专业 / 活力 / 沉稳
+  gender: ""                   # Giọng nam / Giọng nữ / Không giới hạn
+  tone: ""                     # Thân thiện / Chuyên nghiệp / Năng động / Điềm đạm
   accent: "Português (Brasil)"
-  reference: ""                # 想模仿的广告风格描述
+  reference: ""                # Mô tả phong cách quảng cáo muốn tham khảo
 ```
 
 ---
@@ -106,18 +106,18 @@ voice_style:
 ## 7. mode = variant
 
 ```yaml
-variant_angles: []             # 留空则由 Agent 自动分配
-  # 例：["痛点切入", "结果切入"]
+variant_angles: []             # Để trống thì Agent tự phân bổ
+  # VD: ["Tiếp cận từ nỗi đau", "Tiếp cận từ kết quả"]
 ```
 
 ---
 
-## 填写自检
+## Tự kiểm tra khi điền
 
-- [ ] 六个阻塞字段已从 03 粘贴
-- [ ] `title_final` 已填（否则 CTA 会与标题脱节）
-- [ ] `production_mode` 与实际情况一致
-- [ ] `can_shoot_people` 填了真实情况（false 会触发不露脸方案）
-- [ ] 我理解：**真人镜头不会生成 AI Prompt**，改为拍摄指令（肖像合规）
-- [ ] 我理解：**BGM / 音效素材需自行解决版权**
-- [ ] 我理解：分镜时长是建议值，实际需按配音音频对齐
+- [ ] Đã dán sáu trường chặn từ 03
+- [ ] Đã điền `title_final` (nếu không CTA sẽ lệch với tiêu đề)
+- [ ] `production_mode` khớp với thực tế
+- [ ] `can_shoot_people` điền đúng thực tế (false sẽ kích hoạt phương án không lộ mặt)
+- [ ] Tôi hiểu: **cảnh người thật sẽ không có AI Prompt**, thay bằng chỉ dẫn quay (tuân thủ về chân dung)
+- [ ] Tôi hiểu: **nội dung BGM / hiệu ứng âm thanh phải tự lo bản quyền**
+- [ ] Tôi hiểu: thời lượng storyboard là giá trị đề xuất, thực tế cần căn theo audio lồng tiếng

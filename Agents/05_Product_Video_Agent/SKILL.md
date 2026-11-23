@@ -1,66 +1,66 @@
 ---
 name: shopee-br-product-video
-description: 跨境电商产品视频创作 Skill（Shopee BR / Mercado Livre，PT-BR）。覆盖 15s/30s 脚本、分镜表、AI 视频 Prompt、配音稿与字幕，并用确定性脚本校验时长与字幕行长。当用户要"做产品视频 / 短视频带货 / 出分镜 / 配音稿字幕"时使用。
+description: Skill sản xuất video sản phẩm cho thương mại điện tử xuyên biên giới (Shopee BR / Mercado Livre, PT-BR). Bao gồm kịch bản 15s/30s, bảng storyboard, Prompt video AI, kịch bản lồng tiếng và phụ đề, đồng thời dùng script tất định để kiểm tra thời lượng và độ dài dòng phụ đề. Dùng khi người dùng muốn "làm video sản phẩm / video ngắn bán hàng / lên storyboard / kịch bản lồng tiếng và phụ đề".
 ---
 
-# 产品视频 Skill（05 Product Video Agent）
+# Skill video sản phẩm (05 Product Video Agent)
 
-## 什么时候用
+## Khi nào dùng
 
-- 要为 Shopee BR / Mercado Livre 商品做 15s 或 30s 短视频
-- 已有脚本/配音稿，要**校验时长是否达标、字幕是否超行**
-- 要把脚本变成分镜表 + AI 视频 Prompt + 配音字幕包
+- Cần làm video ngắn 15s hoặc 30s cho sản phẩm trên Shopee BR / Mercado Livre
+- Đã có kịch bản/bản lồng tiếng, cần **kiểm tra thời lượng có đạt không, phụ đề có vượt dòng không**
+- Cần chuyển kịch bản thành bảng storyboard + Prompt video AI + gói lồng tiếng và phụ đề
 
-## 三条底线（不可协商）
+## Ba nguyên tắc cứng (không thương lượng)
 
-1. **不虚构参数** —— 台词里出现的每个数字必须来自 `spec_table`；
-   溯源用 [`../03_Listing_Creative_Agent/scripts/spec_consistency.py`](../03_Listing_Creative_Agent/scripts/spec_consistency.py) 校验。
-2. **时长与字幕交给脚本** —— 词数→时长的换算、字幕行长检查**不许自己心算**，
-   一律跑 `scripts/video_timing.py`。超时**删词，不许提速语速**。
-3. **买家可见文本必须是 PT-BR 母语** —— 禁止先写英文再翻译。
+1. **Không bịa thông số** —— mọi con số xuất hiện trong lời thoại phải lấy từ `spec_table`;
+   đối chiếu nguồn bằng [`../03_Listing_Creative_Agent/scripts/spec_consistency.py`](../03_Listing_Creative_Agent/scripts/spec_consistency.py).
+2. **Thời lượng và phụ đề giao cho script** —— việc quy đổi số từ → thời lượng, kiểm tra độ dài dòng phụ đề **không được tự nhẩm**,
+   luôn chạy `scripts/video_timing.py`. Quá giờ thì **cắt bớt từ, không được tăng tốc độ đọc**.
+3. **Mọi văn bản người mua nhìn thấy phải là PT-BR bản ngữ** —— cấm viết tiếng Anh trước rồi dịch sang.
 
-## 工作流
+## Quy trình
 
 ```text
-[Step 1] 读 references/video-specs.md（平台视频规范）
-[Step 2] 写脚本（15s / 30s 双版本，每句台词 = 一个分镜）
-[Step 3] 跑 scripts/video_timing.py --target 15 / 30 校验
-         → ❌ 超时/偏短：删词或加卖点句，改完重跑，直到 ✅
-[Step 4] 跑 03 的 spec_consistency.py 校验台词数字
-[Step 5] 出分镜表 + AI 视频 Prompt + 字幕文件（SRT）
+[Step 1] Đọc references/video-specs.md (quy chuẩn video của sàn)
+[Step 2] Viết kịch bản (hai bản 15s / 30s, mỗi câu thoại = một cảnh storyboard)
+[Step 3] Chạy scripts/video_timing.py --target 15 / 30 để kiểm tra
+         → ❌ Quá giờ/thiếu giờ: cắt từ hoặc thêm câu điểm bán hàng, sửa xong chạy lại cho đến khi ✅
+[Step 4] Chạy spec_consistency.py của 03 để kiểm tra các con số trong lời thoại
+[Step 5] Xuất bảng storyboard + Prompt video AI + file phụ đề (SRT)
 ```
 
-## 命令速查
+## Tra nhanh lệnh
 
 ```bash
-# 时长 + 字幕校验（最常用）
-python scripts/video_timing.py --script 配音稿.txt --target 30
+# Kiểm tra thời lượng + phụ đề (dùng nhiều nhất)
+python scripts/video_timing.py --script kich_ban_long_tieng.txt --target 30
 
-# 指定语速与字幕行宽
-python scripts/video_timing.py --script 配音稿.txt --target 15 --wps 2.4 --subtitle-max 40
+# Chỉ định tốc độ đọc và độ rộng dòng phụ đề
+python scripts/video_timing.py --script kich_ban_long_tieng.txt --target 15 --wps 2.4 --subtitle-max 40
 ```
 
-输出：逐句时间轴（起止秒）、总时长 vs 目标（±15% 容差）、字幕超行告警、
-钩子检查（第一句 > 8 词 = 超出 3 秒黄金开场，告警）。
+Đầu ra: timeline từng câu (giây bắt đầu/kết thúc), tổng thời lượng so với mục tiêu (dung sai ±15%), cảnh báo phụ đề vượt dòng,
+kiểm tra hook (câu đầu > 8 từ = vượt 3 giây vàng mở đầu, sẽ cảnh báo).
 
-## 语速基准
+## Chuẩn tốc độ đọc
 
-PT-BR 口播 **2.5 词/秒**（≈150 词/分钟）是经验中值：
-- 30s 版台词预算 ≈ **65 词**（留 4s 给留白与镜头切换）
-- 15s 版台词预算 ≈ **30 词**（留 3s 留白）
+Giọng đọc PT-BR **2,5 từ/giây** (≈150 từ/phút) là mức trung vị theo kinh nghiệm:
+- Bản 30s: ngân sách lời thoại ≈ **65 từ** (chừa 4s cho khoảng lặng và chuyển cảnh)
+- Bản 15s: ngân sách lời thoại ≈ **30 từ** (chừa 3s khoảng lặng)
 
-> 语速因配音工具/主播而异，正式交付前按实际配音回听微调 `--wps`。
+> Tốc độ đọc thay đổi theo công cụ lồng tiếng/người đọc, trước khi bàn giao chính thức hãy nghe lại bản lồng tiếng thực tế để tinh chỉnh `--wps`.
 
-## 平台速记（详见 references/video-specs.md）
+## Ghi nhớ nhanh theo sàn (chi tiết xem references/video-specs.md)
 
-| 平台 | 推荐时长 | 关键约束 |
+| Sàn | Thời lượng khuyến nghị | Ràng buộc chính |
 |---|---|---|
-| Shopee BR | ≤ 30s（主图视频） | 首帧即产品、字幕烧录、竖版 9:16 或 1:1 |
-| Mercado Livre | ≤ 30s | 与主图规范一致性；字幕 PT-BR |
+| Shopee BR | ≤ 30s (video ảnh chính) | Khung đầu là sản phẩm, phụ đề burn-in, dọc 9:16 hoặc 1:1 |
+| Mercado Livre | ≤ 30s | Nhất quán với quy chuẩn ảnh chính; phụ đề PT-BR |
 
-平台数值为编写时公开规则，**发布前复核卖家中心原文**。
+Các thông số của sàn là quy định công khai tại thời điểm biên soạn, **trước khi đăng hãy kiểm tra lại văn bản gốc trên Seller Center**.
 
-## 边界
+## Phạm vi
 
-- 本 Skill **不负责渲染**（交给 AI 视频工具/剪辑软件）与 BGM 版权采购
-- 只产出：脚本、分镜表、Prompt、配音稿、字幕
+- Skill này **không phụ trách render** (giao cho công cụ video AI/phần mềm dựng) và mua bản quyền BGM
+- Chỉ sản xuất: kịch bản, bảng storyboard, Prompt, kịch bản lồng tiếng, phụ đề

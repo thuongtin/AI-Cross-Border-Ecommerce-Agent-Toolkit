@@ -1,168 +1,168 @@
-# TASK · 脚本与分镜
+# TASK · Kịch bản và storyboard
 
-> 配套使用：`00_system.md` + 03 Listing Creative Agent 的输出
+> Dùng kèm: `00_system.md` + đầu ra của 03 Listing Creative Agent
 
 ---
 
 # INPUT
 
-| 字段 | 来源 | 说明 |
+| Trường | Nguồn | Ghi chú |
 |---|---|---|
-| `platform` | 人工 | 决定时长与比例 |
-| `target_market` | 人工 | 决定语言 |
-| `mode` | 人工 | `standard` / `variant` |
-| `durations` | 人工 | `[15]` / `[30]` / `[15,30]`（默认双版本） |
+| `platform` | Nhập tay | Quyết định thời lượng và tỷ lệ khung hình |
+| `target_market` | Nhập tay | Quyết định ngôn ngữ |
+| `mode` | Nhập tay | `standard` / `variant` |
+| `durations` | Nhập tay | `[15]` / `[30]` / `[15,30]` (mặc định hai bản) |
 | `product_name` | 03 | |
-| `core_selling_point` | **03（阻塞项）** | 钩子与主线 |
-| `secondary_points[]` | **03（阻塞项）** | 卖点段 |
-| `spec_table` | **03（阻塞项）** | 参数段 |
-| `forbidden_words[]` | **03（阻塞项）** | 字幕拦截 |
-| `usage_scope_confirmed[]` | **03（阻塞项）** | 场景镜头 |
-| `title_final` | 03 | 结尾 CTA |
-| `visual_tone_confirmed` | 04（可选） | 全片风格统一 |
-| `hero_visual` | 04（可选） | 首帧参考 |
-| `key_visual_moments[]` | 04（可选） | 分镜优先项 |
-| `production_mode` | 人工 | `ai_generated`（全 AI 生成）/ `real_shoot`（实拍）/ `mixed`（混合） |
+| `core_selling_point` | **03 (mục chặn)** | Hook và mạch chính |
+| `secondary_points[]` | **03 (mục chặn)** | Phần điểm bán hàng |
+| `spec_table` | **03 (mục chặn)** | Phần thông số |
+| `forbidden_words[]` | **03 (mục chặn)** | Chặn từ cấm trong phụ đề |
+| `usage_scope_confirmed[]` | **03 (mục chặn)** | Cảnh bối cảnh |
+| `title_final` | 03 | CTA cuối video |
+| `visual_tone_confirmed` | 04 (tùy chọn) | Thống nhất phong cách toàn video |
+| `hero_visual` | 04 (tùy chọn) | Tham chiếu khung hình đầu |
+| `key_visual_moments[]` | 04 (tùy chọn) | Ưu tiên khi lên storyboard |
+| `production_mode` | Nhập tay | `ai_generated` (tạo hoàn toàn bằng AI) / `real_shoot` (quay thật) / `mixed` (kết hợp) |
 
 ---
 
-# STEP 1 · 钩子设计
+# STEP 1 · Thiết kế hook
 
-先输出钩子方案的多个候选，再选定一个：
+Xuất trước nhiều phương án hook, sau đó chọn một:
 
 ```markdown
-## 1. 钩子方案（0–3s）
+## 1. Phương án hook (0–3s)
 
-| # | 类型 | 钩子文案 | 画面 | 选择 |
+| # | Loại | Câu hook | Hình ảnh | Chọn |
 |---|---|---|---|---|
-| A | 痛点直击 | `<母语>` | `<画面描述>` | |
-| B | 结果前置 | `<母语>` | `<画面描述>` | ✅ 选定 |
-| C | 反常识 | `<母语>` | `<画面描述>` | |
+| A | Đánh thẳng nỗi đau | `<tiếng bản ngữ>` | `<mô tả hình ảnh>` | |
+| B | Đưa kết quả lên trước | `<tiếng bản ngữ>` | `<mô tả hình ảnh>` | ✅ Đã chọn |
+| C | Phản trực giác | `<tiếng bản ngữ>` | `<mô tả hình ảnh>` | |
 
-**选定理由**：<一句话>
+**Lý do chọn**: <một câu>
 ```
 
-## 钩子的硬规则
+## Quy tắc cứng cho hook
 
-| 规则 | 说明 |
+| Quy tắc | Ghi chú |
 |---|---|
-| ❌ 禁止自我介绍 | `Olá pessoal` / `Bem-vindos ao canal` / `Hoje vou mostrar` |
-| ❌ 禁止 Logo 动画开场 | 前 3 秒给 Logo = 浪费 3 秒 |
-| ❌ 禁止铺垫 | `Antes de começar, deixe seu like` |
-| ✅ 优先来源 | 差评里的抱怨 → 痛点钩子；好评里的满意点 → 结果钩子 |
-| ✅ 画面必须动 | 静态商品图开场 = 划走 |
+| ❌ Cấm tự giới thiệu | `Olá pessoal` / `Bem-vindos ao canal` / `Hoje vou mostrar` |
+| ❌ Cấm mở đầu bằng animation Logo | Đưa Logo vào 3 giây đầu = phí 3 giây |
+| ❌ Cấm rào đón | `Antes de começar, deixe seu like` |
+| ✅ Nguồn ưu tiên | Lời phàn nàn trong đánh giá tiêu cực → hook nỗi đau; điểm hài lòng trong đánh giá tích cực → hook kết quả |
+| ✅ Hình ảnh phải có chuyển động | Mở đầu bằng ảnh sản phẩm tĩnh = bị lướt qua |
 
 ---
 
-# STEP 2 · 脚本结构
+# STEP 2 · Cấu trúc kịch bản
 
-## durations 包含 15 时
-
-```markdown
-## 2. 15s 版脚本
-
-| 段 | 时间 | 目标 | 内容 |
-|---|---|---|---|
-| 钩子 | 0–3s | 抓住注意力 | <钩子文案 + 画面> |
-| 核心卖点 | 3–9s | 讲清一件事 | <core_selling_point 的可视化> |
-| 场景 | 9–13s | 代入 | <usage_scope[0] 场景> |
-| CTA | 13–15s | 行动 | <与 title_final 一致> |
-```
-
-## durations 包含 30 时
+## Khi durations có 15
 
 ```markdown
-## 3. 30s 版脚本
+## 2. Kịch bản bản 15s
 
-| 段 | 时间 | 目标 | 内容 |
+| Phân đoạn | Thời gian | Mục tiêu | Nội dung |
 |---|---|---|---|
-| 钩子 | 0–3s | 抓住注意力 | <同 15s 版钩子> |
-| 卖点 1 | 3–9s | 主卖点 | <core_selling_point> |
-| 卖点 2 | 9–16s | 副卖点 | <secondary_points[0]> |
-| 场景 | 16–23s | 代入 | <usage_scope[0] + [1]> |
-| 参数 / 信任 | 23–28s | 消除顾虑 | <关键参数 + 保修> |
-| CTA | 28–30s | 行动 | <同 15s 版 CTA> |
+| Hook | 0–3s | Giữ chân sự chú ý | <câu hook + hình ảnh> |
+| Điểm bán hàng cốt lõi | 3–9s | Nói rõ một điều | <hình ảnh hóa core_selling_point> |
+| Bối cảnh | 9–13s | Nhập vai | <bối cảnh usage_scope[0]> |
+| CTA | 13–15s | Kêu gọi hành động | <khớp với title_final> |
 ```
 
-> **结构原则**：15s 版和 30s 版的**钩子和 CTA 必须一致**。30s 版不是 15s 版的简单加长，而是插入更多论证段落——钩子和结尾动的是同一个念头。
+## Khi durations có 30
+
+```markdown
+## 3. Kịch bản bản 30s
+
+| Phân đoạn | Thời gian | Mục tiêu | Nội dung |
+|---|---|---|---|
+| Hook | 0–3s | Giữ chân sự chú ý | <giống hook bản 15s> |
+| Điểm bán hàng 1 | 3–9s | Điểm bán hàng chính | <core_selling_point> |
+| Điểm bán hàng 2 | 9–16s | Điểm bán hàng phụ | <secondary_points[0]> |
+| Bối cảnh | 16–23s | Nhập vai | <usage_scope[0] + [1]> |
+| Thông số / Niềm tin | 23–28s | Xóa băn khoăn | <thông số chính + bảo hành> |
+| CTA | 28–30s | Kêu gọi hành động | <giống CTA bản 15s> |
+```
+
+> **Nguyên tắc cấu trúc**: **hook và CTA của bản 15s và bản 30s phải giống nhau**. Bản 30s không phải là bản 15s kéo dài ra, mà là chèn thêm các đoạn lập luận——hook và phần kết cùng phục vụ một ý.
 
 ---
 
-# STEP 3 · 分镜表
+# STEP 3 · Bảng storyboard
 
-这是本任务**最核心的产出**——分镜表要能直接交给剪辑。
+Đây là **đầu ra cốt lõi nhất** của nhiệm vụ này——bảng storyboard phải giao thẳng cho editor được.
 
 ```markdown
-## 4. 分镜表（<n>s 版）
+## 4. Bảng storyboard (bản <n>s)
 
-| 镜号 | 时长 | 画面内容 | 运镜 | 静音字幕 | 音效 / 人声 |
+| Cảnh số | Thời lượng | Nội dung hình ảnh | Chuyển động máy | Phụ đề (xem khi tắt tiếng) | Hiệu ứng âm thanh / Giọng đọc |
 |---|---|---|---|---|---|
-| 1 | 0–3s | <具体画面描述，写清主体/动作/环境> | <固定 / 推近 / 跟随 / 俯拍> | `<母语，≤20 字符>` | <人声 / 环境音 / 音效> |
+| 1 | 0–3s | <mô tả hình ảnh cụ thể, ghi rõ chủ thể/hành động/môi trường> | <máy tĩnh / push-in / bám theo / góc từ trên xuống> | `<tiếng bản ngữ, ≤20 ký tự>` | <giọng đọc / âm thanh môi trường / hiệu ứng âm thanh> |
 | 2 | 3–6s | | | | |
 | ... | | | | | |
 ```
 
-## 分镜表的硬要求
+## Yêu cầu cứng cho bảng storyboard
 
-| 项 | 要求 |
+| Hạng mục | Yêu cầu |
 |---|---|
-| **画面内容** | 必须具体到能拍。不写"展示产品"，写"手持充电宝，屏幕显示 87%，插入数据线" |
-| **运镜** | 每个镜头必须标注，哪怕写"固定" |
-| **静音字幕** | **必填**。这是静音浏览场景下的信息通道 |
-| **字幕行数** | 每屏 ≤ 2 行，每行 ≤ 20 字符（葡语） |
-| **音效** | 只为**强化画面动作**服务，不堆砌 |
-| **镜头数** | 15s 版 4–6 个镜头；30s 版 7–10 个。太少拖沓，太多眼晕 |
+| **Nội dung hình ảnh** | Phải cụ thể đến mức quay được ngay. Không viết "giới thiệu sản phẩm", mà viết "tay cầm sạc dự phòng, màn hình hiển thị 87%, cắm dây cáp vào" |
+| **Chuyển động máy** | Mỗi cảnh đều phải ghi, kể cả chỉ ghi "máy tĩnh" |
+| **Phụ đề (xem khi tắt tiếng)** | **Bắt buộc điền**. Đây là kênh truyền tải thông tin khi người xem tắt tiếng |
+| **Số dòng phụ đề** | Mỗi màn hình ≤ 2 dòng, mỗi dòng ≤ 20 ký tự (tiếng Bồ Đào Nha) |
+| **Hiệu ứng âm thanh** | Chỉ phục vụ **nhấn mạnh hành động trong hình**, không nhồi nhét |
+| **Số cảnh** | Bản 15s 4–6 cảnh; bản 30s 7–10 cảnh. Ít quá thì lê thê, nhiều quá thì rối mắt |
 
-## production_mode 差异
+## Khác biệt theo production_mode
 
-| 模式 | 分镜表的处理 |
+| Chế độ | Cách xử lý bảng storyboard |
 |---|---|
-| `ai_generated` | 每个镜头需可被 AI 视频模型生成（避免复杂人物交互、精确手部动作） |
-| `real_shoot` | 正常写实拍指令，标注道具与场地需求 |
-| `mixed` | 逐镜头标注 `[AI]` 或 `[实拍]` |
+| `ai_generated` | Mỗi cảnh phải tạo được bằng mô hình video AI (tránh tương tác người phức tạp, động tác tay chính xác) |
+| `real_shoot` | Viết chỉ dẫn quay thật bình thường, ghi rõ nhu cầu đạo cụ và địa điểm |
+| `mixed` | Ghi `[AI]` hoặc `[Quay thật]` cho từng cảnh |
 
-> **真人镜头的特殊规则**：无论哪种模式，涉及真人出镜的镜头**只写拍摄指令**（机位、动作、景别），**不输出 AI 生成 Prompt**。原因见 `00_system.md` 的 V6。
+> **Quy tắc đặc biệt cho cảnh người thật**: dù ở chế độ nào, cảnh có người thật xuất hiện **chỉ viết chỉ dẫn quay** (vị trí máy, động tác, cỡ cảnh), **không xuất Prompt tạo bằng AI**. Lý do xem V6 trong `00_system.md`.
 
 ---
 
-# STEP 4 · 时长核对
+# STEP 4 · Đối chiếu thời lượng
 
 ```markdown
-## 5. 时长核对
+## 5. Đối chiếu thời lượng
 
-| 版本 | 目标时长 | 分镜累计 | 配音预估 | 是否匹配 |
+| Phiên bản | Thời lượng mục tiêu | Cộng dồn storyboard | Ước tính lồng tiếng | Khớp không |
 |---|---|---|---|---|
 | 15s | 15s | <n>s | <n>s | ✅ / ❌ |
 | 30s | 30s | <n>s | <n>s | ✅ / ❌ |
 ```
 
-**配音时长估算规则**（适用于绝大多数语言的 TTS 与真人朗读）：
+**Quy tắc ước tính thời lượng lồng tiếng** (áp dụng cho TTS và người đọc thật ở đa số ngôn ngữ):
 
-| 语言 | 语速参考 |
+| Ngôn ngữ | Tốc độ đọc tham khảo |
 |---|---|
-| 葡萄牙语（巴西） | 约 **2.5 词/秒**（口语广告节奏） |
-| 西班牙语 | 约 **2.5 词/秒** |
-| 英语 | 约 **2.8 词/秒** |
+| Tiếng Bồ Đào Nha (Brazil) | Khoảng **2.5 từ/giây** (nhịp quảng cáo văn nói) |
+| Tiếng Tây Ban Nha | Khoảng **2.5 từ/giây** |
+| Tiếng Anh | Khoảng **2.8 từ/giây** |
 
-> 例：15s 视频，扣除留白后有效口播约 12s → 配音稿控制在 **约 30 个词**以内。
-> 超了就删，不要加快语速——语速一快，巴西买家的第一感受是"这不像本地广告"。
+> Ví dụ: video 15s, trừ khoảng lặng thì phần đọc hiệu quả khoảng 12s → kịch bản lồng tiếng giữ trong khoảng **30 từ**.
+> Thừa thì cắt, đừng tăng tốc độ đọc——đọc nhanh lên là người mua Brazil cảm thấy ngay "cái này không giống quảng cáo bản địa".
 
 ---
 
-# 输出结构
+# Cấu trúc đầu ra
 
 ```markdown
-## 1. 钩子方案
-## 2. 15s 版脚本        （若 durations 含 15）
-## 3. 30s 版脚本        （若 durations 含 30）
-## 4. 分镜表
-## 5. 时长核对
-## 6. 配乐与音效需求
-   - BGM 情绪：<...>（⚠️ 需使用可商用素材）
-   - 关键音效：<...>
-## 7. 视频合规扫描
-（按 00_system.md 的 V1–V8 输出；无命中必须写"无命中"）
-## 8. 交付给下游的字段
+## 1. Phương án hook
+## 2. Kịch bản bản 15s        (nếu durations có 15)
+## 3. Kịch bản bản 30s        (nếu durations có 30)
+## 4. Bảng storyboard
+## 5. Đối chiếu thời lượng
+## 6. Yêu cầu nhạc nền và hiệu ứng âm thanh
+   - Cảm xúc BGM: <...> (⚠️ phải dùng nội dung được phép dùng thương mại)
+   - Hiệu ứng âm thanh chính: <...>
+## 7. Quét tuân thủ video
+(Xuất theo V1–V8 trong 00_system.md; không có vi phạm thì bắt buộc ghi "không có vi phạm")
+## 8. Các trường bàn giao cho module tiếp theo
 - hook_final:
 - shot_count:
 - subtitle_lines: []
@@ -173,27 +173,27 @@
 
 # mode = variant
 
-对应 SOP 2.3 / 3.4 的多店铺或多链接差异化，输出 **2 套切入角度不同**的脚本：
+Tương ứng với việc tạo khác biệt cho nhiều shop hoặc nhiều link ở SOP 2.3 / 3.4, xuất **2 bộ kịch bản có góc tiếp cận khác nhau**:
 
-| 变体 | 切入角度 | 钩子类型 | 适用 |
+| Biến thể | Góc tiếp cận | Loại hook | Phù hợp |
 |---|---|---|---|
-| 1 | 痛点切入 | 差评抱怨型 | 成熟市场，买家已知自己需要什么 |
-| 2 | 结果切入 | 好评满意型 | 新兴市场，需要先建立需求认知 |
+| 1 | Tiếp cận từ nỗi đau | Loại phàn nàn từ đánh giá tiêu cực | Thị trường trưởng thành, người mua đã biết mình cần gì |
+| 2 | Tiếp cận từ kết quả | Loại hài lòng từ đánh giá tích cực | Thị trường mới nổi, cần xây dựng nhận thức về nhu cầu trước |
 
-两套的**钩子、卖点顺序、场景选择**必须实质不同，不能只换文案。
+Hai bộ phải khác nhau thực chất về **hook, thứ tự điểm bán hàng, lựa chọn bối cảnh**, không được chỉ đổi câu chữ.
 
 ---
 
 # SELF-CHECK
 
-- [ ] 前 3 秒是钩子，非自我介绍
-- [ ] 15s 版只讲一个核心卖点
-- [ ] 分镜表每行都有画面/运镜/字幕/音效四列，无空缺
-- [ ] 字幕每屏 ≤2 行、每行 ≤20 字符
-- [ ] 配音词数符合语速估算，未超时长
-- [ ] 所有数值与 `spec_table` 一致
-- [ ] 场景全部在 `usage_scope_confirmed` 内
-- [ ] 真人镜头只给拍摄指令，无 AI 生成 Prompt
-- [ ] BGM 已标注可商用要求
-- [ ] 15s 与 30s 版的钩子和 CTA 一致
-- [ ] 末尾已附视频合规扫描 + 下游字段
+- [ ] 3 giây đầu là hook, không phải tự giới thiệu
+- [ ] Bản 15s chỉ nói một điểm bán hàng cốt lõi
+- [ ] Mỗi dòng của bảng storyboard đều có đủ bốn cột hình ảnh/chuyển động máy/phụ đề/hiệu ứng âm thanh, không bỏ trống
+- [ ] Phụ đề mỗi màn hình ≤2 dòng, mỗi dòng ≤20 ký tự
+- [ ] Số từ lồng tiếng khớp với ước tính tốc độ đọc, không vượt thời lượng
+- [ ] Mọi giá trị số khớp với `spec_table`
+- [ ] Mọi bối cảnh đều nằm trong `usage_scope_confirmed`
+- [ ] Cảnh người thật chỉ có chỉ dẫn quay, không có Prompt tạo bằng AI
+- [ ] BGM đã ghi chú yêu cầu được phép dùng thương mại
+- [ ] Hook và CTA của bản 15s và 30s giống nhau
+- [ ] Cuối đầu ra đã kèm quét tuân thủ video + các trường bàn giao
