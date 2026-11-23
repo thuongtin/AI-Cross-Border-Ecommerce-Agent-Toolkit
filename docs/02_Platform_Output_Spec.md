@@ -1,135 +1,135 @@
-# 02 · 平台输出字段规范
+# 02 · Quy chuẩn trường dữ liệu đầu ra theo sàn
 
-> ⚠️ **所有指标以平台后台实时规则为准。** 本表为编写时的公开规则整理，平台会调整，**发布前请到卖家中心复核一次**。硬指标写错比不写更危险。
+> ⚠️ **Mọi chỉ số đều lấy quy định hiện hành trong backend của sàn làm chuẩn.** Bảng này tổng hợp từ quy định công khai tại thời điểm viết, sàn có thể điều chỉnh, **trước khi đăng hãy vào Seller Center kiểm tra lại một lần**. Ghi sai chỉ số cứng còn nguy hiểm hơn không ghi.
 
 ---
 
-## 一、标题 / Título / Product Name
+## I. Tiêu đề / Título / Product Name
 
-| 平台 | 字符上限 | 结构公式 | 硬禁项 |
+| Sàn | Giới hạn ký tự | Công thức cấu trúc | Mục cấm cứng |
 |---|---|---|---|
-| **Shopee** | **120** | 核心产品词 + 人群/场景词 + 参数词 + 功能卖点词 + 补充词 | 促销词（Sale / Free Shipping）、主观词（Best Seller / Hot Item）、表情符号、特殊字符、全大写、堆砌重复词 |
-| **Mercado Livre** | **60** | 核心关键词 + 品牌 + 产品特性 + 型号 | `similar` / `type` / `replica` / `generic`；用连字符/标点拆词；促销/退换/免运费信息；未授权品牌名 |
-| Amazon | 200（移动端建议 80） | 品牌 + 主关键词 + 特性 + 尺寸/变体 | 全大写、特殊符号、促销信息、主观评价用语 |
-| 速卖通 | 128 | 同上 | 同上 |
-| Shopify | 建议 70 | 主关键词前置 | 无硬性 |
+| **Shopee** | **120** | Từ khóa sản phẩm cốt lõi + từ chỉ đối tượng/tình huống + từ thông số + từ điểm bán hàng về tính năng + từ bổ sung | Từ khuyến mãi (Sale / Free Shipping), từ chủ quan (Best Seller / Hot Item), emoji, ký tự đặc biệt, viết hoa toàn bộ, nhồi từ khóa lặp lại |
+| **Mercado Livre** | **60** | Từ khóa cốt lõi + thương hiệu + đặc tính sản phẩm + model | `similar` / `type` / `replica` / `generic`; dùng gạch nối/dấu câu để tách từ; thông tin khuyến mãi/đổi trả/miễn phí vận chuyển; tên thương hiệu chưa được ủy quyền |
+| Amazon | 200 (mobile khuyến nghị 80) | Thương hiệu + từ khóa chính + đặc tính + kích thước/biến thể | Viết hoa toàn bộ, ký hiệu đặc biệt, thông tin khuyến mãi, từ ngữ đánh giá chủ quan |
+| AliExpress | 128 | Như trên | Như trên |
+| Shopify | Khuyến nghị 70 | Đưa từ khóa chính lên đầu | Không có quy định cứng |
 
-### Shopee 的隐藏规则（重要）
+### Quy tắc ngầm của Shopee (quan trọng)
 
-- **前 30 个字符权重最高**，主关键词必须前置。品牌名放后面，除非品牌本身就是搜索词。
-- 标题写满 120 字符的 listing 在"完整性"评分上更占优，但**不能用填充词凑**——每个词都必须是买家可能搜的词。
-- 单位要拼写完整（`Centímetros` 而不是 `cm` 混用），数字用阿拉伯数字。
+- **30 ký tự đầu có trọng số cao nhất**, từ khóa chính bắt buộc đặt lên đầu. Tên thương hiệu để phía sau, trừ khi bản thân thương hiệu là từ được tìm kiếm.
+- Listing viết đủ 120 ký tự có lợi thế hơn về điểm "độ hoàn thiện", nhưng **không được dùng từ độn để cho đủ** —— mỗi từ đều phải là từ người mua có khả năng tìm.
+- Đơn vị phải viết đầy đủ (`Centímetros` chứ không trộn lẫn với `cm`), số dùng chữ số Ả Rập.
 
-### Mercado Livre 的关键差异
+### Khác biệt chính của Mercado Livre
 
-- **60 字符极紧**，写不下就砍，别牺牲可读性。缩写规则：先砍场景词，再砍人群词，**主关键词和核心参数永不砍**。
-- 标题一旦出单**无法修改**（部分类目），所以首次提交前必须过自检清单。
-- 成套销售必须写清：`Pack x 10`。
-- 卖品牌配件要用 `compatível com` / `para`，不能直接写品牌名。
+- **60 ký tự cực kỳ chật**, không đủ chỗ thì cắt, đừng hy sinh khả năng đọc. Quy tắc rút gọn: cắt từ tình huống trước, rồi cắt từ chỉ đối tượng, **từ khóa chính và thông số cốt lõi không bao giờ cắt**.
+- Tiêu đề một khi đã có đơn thì **không sửa được** (với một số ngành hàng), nên trước lần gửi đầu tiên bắt buộc chạy qua checklist tự kiểm tra.
+- Bán theo bộ phải ghi rõ: `Pack x 10`.
+- Bán phụ kiện cho thương hiệu khác phải dùng `compatível com` / `para`, không được ghi thẳng tên thương hiệu.
 
 ---
 
-## 二、图片规范
+## II. Quy chuẩn hình ảnh
 
-| 平台 | 主图要求 | 数量上限 | 尺寸建议 |
+| Sàn | Yêu cầu ảnh chính | Số lượng tối đa | Kích thước khuyến nghị |
 |---|---|---|---|
-| **Shopee** | 白底，商品居中，主体占比 ≥ 客观可视 | **9** | 1:1，≥800×800 |
-| **Mercado Livre** | **背景干净即可**（白/纯色/实景**按类目**，2026 新规），单一正面角度，完整展示商品，主体 85–95% | 无硬上限（建议 6–8） | ≥500×500，**建议 1200×1200**，1:1 |
-| Amazon | 纯白底，主体占画面 85% | 9 主图槽 | ≥1000×1000（支持放大镜） |
-| TikTok Shop | 竖版优先 | 9 | 1:1 或 3:4 |
-| Shopify | 无硬限制 | 无 | 1:1 或 4:5 |
+| **Shopee** | Nền trắng, sản phẩm ở giữa, chủ thể chiếm tỷ lệ ≥ mức nhìn rõ được | **9** | 1:1, ≥800×800 |
+| **Mercado Livre** | **Chỉ cần nền sạch** (trắng/màu trơn/bối cảnh thật **tùy ngành hàng**, quy định mới 2026), một góc chính diện duy nhất, thể hiện trọn vẹn sản phẩm, chủ thể chiếm 85–95% | Không giới hạn cứng (khuyến nghị 6–8) | ≥500×500, **khuyến nghị 1200×1200**, 1:1 |
+| Amazon | Nền trắng tinh, chủ thể chiếm 85% khung hình | 9 vị trí ảnh chính | ≥1000×1000 (hỗ trợ phóng to) |
+| TikTok Shop | Ưu tiên ảnh dọc | 9 | 1:1 hoặc 3:4 |
+| Shopify | Không giới hạn cứng | Không | 1:1 hoặc 4:5 |
 
-### Mercado Livre 主图红线（2026 更新：背景放宽，其余照旧）
+### Lằn ranh đỏ cho ảnh chính Mercado Livre (cập nhật 2026: nới lỏng nền, còn lại giữ nguyên)
 
-- ✅ 背景：**白 / 纯色 / 实景按类目**（Technology/Beauty/Health/Supermarket 仍建议白底）
-- ❌ 首图不得出现**促销文字、平台属性词**（Mais vendido / Full / MercadoLíder / Oferta relâmpago）
-- ❌ 主图不得出现**水印、边框、非产品自身的 Logo、二维码、联系方式**
-- ❌ 主图不得出现**不出售的配件**
-- ✅ 商品占画面 **85–95%**（官方口径 ~95%，三平台最严）
-- ✅ 其他颜色/型号**必须创建变体**，不能靠多张图表达
-- ⚠️ 电子类产品，**保修信息图**在巴西站属于强建议项（消费法要求）
-- 📖 完整规则卡见 [`Agents/04_Product_Image_Agent/references/platform-mercadolivre.md`](../Agents/04_Product_Image_Agent/references/platform-mercadolivre.md)
+- ✅ Nền: **trắng / màu trơn / bối cảnh thật tùy ngành hàng** (Technology/Beauty/Health/Supermarket vẫn khuyến nghị nền trắng)
+- ❌ Ảnh đầu tiên không được có **chữ khuyến mãi, từ chỉ thuộc tính của sàn** (Mais vendido / Full / MercadoLíder / Oferta relâmpago)
+- ❌ Ảnh chính không được có **watermark, viền, logo không phải của chính sản phẩm, mã QR, thông tin liên hệ**
+- ❌ Ảnh chính không được có **phụ kiện không bán kèm**
+- ✅ Sản phẩm chiếm **85–95%** khung hình (theo hướng dẫn chính thức ~95%, khắt khe nhất trong ba sàn)
+- ✅ Màu/model khác **bắt buộc tạo biến thể**, không được thể hiện bằng nhiều ảnh
+- ⚠️ Với sản phẩm điện tử, **ảnh thông tin bảo hành** là mục khuyến nghị mạnh tại thị trường Brazil (do luật bảo vệ người tiêu dùng yêu cầu)
+- 📖 Thẻ quy định đầy đủ xem tại [`Agents/04_Product_Image_Agent/references/platform-mercadolivre.md`](../Agents/04_Product_Image_Agent/references/platform-mercadolivre.md)
 
-### Shopee 主图与 ML 主图在这一点上是冲突的
+### Ảnh chính Shopee và ảnh chính ML xung đột ở điểm này
 
-Shopee 习惯在主图上打卖点文字（"45W Turbo"），Mercado Livre 首图禁止。**同一套素材不能跨平台复用**——04 Product Image Agent 为此提供 `platform_variant` 参数，同一商品输出两套主图方案。
+Shopee quen chèn chữ điểm bán hàng lên ảnh chính ("45W Turbo"), còn Mercado Livre cấm ở ảnh đầu tiên. **Không dùng chung một bộ creative cho nhiều sàn được** —— vì vậy 04 Product Image Agent cung cấp tham số `platform_variant`, cùng một sản phẩm xuất ra hai phương án ảnh chính.
 
 ---
 
-## 三、详情页 / 描述
+## III. Trang chi tiết / Mô tả
 
-### Shopee 详情页 7 段结构（来自 SOP）
+### Cấu trúc 7 phần của trang chi tiết Shopee (lấy từ SOP)
 
-| # | 段落 | 内容要点 | 风险提示 |
+| # | Phần | Ý chính | Lưu ý rủi ro |
 |---|---|---|---|
-| 1 | 欢迎语 | 自我介绍 + 促销信息 | — |
-| 2 | 核心卖点 | 解决什么问题、有什么优势 | 必须可验证 |
-| 3 | 使用场景 | 让买家代入情境 | ⚠️ **虚假宣传重灾区**，场景必须是产品真实能覆盖的 |
-| 4 | 详细参数 | 颜色/材质/尺寸/容量/包装 | ⚠️ 不得虚标 |
-| 5 | 售后与客服承诺 | 降低退货顾虑 | 承诺必须有实际能力支撑 |
-| 6 | 注意事项 | 提前说明规则，减少争议 | 无特殊说明则不生成 |
-| 7 | 关键词标签区 | 埋词，增加搜索曝光 | 不得堆砌无关词 |
+| 1 | Lời chào | Giới thiệu bản thân + thông tin khuyến mãi | — |
+| 2 | Điểm bán hàng cốt lõi | Giải quyết vấn đề gì, có ưu thế gì | Bắt buộc kiểm chứng được |
+| 3 | Tình huống sử dụng | Giúp người mua hình dung bản thân trong bối cảnh | ⚠️ **Vùng dễ quảng cáo sai sự thật nhất**, tình huống phải là thứ sản phẩm thực sự đáp ứng được |
+| 4 | Thông số chi tiết | Màu/chất liệu/kích thước/dung lượng/đóng gói | ⚠️ Không được khai khống thông số |
+| 5 | Cam kết hậu mãi và CSKH | Giảm lo ngại hoàn hàng | Cam kết phải có năng lực thực tế đứng sau |
+| 6 | Lưu ý | Nói trước quy định, giảm tranh chấp | Không có lưu ý đặc biệt thì không tạo |
+| 7 | Khu vực tag từ khóa | Cài từ khóa, tăng lượt hiển thị (impression) từ tìm kiếm | Không được nhồi từ không liên quan |
 
-### Mercado Livre 描述结构
+### Cấu trúc mô tả của Mercado Livre
 
-- `Características principais`（五点描述）：技术参数 + 适用场景 + 售后保障
-- `Ficha Técnica`（技术规格表）：**必填项要被填满**。公开测试数据显示，完整填写技术规格表的商品获得自然流量的概率显著高于未填者。这是 ML 上 ROI 最高的动作之一。
-- 巴西站必须包含 **Garantia（保修）** 信息。
+- `Características principais` (mô tả năm điểm): thông số kỹ thuật + tình huống sử dụng + đảm bảo hậu mãi
+- `Ficha Técnica` (bảng thông số kỹ thuật): **các mục bắt buộc phải điền đủ**. Dữ liệu thử nghiệm công khai cho thấy sản phẩm điền đầy đủ bảng thông số kỹ thuật có xác suất nhận traffic tự nhiên cao hơn rõ rệt so với sản phẩm không điền. Đây là một trong những việc có ROI cao nhất trên ML.
+- Listing cho thị trường Brazil bắt buộc có thông tin **Garantia (bảo hành)**.
 
 ---
 
-## 四、视频规范
+## IV. Quy chuẩn video
 
-| 平台 | 建议时长 | 比例 | 备注 |
+| Sàn | Thời lượng khuyến nghị | Tỷ lệ | Ghi chú |
 |---|---|---|---|
-| Shopee | 15–30s | 1:1 或 9:16 | 商品视频位 |
-| Mercado Livre | 15–60s | 16:9 或 1:1 | 含演示视频的 listing 转化率有可见提升 |
-| TikTok Shop | 15–45s | **9:16 竖版** | 前 3 秒定生死 |
-| Amazon | 建议 30s 内 | 16:9 | 主图位视频 |
+| Shopee | 15–30s | 1:1 hoặc 9:16 | Vị trí video sản phẩm |
+| Mercado Livre | 15–60s | 16:9 hoặc 1:1 | Listing có video demo cho thấy tỷ lệ chuyển đổi tăng rõ rệt |
+| TikTok Shop | 15–45s | **9:16 dọc** | 3 giây đầu quyết định sống còn |
+| Amazon | Khuyến nghị trong 30s | 16:9 | Video ở vị trí ảnh chính |
 
 ---
 
-## 五、规格参数（Atributos / Ficha Técnica）
+## V. Thông số kỹ thuật (Atributos / Ficha Técnica)
 
-**通用原则**：
+**Nguyên tắc chung**:
 
-1. **能填就填满**。平台上，完整度高的 listing 排名更优。
-2. **不确定就留空，不要编**。编参数 = 后续差评 + 退货 + 罚分。
-3. **不要滥用 `N/A`**。只有该特性确实不适用于本商品时才选。
-4. **品牌/型号/制造商字段**：没有授权的品牌名一律不填。
+1. **Điền được thì điền đủ**. Trên sàn, listing có độ hoàn thiện cao được xếp hạng tốt hơn.
+2. **Không chắc thì để trống, đừng bịa**. Bịa thông số = đánh giá tiêu cực + hoàn hàng + điểm phạt về sau.
+3. **Đừng lạm dụng `N/A`**. Chỉ chọn khi đặc tính đó thực sự không áp dụng cho sản phẩm này.
+4. **Trường thương hiệu/model/nhà sản xuất**: tên thương hiệu chưa được ủy quyền thì tuyệt đối không điền.
 
 ---
 
-## 六、定价相关费率参考（SOP 1.9 / 3.2）
+## VI. Tham khảo các loại phí liên quan đến định giá (SOP 1.9 / 3.2)
 
-| 成本项 | 参考值 | 说明 |
+| Hạng mục chi phí | Giá trị tham khảo | Ghi chú |
 |---|---|---|
-| 目标毛利率 · 大件 | **30–35%** | 前期可略低养权重，权重起来后回提 |
-| 目标毛利率 · 小件 | **25–30%** | 同上 |
-| 广告成本 | 大件 ~**5%** / 小件 **5–10%** | 计入定价 |
-| 退货损耗 | **2%** | 计入定价 |
-| 平台佣金 | 按类目（ML 常见 8–16%） | 必须按实际类目查 |
-| 尾程物流 | 按尺寸重量 | 必须按实际商品测 |
-| 仓库操作费 | 按体积档位 | 必须按实际报价 |
+| Biên lợi nhuận gộp mục tiêu · hàng cồng kềnh | **30–35%** | Giai đoạn đầu có thể thấp hơn một chút để nuôi điểm tìm kiếm, lên rồi thì nâng lại |
+| Biên lợi nhuận gộp mục tiêu · hàng nhỏ | **25–30%** | Như trên |
+| Chi phí quảng cáo | Hàng cồng kềnh ~**5%** / hàng nhỏ **5–10%** | Tính vào giá bán |
+| Hao hụt do hoàn hàng | **2%** | Tính vào giá bán |
+| Phí hoa hồng sàn | Theo ngành hàng (ML thường 8–16%) | Bắt buộc tra theo ngành hàng thực tế |
+| Vận chuyển chặng cuối | Theo kích thước và cân nặng | Bắt buộc đo theo sản phẩm thực tế |
+| Phí thao tác kho | Theo bậc thể tích | Bắt buộc theo báo giá thực tế |
 
-> 完整核算模型见 [`Templates/cost_pricing_template.md`](../Templates/cost_pricing_template.md)。
+> Mô hình tính toán đầy đủ xem tại [`Templates/cost_pricing_template.md`](../Templates/cost_pricing_template.md).
 
 ---
 
-## 七、跨平台复用检查表
+## VII. Bảng kiểm tra khi dùng lại cho nhiều sàn
 
-同一款商品铺多平台时，**必须逐项检查**（SOP 2.3 明确提到多店铺同款必须差异化）：
+Khi cùng một sản phẩm được đăng lên nhiều sàn, **bắt buộc kiểm tra từng mục** (SOP 2.3 nêu rõ cùng một mẫu bán ở nhiều shop bắt buộc khác biệt hóa):
 
-| 检查项 | 为什么 |
+| Mục kiểm tra | Vì sao |
 |---|---|
-| 标题是否差异化 | 同款商品标题完全一致有被判重复铺货的风险 |
-| 主图是否差异化 | 同上，且 ML 与 Shopee 主图规范本就冲突 |
-| 详情页是否差异化 | 同上 |
-| 字符数是否适配目标平台 | 120 字符的 Shopee 标题直接搬到 ML 会被截断 |
-| 单位是否公制 | 拉美市场全部公制 |
-| 语言是否母语 | 目标市场母语，不是翻译腔 |
-| 品牌词/敏感词是否清除 | 各平台禁售清单不同 |
+| Tiêu đề đã khác biệt hóa chưa | Cùng một sản phẩm mà tiêu đề giống hệt nhau có rủi ro bị đánh giá là đăng trùng |
+| Ảnh chính đã khác biệt hóa chưa | Như trên, hơn nữa quy chuẩn ảnh chính của ML và Shopee vốn đã xung đột |
+| Trang chi tiết đã khác biệt hóa chưa | Như trên |
+| Số ký tự đã phù hợp với sàn mục tiêu chưa | Tiêu đề Shopee 120 ký tự bê nguyên sang ML sẽ bị cắt |
+| Đơn vị đã là hệ mét chưa | Thị trường Mỹ Latinh dùng hoàn toàn hệ mét |
+| Ngôn ngữ đã là tiếng bản địa chưa | Tiếng bản địa của thị trường mục tiêu, không phải văn dịch |
+| Đã loại bỏ từ thương hiệu/từ nhạy cảm chưa | Danh sách hàng cấm bán của mỗi sàn khác nhau |
 
 ---
 
-**相关文档**：[00 架构拆解](./00_Architecture_SOP_to_Agent.md) · [01 Prompt 规范](./01_Prompt_Design_Guide.md) · [03 合规红线](./03_Compliance_Guard.md) · [04 自检清单](./04_Result_Checklist.md)
+**Tài liệu liên quan**: [00 Phân rã kiến trúc](./00_Architecture_SOP_to_Agent.md) · [01 Quy chuẩn Prompt](./01_Prompt_Design_Guide.md) · [03 Lằn ranh đỏ tuân thủ](./03_Compliance_Guard.md) · [04 Checklist tự kiểm tra](./04_Result_Checklist.md)
