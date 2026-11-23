@@ -1,10 +1,10 @@
 # ─────────────────────────────────────────────────────────────
-# 注意：Git 的 .gitignore **不支持行内注释**。
-# `!pattern  # 说明` 会被当成 pattern 的一部分，导致规则失效。
-# 注释必须独占一行 —— 这个坑真踩过。
+# Lưu ý: .gitignore của Git **không hỗ trợ comment cùng dòng**.
+# `!pattern  # ghi chú` sẽ bị coi là một phần của pattern, khiến rule mất tác dụng.
+# Comment phải nằm riêng một dòng —— lỗi này đã từng dính thật.
 # ─────────────────────────────────────────────────────────────
 
-# ---- 凭据 / 隐私（严禁提交）----
+# ---- Thông tin đăng nhập / dữ liệu riêng tư (tuyệt đối không commit) ----
 .env
 .env.*
 !.env.example
@@ -15,28 +15,28 @@ credentials/
 *账号*.txt
 *密码*.txt
 
-# ---- 未脱敏的业务数据 ----
+# ---- Dữ liệu kinh doanh chưa ẩn danh ----
 stores/
 raw_data/
 uploads/
 
-# 默认忽略所有 CSV（真实类目导出属于业务数据）
+# Mặc định bỏ qua mọi file CSV (dữ liệu xuất ngành hàng thật là dữ liệu kinh doanh)
 *.csv
 
-# 但模板与样本需入库
+# Nhưng template và dữ liệu mẫu phải được đưa vào repo
 !templates/*.csv
 !Agents/**/templates/*.csv
 
-# 样本数据需入库（用于验证环境、复现案例、核对预期结果）
+# Dữ liệu mẫu phải được đưa vào repo (dùng để kiểm tra môi trường, tái hiện case study, đối chiếu kết quả kỳ vọng)
 !Agents/**/samples/*.csv
 !Agents/**/examples/*.csv
 
-# ---- 生成物 ----
+# ---- File sinh ra ----
 output/
 dist/
 *.log
 
-# 但 samples/ 下的产出是"预期结果"，同样需要入库
+# Nhưng output trong samples/ là "kết quả kỳ vọng", cũng phải được đưa vào repo
 !Agents/**/samples/*.json
 !Agents/**/samples/*.md
 

@@ -1,143 +1,143 @@
 # ROADMAP
 
-## 版本路线
+## Lộ trình phiên bản
 
-| 版本 | 主题 | 内容 | 状态 |
+| Phiên bản | Chủ đề | Nội dung | Trạng thái |
 |---|---|---|---|
-| **v0.1** | 创意簇 | 03 Listing / 04 Image / 05 Video + 方法论文档 + 案例库 | ✅ 已完成 |
-| **v0.2** | 运营簇 | 06 Advertising / 07 Review + 闭环案例 | ✅ 已完成 |
-| **v0.3** | 分析簇 | 01 Market Research（含脚本）/ 02 Product Strategy | ✅ 已完成 |
-| v1.0 | 串联 | 完整工作流一键跑通，输出上架素材包 | 📋 规划 |
-| V2 | API | 接入 Shopee / Mercado Livre 平台 API | 📋 规划 |
-| V3 | Web | 网页应用，可视化工作流 | 📋 规划 |
-| V4 | 自动化 | 定时执行 + 闭环优化 | 📋 规划 |
+| **v0.1** | Cụm sáng tạo | 03 Listing / 04 Image / 05 Video + tài liệu phương pháp + thư viện case study | ✅ Đã hoàn thành |
+| **v0.2** | Cụm vận hành | 06 Advertising / 07 Review + case study vòng khép kín | ✅ Đã hoàn thành |
+| **v0.3** | Cụm phân tích | 01 Market Research (kèm script) / 02 Product Strategy | ✅ Đã hoàn thành |
+| v1.0 | Nối chuỗi | Chạy trọn vẹn toàn bộ workflow chỉ với một lệnh, xuất gói nội dung để đăng bán | 📋 Đang lên kế hoạch |
+| V2 | API | Kết nối API của sàn Shopee / Mercado Livre | 📋 Đang lên kế hoạch |
+| V3 | Web | Ứng dụng web, workflow trực quan | 📋 Đang lên kế hoạch |
+| V4 | Tự động hóa | Chạy theo lịch + tối ưu vòng khép kín | 📋 Đang lên kế hoạch |
 
-✅ **7 个 Agent 模块全部完成。**
+✅ **Cả 7 module Agent đã hoàn thành.**
 
 ---
 
-## v0.1 · 创意簇 ✅
+## v0.1 · Cụm sáng tạo ✅
 
-| 模块 | 内容 |
+| Module | Nội dung |
 |---|---|
-| 03 Listing Creative | 关键词七类分词 · 标题五段公式 · 详情页 7 段 · 卖点分层 · 参数一致性校验 |
-| 04 Product Image | 9 图规划 · 逐图出图 Prompt · 负面 Prompt 库 · 图片合规守卫 |
-| 05 Product Video | 15s/30s 双版本脚本 · 分镜表 · AI 视频 Prompt · 配音稿 · 字幕 · 静音可读性检查 |
+| 03 Listing Creative | Tách từ khóa thành 7 loại · công thức tiêu đề 5 đoạn · trang chi tiết 7 phần · phân tầng điểm bán hàng · kiểm tra nhất quán thông số |
+| 04 Product Image | Lên kế hoạch 9 ảnh · Prompt tạo ảnh cho từng ảnh · thư viện Negative Prompt · lớp bảo vệ tuân thủ cho ảnh |
+| 05 Product Video | Kịch bản 2 phiên bản 15s/30s · bảng storyboard · Prompt video AI · bản lồng tiếng · phụ đề · kiểm tra khả năng đọc khi tắt tiếng |
 
 ---
 
-## v0.2 · 运营簇 ✅
+## v0.2 · Cụm vận hành ✅
 
 ### 06 Advertising Optimization Agent
 
-- [x] 输入模板：广告数据 + 成本结构（含数据质量门槛：曝光 < 1,000 拒绝分析）
-- [x] 四类漏斗诊断（严格按 CTR → 加购率 → 转化率 → ROAS 顺序判定）
-- [x] 盈亏线 ROAS 核算 + ROAS 敏感性表 + 达标线差距分析
-- [x] 预算 × ROI 双变量模型 + 分阶段目标 + 分时段预算节律
-- [x] 完整案例：充电宝 4 个广告组，四类症状齐全，整体 ROAS 1,84 亏损
+- [x] Template đầu vào: dữ liệu quảng cáo + cấu trúc chi phí (kèm ngưỡng chất lượng dữ liệu: lượt hiển thị < 1,000 thì từ chối phân tích)
+- [x] Chẩn đoán phễu 4 loại (xét nghiêm ngặt theo thứ tự CTR → tỷ lệ thêm vào giỏ → tỷ lệ chuyển đổi → ROAS)
+- [x] Tính ROAS hòa vốn + bảng độ nhạy ROAS + phân tích khoảng cách tới ngưỡng đạt
+- [x] Mô hình 2 biến ngân sách × ROI + mục tiêu theo giai đoạn + nhịp ngân sách theo khung giờ
+- [x] Case study đầy đủ: 4 nhóm quảng cáo sạc dự phòng, đủ cả 4 loại triệu chứng, ROAS tổng 1,84 đang lỗ
 
 ### 07 Review Analysis Agent
 
-- [x] 八类差评归因 + 好评 5 维度分析
-- [x] **误解型差评识别**（三种判定：缺失说明 / 说明不醒目 / 买家未阅读）
-- [x] 详情页修补建议 + 参数红线提炼 + 卖点频次×情感强度排序
-- [x] 完整案例：电动滑板车，可修复差评 84,6%，误解型占 38,5%
+- [x] Quy nguyên nhân đánh giá tiêu cực theo 8 nhóm + phân tích đánh giá tích cực theo 5 chiều
+- [x] **Nhận diện đánh giá tiêu cực loại hiểu lầm** (3 kiểu xác định: thiếu giải thích / giải thích không nổi bật / người mua không đọc)
+- [x] Đề xuất vá trang chi tiết + đúc kết lằn ranh đỏ về thông số + xếp hạng điểm bán hàng theo tần suất × cường độ cảm xúc
+- [x] Case study đầy đủ: xe scooter điện, đánh giá tiêu cực sửa được 84,6%, loại hiểu lầm chiếm 38,5%
 
-### 闭环案例
+### Case study vòng khép kín
 
-- [x] `Examples/03_Closed_Loop/`：广告侧 + 评论侧两条回流路径的完整演示
+- [x] `Examples/03_Closed_Loop/`: demo đầy đủ hai đường quay vòng về từ phía quảng cáo + phía đánh giá
 
 ---
 
-## v0.3 · 分析簇 ✅
+## v0.3 · Cụm phân tích ✅
 
 ### 01 Market Research Agent
 
-**这一批的瓶颈是"数据怎么进得来"，所以直接连脚本一起做了。**
+**Nút thắt của đợt này là "dữ liệu đưa vào bằng cách nào", nên làm luôn cả script.**
 
-- [x] `scripts/shaduola_parser.py`：格式标准化（洗货币符号 / 千分位 / 万单位 / 空值 / 日期 / 补算 GMV）
-- [x] `scripts/market_metrics.py`：容量 / CR3·CR10·HHI / 价格分箱 / **波谷检测** / 配置交叉表
-- [x] `scripts/make_sample.py` + `samples/`：可复现样本（含预期结果，用于验证环境）
-- [x] 前置判断 Prompt（SOP 1.1，**判定不通过时停止，不做下游**）
-- [x] 市场分析 Prompt（SOP 1.2–1.6，含"数据不足要直说"的硬要求）
-- [x] 完整案例：电动滑板车（全部数字可由三条命令复现）
-- [x] **设计原则**：能算的别让模型猜——确定性计算交脚本，判断交 Agent
+- [x] `scripts/shaduola_parser.py`: chuẩn hóa định dạng (làm sạch ký hiệu tiền tệ / dấu phân cách hàng nghìn / đơn vị 万 (vạn) / giá trị rỗng / ngày tháng / tính bù GMV)
+- [x] `scripts/market_metrics.py`: quy mô thị trường / CR3·CR10·HHI / chia khoảng giá / **phát hiện vùng trũng** / bảng chéo cấu hình
+- [x] `scripts/make_sample.py` + `samples/`: dữ liệu mẫu tái hiện được (kèm kết quả kỳ vọng, dùng để kiểm tra môi trường)
+- [x] Prompt đánh giá sơ bộ (SOP 1.1, **không đạt thì dừng, không làm tiếp phía hạ nguồn**)
+- [x] Prompt phân tích thị trường (SOP 1.2–1.6, kèm yêu cầu cứng "dữ liệu không đủ thì phải nói thẳng")
+- [x] Case study đầy đủ: xe scooter điện (mọi con số đều tái hiện được bằng ba lệnh)
+- [x] **Nguyên tắc thiết kế**: cái gì tính được thì đừng để model đoán —— tính toán tất định giao cho script, phán đoán giao cho Agent
 
-**波谷检测的三个实现要点**（踩坑改出来的）：
-1. 在原始曲线上检测，**默认不做平滑**（3 点滑动平均会抹掉陡峭波谷）
-2. 跌幅显著性过滤（默认 15%）
-3. 价格带数量上限（默认 5，超出按跌幅取前几名）
+**Ba điểm triển khai chính của phát hiện vùng trũng** (rút ra sau khi dính lỗi):
+1. Phát hiện trên đường cong gốc, **mặc định không làm mượt** (trung bình trượt 3 điểm sẽ xóa mất các vùng trũng dốc)
+2. Lọc theo mức độ đáng kể của độ sụt (mặc định 15%)
+3. Giới hạn số dải giá (mặc định 5, vượt quá thì lấy các dải có độ sụt lớn nhất)
 
 ### 02 Product Strategy Agent
 
-- [x] 产品定位 Prompt（1.7 + 3.1，含上架前 8 问）
-- [x] 定价与 SKU Prompt（1.9 + 3.2，含逐 SKU 毛利验算 + 盈亏线）
-- [x] **`decision_approved` 阻塞机制**——不做选品决策，只做规格化
-- [x] SKU 四角色结构 + 价格阶梯双向检查（过大/过小）+ 优惠券设计
-- [x] 完整案例：电动滑板车（毛利余量 R$ 98,95 与拟发券 R$ 100 的闭环）
+- [x] Prompt định vị sản phẩm (1.7 + 3.1, kèm 8 câu hỏi trước khi đăng bán)
+- [x] Prompt định giá và SKU (1.9 + 3.2, kèm kiểm tra lại biên lợi nhuận gộp từng SKU + ngưỡng hòa vốn)
+- [x] **Cơ chế chặn `decision_approved`** —— không ra quyết định chọn sản phẩm, chỉ chuẩn hóa thông số
+- [x] Cấu trúc 4 vai trò SKU + kiểm tra bậc giá hai chiều (quá lớn/quá nhỏ) + thiết kế voucher
+- [x] Case study đầy đủ: xe scooter điện (vòng khép kín giữa dư địa lợi nhuận gộp R$ 98,95 và voucher dự kiến R$ 100)
 
 ---
 
-## v1.0 · 串联 📋
+## v1.0 · Nối chuỗi 📋
 
-- [ ] `workflow.md`：定义完整执行顺序与中断条件（01→02→03→04/05→上架→06/07→回流）
-- [ ] 输出统一的「上架素材包」目录结构
-- [ ] 一键脚本（把各模块 Prompt 与脚本按顺序串起来）
-- [ ] 端到端案例复现验证
+- [ ] `workflow.md`: định nghĩa thứ tự thực hiện đầy đủ và điều kiện dừng (01→02→03→04/05→đăng bán→06/07→quay vòng về)
+- [ ] Xuất cấu trúc thư mục「gói nội dung đăng bán」thống nhất
+- [ ] Script một lệnh (nối Prompt và script của các module theo thứ tự)
+- [ ] Kiểm chứng tái hiện case study end-to-end
 
-## V2 · 接入 API 📋
+## V2 · Kết nối API 📋
 
-- [ ] Shopee Open Platform API（商品 / 订单 / 广告数据）
-- [ ] Mercado Livre API（items / orders / ads）
-- [ ] 关键词数据自动拉取（替代手工导入三榜）
-- [ ] **类目数据自动拉取**（替代手工导出，直连 01 的脚本层）
-- [ ] 广告数据自动拉取（供 06 使用，去掉手工填表）
-- [ ] 评论数据自动拉取（供 07 使用）
+- [ ] Shopee Open Platform API (dữ liệu sản phẩm / đơn hàng / quảng cáo)
+- [ ] Mercado Livre API (items / orders / ads)
+- [ ] Tự động kéo dữ liệu từ khóa (thay cho nhập thủ công 3 bảng xếp hạng)
+- [ ] **Tự động kéo dữ liệu ngành hàng** (thay cho xuất thủ công, nối thẳng vào lớp script của 01)
+- [ ] Tự động kéo dữ liệu quảng cáo (cho 06 dùng, bỏ bước điền bảng thủ công)
+- [ ] Tự động kéo dữ liệu đánh giá (cho 07 dùng)
 
-## V3 · 网页应用 📋
+## V3 · Ứng dụng web 📋
 
-- [ ] 可视化工作流界面
-- [ ] 指标报告可视化（价格曲线、波谷标注、配置交叉表）
-- [ ] 素材预览与管理
-- [ ] 多店铺 / 多平台切换
+- [ ] Giao diện workflow trực quan
+- [ ] Trực quan hóa báo cáo chỉ số (đường cong giá, đánh dấu vùng trũng, bảng chéo cấu hình)
+- [ ] Xem trước và quản lý nội dung sáng tạo (creative)
+- [ ] Chuyển đổi nhiều shop / nhiều sàn
 
-## V4 · 自动化 Agent 系统 📋
+## V4 · Hệ thống Agent tự động 📋
 
-- [ ] 定时执行（每日数据采集 → 诊断 → 建议）
-- [ ] 闭环优化（执行动作 → 回收数据 → 验证效果）
-- [ ] 异常告警（CTR 骤降 / ROAS 跌破盈亏线 / 差评激增）
+- [ ] Chạy theo lịch (thu thập dữ liệu hằng ngày → chẩn đoán → đề xuất)
+- [ ] Tối ưu vòng khép kín (thực hiện hành động → thu lại dữ liệu → kiểm chứng hiệu quả)
+- [ ] Cảnh báo bất thường (CTR tụt mạnh / ROAS rơi xuống dưới ngưỡng hòa vốn / đánh giá tiêu cực tăng vọt)
 
 ---
 
-## 已知待办（技术债）
+## Việc tồn đọng đã biết (nợ kỹ thuật)
 
-| # | 项 | 影响 | 处置 |
+| # | Hạng mục | Ảnh hưởng | Cách xử lý |
 |---|---|---|---|
-| 1 | ~~SOP 的「9 图生成逻辑」原始清单未提取到~~ | ✅ **已确认采用本仓库推导的 9 图框架** | 已关闭，见 [`04 README`](./Agents/04_Product_Image_Agent/README.md) |
-| 2 | SOP 原文说详情页"8 个部分"但只列了 7 项 | 本仓库按 7 段执行 | 待确认是否有缺漏 |
-| 3 | 平台字数 / 字段规则可能滞后 | 文档写的是编写时的公开规则 | 已在多处标注"发布前复核"；后续可加自动化校验 |
-| 4 | ~~编号体系与原始规划不一致~~ | ✅ **已确认**（按工作簇重排） | 已关闭，见 [`CHANGELOG`](./CHANGELOG.md) |
-| 5 | 06/07 的输入依赖手工填表 | 广告数据与评论数据需人工导出整理 | V2 接入 API 后消除 |
-| 6 | 复盘数据无法自动回流 | `iterate` 模式需人工把 06/07 的输出粘贴回 03/04 | v1.0 串联后消除 |
-| 7 | 01 的数据源依赖手工导出 | 虾多拉导出格式可能变化，需维护 `--mapping` | V2 接 API 后消除 |
-| 8 | 脚本未计入巴西税费 | 指标层与定价层都未含税费，实际毛利率会偏低 | 须在使用时自行补税费项，已在文档中标注 |
-| 9 | 配置维度抽取为启发式 | 配置只在标题里时靠正则，抽取率可能偏低 | 报告会标出失败数；建议把配置拆成独立列 |
+| 1 | ~~Chưa trích xuất được danh sách gốc「logic tạo 9 ảnh」trong SOP~~ | ✅ **Đã chốt dùng khung 9 ảnh do repo này tự suy ra** | Đã đóng, xem [`04 README`](./Agents/04_Product_Image_Agent/README.md) |
+| 2 | Bản gốc SOP nói trang chi tiết có "8 phần" nhưng chỉ liệt kê 7 mục | Repo này làm theo 7 phần | Chờ xác nhận có thiếu sót hay không |
+| 3 | Quy định số ký tự / trường của sàn có thể đã lỗi thời | Tài liệu ghi theo quy định công khai tại thời điểm biên soạn | Đã ghi chú "kiểm tra lại trước khi đăng" ở nhiều chỗ; sau này có thể thêm kiểm tra tự động |
+| 4 | ~~Hệ thống đánh số không khớp với kế hoạch ban đầu~~ | ✅ **Đã chốt** (sắp xếp lại theo cụm công việc) | Đã đóng, xem [`CHANGELOG`](./CHANGELOG.md) |
+| 5 | Đầu vào của 06/07 phụ thuộc vào điền bảng thủ công | Dữ liệu quảng cáo và đánh giá phải xuất và chỉnh lý thủ công | Sẽ hết khi V2 kết nối API |
+| 6 | Dữ liệu review lại kết quả chưa tự quay vòng về được | Chế độ `iterate` cần người dán output của 06/07 về 03/04 | Sẽ hết khi v1.0 nối chuỗi |
+| 7 | Nguồn dữ liệu của 01 phụ thuộc vào xuất thủ công | Định dạng xuất của Shaduola có thể thay đổi, cần bảo trì `--mapping` | Sẽ hết khi V2 kết nối API |
+| 8 | Script chưa tính thuế Brazil | Cả lớp chỉ số lẫn lớp định giá đều chưa có thuế, biên lợi nhuận gộp thực tế sẽ thấp hơn | Phải tự bổ sung khoản thuế khi sử dụng, đã ghi chú trong tài liệu |
+| 9 | Trích xuất chiều cấu hình mang tính heuristic | Khi cấu hình chỉ nằm trong tiêu đề thì dựa vào regex, tỷ lệ trích xuất có thể thấp | Báo cáo sẽ ghi số lần thất bại; khuyến nghị tách cấu hình thành cột riêng |
 
 ---
 
-## 不打算做的事
+## Những việc không định làm
 
-为了不误导使用者，明确列出**本工具箱不做**的事：
+Để không gây hiểu lầm cho người dùng, liệt kê rõ những việc **bộ công cụ này không làm**:
 
-| 不做 | 原因 |
+| Không làm | Lý do |
 |---|---|
-| 刷单 / 测评工具 | 平台明令禁止，见 [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md) |
-| 组织性举报竞品的工具 | 不正当竞争 |
-| 自动抢预约 / 绕过风控 | 技术手段规避平台规则 |
-| 抓取竞品数据并直接复用素材 | 版权风险 |
-| 承诺收益 / 保证出单的功能 | 无法负责 |
-| **代替人做选品决策** | 02 模块需人工确认 `decision_approved`；选品涉及公司战略、资金与风险偏好，Agent 无法代劳 |
+| Công cụ buff đơn ảo / review ảo | Sàn cấm rõ ràng, xem [`docs/03_Compliance_Guard.md`](./docs/03_Compliance_Guard.md) |
+| Công cụ tổ chức report đối thủ | Cạnh tranh không lành mạnh |
+| Tự động giành suất đăng ký / lách hệ thống kiểm soát rủi ro | Dùng thủ thuật kỹ thuật để né quy định sàn |
+| Cào dữ liệu đối thủ và dùng lại nguyên nội dung sáng tạo | Rủi ro bản quyền |
+| Tính năng cam kết lợi nhuận / đảm bảo ra đơn | Không thể chịu trách nhiệm |
+| **Ra quyết định chọn sản phẩm thay người** | Module 02 cần người xác nhận `decision_approved`; chọn sản phẩm liên quan đến chiến lược công ty, vốn và khẩu vị rủi ro, Agent không làm thay được |
 
 ---
 
-**返回**：[项目首页](./README.md) · [架构拆解](./docs/00_Architecture_SOP_to_Agent.md)
+**Quay lại**: [Trang chủ dự án](./README.md) · [Tách kiến trúc](./docs/00_Architecture_SOP_to_Agent.md)
