@@ -1,66 +1,66 @@
-# scripts · 数据获取与指标计算
+# scripts · Lấy dữ liệu và tính chỉ số
 
-> **这一层存在的理由：能算的别让模型猜。**
+> **Lý do lớp này tồn tại: cái gì tính được thì đừng để mô hình đoán.**
 >
-> 集中度、占比、分箱、交叉表都是**确定性的计算**——脚本算 100 次结果一样，模型算可能每次不同。
-> Agent 只负责最后一步："这些数字意味着什么、下一步做什么。"
+> Mức độ tập trung, tỷ trọng, chia bin, bảng chéo đều là **phép tính tất định** — script tính 100 lần vẫn ra cùng kết quả, mô hình tính thì mỗi lần có thể khác.
+> Agent chỉ phụ trách bước cuối: "những con số này nghĩa là gì, bước tiếp theo làm gì."
 
-依赖：**仅 Python 标准库**（XLSX 需 `openpyxl`，可选；CSV 无需任何依赖）。
+Phụ thuộc: **chỉ thư viện chuẩn của Python** (XLSX cần `openpyxl`, tùy chọn; CSV không cần thư viện nào).
 
 ---
 
-## 三步跑通
+## Ba bước chạy trọn vẹn
 
 ```bash
-# 1）先用样本试跑（验证环境，数据是合成的）
+# 1) Chạy thử với dữ liệu mẫu trước (kiểm tra môi trường, dữ liệu là tổng hợp)
 python make_sample.py
 
-# 2）看列识别情况（第一次接新数据源时必做）
+# 2) Xem tình trạng nhận diện cột (bắt buộc làm khi lần đầu dùng nguồn dữ liệu mới)
 python shaduola_parser.py ../samples/sample_patinete_eletrico.csv --profile
 
-# 3）转换 + 计算
+# 3) Chuyển đổi + tính toán
 python shaduola_parser.py ../samples/sample_patinete_eletrico.csv
 python market_metrics.py ../samples/sample_patinete_eletrico.normalized.json \
-    --bins 10 --config-fields "功率,承重"
+    --bins 10 --config-fields "công suất,tải trọng"
 ```
 
-产出两个文件：
-- `<名>.metrics.json` — 给 Agent / 后续脚本消费
-- `<名>.metrics.md` — 给人看，也是提交给 Agent 的主要材料
+Tạo ra hai file:
+- `<tên>.metrics.json` — cho Agent / script phía sau sử dụng
+- `<tên>.metrics.md` — cho người đọc, cũng là tài liệu chính nộp cho Agent
 
 ---
 
-## `shaduola_parser.py` — 格式标准化
+## `shaduola_parser.py` — Chuẩn hóa định dạng
 
-把各平台导出的五花八门格式，统一成固定 Schema。
+Gom đủ kiểu định dạng xuất từ các sàn về một Schema cố định.
 
-### 能洗掉什么脏数据
+### Lọc được những loại dữ liệu bẩn nào
 
-导出数据通常长这样，清洗逻辑都覆盖了：
+Dữ liệu xuất ra thường trông như dưới đây, logic làm sạch đều đã bao phủ:
 
-| 情况 | 示例 | 处理结果 |
+| Trường hợp | Ví dụ | Kết quả xử lý |
 |---|---|---|
-| 货币符号 | `R$ 2.199,90` / `¥1,234.56` / `USD 99.9` | `2199.90` |
-| 千分位（点） | `1.234` | `1234` |
-| 千分位（逗号） | `1,234` | `1234` |
-| 欧式小数 | `1.234,56` | `1234.56` |
-| 中文数量单位 | `1.2万` / `3000+` | `12000` / `3000` |
-| 空值标记 | `-` / `N/A` / `暂无` / `null` | `None` |
-| 上架时间 | `30天` / `2个月` / `2025-06-15` / `365` | 天数（整数） |
-| 月销售额缺失 | — | 用 `价格 × 月销量` 补算 |
+| Ký hiệu tiền tệ | `R$ 2.199,90` / `¥1,234.56` / `USD 99.9` / `1.299.000₫` | `2199.90` |
+| Dấu phân cách hàng nghìn (dấu chấm) | `1.234` | `1234` |
+| Dấu phân cách hàng nghìn (dấu phẩy) | `1,234` | `1234` |
+| Số thập phân kiểu châu Âu | `1.234,56` | `1234.56` |
+| Đơn vị số lượng tiếng Trung / tiếng Việt | `1.2万` / `1,5 triệu` / `3000+` | `12000` / `1500000` / `3000` |
+| Ký hiệu giá trị rỗng | `-` / `N/A` / `暂无` / `không có` / `null` | `None` |
+| Thời gian đăng bán | `30天` / `30 ngày` / `2个月` / `2 tháng` / `2025-06-15` / `365` | Số ngày (số nguyên) |
+| Thiếu doanh thu tháng | — | Tính bù bằng `giá × lượng bán tháng` |
 
-### 列名识别
+### Nhận diện tên cột
 
-内置映射覆盖中文 / 英文 / 葡语常见列名（见脚本 `DEFAULT_MAPPING`）。**识别不到的用 `--mapping` 手动指定**：
+Bảng ánh xạ có sẵn bao phủ các tên cột phổ biến bằng tiếng Trung / tiếng Việt / tiếng Anh / tiếng Bồ Đào Nha (xem `DEFAULT_MAPPING` trong script). **Cột nào không nhận diện được thì chỉ định thủ công bằng `--mapping`**:
 
 ```bash
 # mapping.json
-{"price": ["我的价格列", "Preço Final"], "monthly_sales": ["30日销量"]}
+{"price": ["Cột giá của tôi", "Preço Final"], "monthly_sales": ["Lượng bán 30 ngày"]}
 
 python shaduola_parser.py data.xlsx --mapping mapping.json
 ```
 
-### 输出 Schema
+### Schema đầu ra
 
 ```json
 {
@@ -68,7 +68,7 @@ python shaduola_parser.py data.xlsx --mapping mapping.json
     "source_file": "data.csv",
     "row_count_raw": 50,
     "row_count_kept": 50,
-    "column_map": { "price": "价格", "monthly_sales": "月销量" }
+    "column_map": { "price": "Giá", "monthly_sales": "Lượng bán tháng" }
   },
   "items": [
     {
@@ -84,103 +84,103 @@ python shaduola_parser.py data.xlsx --mapping mapping.json
 
 ---
 
-## `market_metrics.py` — 指标计算
+## `market_metrics.py` — Tính chỉ số
 
-### 算哪些指标（对应 SOP 章节）
+### Tính những chỉ số nào (ứng với chương SOP)
 
-| 输出区块 | 指标 | 对应 SOP |
+| Khối đầu ra | Chỉ số | SOP tương ứng |
 |---|---|---|
-| 市场容量 | 总销量 / 总销售额 / 均价 / 中位价 / 单商品均销 / 隐含均价 | 1.2 |
-| 品牌集中度 | 品牌数 / **CR3** / CR10 / **HHI** / Top 榜 | 1.3 |
-| 卖家集中度 | 卖家数 / CR3 / CR10 / HHI / Top 榜 | 1.3 |
-| 价格带 | 等宽分箱销量曲线 / **波谷检测** / 建议价格带 | 1.4 |
-| 配置交叉表 | 每个配置值：商品数 / 数量占比 / 总销量 / 销量占比 / 平均销量 + 四维判断 | 1.5 |
+| Quy mô thị trường | Tổng lượng bán / tổng doanh thu / giá trung bình / giá trung vị / lượng bán TB mỗi sản phẩm / giá trung bình ngầm định | 1.2 |
+| Mức độ tập trung thương hiệu | Số thương hiệu / **CR3** / CR10 / **HHI** / bảng xếp hạng Top | 1.3 |
+| Mức độ tập trung người bán | Số người bán / CR3 / CR10 / HHI / bảng xếp hạng Top | 1.3 |
+| Dải giá | Đường cong lượng bán chia bin đều / **dò vùng trũng** / dải giá đề xuất | 1.4 |
+| Bảng chéo cấu hình | Mỗi giá trị cấu hình: số sản phẩm / tỷ trọng số lượng / tổng lượng bán / tỷ trọng lượng bán / lượng bán trung bình + đánh giá bốn chiều | 1.5 |
 
-### 波谷检测怎么做（SOP 1.4 的实现）
+### Dò vùng trũng thế nào (triển khai SOP 1.4)
 
-SOP 原文：
+Nguyên văn SOP:
 
-> 观察曲线的高峰和低谷，**从波谷到波谷之间划分一个相对完整的价格带**。
+> Quan sát đỉnh và đáy của đường cong, **chia một dải giá tương đối trọn vẹn từ vùng trũng này đến vùng trũng kia**.
 
-实现要点有三条，都是踩过坑改出来的：
+Có ba điểm chính khi triển khai, đều được sửa ra sau khi vấp lỗi:
 
-| # | 要点 | 为什么 |
+| # | Điểm chính | Vì sao |
 |---|---|---|
-| 1 | **在原始曲线上检测，默认不做平滑** | 3 点滑动平均会把陡峭的局部波谷抹平。样本里 `799 → 618 → 1120` 的波谷，滑动平均后变成 `638 → 845 → 912`（单调递增），波谷直接消失 |
-| 2 | **跌幅显著性过滤**（默认 15%） | 否则噪声会产生大量伪波谷。跌幅 = 波谷相对两侧邻居的**较小**跌幅 |
-| 3 | **价格带数量上限**（默认 5） | 波谷过多时按跌幅取最深的几个，其余记录在 `trimmed_valleys` 里，可用 `--max-bands` 调回 |
+| 1 | **Dò trên đường cong gốc, mặc định không làm mượt** | Trung bình trượt 3 điểm sẽ xóa phẳng vùng trũng cục bộ dốc. Vùng trũng `799 → 618 → 1120` trong mẫu, sau trung bình trượt thành `638 → 845 → 912` (tăng đơn điệu), vùng trũng biến mất luôn |
+| 2 | **Lọc mức giảm đáng kể** (mặc định 15%) | Nếu không, nhiễu sẽ tạo ra rất nhiều vùng trũng giả. Mức giảm = mức giảm **nhỏ hơn** của vùng trũng so với hai điểm lân cận |
+| 3 | **Giới hạn số dải giá** (mặc định 5) | Khi có quá nhiều vùng trũng thì lấy vài vùng sâu nhất theo mức giảm, phần còn lại ghi vào `trimmed_valleys`, có thể chỉnh lại bằng `--max-bands` |
 
 ```bash
-# 调参
+# Điều chỉnh tham số
 python market_metrics.py data.normalized.json --bins 12 --valley-min-drop 0.20 --max-bands 6
 ```
 
-### CR-n 的一个陷阱
+### Một cái bẫy của CR-n
 
-**主体数 ≤ n 时，CR-n 恒为 100%，毫无意义。**
-脚本会自动检测这种情况并提示改用 CR3 与 HHI：
+**Khi số chủ thể ≤ n, CR-n luôn bằng 100%, hoàn toàn vô nghĩa.**
+Script sẽ tự phát hiện trường hợp này và nhắc chuyển sang dùng CR3 và HHI:
 
 ```
-> ⚠️ 主体数（6）≤ n（10），CR10 恒为 100%，无参考意义。请改用 CR3（74.1%）与 HHI（2219.7）判断集中度。
+> ⚠️ Số chủ thể (6) ≤ n (10), CR10 luôn bằng 100%, không có giá trị tham khảo. Hãy dùng CR3 (74.1%) và HHI (2219.7) để đánh giá mức độ tập trung.
 ```
 
-### 配置维度怎么给
+### Khai báo chiều cấu hình thế nào
 
-两种方式：
+Có hai cách:
 
-1. **配置写在单独列里** → 用 `--config-fields <列名>`，脚本直接读
-2. **配置只在标题里** → 脚本会尝试从 title 正则抽取数字+单位（`500W` / `150kg` / `20000mAh`），支持中英葡关键词
+1. **Cấu hình nằm ở cột riêng** → dùng `--config-fields <tên cột>`, script đọc trực tiếp
+2. **Cấu hình chỉ nằm trong tiêu đề** → script sẽ thử trích số + đơn vị từ title bằng regex (`500W` / `150kg` / `20000mAh`), hỗ trợ từ khóa tiếng Trung, tiếng Việt, tiếng Anh, tiếng Bồ Đào Nha
 
 ```bash
---config-fields "功率,承重"          # 触发标题抽取
---config-fields "potencia,peso_max" # 字段存在时直接读
+--config-fields "công suất,tải trọng" # kích hoạt trích xuất từ tiêu đề (cũng nhận 功率,承重)
+--config-fields "potencia,peso_max"   # đọc trực tiếp khi cột có tồn tại
 ```
 
-抽取失败的条目数会写在报告里（`未能解析该维度的商品：N 个`）——**这个数字要盯**，抽取率太低说明标题格式不统一或维度名不对。
+Số mục trích xuất lỗi sẽ được ghi trong báo cáo (`Số sản phẩm không trích được chiều này: N`) — **phải để mắt đến con số này**, tỷ lệ trích được quá thấp nghĩa là định dạng tiêu đề không thống nhất hoặc tên chiều không đúng.
 
 ---
 
-## 四维判断逻辑（SOP 1.5）
+## Logic đánh giá bốn chiều (SOP 1.5)
 
-脚本对每个配置值自动打标：
+Script tự động gắn nhãn cho từng giá trị cấu hình:
 
-| 判定 | 条件 | 含义 |
+| Nhãn | Điều kiện | Ý nghĩa |
 |---|---|---|
-| `总销量高→需求大` | 销量占比 ≥ 25% | 市场需求集中在这里 |
-| `单品效率高` | 平均销量 > 整体均值 × 1.2 | 这个配置的商品卖得动 |
-| `主流配置→竞争激烈` | 数量占比 > 整体占比 × 1.5 | 供给多，竞争必然激烈 |
-| `★机会配置` | 商品数 ≤ 30% 且 平均销量 > 整体均值 × 1.2 | **数量少但效率高**——需再确认是否被头部占据 |
+| `Tổng lượng bán cao→nhu cầu lớn` | Tỷ trọng lượng bán ≥ 25% | Nhu cầu thị trường tập trung ở đây |
+| `Hiệu suất mỗi SKU cao` | Lượng bán trung bình > trung bình chung × 1.2 | Sản phẩm cấu hình này bán chạy |
+| `Cấu hình phổ biến→cạnh tranh gắt` | Tỷ trọng số lượng > tỷ trọng chung × 1.5 | Nguồn cung nhiều, chắc chắn cạnh tranh gắt |
+| `★Cấu hình cơ hội` | Số sản phẩm ≤ 30% và lượng bán trung bình > trung bình chung × 1.2 | **Ít sản phẩm nhưng hiệu suất cao** — cần xác nhận thêm có bị nhóm top đầu chiếm không |
 
-> SOP 的最终标准是：**总销量高 + 平均销量高 + 公司能做 + 利润可接受 + 售后可控**。
-> 脚本只能覆盖前两项（数据可得），后三项必须由 Agent 结合公司资源与成本结构判断。
+> Tiêu chuẩn cuối cùng của SOP là: **tổng lượng bán cao + lượng bán trung bình cao + công ty làm được + lợi nhuận chấp nhận được + hậu mãi kiểm soát được**.
+> Script chỉ bao phủ được hai mục đầu (có dữ liệu), ba mục sau bắt buộc do Agent đánh giá dựa trên nguồn lực công ty và cấu trúc chi phí.
 
 ---
 
-## 为什么不用现成的 BI / Excel 透视表
+## Vì sao không dùng BI / Pivot Table Excel có sẵn
 
-| | 本脚本 | Excel 透视表 |
+| | Script này | Pivot Table Excel |
 |---|---|---|
-| 可复现 | ✅ 参数固定则结果固定 | ❌ 依赖人工点击，难复现 |
-| 可追溯 | ✅ 输出 JSON，每个数字可回溯 | ⚠️ 公式藏单元格里 |
-| 可自动化 | ✅ V2 接 API 后直接串起来 | ❌ |
-| 波谷检测 | ✅ 内置显著性过滤 | ❌ 得手工看图 |
-| Agent 友好 | ✅ 结构化 JSON | ❌ |
+| Tái lập được | ✅ Tham số cố định thì kết quả cố định | ❌ Phụ thuộc thao tác tay, khó tái lập |
+| Truy vết được | ✅ Xuất JSON, mọi con số đều truy ngược được | ⚠️ Công thức giấu trong ô |
+| Tự động hóa được | ✅ Bản V2 kết nối API là nối thẳng vào được | ❌ |
+| Dò vùng trũng | ✅ Có sẵn lọc mức độ đáng kể | ❌ Phải nhìn biểu đồ bằng mắt |
+| Thân thiện với Agent | ✅ JSON có cấu trúc | ❌ |
 
-**核心差异**：Excel 是给人看的，脚本是给**流程**用的。
+**Khác biệt cốt lõi**: Excel là để người xem, script là để **quy trình** dùng.
 
 ---
 
-## 已知限制
+## Hạn chế đã biết
 
-| 限制 | 说明 |
+| Hạn chế | Giải thích |
 |---|---|
-| **不抓数据** | 只做格式转换与计算。数据来源需自行导出（虾多拉 / 平台后台 / 第三方工具） |
-| **不算税费** | 巴西税费结构复杂（州税/联邦税/进口税），不在指标层处理；定价阶段需单独补 |
-| **不算"新品表现"** | SOP 1.2 特别提到"新品销量情况"，且注明"虾多拉数据不准确"。需要 `listing_age_days` 字段才能做，精度有限，建议人工核对 |
-| **不判断真伪** | 不校验销量数据本身是否可信 |
-| **配置抽取是启发式** | 标题格式千奇百怪，抽取率可能偏低，报告里会标出失败数 |
-| **HHI 未做行业校准** | HHI 阈值因行业而异，脚本只给原始值，判断交给 Agent |
+| **Không thu thập dữ liệu** | Chỉ chuyển đổi định dạng và tính toán. Nguồn dữ liệu phải tự xuất (Shaduola / Seller Center / công cụ bên thứ ba) |
+| **Không tính thuế phí** | Cơ cấu thuế phí của Brazil phức tạp (thuế bang/thuế liên bang/thuế nhập khẩu), không xử lý ở lớp chỉ số; giai đoạn định giá cần bổ sung riêng |
+| **Không tính "hiệu quả sản phẩm mới"** | SOP 1.2 đặc biệt nhắc đến "tình hình lượng bán sản phẩm mới", và ghi chú "dữ liệu Shaduola không chính xác". Cần trường `listing_age_days` mới làm được, độ chính xác có hạn, nên đối chiếu thủ công |
+| **Không đánh giá thật giả** | Không kiểm tra bản thân dữ liệu lượng bán có đáng tin hay không |
+| **Trích xuất cấu hình mang tính heuristic** | Định dạng tiêu đề muôn hình vạn trạng, tỷ lệ trích được có thể thấp, báo cáo sẽ ghi rõ số lỗi |
+| **HHI chưa hiệu chỉnh theo ngành** | Ngưỡng HHI khác nhau theo ngành, script chỉ đưa giá trị gốc, việc đánh giá giao cho Agent |
 
 ---
 
-**返回**：[01 模块说明](../README.md) · **下一步**：把 `<名>.metrics.md` 连同 [`templates/input_category_research.md`](../templates/input_category_research.md) 提交给 Agent
+**Quay lại**: [Giới thiệu module 01](../README.md) · **Bước tiếp theo**: nộp `<tên>.metrics.md` cùng [`templates/input_category_research.md`](../templates/input_category_research.md) cho Agent
